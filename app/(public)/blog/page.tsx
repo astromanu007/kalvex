@@ -149,8 +149,12 @@ export default function BlogPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: i * 0.1 }}
-              whileHover={{ y: -20 }}
-              className="group flex flex-col h-full bg-white rounded-[3.5rem] overflow-hidden border border-slate-100 hover:border-blue-600/20 transition-all duration-500 hover:shadow-[0_48px_96px_-24px_rgba(0,0,0,0.1)]"
+              whileHover={{ 
+                y: -20, 
+                rotateY: i % 2 === 0 ? 5 : -5,
+                scale: 1.02
+              }}
+              className="group flex flex-col h-full bg-white rounded-[3.5rem] overflow-hidden border border-slate-100 hover:border-blue-600/20 transition-all duration-500 hover:shadow-[0_48px_96px_-24px_rgba(0,0,0,0.1)] [transform-style:preserve-3d]"
             >
               <div className="relative aspect-[16/10] overflow-hidden">
                 <img 

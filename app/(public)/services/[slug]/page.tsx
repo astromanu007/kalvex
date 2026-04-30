@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, ShieldCheck, Clock, FileText, Loader2, Check } from "lucide-react";
 import { createOrder } from "@/app/actions/orders";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession } from "next-auth/react";
 
 const SERVICES_DATA: Record<string, any> = {
   "phd-thesis": { desc: "End-to-end support and drafting for your doctoral research thesis to meet university standards.", price: 25000, delivery: "30-45 Days", fields: { topicLabel: "Thesis Topic / Domain", topicPlaceholder: "e.g. Machine Learning in Healthcare", scopeLabel: "Word Count / Chapters", scopePlaceholder: "e.g. 5 Chapters, 20k words" }, deliverables: ["Full Thesis", "Plagiarism Report", "PPT Presentation", "Source Code"] },
@@ -39,6 +40,7 @@ export default function ServiceDetailPage() {
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { data: session } = useSession();
 
   const [formData, setFormData] = useState({
     topic: "", 
@@ -59,6 +61,12 @@ export default function ServiceDetailPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+
     if (step < 3) {
       setStep(step + 1);
       return;

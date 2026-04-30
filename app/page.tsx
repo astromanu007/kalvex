@@ -35,10 +35,94 @@ export default function Home() {
         variants={staggerContainer}
         className="relative min-h-[95vh] flex items-center bg-white overflow-hidden pb-20"
       >
-        {/* Cinematic Background Elements */}
-        <div className="absolute top-0 right-0 w-[60rem] h-[60rem] bg-blue-50/50 rounded-full -z-10 blur-[120px] -translate-y-1/2 translate-x-1/2" />
-        <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-slate-50 rounded-full -z-10 blur-[100px] translate-y-1/2 -translate-x-1/2" />
-        <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:48px_48px] opacity-[0.15]" />
+        {/* Cinematic Background & 3D Floating Shapes */}
+        <div className="absolute inset-0 z-0 pointer-events-none">
+          {/* Main Glows */}
+          <div className="absolute top-0 right-0 w-[60rem] h-[60rem] bg-blue-50/60 rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2" />
+          <div className="absolute bottom-0 left-0 w-[50rem] h-[50rem] bg-slate-50/50 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
+          
+          {/* Precision Grid */}
+          <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1.5px,transparent_1.5px)] [background-size:48px_48px] opacity-[0.15]" />
+
+          {/* Floating 3D Shapes - Darker & More Pronounced */}
+          <motion.div 
+            animate={{ 
+              y: [0, -50, 0],
+              rotate: [0, 45, 0],
+              scale: [1, 1.1, 1]
+            }}
+            transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-[10%] right-[15%] w-32 h-32 border-2 border-blue-400/50 rounded-[2rem] rotate-12 flex items-center justify-center backdrop-blur-[2px]"
+          >
+            <div className="w-16 h-16 border border-blue-500/40 rounded-full animate-pulse" />
+          </motion.div>
+
+          <motion.div 
+            animate={{ 
+              x: [0, 40, 0],
+              rotate: [0, -30, 0],
+              y: [0, 20, 0]
+            }}
+            transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+            className="absolute bottom-[20%] left-[10%] w-24 h-24 border-2 border-slate-400/40 rotate-45 flex items-center justify-center backdrop-blur-[2px]"
+          >
+            <div className="w-10 h-10 bg-blue-400/20 rounded-full" />
+          </motion.div>
+
+          <motion.div 
+            animate={{ 
+              rotate: 360,
+              scale: [0.8, 1.2, 0.8]
+            }}
+            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+            className="absolute top-[40%] left-[20%] w-16 h-16 border border-emerald-400/40 rounded-full opacity-60"
+          />
+
+          <motion.div 
+            animate={{ 
+              y: [0, 60, 0],
+              x: [0, -20, 0],
+              rotate: [0, 90, 0]
+            }}
+            transition={{ duration: 18, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+            className="absolute top-[15%] left-[45%] w-6 h-6 border-2 border-blue-600/30 rotate-45 blur-[0.5px]"
+          />
+
+          {/* New Shapes */}
+          <motion.div 
+            animate={{ 
+              rotate: -360,
+              y: [0, -40, 0]
+            }}
+            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+            className="absolute bottom-[30%] right-[10%] w-20 h-20 border-2 border-slate-300/40 rounded-3xl opacity-50"
+          />
+
+          <motion.div 
+            animate={{ 
+              scale: [1, 1.3, 1],
+              opacity: [0.3, 0.6, 0.3]
+            }}
+            transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+            className="absolute top-[30%] right-[40%] w-3 h-3 bg-blue-500/40 rounded-full"
+          />
+
+          <motion.div 
+            animate={{ 
+              x: [0, -30, 0],
+              y: [0, 30, 0]
+            }}
+            transition={{ duration: 14, repeat: Infinity, ease: "easeInOut", delay: 3 }}
+            className="absolute bottom-[10%] left-[40%] w-12 h-12 border border-blue-400/30 rotate-[30deg] opacity-40 flex items-center justify-center"
+          >
+             <div className="w-4 h-4 border border-blue-300/20 rounded-full" />
+          </motion.div>
+
+          <div className="absolute top-[60%] right-[30%] w-12 h-12 border border-purple-400/40 rotate-12 opacity-50" />
+          
+          <div className="absolute top-[20%] left-[5%] w-8 h-8 border-2 border-slate-200/40 rounded-full opacity-30" />
+          <div className="absolute bottom-[15%] right-[25%] w-16 h-1 bg-gradient-to-r from-blue-500/20 to-transparent rotate-[30deg]" />
+        </div>
 
         <div className="container mx-auto px-4 z-10 pt-20 max-w-7xl">
           <div className="grid lg:grid-cols-12 gap-20 items-center">
@@ -122,51 +206,59 @@ export default function Home() {
         <div className="relative flex overflow-x-hidden group">
           <div className="animate-marquee whitespace-nowrap flex items-center space-x-24 px-12">
             {[
-              { name: "IIT BOMBAY", color: "text-blue-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/200px-Indian_Institute_of_Technology_Bombay_Logo.svg.png" },
-              { name: "IIT DELHI", color: "text-red-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/fd/Indian_Institute_of_Technology_Delhi_Logo.svg/200px-Indian_Institute_of_Technology_Delhi_Logo.svg.png" },
-              { name: "IIT MADRAS", color: "text-emerald-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Indian_Institute_of_Technology_Madras_Logo.svg/200px-Indian_Institute_of_Technology_Madras_Logo.svg.png" },
-              { name: "IIT KANPUR", color: "text-indigo-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a3/IIT_Kanpur_Logo.svg/200px-IIT_Kanpur_Logo.svg.png" },
-              { name: "IIT KHARAGPUR", color: "text-amber-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/IIT_Kharagpur_Logo.svg/200px-IIT_Kharagpur_Logo.svg.png" },
-              { name: "IIT ROORKEE", color: "text-cyan-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6f/Indian_Institute_of_Technology_Roorkee_logo.png/200px-Indian_Institute_of_Technology_Roorkee_logo.png" },
-              { name: "IIT GUWAHATI", color: "text-pink-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/12/IIT_Guwahati_Logo.svg/200px-IIT_Guwahati_Logo.svg.png" },
-              { name: "IIT HYDERABAD", color: "text-violet-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/19/IIT_Hyderabad_Insignia.svg/200px-IIT_Hyderabad_Insignia.svg.png" }
+              { name: "IIT Bombay", logo: "https://www.iitb.ac.in/sites/default/files/iitb_logo.png", color: "from-blue-600 to-blue-400" },
+              { name: "IIT Delhi", logo: "https://home.iitd.ac.in/images/logo.png", color: "from-orange-600 to-orange-400" },
+              { name: "IIT Madras", logo: "https://www.iitm.ac.in/sites/default/files/iitm-logo_0.png", color: "from-red-600 to-red-400" },
+              { name: "IIT Kanpur", logo: "https://www.iitk.ac.in/new/images/iitk-logo.png", color: "from-blue-700 to-blue-500" },
+              { name: "IIT Kharagpur", logo: "https://www.iitkgp.ac.in/assets/images/logo.png", color: "from-slate-800 to-slate-600" },
+              { name: "IIT Roorkee", logo: "https://www.iitr.ac.in/theme/iitr/images/logo.png", color: "from-blue-900 to-blue-700" },
+              { name: "IIT Guwahati", logo: "https://www.iitg.ac.in/images/iitg_logo.png", color: "from-purple-600 to-purple-400" },
             ].map((iit, i) => (
-              <motion.div 
-                key={i} 
-                whileHover={{ scale: 1.1, rotate: 2, y: -5 }}
-                className="flex items-center gap-6 group cursor-pointer"
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.1, rotate: 5, y: -5 }}
+                className="flex items-center gap-6 px-12 py-6 bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-2xl shadow-slate-900/5 group transition-all duration-500"
               >
-                <div className="w-20 h-20 rounded-3xl bg-white border border-slate-100 shadow-xl flex items-center justify-center overflow-hidden p-3 group-hover:shadow-2xl group-hover:border-blue-500/30 transition-all duration-500">
-                  <img src={iit.logo} alt={iit.name} className="w-full h-full object-contain" />
+                <div className="w-14 h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center">
+                  <img 
+                    src={iit.logo} 
+                    alt={iit.name} 
+                    className="max-w-full max-h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?domain=${iit.logo.split('/')[2]}&sz=128`;
+                    }}
+                  />
                 </div>
-                <div className={`text-5xl font-heading font-black tracking-tighter uppercase ${iit.color} opacity-60 group-hover:opacity-100 transition-all duration-500`}>
-                  {iit.name}
-                </div>
+                <span className={`text-xl font-black tracking-tighter bg-gradient-to-r ${iit.color} bg-clip-text text-transparent`}>{iit.name}</span>
               </motion.div>
             ))}
           </div>
           <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-24 px-12">
             {[
-              { name: "IIT BOMBAY", color: "text-blue-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/200px-Indian_Institute_of_Technology_Bombay_Logo.svg.png" },
-              { name: "IIT DELHI", color: "text-red-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/fd/Indian_Institute_of_Technology_Delhi_Logo.svg/200px-Indian_Institute_of_Technology_Delhi_Logo.svg.png" },
-              { name: "IIT MADRAS", color: "text-emerald-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Indian_Institute_of_Technology_Madras_Logo.svg/200px-Indian_Institute_of_Technology_Madras_Logo.svg.png" },
-              { name: "IIT KANPUR", color: "text-indigo-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a3/IIT_Kanpur_Logo.svg/200px-IIT_Kanpur_Logo.svg.png" },
-              { name: "IIT KHARAGPUR", color: "text-amber-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/IIT_Kharagpur_Logo.svg/200px-IIT_Kharagpur_Logo.svg.png" },
-              { name: "IIT ROORKEE", color: "text-cyan-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6f/Indian_Institute_of_Technology_Roorkee_logo.png/200px-Indian_Institute_of_Technology_Roorkee_logo.png" },
-              { name: "IIT GUWAHATI", color: "text-pink-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/12/IIT_Guwahati_Logo.svg/200px-IIT_Guwahati_Logo.svg.png" },
-              { name: "IIT HYDERABAD", color: "text-violet-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/19/IIT_Hyderabad_Insignia.svg/200px-IIT_Hyderabad_Insignia.svg.png" }
+              { name: "IIT Bombay", logo: "https://www.iitb.ac.in/sites/default/files/iitb_logo.png", color: "from-blue-600 to-blue-400" },
+              { name: "IIT Delhi", logo: "https://home.iitd.ac.in/images/logo.png", color: "from-orange-600 to-orange-400" },
+              { name: "IIT Madras", logo: "https://www.iitm.ac.in/sites/default/files/iitm-logo_0.png", color: "from-red-600 to-red-400" },
+              { name: "IIT Kanpur", logo: "https://www.iitk.ac.in/new/images/iitk-logo.png", color: "from-blue-700 to-blue-500" },
+              { name: "IIT Kharagpur", logo: "https://www.iitkgp.ac.in/assets/images/logo.png", color: "from-slate-800 to-slate-600" },
+              { name: "IIT Roorkee", logo: "https://www.iitr.ac.in/theme/iitr/images/logo.png", color: "from-blue-900 to-blue-700" },
+              { name: "IIT Guwahati", logo: "https://www.iitg.ac.in/images/iitg_logo.png", color: "from-purple-600 to-purple-400" },
             ].map((iit, i) => (
-              <motion.div 
-                key={`dup-${i}`} 
-                whileHover={{ scale: 1.1, rotate: 2, y: -5 }}
-                className="flex items-center gap-6 group cursor-pointer"
+              <motion.div
+                key={`dup-${i}`}
+                whileHover={{ scale: 1.1, rotate: 5, y: -5 }}
+                className="flex items-center gap-6 px-12 py-6 bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-2xl shadow-slate-900/5 group transition-all duration-500"
               >
-                <div className="w-20 h-20 rounded-3xl bg-white border border-slate-100 shadow-xl flex items-center justify-center overflow-hidden p-3 group-hover:shadow-2xl group-hover:border-blue-500/30 transition-all duration-500">
-                  <img src={iit.logo} alt={iit.name} className="w-full h-full object-contain" />
+                <div className="w-14 h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center">
+                  <img 
+                    src={iit.logo} 
+                    alt={iit.name} 
+                    className="max-w-full max-h-full object-contain"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?domain=${iit.logo.split('/')[2]}&sz=128`;
+                    }}
+                  />
                 </div>
-                <div className={`text-5xl font-heading font-black tracking-tighter uppercase ${iit.color} opacity-60 group-hover:opacity-100 transition-all duration-500`}>
-                  {iit.name}
-                </div>
+                <span className={`text-xl font-black tracking-tighter bg-gradient-to-r ${iit.color} bg-clip-text text-transparent`}>{iit.name}</span>
               </motion.div>
             ))}
           </div>
@@ -197,7 +289,7 @@ export default function Home() {
               { slug: "final-year-report", icon: Briefcase, title: "Final Year Reports", desc: "Perfectly written reports and documentation for your final year projects.", color: "text-orange-500", groupHoverBg: "group-hover:bg-orange-500" },
               { slug: "design-patent", icon: ShieldCheck, title: "Design Patents", desc: "Protect the unique look of your inventions with official design patents.", color: "text-emerald-500", groupHoverBg: "group-hover:bg-emerald-500" },
               { slug: "utility-patent", icon: Cpu, title: "Utility Patents", desc: "Secure your technical inventions with complete utility patent filing.", color: "text-red-500", groupHoverBg: "group-hover:bg-red-500" },
-              { slug: "copyright", icon: Award, title: "Copyright Registration", desc: "Register and protect your software code and technical writing.", color: "text-indigo-500", groupHoverBg: "group-hover:bg-indigo-500" },
+              { slug: "writing-writeups", icon: FileText, title: "Writing & Writeups", desc: "Professional technical writeups starting at ₹5/page. Urgent delivery available.", color: "text-amber-500", groupHoverBg: "group-hover:bg-amber-500" },
             ].map((service, i) => (
               <motion.div
                 key={i}
@@ -397,7 +489,7 @@ export default function Home() {
                 </div>
                 <h2 className="text-6xl md:text-8xl font-black font-heading text-white leading-[0.85] tracking-tighter">
                   Lead the <br />
-                  <span className="text-blue-500 text-glow">Infra of Tomorrow.</span>
+                  <span className="bg-gradient-to-r from-blue-400 via-emerald-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.3)] animate-gradient-x">Infra of Tomorrow.</span>
                 </h2>
                 <p className="text-xl text-slate-400 font-bold leading-relaxed max-w-xl">
                   We are not just a service provider; we are the foundation for the next decade of Indian engineering excellence. Join the movement that is redefining innovation.
@@ -405,19 +497,19 @@ export default function Home() {
               </motion.div>
 
               <motion.div variants={fadeInUp} className="grid grid-cols-2 gap-8">
-                <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 group hover:border-blue-500/50 transition-all duration-500">
-                  <div className="text-4xl font-black text-white mb-2 tracking-tighter">50k+</div>
+                <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 group hover:border-blue-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.1)]">
+                  <div className="text-4xl font-black text-white mb-2 tracking-tighter bg-gradient-to-br from-white to-slate-500 bg-clip-text text-transparent group-hover:from-blue-400 group-hover:to-blue-600 transition-all">50k+</div>
                   <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Active Patents</div>
                 </div>
-                <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 group hover:border-emerald-500/50 transition-all duration-500">
-                  <div className="text-4xl font-black text-white mb-2 tracking-tighter">100+</div>
+                <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 group hover:border-emerald-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.1)]">
+                  <div className="text-4xl font-black text-white mb-2 tracking-tighter bg-gradient-to-br from-white to-slate-500 bg-clip-text text-transparent group-hover:from-emerald-400 group-hover:to-emerald-600 transition-all">100+</div>
                   <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest">IIT Collaborations</div>
                 </div>
               </motion.div>
             </div>
 
             <motion.div variants={fadeInUp} className="lg:col-span-6 relative">
-              <div className="relative rounded-[4rem] overflow-hidden border border-white/10 group">
+              <div className="relative rounded-[4rem] overflow-hidden border border-white/10 group shadow-2xl">
                 <img 
                   src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200" 
                   className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 scale-110 group-hover:scale-100"
@@ -425,16 +517,19 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
                 <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-32 h-32 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center animate-pulse">
-                    <Zap className="w-12 h-12 text-blue-500" />
-                  </div>
+                  <motion.div 
+                    whileHover={{ scale: 1.2, rotate: 180 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 20 }}
+                    className="w-32 h-32 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center animate-pulse cursor-pointer group-hover:bg-blue-600/20 group-hover:border-blue-500/50"
+                  >
+                    <Zap className="w-12 h-12 text-blue-500 group-hover:text-blue-400" />
+                  </motion.div>
                 </div>
               </div>
-              {/* 3D Floating Element */}
               <motion.div 
                 animate={{ y: [0, -20, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-12 -right-12 bg-blue-600 p-8 rounded-[3rem] shadow-2xl shadow-blue-600/40 z-20"
+                className="absolute -top-12 -right-12 bg-blue-600 p-8 rounded-[3rem] shadow-2xl shadow-blue-600/40 z-20 hover:scale-110 transition-transform cursor-pointer"
               >
                 <Cpu className="w-12 h-12 text-white" />
               </motion.div>

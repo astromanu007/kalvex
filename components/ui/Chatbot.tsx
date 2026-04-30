@@ -36,6 +36,8 @@ export function Chatbot() {
 
     if (res.answer) {
       setMessages(prev => [...prev, { role: "assistant", content: res.answer }]);
+    } else if (res.error) {
+      setMessages(prev => [...prev, { role: "assistant", content: `[SYSTEM ERROR]: ${res.error}` }]);
     } else {
       setMessages(prev => [...prev, { role: "assistant", content: "Apologies, I encountered a connection anomaly. Please re-submit your inquiry." }]);
     }

@@ -14,6 +14,7 @@ const NAV_LINKS = [
   { name: "Projects", href: "/projects" },
   { name: "Services", href: "/services" },
   { name: "AI Patent", href: "/patent-drafter" },
+  { name: "Resources", href: "/resource-center" },
   { name: "About", href: "/about" },
 ];
 
@@ -50,14 +51,16 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 md:px-12 max-w-7xl flex items-center justify-between">
         {/* LOGO: INSTITUTIONAL BRANDING */}
-        <Link href="/" className="relative z-[110] flex items-center gap-4 group">
-          <div className="w-12 h-12 bg-slate-900 rounded-[1.25rem] flex items-center justify-center font-heading font-black text-white shadow-2xl shadow-slate-900/20 group-hover:bg-blue-600 transition-all duration-700 group-hover:scale-110 group-hover:-rotate-6">
-            <span className="text-xl">K</span>
+        <Link href="/" className="relative z-[110] flex items-center gap-5 group">
+          <div className="w-14 h-14 bg-slate-900 rounded-[1.5rem] flex items-center justify-center font-black text-white shadow-2xl group-hover:bg-blue-600 transition-all duration-700 group-hover:rotate-12 group-hover:scale-110 relative overflow-hidden">
+             <div className="absolute inset-0 bg-gradient-to-tr from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+             <span className="text-2xl font-heading tracking-widest">K</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-heading font-black text-2xl tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
+            <span className="font-heading font-black text-3xl tracking-[-0.08em] text-slate-900 group-hover:text-blue-600 transition-colors duration-300 uppercase leading-none">
               KALVEX
             </span>
+            <span className="text-[9px] font-black text-blue-600 uppercase tracking-[0.4em] mt-1.5 leading-none">Institutional</span>
           </div>
         </Link>
 

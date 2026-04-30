@@ -93,9 +93,16 @@ export default function ContactPage() {
           {/* Right Column: Contact Form */}
           <motion.div 
             variants={fadeInUp}
-            className="lg:col-span-7"
+            whileHover={{ 
+              perspective: 1000,
+              rotateY: -2,
+              rotateX: 2,
+              scale: 1.01
+            }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            className="lg:col-span-7 cursor-default"
           >
-            <div className="bg-slate-900 rounded-[4rem] p-12 md:p-16 text-white relative overflow-hidden group shadow-[0_64px_128px_-24px_rgba(15,23,42,0.4)]">
+            <div className="bg-slate-900 rounded-[4rem] p-12 md:p-16 text-white relative overflow-hidden group shadow-[0_64px_128px_-24px_rgba(15,23,42,0.4)] transition-all duration-500 hover:shadow-blue-600/10 [transform-style:preserve-3d]">
               {/* Form 3D Glow Effect */}
               <div className="absolute top-0 right-0 w-[30rem] h-[30rem] bg-blue-600/20 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2 group-hover:scale-110 transition-transform duration-1000" />
               

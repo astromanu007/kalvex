@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { 
   Search, Filter, ShoppingBag, Download, 
   Cpu, Code, GraduationCap, ChevronRight,
@@ -9,6 +9,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -36,9 +38,9 @@ const PROJECTS = [
     mrp: 8999,
     rating: 4.9,
     reviews: 128,
-    tech: ["Python", "Arduino", "LoRaWAN", "OpenCV"],
-    image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&q=80&w=1200",
-    features: ["Real-time soil analysis", "Automated irrigation", "Mobile app control"],
+    tech: ["Python", "Arduino", "LoRaWAN"],
+    image: "https://images.unsplash.com/photo-1560493676-04071c5f467b?auto=format&fit=crop&q=80&w=800",
+    features: ["Real-time soil analysis", "Automated irrigation"],
     sku: "KVX-IOT-S01"
   },
   {
@@ -50,9 +52,9 @@ const PROJECTS = [
     mrp: 9999,
     rating: 4.8,
     reviews: 94,
-    tech: ["Ethereum", "Solidity", "Next.js", "Web3.js"],
-    image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=1200",
-    features: ["Immutable records", "Biometric auth", "Real-time results"],
+    tech: ["Ethereum", "Solidity", "Next.js"],
+    image: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?auto=format&fit=crop&q=80&w=800",
+    features: ["Immutable records", "Biometric auth"],
     sku: "KVX-SEC-V04"
   },
   {
@@ -64,9 +66,9 @@ const PROJECTS = [
     mrp: 5999,
     rating: 4.7,
     reviews: 56,
-    tech: ["ROS", "C++", "LiDAR", "Raspberry Pi"],
-    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=1200",
-    features: ["SLAM implementation", "Obstacle avoidance", "Path planning"],
+    tech: ["ROS", "LiDAR", "Raspberry Pi"],
+    image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?auto=format&fit=crop&q=80&w=800",
+    features: ["SLAM implementation", "Obstacle avoidance"],
     sku: "KVX-ROB-R09"
   },
   {
@@ -79,17 +81,117 @@ const PROJECTS = [
     rating: 4.6,
     reviews: 42,
     tech: ["MATLAB", "IoT", "React"],
-    image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80&w=1200",
-    features: ["Load forecasting", "Renewable integration", "Billing system"],
+    image: "https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?auto=format&fit=crop&q=80&w=800",
+    features: ["Load forecasting", "Billing system"],
     sku: "KVX-ELE-G02"
+  },
+  {
+    id: "p5",
+    title: "Neural Network Traffic Control",
+    category: "Machine Learning",
+    type: "Major Project",
+    price: 6499,
+    mrp: 11999,
+    rating: 5.0,
+    reviews: 215,
+    tech: ["TensorFlow", "OpenCV", "Flask"],
+    image: "https://images.unsplash.com/photo-1545127398-14699f92334b?auto=format&fit=crop&q=80&w=800",
+    features: ["Object detection", "Dynamic signal timing"],
+    sku: "KVX-ML-T88"
+  },
+  {
+    id: "p6",
+    title: "Bio-Medical Patient Monitor",
+    category: "Internet of Things",
+    type: "Final Year Project",
+    price: 3499,
+    mrp: 6999,
+    rating: 4.9,
+    reviews: 82,
+    tech: ["ESP32", "Firebase", "HealthAPI"],
+    image: "https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&q=80&w=800",
+    features: ["ECG streaming", "Alert system"],
+    sku: "KVX-BIO-M12"
+  },
+  {
+    id: "p7",
+    title: "Cyber-Threat Defense Suite",
+    category: "Cybersecurity",
+    type: "Major Project",
+    price: 7999,
+    mrp: 14999,
+    rating: 4.8,
+    reviews: 110,
+    tech: ["Go", "Wireshark", "Docker"],
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
+    features: ["Intrusion detection", "Log analysis"],
+    sku: "KVX-SEC-D09"
+  },
+  {
+    id: "p8",
+    title: "6-DOF Robotic Arm System",
+    category: "Robotics",
+    type: "Final Year Project",
+    price: 8999,
+    mrp: 17999,
+    rating: 5.0,
+    reviews: 64,
+    tech: ["C++", "Kinematics", "SolidWorks"],
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=800",
+    features: ["Inverse kinematics", "Haptic control"],
+    sku: "KVX-ROB-A6D"
+  },
+  {
+    id: "p9",
+    title: "Wireless Power Transfer Kit",
+    category: "Electrical",
+    type: "Minor Project",
+    price: 1599,
+    mrp: 2999,
+    rating: 4.5,
+    reviews: 38,
+    tech: ["RF Design", "Eagle PCB"],
+    image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=800",
+    features: ["Inductive coupling", "Efficiency audit"],
+    sku: "KVX-ELE-W05"
+  },
+  {
+    id: "p10",
+    title: "ML Sentiment Analysis Bot",
+    category: "Machine Learning",
+    type: "Mini Project",
+    price: 1299,
+    mrp: 2499,
+    rating: 4.6,
+    reviews: 52,
+    tech: ["NLTK", "FastAPI", "React"],
+    image: "https://images.unsplash.com/photo-1531746790731-6c2079ee396f?auto=format&fit=crop&q=80&w=800",
+    features: ["Real-time NLP", "Social media scrape"],
+    sku: "KVX-ML-S02"
   }
 ];
 
 const CATEGORIES = ["All", "Internet of Things", "Cybersecurity", "Robotics", "Electrical", "Machine Learning"];
 
 export default function ProjectShopPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [search, setSearch] = useState("");
+  const [mounted, setMounted] = useState(false);
+
+  // Eliminate hydration mismatch by waiting for client mount
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const handleAddToCart = (project: any) => {
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+    alert(`${project.title} added to cart!`);
+  };
 
   const filteredProjects = PROJECTS.filter(p => 
     (selectedCategory === "All" || p.category === selectedCategory) &&
@@ -97,190 +199,206 @@ export default function ProjectShopPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 pt-40 pb-32 transition-colors duration-500">
-      <div className="container mx-auto px-4 max-w-7xl">
+    <div className="min-h-screen bg-slate-50 pt-40 pb-32 transition-colors duration-500 relative overflow-hidden">
+      {/* 3D Floating Background Elements - Only render on client to avoid hydration mismatch */}
+      {mounted && (
+        <div className="absolute inset-0 pointer-events-none -z-10">
+          {[...Array(15)].map((_, i) => (
+            <motion.div
+              key={i}
+              animate={{
+                y: [0, -100, 0],
+                rotate: [0, 360],
+                scale: [1, 1.2, 1],
+              }}
+              transition={{
+                duration: 20 + Math.random() * 10,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: i * 0.5,
+              }}
+              style={{
+                position: "absolute",
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                width: `${20 + Math.random() * 40}px`,
+                height: `${20 + Math.random() * 40}px`,
+                background: i % 2 === 0 
+                  ? "linear-gradient(135deg, rgba(37,99,235,0.06) 0%, rgba(37,99,235,0.02) 100%)" 
+                  : "linear-gradient(135deg, rgba(15,23,42,0.06) 0%, rgba(15,23,42,0.02) 100%)",
+                borderRadius: i % 3 === 0 ? "20%" : i % 3 === 1 ? "50%" : "0%",
+                border: "1px solid rgba(255,255,255,0.1)",
+                backdropFilter: "blur(2px)",
+              }}
+            />
+          ))}
+        </div>
+      )}
+
+      <div className="container mx-auto px-4 max-w-[1800px]">
         {/* Header: Institutional Authority */}
         <motion.div 
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
-          className="text-center max-w-4xl mx-auto mb-24 space-y-8"
+          className="text-center max-w-4xl mx-auto mb-20 space-y-6"
         >
-          <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
-            <Building2 className="w-4 h-4" /> Innovation Marketplace
+          <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-4 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
+            <Building2 className="w-3 h-3" /> Innovation Marketplace
           </div>
-          <h1 className="font-heading font-black text-6xl md:text-8xl text-slate-900 tracking-tighter leading-[0.9]">
-            Ready-to-Deploy <br /><span className="text-blue-600">Breakthroughs</span>
+          <h1 className="font-heading font-black text-5xl md:text-7xl text-slate-900 tracking-tighter leading-[1]">
+            Engineering <span className="text-blue-600">Registry</span>
           </h1>
-          <p className="text-xl md:text-2xl text-slate-400 font-bold max-w-3xl mx-auto leading-relaxed">
-            High-fidelity engineering prototypes, proprietary source code, and institutional-grade documentation for Tier-1 research and academic excellence.
-          </p>
         </motion.div>
 
-        {/* Search & Intelligence Architecture */}
-        <motion.div 
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
-          className="flex flex-col xl:flex-row gap-8 mb-20 items-center"
-        >
-          <div className="relative flex-1 w-full group">
-            <div className="absolute inset-0 bg-blue-600/5 rounded-[2.5rem] blur-3xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-700" />
-            <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-300 group-focus-within:text-blue-600 transition-all duration-500 z-10" />
-            <input 
-              type="text"
-              placeholder="Audit by research area, technical stack, or SKU nomenclature..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="w-full bg-white border border-slate-100 rounded-[2.5rem] pl-20 pr-10 py-7 text-slate-900 font-black text-sm focus:ring-8 ring-blue-600/5 focus:border-blue-600 outline-none transition-all placeholder:text-slate-200 shadow-2xl shadow-slate-900/5 relative z-0"
-            />
-          </div>
-          <div className="flex gap-4 overflow-x-auto pb-4 xl:pb-0 scrollbar-hide max-w-full">
-            {CATEGORIES.map(cat => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCategory(cat)}
-                className={`px-10 py-6 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] border transition-all duration-500 whitespace-nowrap active:scale-95 ${
-                  selectedCategory === cat 
-                  ? "bg-slate-900 border-slate-900 text-white shadow-2xl shadow-slate-900/20" 
-                  : "bg-white border-slate-100 text-slate-400 hover:text-blue-600 hover:border-blue-600/30 hover:shadow-xl hover:shadow-slate-900/5"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
-        </motion.div>
+        <div className="flex flex-col lg:flex-row gap-12">
+          
+          {/* Intelligence Sidebar */}
+          <motion.div 
+            initial="hidden"
+            animate="visible"
+            variants={fadeInUp}
+            className="lg:w-72 shrink-0"
+          >
+            <div className="sticky top-32 space-y-8">
+              {/* Search Architecture */}
+              <div className="relative group">
+                <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
+                <input 
+                  type="text"
+                  placeholder="Audit registry..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full bg-white border border-slate-100 rounded-2xl pl-14 pr-6 py-4 text-[10px] font-black outline-none focus:ring-4 ring-blue-600/5 transition-all shadow-lg shadow-slate-900/5"
+                />
+              </div>
 
-        {/* Project Grid: High-Fidelity Assets */}
-        <motion.div 
-          variants={staggerContainer}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12"
-        >
-          <AnimatePresence mode="popLayout">
-            {filteredProjects.map(project => (
-              <motion.div 
-                key={project.id} 
-                layout
-                variants={fadeInUp} 
-                whileHover={{ y: -20 }}
-                className="group bg-white border border-slate-100 rounded-[4rem] overflow-hidden hover:border-blue-600/20 transition-all duration-700 hover:shadow-[0_64px_128px_-24px_rgba(15,23,42,0.15)] flex flex-col h-full relative"
-              >
-                <div className="relative aspect-[16/11] overflow-hidden bg-slate-50">
-                  <img 
-                    src={project.image} 
-                    alt={project.title}
-                    className="w-full h-full object-cover transition-all duration-[2000ms] group-hover:scale-110 grayscale-[0.2] group-hover:grayscale-0"
-                  />
-                  <div className="absolute top-8 left-8 z-10">
-                    <span className="bg-white/90 backdrop-blur-xl text-slate-900 text-[9px] font-black px-5 py-2.5 rounded-xl border border-white/20 uppercase tracking-[0.2em] shadow-xl shadow-slate-900/10">
-                      {project.type}
-                    </span>
-                  </div>
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-900/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-                  <div className="absolute bottom-8 right-8 z-10 opacity-0 group-hover:opacity-100 translate-y-4 group-hover:translate-y-0 transition-all duration-700">
-                    <div className="w-14 h-14 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-2xl shadow-blue-600/40">
-                      <ArrowUpRight className="w-6 h-6" />
-                    </div>
-                  </div>
+              {/* Categorization Matrix */}
+              <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-lg shadow-slate-900/5 space-y-6">
+                <div className="flex items-center gap-3 mb-2">
+                  <Filter className="w-3 h-3 text-blue-600" />
+                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-900">Research Focus</p>
                 </div>
+                <div className="space-y-2">
+                  {CATEGORIES.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setSelectedCategory(cat)}
+                      className={`w-full flex items-center justify-between px-5 py-3.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${
+                        selectedCategory === cat 
+                        ? "bg-slate-900 text-white shadow-md" 
+                        : "text-slate-400 hover:bg-slate-50 hover:text-blue-600"
+                      }`}
+                    >
+                      {cat}
+                      {selectedCategory === cat && <div className="w-1 h-1 rounded-full bg-blue-500 animate-pulse" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
 
-                <div className="p-12 flex flex-col flex-grow space-y-8">
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-1.5">
-                        {[...Array(5)].map((_, i) => (
-                          <div key={i} className={`w-1.5 h-4 rounded-full ${i < Math.floor(project.rating) ? "bg-blue-600" : "bg-slate-100"}`} />
+              {/* Quick Status Trust */}
+              <div className="bg-slate-900 rounded-[2rem] p-6 text-white space-y-4 shadow-2xl shadow-slate-900/20">
+                <div className="flex items-center gap-3">
+                  <Zap className="w-4 h-4 text-blue-400" />
+                  <p className="text-[9px] font-black uppercase tracking-widest leading-none">Active Nodes: {PROJECTS.length}</p>
+                </div>
+                <p className="text-[8px] opacity-60 leading-relaxed uppercase tracking-widest">V4.0 Institutional Standards Applied.</p>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* High-Density Grid */}
+          <div className="flex-1">
+            <motion.div 
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6"
+            >
+              <AnimatePresence mode="popLayout">
+                {filteredProjects.map(project => (
+                  <motion.div 
+                    key={project.id} 
+                    layout
+                    variants={fadeInUp} 
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    className="group relative bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden hover:border-blue-600/20 transition-all duration-500 hover:shadow-xl flex flex-col h-full"
+                  >
+                    <div className="relative aspect-[5/4] overflow-hidden bg-slate-50">
+                      <img 
+                        src={project.image} 
+                        alt={project.title}
+                        className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
+                      />
+                      <div className="absolute top-4 left-4">
+                        <span className="bg-white/90 backdrop-blur-md text-slate-900 text-[7px] font-black px-2.5 py-1 rounded-md border border-white/20 uppercase tracking-widest shadow-sm">
+                          {project.type.split(' ')[0]}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="p-6 flex flex-col flex-grow space-y-4">
+                      <h3 className="font-heading font-black text-sm text-slate-900 line-clamp-2 min-h-[2.5rem] leading-tight group-hover:text-blue-600 transition-colors">
+                        {project.title}
+                      </h3>
+
+                      <div className="flex flex-wrap gap-1">
+                        {project.tech.slice(0, 2).map(t => (
+                          <span key={t} className="text-[7px] font-black bg-slate-50 text-slate-400 px-2.5 py-1 rounded-md border border-slate-100 uppercase tracking-widest">
+                            {t}
+                          </span>
                         ))}
-                        <span className="text-[10px] font-black text-slate-900 uppercase tracking-widest ml-3">{project.rating} Grade</span>
                       </div>
-                      <span className="text-[9px] text-slate-300 font-black uppercase tracking-widest">{project.sku}</span>
-                    </div>
 
-                    <h3 className="font-heading font-black text-2xl text-slate-900 line-clamp-2 min-h-[4rem] group-hover:text-blue-600 transition-colors leading-tight tracking-tight">
-                      {project.title}
-                    </h3>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {project.tech.map(t => (
-                      <span key={t} className="text-[9px] font-black bg-slate-50 text-slate-400 px-4 py-2 rounded-xl border border-slate-100 uppercase tracking-[0.15em] transition-all group-hover:bg-blue-50 group-hover:text-blue-600 group-hover:border-blue-100">
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="space-y-4 py-8 border-y border-slate-50">
-                    {project.features.map((f, i) => (
-                      <li key={i} className="flex items-start gap-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest list-none">
-                        <div className="w-6 h-6 rounded-lg bg-slate-50 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-blue-600 transition-colors duration-500">
-                          <ChevronRight className="w-3 h-3 text-slate-300 group-hover:text-white transition-colors" />
+                      <div className="pt-4 mt-auto border-t border-slate-50 flex items-center justify-between">
+                        <div className="space-y-0.5">
+                          <p className="text-[7px] text-slate-300 uppercase tracking-widest font-black">Valuation</p>
+                          <span className="text-lg font-black text-slate-900">₹{project.price.toLocaleString()}</span>
                         </div>
-                        <span className="leading-relaxed group-hover:text-slate-600 transition-colors">{f}</span>
-                      </li>
-                    ))}
-                  </div>
-
-                  <div className="flex items-center justify-between pt-4 mt-auto">
-                    <div className="space-y-2">
-                      <p className="text-[10px] text-slate-300 uppercase tracking-[0.3em] font-black">Valuation</p>
-                      <div className="flex items-baseline gap-3">
-                        <span className="text-4xl font-black text-slate-900 tracking-tighter">₹{project.price.toLocaleString()}</span>
-                        <span className="text-sm text-slate-300 line-through font-bold">₹{project.mrp.toLocaleString()}</span>
+                        <Button 
+                          onClick={() => handleAddToCart(project)}
+                          className="bg-slate-900 hover:bg-blue-600 text-white h-10 w-10 rounded-xl transition-all duration-300 group/btn"
+                        >
+                          <ShoppingBag className="w-4 h-4" />
+                        </Button>
                       </div>
                     </div>
-                    <Button className="bg-slate-900 hover:bg-blue-600 text-white shadow-2xl shadow-slate-900/20 h-16 w-16 rounded-[1.5rem] transition-all duration-700 group/btn active:scale-90">
-                      <ShoppingBag className="w-6 h-6 group-hover/btn:scale-110 transition-transform" />
-                    </Button>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </motion.div>
+                  </motion.div>
+                ))}
+              </AnimatePresence>
+            </motion.div>
+          </div>
+        </div>
 
         {/* Strategic Trust Protocol */}
         <motion.div 
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
-          className="mt-40 grid grid-cols-1 lg:grid-cols-3 gap-0 p-3 bg-white rounded-[4rem] border border-slate-100 shadow-[0_64px_128px_-24px_rgba(0,0,0,0.08)] overflow-hidden"
+          className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6"
         >
-          <div className="flex items-center gap-8 p-12 hover:bg-slate-50 transition-all duration-700 group border-b lg:border-b-0 lg:border-r border-slate-50">
-            <div className="w-20 h-20 rounded-[2rem] bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform duration-700 shadow-xl shadow-blue-600/5 border border-blue-100">
-              <Download className="w-8 h-8 text-blue-600" />
+          {[
+            { icon: Download, title: "Immediate Deployment", desc: "Instant source code access." },
+            { icon: ShieldCheck, title: "Institutional Integrity", desc: "Exhaustive technical audit." },
+            { icon: GraduationCap, title: "Academic Excellence", desc: "IEEE Standardized documentation." }
+          ].map((item, i) => (
+            <div key={i} className="flex items-center gap-6 p-8 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
+              <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform">
+                <item.icon className="w-6 h-6 text-blue-600" />
+              </div>
+              <div>
+                <h4 className="font-black text-slate-900 text-[9px] uppercase tracking-widest mb-1">{item.title}</h4>
+                <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest">{item.desc}</p>
+              </div>
             </div>
-            <div>
-              <h4 className="font-black text-slate-900 text-[11px] uppercase tracking-[0.3em] mb-2">Immediate Deployment</h4>
-              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest leading-loose">Instant authorization for proprietary source code and assets.</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-8 p-12 hover:bg-slate-50 transition-all duration-700 group border-b lg:border-b-0 lg:border-r border-slate-50">
-            <div className="w-20 h-20 rounded-[2rem] bg-slate-900 flex items-center justify-center group-hover:scale-110 transition-transform duration-700 shadow-2xl shadow-slate-900/20">
-              <ShieldCheck className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h4 className="font-black text-slate-900 text-[11px] uppercase tracking-[0.3em] mb-2">Institutional Integrity</h4>
-              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest leading-loose">Exhaustive technical audit by senior research engineers.</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-8 p-12 hover:bg-slate-50 transition-all duration-700 group">
-            <div className="w-20 h-20 rounded-[2rem] bg-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform duration-700 shadow-2xl shadow-blue-600/20">
-              <GraduationCap className="w-8 h-8 text-white" />
-            </div>
-            <div>
-              <h4 className="font-black text-slate-900 text-[11px] uppercase tracking-[0.3em] mb-2">Academic Excellence</h4>
-              <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest leading-loose">Comprehensive IEEE-standardized research documentation.</p>
-            </div>
-          </div>
+          ))}
         </motion.div>
         
-        <div className="mt-24 text-center">
-          <div className="inline-flex items-center gap-4 bg-slate-900/5 px-10 py-5 rounded-[2.5rem] border border-slate-100 transition-all hover:bg-slate-900/10 group">
-            <Fingerprint className="w-6 h-6 text-slate-400 group-hover:text-blue-600 transition-colors" />
-            <span className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-400">All Project Data Protected by Masked Identity Encryption</span>
+        <div className="mt-20 text-center">
+          <div className="inline-flex items-center gap-3 bg-slate-900/5 px-8 py-4 rounded-full border border-slate-100 group">
+            <Fingerprint className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">Identity Masked Encryption Active</span>
           </div>
         </div>
       </div>

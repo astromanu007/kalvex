@@ -1,16 +1,21 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Trash2, Loader2, Download, FileImage, Sparkles,
-  UserPlus, Image as ImageIcon, Info, Plus, GripVertical
+  UserPlus, Image as ImageIcon, Info, Plus, GripVertical,
+  BrainCircuit, Layout, Zap
 } from "lucide-react";
 import {
   Document, Page, Text, View, Image as PDFImage,
   StyleSheet, PDFDownloadLink
 } from "@react-pdf/renderer";
 import { motion, Reorder, useDragControls } from "framer-motion";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { LOCARNO_CLASSES } from "@/lib/locarno";
+import { analyzePatent } from "@/lib/ai-engine";
 
 // Define views for the patent
 const PATENT_VIEWS = [
@@ -97,11 +102,108 @@ const PatentDocument = ({ productName, dated, views, authors }: any) => (
 );
 
 export default function PatentDrafterPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const [isMounted, setIsMounted] = useState(false);
+  const [bgShapes, setBgShapes] = useState<any[]>([]);
+  
+  useEffect(() => {
+    setIsMounted(true);
+    // Generate shapes only on client to avoid hydration mismatch
+    setBgShapes(Array.from({ length: 20 }).map((_, i) => ({
+      id: i,
+      size: Math.random() * 400 + 100,
+      x: Math.random() * 100,
+      y: Math.random() * 100,
+      duration: Math.random() * 25 + 15,
+      delay: Math.random() * -25,
+      opacity: Math.random() * 0.12 + 0.03, // Increased opacity for visibility
+      rotate: Math.random() * 360,
+      type: ["cube", "sphere", "pyramid", "node", "ring"][i % 5]
+    })));
+  }, []);
+  
   const [productName, setProductName] = useState("");
   const [dated, setDated] = useState(`${new Date().getDate()} Day of ${new Date().toLocaleString('en-GB', { month: 'long' })} ${new Date().getFullYear()}`);
   const [views, setViews] = useState<Record<string, string | null>>({ perspective: null, front: null, back: null, left: null, right: null, top: null, bottom: null });
   const [authors, setAuthors] = useState([{ id: "1", name: "", signature: null as any }]);
   const [currentSheet, setCurrentSheet] = useState(1);
+  const [activeTab, setActiveTab] = useState<"general" | "ai">("general");
+  const [projectDescription, setProjectDescription] = useState("");
+  const [locarnoClass, setLocarnoClass] = useState("");
+  const [locarnoSubClass, setLocarnoSubClass] = useState("");
+  const [isAiLoading, setIsAiLoading] = useState(false);
+  const [aiStatus, setAiStatus] = useState<string[]>([]);
+  const [aiResult, setAiResult] = useState<{confidence: number, reasoning: string[]} | null>(null);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen bg-[#fcfcfc] font-sans selection:bg-blue-100 selection:text-blue-900 relative overflow-hidden">
+        {/* 3D FLOATING BACKGROUND SHAPES */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-0">
+          {bgShapes.map((shape) => (
+            <motion.div
+              key={shape.id}
+              initial={{ 
+                x: `${shape.x}%`, 
+                y: `${shape.y}%`, 
+                rotate: shape.rotate,
+                scale: 0.8
+              }}
+              animate={{
+                y: [`${shape.y}%`, `${shape.y - 15}%`, `${shape.y}%`],
+                x: [`${shape.x}%`, `${shape.x + 5}%`, `${shape.x}%`],
+                rotate: shape.rotate + 360,
+                scale: [0.8, 1.1, 0.8]
+              }}
+              transition={{
+                duration: shape.duration,
+                repeat: Infinity,
+                delay: shape.delay,
+                ease: "linear"
+              }}
+              style={{
+                position: 'absolute',
+                width: shape.size,
+                height: shape.size,
+                opacity: shape.opacity,
+              }}
+              className="flex items-center justify-center"
+            >
+            {shape.type === "cube" && (
+              <div className="w-full h-full border-[1.5px] border-slate-900/40 rounded-lg transform skew-x-12 bg-slate-900/[0.02]" />
+            )}
+            {shape.type === "sphere" && (
+              <div className="w-full h-full border-[1.5px] border-slate-900/40 rounded-full bg-slate-900/[0.02]" />
+            )}
+            {shape.type === "pyramid" && (
+              <div className="w-0 h-0 border-l-[60px] border-l-transparent border-r-[60px] border-r-transparent border-b-[100px] border-b-slate-900/40" />
+            )}
+            {shape.type === "node" && (
+              <div className="relative w-full h-full opacity-60">
+                <div className="absolute inset-0 border-[1.5px] border-slate-900 rotate-45" />
+                <div className="absolute inset-0 border-[1.5px] border-slate-900 -rotate-45" />
+              </div>
+            )}
+            {shape.type === "ring" && (
+              <div className="w-full h-full border-[3px] border-slate-900/30 rounded-full flex items-center justify-center">
+                 <div className="w-1/2 h-1/2 border-[1.5px] border-slate-900/40 rounded-full" />
+              </div>
+            )}
+            </motion.div>
+          ))}
+        </div>
+
+        <div className="relative z-10 flex items-center justify-center min-h-screen">
+          <Loader2 className="w-12 h-12 text-blue-600 animate-spin" />
+        </div>
+      </div>
+    );
+  }
 
   const handleUpload = (id: string, event: React.ChangeEvent<HTMLInputElement>, type: 'view' | 'sig', authorId?: string) => {
     const file = event.target.files?.[0];
@@ -113,7 +215,6 @@ export default function PatentDrafterPage() {
       else setAuthors(p => p.map(a => a.id === authorId ? { ...a, signature: result } : a));
     };
     reader.readAsDataURL(file);
-    // Reset input value so same file can be uploaded again
     const target = event?.target as HTMLInputElement;
     if (target) target.value = "";
   };
@@ -124,11 +225,48 @@ export default function PatentDrafterPage() {
     }
   };
 
+  const getAiRecommendation = async () => {
+    if (!projectDescription) return;
+    setIsAiLoading(true);
+    setAiStatus([]);
+    setAiResult(null);
+    
+    const log = (msg: string) => setAiStatus(prev => [...prev, msg]);
+
+    log("Initializing KALVEX Neural Engine v2.0...");
+    await new Promise(r => setTimeout(r, 600));
+    
+    log("Linguistic tokenization & intent analysis...");
+    const result = await analyzePatent(projectDescription);
+    await new Promise(r => setTimeout(r, 800));
+    
+    log("Cross-referencing Locarno Design Hierarchy...");
+    await new Promise(r => setTimeout(r, 1000));
+
+    log(`Decision Anchor: Class ${result.class}-${result.subclass}`);
+    log(`Confidence Score: ${result.confidence}%`);
+    
+    setProductName(result.title);
+    setLocarnoClass(result.class);
+    setLocarnoSubClass(result.subclass);
+    setAiResult({ confidence: result.confidence, reasoning: result.reasoning });
+    
+    log("Finalizing neural mapping...");
+    await new Promise(r => setTimeout(r, 600));
+
+    setIsAiLoading(false);
+    // Stay on tab for a bit to show results
+    setTimeout(() => {
+      setActiveTab("general");
+      setAiStatus([]);
+    }, 2000);
+  };
+
   return (
-    <div className="min-h-screen pt-40 pb-32 bg-white transition-colors duration-500 overflow-hidden relative">
-      {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[60rem] h-[60rem] bg-blue-50 rounded-full -z-10 blur-[120px] -translate-y-1/2 translate-x-1/3" />
-      <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-indigo-50 rounded-full -z-10 blur-[100px] translate-y-1/3 -translate-x-1/4" />
+    <div className="min-h-screen pt-40 pb-32 bg-slate-50 transition-colors duration-500 overflow-hidden relative">
+      <div className="absolute top-0 right-0 w-[60rem] h-[60rem] bg-blue-100/50 rounded-full -z-10 blur-[120px] -translate-y-1/2 translate-x-1/3 animate-pulse" />
+      <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-indigo-100/50 rounded-full -z-10 blur-[100px] translate-y-1/3 -translate-x-1/4 animate-pulse" />
+
 
       <div className="container mx-auto px-4 max-w-7xl relative z-10">
         <motion.div 
@@ -159,76 +297,205 @@ export default function PatentDrafterPage() {
                 Drafting Terminal
               </h2>
 
-              <div className="space-y-6">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Product Name</label>
-                    <input value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" placeholder="e.g. AI-Based Detection System" />
-                  </div>
-                  <div className="space-y-1">
-                    <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Filing Date</label>
-                    <input value={dated} onChange={e => setDated(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" />
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
-                  {PATENT_VIEWS.map(v => (
-                    <label key={v.id} className="cursor-pointer group/view">
-                      <div className={`relative aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center p-1 transition-all ${views[v.id] ? "border-green-500 bg-green-50 dark:bg-green-900/10" : "border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-400 bg-slate-50 dark:bg-slate-800/30"}`}>
-                        {views[v.id] ? (
-                          <>
-                            <img src={views[v.id]!} className="w-full h-full object-contain" alt="v" />
-                            <button
-                              onClick={(e) => { e.preventDefault(); e.stopPropagation(); setViews(p => ({ ...p, [v.id]: null })); }}
-                              className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600 transition-colors z-10"
-                            >
-                              <Plus className="w-3 h-3 rotate-45" />
-                            </button>
-                          </>
-                        ) : (
-                          <div className="text-center">
-                            <FileImage className="w-3 h-3 mx-auto text-slate-400 dark:text-slate-600 mb-0.5 group-hover/view:text-blue-500 transition-colors" />
-                            <span className="text-[6px] font-bold text-slate-400 dark:text-slate-600 uppercase leading-none">{v.id}</span>
-                          </div>
-                        )}
-                      </div>
-                      <input type="file" className="hidden" onClick={e => e.stopPropagation()} onChange={e => handleUpload(v.id, e, 'view')} />
-                    </label>
-                  ))}
-                </div>
-
-                <div className="space-y-4 pt-4 border-t border-slate-100">
-                  <div className="flex justify-between items-center">
-                    <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500">Applicants Order</h3>
-                    <Button variant="ghost" size="sm" onClick={() => setAuthors([...authors, { id: Date.now().toString(), name: "", signature: null }])} className="text-blue-600 font-bold h-8"><Plus className="w-3 h-3 mr-1" /> Add Applicant</Button>
-                  </div>
-
-                  <Reorder.Group axis="y" values={authors} onReorder={setAuthors} className="space-y-2">
-                    {authors.map((a) => (
-                      <Reorder.Item key={a.id} value={a} className="flex gap-2 items-center bg-slate-50 dark:bg-slate-800/30 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 cursor-default group/author transition-all">
-                        <GripVertical className="w-4 h-4 text-slate-300 dark:text-slate-700 group-hover/author:text-slate-500 transition-colors cursor-grab active:cursor-grabbing shrink-0" />
-                        <input value={a.name} onChange={e => setAuthors(p => p.map(x => x.id === a.id ? { ...x, name: e.target.value } : x))} placeholder="Full Name" className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs uppercase font-bold text-slate-700 dark:text-slate-200 focus:border-blue-300 dark:focus:border-blue-500 outline-none transition-all" />
-                        <label className="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-[9px] font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 whitespace-nowrap text-slate-700 dark:text-slate-300" onClick={e => e.stopPropagation()}>
-                          {a.signature ? "✓ Signed" : "Upload Sign"}
-                          <input type="file" className="hidden" onChange={e => handleUpload(a.id, e, 'sig', a.id)} />
-                        </label>
-                        {a.signature && (
-                          <div className="relative group shrink-0">
-                            <img src={a.signature} className="w-8 h-8 rounded border dark:border-slate-700 bg-white object-contain" alt="s" />
-                            <button
-                              onClick={() => setAuthors(p => p.map(x => x.id === a.id ? { ...x, signature: null } : x))}
-                              className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                            >
-                              <Plus className="w-2 h-2 rotate-45" />
-                            </button>
-                          </div>
-                        )}
-                        <button onClick={() => removeAuthor(a.id)} className="p-2 text-slate-300 dark:text-slate-700 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
-                      </Reorder.Item>
-                    ))}
-                  </Reorder.Group>
-                </div>
+              <div className="flex gap-2 mb-8 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+                <button 
+                  onClick={() => setActiveTab("general")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === "general" ? "bg-white dark:bg-slate-700 text-blue-600 shadow-lg shadow-blue-500/10" : "text-slate-400 hover:text-slate-600"}`}
+                >
+                  <Layout className="w-4 h-4" /> General Info
+                </button>
+                <button 
+                  onClick={() => setActiveTab("ai")}
+                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === "ai" ? "bg-white dark:bg-slate-700 text-blue-600 shadow-lg shadow-blue-500/10" : "text-slate-400 hover:text-slate-600"}`}
+                >
+                  <BrainCircuit className="w-4 h-4" /> AI Insights
+                </button>
               </div>
+
+              {activeTab === "general" ? (
+                <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Product Name</label>
+                      <input value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" placeholder="e.g. AI-Based Detection System" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Filing Date</label>
+                      <input value={dated} onChange={e => setDated(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Locarno Class</label>
+                      <input value={locarnoClass} onChange={e => setLocarnoClass(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" placeholder="e.g. 14" />
+                    </div>
+                    <div className="space-y-1">
+                      <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Sub-Class</label>
+                      <input value={locarnoSubClass} onChange={e => setLocarnoSubClass(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" placeholder="e.g. 04" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
+                    {PATENT_VIEWS.map(v => (
+                      <label key={v.id} className="cursor-pointer group/view">
+                        <div className={`relative aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center p-1 transition-all ${views[v.id] ? "border-green-500 bg-green-50 dark:bg-green-900/10" : "border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-400 bg-slate-50 dark:bg-slate-800/30"}`}>
+                          {views[v.id] ? (
+                            <>
+                              <img src={views[v.id]!} className="w-full h-full object-contain" alt="v" />
+                              <button
+                                onClick={(e) => { e.preventDefault(); e.stopPropagation(); setViews(p => ({ ...p, [v.id]: null })); }}
+                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600 transition-colors z-10"
+                              >
+                                <Plus className="w-3 h-3 rotate-45" />
+                              </button>
+                            </>
+                          ) : (
+                            <div className="text-center">
+                              <FileImage className="w-3 h-3 mx-auto text-slate-400 dark:text-slate-600 mb-0.5 group-hover/view:text-blue-500 transition-colors" />
+                              <span className="text-[6px] font-bold text-slate-400 dark:text-slate-600 uppercase leading-none">{v.id}</span>
+                            </div>
+                          )}
+                        </div>
+                        <input type="file" className="hidden" onClick={e => e.stopPropagation()} onChange={e => handleUpload(v.id, e, 'view')} />
+                      </label>
+                    ))}
+                  </div>
+
+                  <div className="space-y-4 pt-4 border-t border-slate-100">
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xs font-bold uppercase tracking-widest text-slate-500">Applicants Order</h3>
+                      <Button variant="ghost" size="sm" onClick={() => setAuthors([...authors, { id: Date.now().toString(), name: "", signature: null }])} className="text-blue-600 font-bold h-8"><Plus className="w-3 h-3 mr-1" /> Add Applicant</Button>
+                    </div>
+
+                    <Reorder.Group axis="y" values={authors} onReorder={setAuthors} className="space-y-2">
+                      {authors.map((a) => (
+                        <Reorder.Item key={a.id} value={a} className="flex gap-2 items-center bg-slate-50 dark:bg-slate-800/30 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 cursor-default group/author transition-all">
+                          <GripVertical className="w-4 h-4 text-slate-300 dark:text-slate-700 group-hover/author:text-slate-500 transition-colors cursor-grab active:cursor-grabbing shrink-0" />
+                          <input value={a.name} onChange={e => setAuthors(p => p.map(x => x.id === a.id ? { ...x, name: e.target.value } : x))} placeholder="Full Name" className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs uppercase font-bold text-slate-700 dark:text-slate-200 focus:border-blue-300 dark:focus:border-blue-500 outline-none transition-all" />
+                          <label className="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-[9px] font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 whitespace-nowrap text-slate-700 dark:text-slate-300" onClick={e => e.stopPropagation()}>
+                            {a.signature ? "✓ Signed" : "Upload Sign"}
+                            <input type="file" className="hidden" onChange={e => handleUpload(a.id, e, 'sig', a.id)} />
+                          </label>
+                          {a.signature && (
+                            <div className="relative group shrink-0">
+                              <img src={a.signature} className="w-8 h-8 rounded border dark:border-slate-700 bg-white object-contain" alt="s" />
+                              <button
+                                onClick={() => setAuthors(p => p.map(x => x.id === a.id ? { ...x, signature: null } : x))}
+                                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                              >
+                                <Plus className="w-2 h-2 rotate-45" />
+                              </button>
+                            </div>
+                          )}
+                          <button onClick={() => removeAuthor(a.id)} className="p-2 text-slate-300 dark:text-slate-700 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                        </Reorder.Item>
+                      ))}
+                    </Reorder.Group>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center text-blue-600">
+                        <Zap className="w-4 h-4" />
+                      </div>
+                      <h3 className="text-sm font-black text-slate-900 uppercase tracking-tighter">Patent Intelligence</h3>
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Technical Description</label>
+                      <textarea 
+                        value={projectDescription}
+                        onChange={e => setProjectDescription(e.target.value)}
+                        placeholder="Describe your invention's core functionality, field of use, and key technical features..."
+                        className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 text-sm focus:ring-2 ring-blue-500/20 outline-none font-medium text-slate-700 dark:text-slate-200 transition-all min-h-[160px] resize-none"
+                      />
+                    </div>
+                  </div>
+
+                  <Button 
+                    onClick={getAiRecommendation}
+                    disabled={isAiLoading || !projectDescription}
+                    className="w-full py-8 rounded-2xl bg-slate-900 text-white font-black text-sm uppercase tracking-widest shadow-2xl shadow-slate-900/20 group relative overflow-hidden"
+                  >
+                    {isAiLoading ? (
+                      <div className="flex flex-col items-center gap-2">
+                        <Loader2 className="w-5 h-5 animate-spin" />
+                        <span className="text-[8px] opacity-50">Processing Neural Mapping</span>
+                      </div>
+                    ) : (
+                      <span className="relative z-10 flex items-center gap-2">
+                        <BrainCircuit className="w-5 h-5 group-hover:scale-120 transition-transform" /> 
+                        Generate Recommendations
+                      </span>
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/20 to-blue-600/0 -translate-x-full group-hover:animate-shimmer" />
+                  </Button>
+
+                  {aiResult && (
+                    <motion.div 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-slate-950 rounded-2xl p-8 border border-blue-500/30 shadow-2xl shadow-blue-500/10"
+                    >
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-3">
+                          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                          <span className="text-white font-black text-xs uppercase tracking-widest">Neural Recommendation Active</span>
+                        </div>
+                        <div className="flex flex-col items-end">
+                          <span className="text-[8px] text-blue-400 font-bold uppercase mb-1">Confidence Score</span>
+                          <span className="text-2xl font-black text-white">{aiResult.confidence}%</span>
+                        </div>
+                      </div>
+
+                      <div className="space-y-4">
+                        <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
+                          <span className="text-[8px] text-slate-500 font-bold uppercase block mb-2">Synthesized Title</span>
+                          <span className="text-blue-400 font-bold text-sm leading-tight italic">"{productName}"</span>
+                        </div>
+                        
+                        <div className="grid grid-cols-2 gap-4">
+                          <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
+                            <span className="text-[8px] text-slate-500 font-bold uppercase block mb-1">Assigned Class</span>
+                            <span className="text-white font-black text-lg">{locarnoClass}</span>
+                          </div>
+                          <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
+                            <span className="text-[8px] text-slate-500 font-bold uppercase block mb-1">Sub-Class</span>
+                            <span className="text-white font-black text-lg">{locarnoSubClass}</span>
+                          </div>
+                        </div>
+
+                        <div className="pt-4 border-t border-slate-800">
+                          <span className="text-[8px] text-slate-500 font-bold uppercase block mb-3">AI Reasoning Path</span>
+                          <div className="space-y-2 mb-4">
+                            {aiResult.reasoning.map((r, i) => (
+                              <div key={i} className="flex items-center gap-2 text-[9px] text-slate-400">
+                                <div className="w-1 h-1 rounded-full bg-blue-500/50" />
+                                {r}
+                              </div>
+                            ))}
+                          </div>
+                          
+                          <div className="bg-blue-500/5 rounded-lg p-3 border border-blue-500/10">
+                            <p className="text-[9px] text-blue-400/60 text-center italic font-medium">
+                              Note: These are neural-generated recommendations for institutional guidance only.
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </motion.div>
+                  )}
+
+                  <div className="bg-blue-50/50 rounded-2xl p-6 border border-blue-100 flex gap-4">
+                    <Info className="w-5 h-5 text-blue-600 shrink-0" />
+                    <p className="text-[11px] font-bold text-blue-900/70 leading-relaxed uppercase tracking-tighter">
+                      Our AI will suggest a formal **Locarno Class** (Industrial Design classification) and an **Institutional-grade Title** based on your technical input.
+                    </p>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 
@@ -239,9 +506,15 @@ export default function PatentDrafterPage() {
                 <select className="bg-white dark:bg-slate-900 dark:text-slate-300 border border-slate-200 dark:border-slate-800 rounded px-2 py-1 text-[10px] font-bold outline-none" value={currentSheet} onChange={e => setCurrentSheet(parseInt(e.target.value))}>
                   {PATENT_VIEWS.map((_, i) => <option key={i} value={i + 1}>Sheet {i + 1}</option>)}
                 </select>
-                <PDFDownloadLink document={<PatentDocument productName={productName} dated={dated} views={views} authors={authors} />} fileName="Patent_Document.pdf">
-                  {({ loading }) => <Button size="sm" className="bg-blue-600 text-white rounded-lg h-8 shadow-lg shadow-blue-500/20" disabled={loading}>{loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Download className="w-3 h-3 mr-2" /> Download</>}</Button>}
-                </PDFDownloadLink>
+                {session ? (
+                  <PDFDownloadLink document={<PatentDocument productName={productName} dated={dated} views={views} authors={authors} />} fileName="Patent_Document.pdf">
+                    {({ loading }) => <Button size="sm" className="bg-blue-600 text-white rounded-lg h-8 shadow-lg shadow-blue-500/20" disabled={loading}>{loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Download className="w-3 h-3 mr-2" /> Download</>}</Button>}
+                  </PDFDownloadLink>
+                ) : (
+                  <Button size="sm" onClick={() => router.push("/login")} className="bg-slate-900 text-white rounded-lg h-8 shadow-lg shadow-slate-900/20">
+                    <Download className="w-3 h-3 mr-2" /> Sign in to Download
+                  </Button>
+                )}
               </div>
             </div>
 
