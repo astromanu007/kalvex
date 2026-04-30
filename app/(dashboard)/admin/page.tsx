@@ -8,7 +8,8 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAdminStats, getAllOrders, forceUpdateOrderStatus } from "@/app/actions/admin";
-import { OrderStatus } from "@prisma/client";
+// Import OrderStatus types as strings to avoid browser-side Prisma resolution
+type OrderStatus = string;
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
