@@ -4,6 +4,7 @@ import prisma from "@/lib/prisma";
 export async function GET() {
   try {
     console.log("🚀 API Seeding Demo Data...");
+    console.log("DB URL Length:", process.env.DATABASE_URL?.length || 0);
 
     // 1. Create/Update Demo User
     const demoUser = await prisma.user.upsert({
