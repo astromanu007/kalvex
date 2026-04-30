@@ -2,9 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, CheckCircle, Upload, ShieldCheck, Clock, FileText } from "lucide-react";
+import { ArrowLeft, CheckCircle, Upload, ShieldCheck, Clock, FileText, Loader2 } from "lucide-react";
+import { createOrder } from "@/app/actions/orders";
 
 export default function ServiceDetailPage() {
   const params = useParams();
@@ -19,10 +20,42 @@ export default function ServiceDetailPage() {
   };
 
   const [step, setStep] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
   const [formData, setFormData] = useState({
     topic: "", wordCount: "", deadline: "",
     guidelines: "",
   });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (step < 3) {
+      setStep(step + 1);
+      return;
+    }
+
+    setLoading(true);
+    // Convert generic slug to a matching enum ServiceType
+    // This is naive; normally we'd pass explicit IDs
+    const serviceTypeRaw = slug.toUpperCase().replace(/-/g, "_");
+    
+    const req = `Topic: ${formData.topic}\nWords/Pages: ${formData.wordCount}\nGuidelines: ${formData.guidelines}`;
+    
+    const res = await createOrder({
+      serviceType: serviceTypeRaw as any,
+      requirements: req,
+      amount: serviceDetails.basePrice,
+      deadline: formData.deadline ? new Date(formData.deadline) : undefined,
+    });
+
+    setLoading(false);
+    if (res.success) {
+      router.push("/dashboard/orders");
+    } else {
+      alert(res.error || "Failed to submit request.");
+    }
+  };
 
   return (
     <div className="min-h-screen pt-24 pb-16 bg-bg-primary">
@@ -74,7 +107,7 @@ export default function ServiceDetailPage() {
             ))}
           </div>
 
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             {step === 1 && (
               <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-300">
                 <h3 className="font-medium text-lg mb-4">Project Requirements</h3>
@@ -141,15 +174,13 @@ export default function ServiceDetailPage() {
                 </Button>
               )}
               {step < 3 ? (
-                <Button type="button" onClick={() => setStep(step + 1)} className="bg-accent-primary hover:bg-accent-primary/90 text-white shadow-glow rounded-xl px-8 ml-auto">
+                <Button type="submit" className="bg-accent-primary hover:bg-accent-primary/90 text-white shadow-glow rounded-xl px-8 ml-auto">
                   Continue
                 </Button>
               ) : (
-                <Link href="/dashboard" className="ml-auto">
-                  <Button type="button" className="bg-accent-primary hover:bg-accent-primary/90 text-white shadow-glow rounded-xl px-8">
-                    Submit Request
-                  </Button>
-                </Link>
+                <Button type="submit" disabled={loading} className="bg-accent-primary hover:bg-accent-primary/90 text-white shadow-glow rounded-xl px-8 ml-auto">
+                  {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Submitting...</> : "Submit Request"}
+                </Button>
               )}
             </div>
           </form>

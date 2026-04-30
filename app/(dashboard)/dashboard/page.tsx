@@ -1,19 +1,15 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import {
   ShoppingBag, FileText, MessageSquare, Wallet,
-  ArrowRight, TrendingUp, Clock, CheckCircle, AlertCircle, Plus
+  ArrowRight, TrendingUp, Clock, CheckCircle, AlertCircle, Plus, Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-const RECENT_ORDERS = [
-  { id: "ORD-001", title: "PhD Thesis – Smart Grid Optimization", type: "Academic", status: "In Progress", date: "25 Apr 2026", amount: 12500, masked: "KV-E2341" },
-  { id: "ORD-002", title: "Raspberry Pi 5 4GB × 2 units", type: "Hardware", status: "Delivered", date: "18 Apr 2026", amount: 13000, masked: "—" },
-  { id: "ORD-003", title: "Design Patent – Portable Water Purifier", type: "Patent", status: "Under Review", date: "10 Apr 2026", amount: 8500, masked: "KV-C1892" },
-];
-
+import { getOrders } from "@/app/actions/orders";
 const STATUS_MAP: Record<string, { color: string; icon: React.ElementType }> = {
   "In Progress": { color: "text-accent-warning bg-accent-warning/10", icon: Clock },
   "Delivered":   { color: "text-accent-success bg-accent-success/10", icon: CheckCircle },
@@ -27,6 +23,20 @@ export default function DashboardHome() {
 
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
+
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchOrders = async () => {
+      const res = await getOrders();
+      if (res.orders) setOrders(res.orders);
+      setLoading(false);
+    };
+    fetchOrders();
+  }, []);
+
+  const activeOrdersCount = orders.filter(o => !["DELIVERED", "COMPLETED", "CANCELLED", "REFUNDED"].includes(o.status)).length;
 
   return (
     <div className="space-y-8">
@@ -52,10 +62,10 @@ export default function DashboardHome() {
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
         {[
-          { label: "Total Orders", value: "7", sub: "+2 this month", icon: ShoppingBag, color: "text-accent-primary", bg: "bg-accent-primary/10" },
-          { label: "Active Projects", value: "2", sub: "In progress", icon: FileText, color: "text-accent-warning", bg: "bg-accent-warning/10" },
-          { label: "Wallet Balance", value: "₹650", sub: "Available credits", icon: Wallet, color: "text-accent-success", bg: "bg-accent-success/10" },
-          { label: "Unread Messages", value: "3", sub: "From experts", icon: MessageSquare, color: "text-accent-secondary", bg: "bg-accent-secondary/10" },
+          { label: "Total Orders", value: loading ? "-" : orders.length.toString(), sub: "+0 this month", icon: ShoppingBag, color: "text-accent-primary", bg: "bg-accent-primary/10" },
+          { label: "Active Projects", value: loading ? "-" : activeOrdersCount.toString(), sub: "In progress", icon: FileText, color: "text-accent-warning", bg: "bg-accent-warning/10" },
+          { label: "Wallet Balance", value: "₹0", sub: "Available credits", icon: Wallet, color: "text-accent-success", bg: "bg-accent-success/10" },
+          { label: "Unread Messages", value: "0", sub: "From experts", icon: MessageSquare, color: "text-accent-secondary", bg: "bg-accent-secondary/10" },
         ].map((stat) => (
           <div key={stat.label} className="bg-bg-card border border-border rounded-2xl p-5 flex flex-col gap-3 hover:border-accent-primary/30 transition-colors">
             <div className={`w-10 h-10 rounded-lg ${stat.bg} flex items-center justify-center`}>
@@ -80,30 +90,41 @@ export default function DashboardHome() {
         </div>
 
         <div className="divide-y divide-border">
-          {RECENT_ORDERS.map((order) => {
-            const st = STATUS_MAP[order.status] ?? STATUS_MAP["In Progress"];
-            return (
-              <div key={order.id} className="p-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-bg-surface/50 transition-colors">
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="text-[10px] font-mono text-text-muted bg-bg-surface px-2 py-0.5 rounded border border-border">{order.id}</span>
-                    <span className="text-[10px] font-medium text-text-muted">{order.type}</span>
+          {loading ? (
+            <div className="p-12 flex justify-center text-accent-primary">
+              <Loader2 className="w-8 h-8 animate-spin" />
+            </div>
+          ) : orders.length === 0 ? (
+            <div className="p-8 text-center text-text-muted">No recent orders.</div>
+          ) : (
+            orders.slice(0, 3).map((order) => {
+              const st = STATUS_MAP[order.status] ?? STATUS_MAP["In Progress"];
+              const title = order.serviceType?.replace(/_/g, " ") ?? "Custom Order";
+              const typeLabel = order.serviceType ?? "Service";
+
+              return (
+                <div key={order.id} className="p-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-bg-surface/50 transition-colors">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 mb-1">
+                      <span className="text-[10px] font-mono text-text-muted bg-bg-surface px-2 py-0.5 rounded border border-border">{order.orderNumber}</span>
+                      <span className="text-[10px] font-medium text-text-muted">{typeLabel}</span>
+                    </div>
+                    <p className="text-sm font-medium text-text-primary truncate">{title}</p>
+                    <p className="text-xs text-text-muted mt-0.5">Placed {new Date(order.createdAt).toLocaleDateString()} · Expert: <span className="font-mono text-accent-primary">{order.maskedAssigneeId ?? "—"}</span></p>
                   </div>
-                  <p className="text-sm font-medium text-text-primary truncate">{order.title}</p>
-                  <p className="text-xs text-text-muted mt-0.5">Placed {order.date} · Expert: <span className="font-mono text-accent-primary">{order.masked}</span></p>
+                  <div className="flex items-center gap-4 flex-shrink-0">
+                    <p className="font-mono font-semibold text-text-primary">₹{order.amount?.toLocaleString()}</p>
+                    <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${st.color}`}>
+                      <st.icon className="w-3 h-3" /> {order.status}
+                    </span>
+                    <Link href={`/dashboard/orders/${order.id}`}>
+                      <Button variant="ghost" size="sm" className="h-8 px-3 text-xs border border-border rounded-lg">View</Button>
+                    </Link>
+                  </div>
                 </div>
-                <div className="flex items-center gap-4 flex-shrink-0">
-                  <p className="font-mono font-semibold text-text-primary">₹{order.amount.toLocaleString()}</p>
-                  <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${st.color}`}>
-                    <st.icon className="w-3 h-3" /> {order.status}
-                  </span>
-                  <Link href={`/dashboard/orders/${order.id}`}>
-                    <Button variant="ghost" size="sm" className="h-8 px-3 text-xs border border-border rounded-lg">View</Button>
-                  </Link>
-                </div>
-              </div>
-            );
-          })}
+              );
+            })
+          )}
         </div>
       </div>
 

@@ -1,27 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, CreditCard, Smartphone, Building2, CheckCircle, Loader2 } from "lucide-react";
+import { getOrders, updateOrderStatus } from "@/app/actions/orders";
 
 type Step = "address" | "payment" | "confirm";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const [step, setStep] = useState<Step>("address");
   const [processing, setProcessing] = useState(false);
   const [done, setDone] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("upi");
+  const [order, setOrder] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get("orderId");
 
   const [address, setAddress] = useState({
     name: "", phone: "", pincode: "", address: "", city: "", state: "", landmark: "",
   });
 
-  const ORDER_TOTAL = 14399;
+  useEffect(() => {
+    const fetchOrder = async () => {
+      if (!orderId) {
+        setLoading(false);
+        return;
+      }
+      const res = await getOrders();
+      if (res.orders) {
+        const found = res.orders.find((o: any) => o.id === orderId);
+        if (found) setOrder(found);
+      }
+      setLoading(false);
+    };
+    fetchOrder();
+  }, [orderId]);
+
+  const ORDER_TOTAL = order ? order.amount : 14399;
 
   const handlePayment = async () => {
     setProcessing(true);
+    // Simulate payment gateway delay
     await new Promise((r) => setTimeout(r, 2500));
+    
+    if (order) {
+      // Update order status in DB
+      await updateOrderStatus(order.id, "RESEARCH_STARTED");
+    }
+    
     setProcessing(false);
     setDone(true);
   };
@@ -34,16 +63,24 @@ export default function CheckoutPage() {
             <CheckCircle className="w-8 h-8 text-accent-success" />
           </div>
           <h1 className="font-heading font-bold text-2xl">Order Placed!</h1>
-          <p className="text-text-secondary text-sm">Your order <span className="font-mono text-accent-primary">#ORD-007</span> has been confirmed. You&apos;ll receive a confirmation email and tracking updates via WhatsApp.</p>
+          <p className="text-text-secondary text-sm">Your order <span className="font-mono text-accent-primary">#{order ? order.orderNumber : "ORD-007"}</span> has been confirmed. You&apos;ll receive a confirmation email and tracking updates via WhatsApp.</p>
           <div className="flex gap-3 pt-2">
-            <Link href="/dashboard/orders" className="flex-1">
+            <Link href={order ? `/dashboard/orders/${order.id}` : "/dashboard/orders"} className="flex-1">
               <Button className="w-full bg-accent-primary text-white rounded-xl shadow-glow">Track Order</Button>
             </Link>
-            <Link href="/electronics" className="flex-1">
-              <Button variant="outline" className="w-full border-border rounded-xl">Continue Shopping</Button>
+            <Link href={order ? "/dashboard" : "/electronics"} className="flex-1">
+              <Button variant="outline" className="w-full border-border rounded-xl">{order ? "Dashboard" : "Continue Shopping"}</Button>
             </Link>
           </div>
         </div>
+      </div>
+    );
+  }
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-24 pb-16 flex justify-center items-center">
+        <Loader2 className="w-8 h-8 text-accent-primary animate-spin" />
       </div>
     );
   }
@@ -164,18 +201,31 @@ export default function CheckoutPage() {
               <div className="bg-bg-card border border-border rounded-2xl p-6 space-y-5">
                 <h2 className="font-heading font-semibold text-lg">Review & Confirm</h2>
                 <div className="bg-bg-surface rounded-xl border border-border divide-y divide-border">
-                  {[
-                    { label: "Raspberry Pi 5 4GB × 2", amount: "₹13,000" },
-                    { label: "HC-SR04 Sensor Pack × 1", amount: "₹399" },
-                    { label: "0.96\" OLED × 3", amount: "₹750" },
-                    { label: "Shipping", amount: "FREE" },
-                    { label: "Coupon (KALVEX10)", amount: "- ₹1,415" },
-                  ].map((row) => (
-                    <div key={row.label} className="flex justify-between px-4 py-3 text-sm">
-                      <span className="text-text-secondary">{row.label}</span>
-                      <span className={`font-medium ${row.amount.includes("-") ? "text-accent-success" : ""}`}>{row.amount}</span>
-                    </div>
-                  ))}
+                  {order ? (
+                    <>
+                      <div className="flex justify-between px-4 py-3 text-sm">
+                        <span className="text-text-secondary capitalize">{order.serviceType?.replace(/_/g, " ").toLowerCase()}</span>
+                        <span className="font-medium">₹{order.amount?.toLocaleString()}</span>
+                      </div>
+                      <div className="flex justify-between px-4 py-3 text-sm">
+                        <span className="text-text-secondary">Platform Fee</span>
+                        <span className="font-medium">FREE</span>
+                      </div>
+                    </>
+                  ) : (
+                    [
+                      { label: "Raspberry Pi 5 4GB × 2", amount: "₹13,000" },
+                      { label: "HC-SR04 Sensor Pack × 1", amount: "₹399" },
+                      { label: "0.96\" OLED × 3", amount: "₹750" },
+                      { label: "Shipping", amount: "FREE" },
+                      { label: "Coupon (KALVEX10)", amount: "- ₹1,415" },
+                    ].map((row) => (
+                      <div key={row.label} className="flex justify-between px-4 py-3 text-sm">
+                        <span className="text-text-secondary">{row.label}</span>
+                        <span className={`font-medium ${row.amount.includes("-") ? "text-accent-success" : ""}`}>{row.amount}</span>
+                      </div>
+                    ))
+                  )}
                   <div className="flex justify-between px-4 py-4 text-base font-bold">
                     <span>Total Payable</span>
                     <span className="text-accent-primary font-mono">₹{ORDER_TOTAL.toLocaleString()}</span>
@@ -199,11 +249,17 @@ export default function CheckoutPage() {
             <div className="bg-bg-card border border-border rounded-2xl p-5 sticky top-24 space-y-4">
               <h3 className="font-heading font-semibold text-base">Order Summary</h3>
               <div className="space-y-3 text-sm divide-y divide-border">
-                {["Raspberry Pi 5 4GB × 2", "HC-SR04 × 1", "OLED × 3"].map((item) => (
-                  <div key={item} className="flex justify-between py-2 first:pt-0">
-                    <span className="text-text-secondary text-xs">{item}</span>
+                {order ? (
+                  <div className="flex justify-between py-2 first:pt-0">
+                    <span className="text-text-secondary text-xs capitalize">{order.serviceType?.replace(/_/g, " ").toLowerCase()}</span>
                   </div>
-                ))}
+                ) : (
+                  ["Raspberry Pi 5 4GB × 2", "HC-SR04 × 1", "OLED × 3"].map((item) => (
+                    <div key={item} className="flex justify-between py-2 first:pt-0">
+                      <span className="text-text-secondary text-xs">{item}</span>
+                    </div>
+                  ))
+                )}
               </div>
               <div className="pt-3 border-t border-border flex justify-between font-bold">
                 <span>Total</span>
@@ -214,5 +270,13 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><Loader2 className="w-8 h-8 animate-spin" /></div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }

@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Camera, Save, GraduationCap, User, Lock, Bell } from "lucide-react";
+import { updateProfile } from "@/app/actions/user";
 
 export default function ProfilePage() {
   const { data: session } = useSession();
@@ -11,12 +12,27 @@ export default function ProfilePage() {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
 
-  const handleSave = async () => {
+  const handleSave = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     setSaving(true);
-    await new Promise((r) => setTimeout(r, 1200));
+    
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get("name") as string,
+      phone: formData.get("phone") as string,
+      city: formData.get("city") as string,
+      college: formData.get("college") as string,
+      branch: formData.get("branch") as string,
+      year: parseInt(formData.get("year") as string) || undefined,
+    };
+
+    const res = await updateProfile(data);
+    
     setSaving(false);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    if (res.success) {
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    }
   };
 
   const TABS = [
@@ -72,7 +88,7 @@ export default function ProfilePage() {
       </div>
 
       {/* Tab Content */}
-      <div className="bg-bg-card border border-border rounded-2xl p-6 space-y-5">
+      <form onSubmit={handleSave} className="bg-bg-card border border-border rounded-2xl p-6 space-y-5">
         {tab === "personal" && (
           <>
             <h3 className="font-heading font-semibold text-base">Personal Information</h3>
@@ -86,7 +102,7 @@ export default function ProfilePage() {
               ].map(({ label, placeholder, type }) => (
                 <div key={label}>
                   <label className="block text-sm font-medium mb-1">{label}</label>
-                  <input type={type} defaultValue={placeholder} className="w-full bg-bg-input border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent-primary" />
+                  <input name={label.split(" ")[0].toLowerCase()} type={type} defaultValue={placeholder} className="w-full bg-bg-input border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent-primary" />
                 </div>
               ))}
               <div className="sm:col-span-2">
@@ -109,7 +125,7 @@ export default function ProfilePage() {
               ].map(({ label, placeholder }) => (
                 <div key={label}>
                   <label className="block text-sm font-medium mb-1">{label}</label>
-                  <input defaultValue={placeholder} className="w-full bg-bg-input border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent-primary" />
+                  <input name={label.split(" ")[0].toLowerCase()} defaultValue={placeholder} className="w-full bg-bg-input border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-accent-primary" />
                 </div>
               ))}
             </div>
@@ -156,12 +172,12 @@ export default function ProfilePage() {
         )}
 
         <div className="flex items-center gap-3 pt-2 border-t border-border mt-2">
-          <Button onClick={handleSave} disabled={saving} className="bg-accent-primary text-white rounded-xl shadow-glow h-10 px-6 gap-2">
+          <Button type="submit" disabled={saving} className="bg-accent-primary text-white rounded-xl shadow-glow h-10 px-6 gap-2">
             <Save className="w-4 h-4" /> {saving ? "Saving..." : saved ? "Saved ✓" : "Save Changes"}
           </Button>
           {saved && <p className="text-sm text-accent-success">Profile updated successfully.</p>}
         </div>
-      </div>
+      </form>
     </div>
   );
 }
