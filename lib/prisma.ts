@@ -1,11 +1,11 @@
 import { PrismaClient } from '@prisma/client'
 
+// Use a simple singleton without any constructor overrides to avoid
+// type and runtime validation errors in Prisma 7 + Turbopack.
 const prismaClientSingleton = () => {
   return new PrismaClient({
-    // Prisma 7 specific: datasourceUrl (singular) is the correct key for direct overrides
-    datasourceUrl: process.env.DATABASE_URL,
     log: ['error'],
-  } as any)
+  })
 }
 
 declare global {
