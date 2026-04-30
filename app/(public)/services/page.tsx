@@ -31,92 +31,83 @@ const SERVICES = [
   {
     slug: "phd-thesis",
     icon: BookOpen,
-    title: "PhD Thesis Architecture",
-    shortDesc: "End-to-end structural engineering and high-fidelity drafting for doctoral research as per Tier-1 institutional standards.",
+    title: "PhD Thesis Help",
+    shortDesc: "End-to-end support and drafting for your doctoral research thesis to meet university standards.",
     color: "text-blue-600",
     bg: "bg-blue-600/5",
-    deliverables: ["Full thesis draft", "iThenticate audit", "Unlimited structural revisions", "Standard reference formatting"],
-    sku: "KVX-RES-TH01"
+    deliverables: ["Complete thesis draft", "Plagiarism check", "Unlimited revisions", "Proper formatting"],
   },
   {
     slug: "research-paper",
     icon: FileText,
-    title: "IEEE Publication Engineering",
-    shortDesc: "High-impact research manuscripts synthesized and submitted to IEEE, Scopus, and high-quantile journals.",
+    title: "Research Papers",
+    shortDesc: "High-quality research papers ready for IEEE, Scopus, or other major journals.",
     color: "text-blue-600",
     bg: "bg-blue-600/5",
-    deliverables: ["Journal-ready manuscript", "Plagiarism protocol audit", "Peer-review support", "Submission management"],
-    sku: "KVX-RES-PP04"
+    deliverables: ["Ready-to-publish paper", "Plagiarism check", "Peer-review support", "Submission help"],
   },
   {
     slug: "final-year-report",
     icon: Briefcase,
-    title: "Institutional Project Documentation",
-    shortDesc: "Professionally engineered project reports, technical manuals, and dossiers aligned with global academic criteria.",
+    title: "Final Year Reports",
+    shortDesc: "Professional project reports, technical manuals, and documentation for your final year.",
     color: "text-slate-900",
     bg: "bg-slate-900/5",
-    deliverables: ["Formatted PDF + DOCX", "Reference synchronization", "Technical audit report", "48-hour priority delivery"],
-    sku: "KVX-ACA-RP09"
+    deliverables: ["PDF & Word files", "References sorted", "Quality check", "48-hour delivery"],
   },
   {
     slug: "design-patent",
     icon: ShieldCheck,
-    title: "Proprietary Design Filing",
-    shortDesc: "Secure the visual identity of your innovation with official Indian Design Patent filing via CGPDTM protocol.",
+    title: "Design Patent Filing",
+    shortDesc: "Protect the unique visual look and feel of your invention with official registration.",
     color: "text-blue-600",
     bg: "bg-blue-600/5",
-    deliverables: ["Representation sheets", "Locarno classification", "Disclosure drafting", "Official form management"],
-    sku: "KVX-IPR-DP02"
+    deliverables: ["Application forms", "Technical drawings", "Legal drafting", "Government filing"],
   },
   {
     slug: "utility-patent",
     icon: Cpu,
-    title: "Utility Patent Drafting",
-    shortDesc: "Robust claims engineering and technical specification drafting for functional engineering inventions.",
+    title: "Utility Patents",
+    shortDesc: "Technical drafting and claims architecture for your functional engineering inventions.",
     color: "text-blue-600",
     bg: "bg-blue-600/5",
-    deliverables: ["Complete specification", "Claims architecture", "Drafting & diagrams", "Prior art audit"],
-    sku: "KVX-IPR-UP07"
+    deliverables: ["Complete specification", "Patent claims", "Diagrams", "Prior art search"],
   },
   {
     slug: "copyright",
     icon: Award,
-    title: "Copyright Legal Protocol",
-    shortDesc: "Establish ownership for software logic, proprietary code, technical manuals, and artistic research works.",
+    title: "Copyright Registration",
+    shortDesc: "Officially register your software code, technical manuals, or creative works.",
     color: "text-slate-900",
     bg: "bg-slate-900/5",
-    deliverables: ["Government registration", "Digital audit certificate", "Certified source copy", "Institutional compliance"],
-    sku: "KVX-IPR-CR01"
+    deliverables: ["Government registration", "Digital certificate", "Source copy", "Legal compliance"],
   },
   {
     slug: "trademark",
     icon: Zap,
-    title: "Institutional Brand Protection",
-    shortDesc: "Register your startup logo, brand nomenclature, or tagline across India under official Trademarks Act governance.",
+    title: "Trademark Registration",
+    shortDesc: "Register your startup logo, brand name, or tagline across India securely.",
     color: "text-blue-600",
     bg: "bg-blue-600/5",
-    deliverables: ["TM search audit", "Application filing", "Government fees included", "Protocol monitoring"],
-    sku: "KVX-IPR-TM03"
+    deliverables: ["Trademark search", "Application filing", "Government fees included", "Status tracking"],
   },
   {
     slug: "mini-project",
     icon: Lightbulb,
-    title: "Rapid Prototype Development",
-    shortDesc: "Pre-built or custom mini-projects for technical validation, featuring high-fidelity source code and schematics.",
+    title: "Mini Projects",
+    shortDesc: "Pre-built or custom mini-projects featuring high-quality source code and schematics.",
     color: "text-blue-600",
     bg: "bg-blue-600/5",
-    deliverables: ["Full source repository", "Technical manual", "Presentation deck", "Demonstration module"],
-    sku: "KVX-ENG-MP12"
+    deliverables: ["Source code", "Project report", "Presentation", "Working demo"],
   },
   {
     slug: "major-project",
     icon: Cpu,
-    title: "Capstone Engineering Suite",
-    shortDesc: "Complex final-year engineering systems across CS, E&TC, Robotics, and Advanced Mechatronics domains.",
+    title: "Major Projects",
+    shortDesc: "Complex final-year engineering projects for CS, Electronics, and Robotics students.",
     color: "text-blue-600",
     bg: "bg-blue-600/5",
-    deliverables: ["Custom development cycle", "Full documentation suite", "Technical support", "6-month maintenance"],
-    sku: "KVX-ENG-CP05"
+    deliverables: ["Custom development", "Full documentation", "Technical support", "6-month maintenance"],
   },
 ];
 
@@ -135,13 +126,13 @@ export default function ServicesPage() {
           className="text-center max-w-4xl mx-auto mb-24 space-y-8"
         >
           <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
-            <Sparkles className="w-4 h-4" /> Expertise Division
+            <Sparkles className="w-4 h-4" /> Our Services
           </div>
           <h1 className="font-heading font-black text-6xl md:text-8xl text-slate-900 tracking-tighter leading-[0.9]">
-            Professional <br /><span className="text-blue-600">Consultancy</span>
+            Professional <br /><span className="text-blue-600">Solutions</span>
           </h1>
           <p className="text-xl md:text-2xl text-slate-400 font-bold max-w-3xl mx-auto leading-relaxed">
-            High-authority academic and technical support for doctoral researchers, institutional innovators, and senior engineering students.
+            Expert help for students, researchers, and engineers to build and document their ideas.
           </p>
         </motion.div>
 
@@ -153,10 +144,10 @@ export default function ServicesPage() {
           className="flex flex-wrap justify-center gap-4 mb-24"
         >
           {[
-            { icon: BadgeCheck, text: "Institutional Standard", color: "text-blue-600" },
-            { icon: Clock, text: "Priority Delivery", color: "text-slate-900" },
-            { icon: Shield, text: "Encrypted Compliance", color: "text-blue-600" },
-            { icon: Fingerprint, text: "Masked Identity Protocol", color: "text-slate-900" },
+            { icon: BadgeCheck, text: "High Quality", color: "text-blue-600" },
+            { icon: Clock, text: "Fast Delivery", color: "text-slate-900" },
+            { icon: Shield, text: "Secure & Private", color: "text-blue-600" },
+            { icon: Fingerprint, text: "100% Confidential", color: "text-slate-900" },
           ].map((b) => (
             <div key={b.text} className="flex items-center gap-3 bg-white border border-slate-100 rounded-2xl px-8 py-4 text-[10px] font-black uppercase tracking-widest text-slate-900 shadow-xl shadow-slate-900/5 group hover:border-blue-600/30 transition-all cursor-default">
               <b.icon className={`w-4 h-4 ${b.color} group-hover:scale-110 transition-transform`} /> {b.text}
@@ -185,13 +176,12 @@ export default function ServicesPage() {
               </div>
               
               <div className="space-y-4 mb-8 flex-grow">
-                <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">{service.sku}</div>
                 <h2 className="font-heading font-black text-2xl text-slate-900 tracking-tight leading-tight group-hover:text-blue-600 transition-colors">{service.title}</h2>
                 <p className="text-slate-400 text-[13px] font-bold leading-relaxed">{service.shortDesc}</p>
               </div>
 
               <div className="mb-10 space-y-6">
-                <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">Institutional Deliverables</p>
+                <p className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">What You Get</p>
                 <ul className="space-y-4">
                   {service.deliverables.map((d) => (
                     <li key={d} className="flex items-center gap-4 text-[11px] font-bold text-slate-400 uppercase tracking-widest group-hover:text-slate-600 transition-colors">
@@ -206,7 +196,7 @@ export default function ServicesPage() {
 
               <Link href={`/services/${service.slug}`} className="mt-auto">
                 <Button className="w-full bg-slate-900 hover:bg-blue-600 text-white rounded-2xl h-16 font-black uppercase tracking-[0.2em] text-[10px] transition-all duration-700 shadow-2xl shadow-slate-900/10 group/btn">
-                  Authorize Brief <ArrowUpRight className="ml-3 w-4 h-4 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
+                  Learn More <ArrowUpRight className="ml-3 w-4 h-4 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
                 </Button>
               </Link>
             </motion.div>
@@ -228,14 +218,14 @@ export default function ServicesPage() {
              
              <div className="max-w-3xl mx-auto space-y-10">
                <h2 className="font-heading font-black text-4xl md:text-6xl text-white tracking-tighter leading-tight">
-                 Initialize <span className="text-blue-600">Custom Mission</span>
+                 Need Something <span className="text-blue-600">Else?</span>
                </h2>
                <p className="text-xl text-slate-400 font-bold max-w-xl mx-auto leading-relaxed">
-                 Brief our senior engineering council on your unique research parameters for a precision-engineered solution.
+                 Tell us about your unique project requirements and we will build a custom solution for you.
                </p>
                <Link href="/contact" className="inline-block">
                  <Button className="bg-blue-600 hover:bg-blue-500 text-white shadow-[0_24px_48px_-12px_rgba(37,99,235,0.4)] h-20 px-16 rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs transition-all duration-500 hover:scale-105 hover:-translate-y-2 group/btn2">
-                   Request Custom Protocol <ArrowRight className="ml-4 w-5 h-5 group-hover/btn2:translate-x-2 transition-transform" />
+                   Contact Us <ArrowRight className="ml-4 w-5 h-5 group-hover/btn2:translate-x-2 transition-transform" />
                  </Button>
                </Link>
              </div>

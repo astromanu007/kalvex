@@ -16,37 +16,37 @@ const stagger = {
 const ROLES = [
   {
     id: "user",
-    label: "Client Node",
+    label: "Client",
     icon: User,
-    desc: "For professionals, startups, and innovators procuring components or commissioning advanced engineering services.",
+    desc: "For professionals, startups, and innovators looking to hire engineers or buy components.",
     accent: "blue"
   },
   {
     id: "student",
-    label: "Research Node",
+    label: "Student",
     icon: GraduationCap,
-    desc: "For engineering students and academic researchers accessing institutional projects, reports, and priority discounts.",
+    desc: "For engineering students looking for projects, reports, and discounts.",
     accent: "slate"
   },
   {
     id: "writer",
-    label: "Scholar Node",
+    label: "Scholar",
     icon: PenTool,
-    desc: "Apply to join our elite network of academic and patent writers. Earn per high-stakes research commission.",
+    desc: "Join our network of academic and patent writers. Earn per research commission.",
     accent: "blue"
   },
   {
     id: "developer",
-    label: "Engineer Node",
+    label: "Engineer",
     icon: Code,
-    desc: "Apply as a KALVEX Partner Engineer. Build proprietary systems, prototypes, and platforms at scale.",
+    desc: "Apply as a KALVEX Engineer. Build proprietary systems and prototypes.",
     accent: "slate"
   },
   {
     id: "affiliate",
-    label: "Alliance Node",
+    label: "Partner",
     icon: Building2,
-    desc: "Promote KALVEX and earn institutional commissions on every verified referral conversion.",
+    desc: "Promote KALVEX and earn commissions on every referral.",
     accent: "blue"
   },
 ];
@@ -65,13 +65,13 @@ export default function RegisterHubPage() {
           className="text-center mb-20 space-y-6"
         >
           <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
-            <Shield className="w-4 h-4" /> Node Initialization
+            <Shield className="w-4 h-4" /> Account Setup
           </div>
           <h1 className="font-heading font-black text-6xl text-slate-900 tracking-tighter">
-            Select Your <span className="text-blue-600">Classification</span>
+            Select Your <span className="text-blue-600">Role</span>
           </h1>
           <p className="text-slate-400 font-bold text-xl max-w-xl mx-auto">
-            Choose the node type that defines your role within the KALVEX institutional ecosystem.
+            Choose the account type that best describes you.
           </p>
         </motion.div>
 
@@ -100,7 +100,7 @@ export default function RegisterHubPage() {
                   </div>
 
                   <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 group-hover:text-blue-600 transition-colors pt-6 border-t border-slate-50">
-                    Initialize Node <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                    Get Started <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
               </Link>
@@ -116,9 +116,9 @@ export default function RegisterHubPage() {
           className="mt-16 text-center"
         >
           <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
-            Already authorized?{" "}
+            Already have an account?{" "}
             <Link href="/login" className="text-blue-600 hover:text-blue-500 transition-colors">
-              Access your Node
+              Sign In
             </Link>
           </p>
         </motion.div>

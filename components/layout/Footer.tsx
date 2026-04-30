@@ -29,14 +29,14 @@ export function Footer() {
               Empowering engineers and researchers with top-tier technical resources, academic drafting, and hardware solutions.
             </p>
             <div className="flex items-center space-x-5">
-              {[
-                { icon: Linkedin, color: "hover:text-[#0077B5]" },
-                { icon: Twitter, color: "hover:text-[#1DA1F2]" },
-                { icon: Instagram, color: "hover:text-[#E4405F]" },
-                { icon: Youtube, color: "hover:text-[#FF0000]" },
+                {[
+                { icon: Linkedin, color: "hover:text-[#0077B5] hover:-translate-y-1 hover:shadow-lg hover:shadow-[#0077B5]/20" },
+                { icon: Twitter, color: "hover:text-[#1DA1F2] hover:-translate-y-1 hover:shadow-lg hover:shadow-[#1DA1F2]/20" },
+                { icon: Instagram, color: "hover:text-[#E4405F] hover:-translate-y-1 hover:shadow-lg hover:shadow-[#E4405F]/20" },
+                { icon: Youtube, color: "hover:text-[#FF0000] hover:-translate-y-1 hover:shadow-lg hover:shadow-[#FF0000]/20" },
               ].map((social, i) => (
-                <a key={i} href="#" className={`w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 ${social.color} hover:bg-white hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.1)] transition-all duration-500 border border-slate-100 hover:border-blue-600/20`}>
-                  <social.icon className="w-5 h-5" />
+                <a key={i} href="#" className={`w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 ${social.color} hover:bg-white hover:border-blue-600/20 transition-all duration-300 border border-slate-100`}>
+                  <social.icon className="w-5 h-5 transition-transform group-hover:scale-110" />
                 </a>
               ))}
             </div>
@@ -56,7 +56,7 @@ export function Footer() {
                 { name: "Hardware Store", href: "/electronics" },
               ].map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-slate-500 text-sm hover:text-blue-600 transition-all duration-300 flex items-center group">
+                  <Link href={link.href} className="inline-flex text-slate-500 text-sm hover:text-blue-600 hover:translate-x-2 transition-all duration-300 items-center group">
                     <span className="w-0 h-[2px] bg-blue-600 mr-0 transition-all duration-300 group-hover:w-2 group-hover:mr-2 rounded-full" />
                     {link.name}
                   </Link>
@@ -71,9 +71,9 @@ export function Footer() {
               <Building2 className="w-4 h-4 text-blue-600" /> Company
             </h3>
             <ul className="space-y-4">
-              {["About Us", "Blog", "Careers", "Support", "Privacy Policy", "Terms of Service"].map((item) => (
+              {["About", "Blog", "Careers", "Support", "Privacy Policy", "Terms of Service"].map((item) => (
                 <li key={item}>
-                  <Link href={`/${item.toLowerCase().replace(/ /g, "-")}`} className="text-slate-500 text-sm hover:text-blue-600 transition-all duration-300 flex items-center group">
+                  <Link href={`/${item.toLowerCase().replace(/ /g, "-")}`} className="inline-flex text-slate-500 text-sm hover:text-blue-600 hover:translate-x-2 transition-all duration-300 items-center group">
                     <span className="w-0 h-[2px] bg-blue-600 mr-0 transition-all duration-300 group-hover:w-2 group-hover:mr-2 rounded-full" />
                     {item}
                   </Link>
@@ -104,9 +104,9 @@ export function Footer() {
               </ul>
             </div>
             
-            <div className="p-4 bg-slate-50 rounded-2xl flex items-center gap-4 border border-slate-100">
-              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
-                <Shield className="w-5 h-5 text-blue-600" />
+            <div className="p-4 bg-slate-50 rounded-2xl flex items-center gap-4 border border-slate-100 hover:-translate-y-1 hover:shadow-[0_20px_40px_-15px_rgba(37,99,235,0.15)] hover:border-blue-600/30 transition-all duration-500 cursor-default group">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm border border-slate-100 group-hover:scale-110 group-hover:-rotate-6 group-hover:bg-blue-600 group-hover:border-blue-600 transition-all duration-500">
+                <Shield className="w-5 h-5 text-blue-600 group-hover:text-white transition-colors" />
               </div>
               <div>
                 <p className="text-xs font-bold text-slate-900">100% Secure Payments</p>

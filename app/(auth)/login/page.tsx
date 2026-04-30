@@ -15,11 +15,11 @@ const fadeInUp = {
 
 const ROLES = [
   { id: "USER",       label: "Client",     icon: User },
-  { id: "STUDENT",    label: "Researcher", icon: GraduationCap },
+  { id: "STUDENT",    label: "Student",    icon: GraduationCap },
   { id: "WRITER",     label: "Scholar",    icon: PenTool },
   { id: "DEVELOPER",  label: "Engineer",   icon: Code },
   { id: "AFFILIATE",  label: "Partner",    icon: Building2 },
-  { id: "ADMIN",      label: "Command",    icon: Shield },
+  { id: "ADMIN",      label: "Admin",      icon: Shield },
 ];
 
 export default function LoginPage() {
@@ -70,10 +70,10 @@ export default function LoginPage() {
         <div className="z-10 space-y-8">
           <div className="w-12 h-1 bg-blue-600 rounded-full" />
           <blockquote className="text-4xl font-heading font-black text-white leading-tight tracking-tighter">
-            Engineering the <span className="text-blue-600">Future</span> of Academic Excellence.
+            Engineering the <span className="text-blue-600">Future</span> of Technology.
           </blockquote>
           <p className="text-slate-400 font-bold text-sm leading-relaxed max-w-sm">
-            Access India's premier institutional ecosystem for high-stakes engineering research, proprietary prototypes, and strategic industrial innovation.
+            Access India's premier ecosystem for engineering research, prototypes, and hardware solutions.
           </p>
           <div className="flex items-center gap-6 pt-4 border-t border-slate-800">
             {["200+ Projects", "50+ Patents", "ISO Certified"].map(stat => (
@@ -88,8 +88,8 @@ export default function LoginPage() {
         <div className="flex items-center gap-4 z-10 bg-slate-800/60 backdrop-blur-xl border border-slate-700 rounded-2xl px-6 py-4">
           <Fingerprint className="w-6 h-6 text-blue-600 shrink-0" />
           <div>
-            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">Protocol</p>
-            <p className="text-xs font-black text-white">Masked Identity Authentication</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-500">Security</p>
+            <p className="text-xs font-black text-white">Secure Authentication</p>
           </div>
         </div>
       </div>
@@ -105,15 +105,15 @@ export default function LoginPage() {
           {/* Header */}
           <div className="space-y-3">
             <div className="inline-flex items-center gap-2 bg-blue-600/10 text-blue-600 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em]">
-              <Lock className="w-3 h-3" /> Secure Node Access
+              <Lock className="w-3 h-3" /> Secure Login
             </div>
-            <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tighter">Authorize Entry</h1>
-            <p className="text-slate-400 font-bold">Select your node classification to proceed.</p>
+            <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tighter">Welcome Back</h1>
+            <p className="text-slate-400 font-bold">Select your account type to continue.</p>
           </div>
 
           {/* Role Selector */}
           <div className="space-y-4">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">Node Classification</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">Account Type</p>
             <div className="grid grid-cols-3 gap-3">
               {ROLES.map((r) => (
                 <button
@@ -136,7 +136,7 @@ export default function LoginPage() {
           {/* Form */}
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Node Address</label>
+              <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Email Address</label>
               <div className="relative group">
                 <Mail className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
                 <input
@@ -152,9 +152,9 @@ export default function LoginPage() {
 
             <div className="space-y-2">
               <div className="flex justify-between items-center">
-                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Authorization Key</label>
+                <label className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Password</label>
                 <Link href="/forgot-password" className="text-[10px] font-black uppercase tracking-widest text-blue-600 hover:text-blue-500 transition-colors">
-                  Reset Key
+                  Reset Password
                 </Link>
               </div>
               <div className="relative group">
@@ -191,11 +191,11 @@ export default function LoginPage() {
               {loading ? (
                 <span className="flex items-center gap-3">
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                  Authenticating...
+                  Signing In...
                 </span>
               ) : (
                 <span className="flex items-center gap-3">
-                  Authorize Entry <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  Sign In <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </span>
               )}
             </Button>
@@ -229,7 +229,7 @@ export default function LoginPage() {
           <p className="text-center text-[11px] font-black uppercase tracking-[0.2em] text-slate-400">
             No account?{" "}
             <Link href="/register" className="text-blue-600 hover:text-blue-500 transition-colors">
-              Register Node
+              Sign Up
             </Link>
           </p>
         </motion.div>
