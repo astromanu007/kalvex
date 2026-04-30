@@ -130,27 +130,18 @@ export default function PatentDrafterPage() {
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
           <div className="flex-1 space-y-6">
-            <div className="bg-white dark:bg-slate-900/90 dark:backdrop-blur-xl rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300">
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 font-heading dark:text-white transition-colors"><Sparkles className="text-blue-600" /> Patent Designer v2.0</h2>
+            <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm transition-all">
+              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 font-heading dark:text-white"><Sparkles className="text-blue-600" /> Patent Designer v2.0</h2>
 
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Product Name</label>
-                    <input
-                      value={productName}
-                      onChange={e => setProductName(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-white transition-all placeholder:text-slate-400 dark:placeholder:text-slate-500"
-                      placeholder="e.g. AI-Based Detection System"
-                    />
+                    <input value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" placeholder="e.g. AI-Based Detection System" />
                   </div>
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Filing Date</label>
-                    <input
-                      value={dated}
-                      onChange={e => setDated(e.target.value)}
-                      className="w-full bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-white transition-all"
-                    />
+                    <input value={dated} onChange={e => setDated(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" />
                   </div>
                 </div>
 
@@ -188,14 +179,9 @@ export default function PatentDrafterPage() {
 
                   <Reorder.Group axis="y" values={authors} onReorder={setAuthors} className="space-y-2">
                     {authors.map((a) => (
-                      <Reorder.Item key={a.id} value={a} className="flex gap-2 items-center bg-slate-50 dark:bg-slate-800/50 p-3 rounded-2xl border border-slate-200 dark:border-slate-700 cursor-default group/author transition-all">
-                        <GripVertical className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover/author:text-slate-500 transition-colors cursor-grab active:cursor-grabbing shrink-0" />
-                        <input
-                          value={a.name}
-                          onChange={e => setAuthors(p => p.map(x => x.id === a.id ? { ...x, name: e.target.value } : x))}
-                          placeholder="Full Name"
-                          className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs uppercase font-bold text-slate-700 dark:text-white focus:border-blue-300 dark:focus:border-blue-500 outline-none transition-all"
-                        />
+                      <Reorder.Item key={a.id} value={a} className="flex gap-2 items-center bg-slate-50 dark:bg-slate-800/30 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 cursor-default group/author transition-all">
+                        <GripVertical className="w-4 h-4 text-slate-300 dark:text-slate-700 group-hover/author:text-slate-500 transition-colors cursor-grab active:cursor-grabbing shrink-0" />
+                        <input value={a.name} onChange={e => setAuthors(p => p.map(x => x.id === a.id ? { ...x, name: e.target.value } : x))} placeholder="Full Name" className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs uppercase font-bold text-slate-700 dark:text-slate-200 focus:border-blue-300 dark:focus:border-blue-500 outline-none transition-all" />
                         <label className="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-[9px] font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 whitespace-nowrap text-slate-700 dark:text-slate-300" onClick={e => e.stopPropagation()}>
                           {a.signature ? "✓ Signed" : "Upload Sign"}
                           <input type="file" className="hidden" onChange={e => handleUpload(a.id, e, 'sig', a.id)} />
