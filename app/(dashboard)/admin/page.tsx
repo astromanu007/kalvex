@@ -8,8 +8,12 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAdminStats, getAllOrders, forceUpdateOrderStatus } from "@/app/actions/admin";
-// Import OrderStatus types as strings to avoid browser-side Prisma resolution
-type OrderStatus = string;
+const ORDER_STATUSES = [
+  'PENDING_PAYMENT', 'PAYMENT_CONFIRMED', 'TOPIC_CONFIRMED', 
+  'RESEARCH_STARTED', 'DRAFT_IN_PROGRESS', 'DRAFT_SUBMITTED', 
+  'UNDER_REVIEW', 'REVISION_REQUESTED', 'REVISION_SUBMITTED', 
+  'FINAL_APPROVED', 'DELIVERED', 'COMPLETED', 'CANCELLED', 'REFUNDED'
+];
 
 export default function AdminDashboard() {
   const { data: session } = useSession();
@@ -33,7 +37,7 @@ export default function AdminDashboard() {
     fetchData();
   }, []);
 
-  const handleStatusChange = async (orderId: string, status: OrderStatus) => {
+  const handleStatusChange = async (orderId: string, status: string) => {
     const res = await forceUpdateOrderStatus(orderId, status);
     if (res.success) {
       const ordersRes = await getAllOrders();
@@ -146,10 +150,10 @@ export default function AdminDashboard() {
                       <div className="flex items-center gap-2">
                         <select 
                           className="bg-bg-input border border-border rounded-lg px-2 py-1 text-[10px] focus:outline-none"
-                          onChange={(e) => handleStatusChange(order.id, e.target.value as OrderStatus)}
+                          onChange={(e) => handleStatusChange(order.id, e.target.value)}
                           value={order.status}
                         >
-                          {Object.values(OrderStatus).map(s => <option key={s} value={s}>{s}</option>)}
+                          {ORDER_STATUSES.map(s => <option key={s} value={s}>{s}</option>)}
                         </select>
                         <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg">
                           <ExternalLink className="w-4 h-4 text-text-muted" />
