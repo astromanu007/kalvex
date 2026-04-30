@@ -38,7 +38,7 @@ export default function AdminDashboard() {
   }, []);
 
   const handleStatusChange = async (orderId: string, status: string) => {
-    const res = await forceUpdateOrderStatus(orderId, status);
+    const res = await forceUpdateOrderStatus(orderId, status as any);
     if (res.success) {
       const ordersRes = await getAllOrders();
       if (ordersRes.orders) setOrders(ordersRes.orders);
