@@ -227,7 +227,7 @@ export function Navbar() {
                     <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Secure Node</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             </div>
           </motion.div>
         )}
