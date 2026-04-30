@@ -10,11 +10,11 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const NAV_LINKS = [
   { name: "Home", href: "/" },
-  { name: "Lab Supply", href: "/electronics" },
-  { name: "Marketplace", href: "/projects" },
-  { name: "Expertise", href: "/services" },
-  { name: "About", href: "/about" },
+  { name: "Store", href: "/electronics" },
+  { name: "Projects", href: "/projects" },
+  { name: "Services", href: "/services" },
   { name: "AI Patent", href: "/patent-drafter" },
+  { name: "About", href: "/about" },
 ];
 
 export function Navbar() {
@@ -55,10 +55,9 @@ export function Navbar() {
             <span className="text-xl">K</span>
           </div>
           <div className="flex flex-col">
-            <span className="font-heading font-black text-2xl tracking-tighter text-slate-900 group-hover:text-blue-600 transition-colors duration-500">
+            <span className="font-heading font-black text-2xl tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors duration-300">
               KALVEX
             </span>
-            <span className="text-[8px] font-black uppercase tracking-[0.4em] text-slate-400 group-hover:text-slate-500 transition-colors">Labs Elite</span>
           </div>
         </Link>
 
@@ -68,10 +67,10 @@ export function Navbar() {
             <Link
               key={link.name}
               href={link.href}
-              className="text-[11px] font-black uppercase tracking-[0.2em] text-slate-400 hover:text-blue-600 transition-all duration-500 relative group/nav"
+              className="text-sm font-bold text-slate-600 hover:text-blue-600 transition-colors duration-300 relative group/nav"
             >
               {link.name}
-              <span className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-0 h-1 bg-blue-600 rounded-full transition-all duration-500 group-hover/nav:w-4" />
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-600 transition-all duration-300 group-hover/nav:w-full" />
             </Link>
           ))}
         </nav>
@@ -140,8 +139,8 @@ export function Navbar() {
                 animate={{ opacity: 1, x: 0 }}
               >
                 <Link href="/login">
-                  <Button className="bg-slate-900 hover:bg-blue-600 text-white rounded-2xl px-10 h-16 font-black shadow-2xl shadow-slate-900/20 transition-all duration-500 hover:scale-105 hover:-translate-y-1 text-[11px] uppercase tracking-[0.2em] group">
-                    Elite Access <Shield className="ml-3 w-4 h-4 group-hover:rotate-12 transition-transform" />
+                  <Button className="bg-slate-900 hover:bg-blue-600 text-white rounded-xl px-8 h-12 font-bold shadow-lg transition-all duration-300 hover:-translate-y-0.5 text-sm flex items-center gap-2">
+                    Sign In <ChevronRight className="w-4 h-4" />
                   </Button>
                 </Link>
               </motion.div>
@@ -211,8 +210,8 @@ export function Navbar() {
                   </>
                 ) : (
                   <Link href="/login" onClick={() => setMobileMenuOpen(false)}>
-                    <Button className="w-full bg-slate-900 text-white rounded-[2rem] h-24 text-xl font-black shadow-[0_32px_64px_-12px_rgba(15,23,42,0.3)] uppercase tracking-[0.3em] flex items-center justify-center gap-4">
-                      Elite Access <Shield className="w-6 h-6" />
+                    <Button className="w-full bg-slate-900 hover:bg-blue-600 transition-colors text-white rounded-2xl h-16 text-lg font-bold flex items-center justify-center gap-2">
+                      Sign In <ChevronRight className="w-5 h-5" />
                     </Button>
                   </Link>
                 )}

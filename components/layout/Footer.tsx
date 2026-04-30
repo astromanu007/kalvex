@@ -16,18 +16,17 @@ export function Footer() {
           {/* Column 1: Institutional Brand */}
           <div className="space-y-10">
             <Link href="/" className="flex items-center gap-4 group">
-              <div className="w-12 h-12 bg-slate-900 rounded-[1.25rem] flex items-center justify-center font-heading font-black text-white shadow-2xl shadow-slate-900/20 group-hover:bg-blue-600 transition-all duration-700 group-hover:scale-110 group-hover:-rotate-6">
+              <div className="w-12 h-12 bg-slate-900 rounded-[1.25rem] flex items-center justify-center font-heading font-black text-white shadow-xl group-hover:bg-blue-600 transition-all duration-500 group-hover:scale-105">
                 <span className="text-xl">K</span>
               </div>
               <div className="flex flex-col">
-                <span className="font-heading font-black text-2xl tracking-tighter text-slate-900">
+                <span className="font-heading font-black text-2xl tracking-tight text-slate-900">
                   KALVEX
                 </span>
-                <span className="text-[8px] font-black uppercase tracking-[0.4em] text-slate-400">Labs Elite</span>
               </div>
             </Link>
-            <p className="text-slate-400 text-sm leading-relaxed max-w-xs font-bold">
-              India&apos;s premier high-authority ecosystem for engineering excellence. Bridging abstract research with professional-grade industrial execution.
+            <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
+              Empowering engineers and researchers with top-tier technical resources, academic drafting, and hardware solutions.
             </p>
             <div className="flex items-center space-x-5">
               {[
@@ -43,23 +42,22 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Column 2: Professional Expertise */}
+          {/* Column 2: Services */}
           <div>
-            <h3 className="font-black text-[10px] uppercase tracking-[0.3em] text-slate-300 mb-10 flex items-center gap-2">
-              <Sparkles className="w-4 h-4 text-blue-600" /> Professional Units
+            <h3 className="font-bold text-sm text-slate-900 mb-6 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-blue-600" /> Services
             </h3>
-            <ul className="space-y-5">
+            <ul className="space-y-4">
               {[
-                { name: "PhD Thesis Architecture", href: "/services/phd-thesis" },
-                { name: "IEEE Research Drafting", href: "/services/research-paper" },
-                { name: "AI Patent Design Lab", href: "/patent-drafter" },
-                { name: "IPR & Copyright Secure", href: "/ipr" },
-                { name: "Industrial Prototypes", href: "/projects" },
-                { name: "Precision Hardware", href: "/electronics" },
+                { name: "Research Drafting", href: "/services/research-paper" },
+                { name: "AI Patent Generator", href: "/patent-drafter" },
+                { name: "IPR & Copyrights", href: "/ipr" },
+                { name: "Engineering Projects", href: "/projects" },
+                { name: "Hardware Store", href: "/electronics" },
               ].map((link) => (
                 <li key={link.name}>
-                  <Link href={link.href} className="text-slate-600 text-[11px] font-black uppercase tracking-widest hover:text-blue-600 transition-all duration-300 flex items-center group">
-                    <span className="w-0 h-[2px] bg-blue-600 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-3 rounded-full" />
+                  <Link href={link.href} className="text-slate-500 text-sm hover:text-blue-600 transition-all duration-300 flex items-center group">
+                    <span className="w-0 h-[2px] bg-blue-600 mr-0 transition-all duration-300 group-hover:w-2 group-hover:mr-2 rounded-full" />
                     {link.name}
                   </Link>
                 </li>
@@ -67,16 +65,16 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Column 3: Institutional Governance */}
+          {/* Column 3: Company */}
           <div>
-            <h3 className="font-black text-[10px] uppercase tracking-[0.3em] text-slate-300 mb-10 flex items-center gap-2">
-              <Building2 className="w-4 h-4 text-slate-900" /> Governance
+            <h3 className="font-bold text-sm text-slate-900 mb-6 flex items-center gap-2">
+              <Building2 className="w-4 h-4 text-blue-600" /> Company
             </h3>
-            <ul className="space-y-5">
-              {["Corporate Profile", "Institutional Blog", "Career Hub", "Technical Support", "Privacy Protocol", "Service Terms"].map((item) => (
+            <ul className="space-y-4">
+              {["About Us", "Blog", "Careers", "Support", "Privacy Policy", "Terms of Service"].map((item) => (
                 <li key={item}>
-                  <Link href={`/${item.toLowerCase().replace(/ /g, "-")}`} className="text-slate-600 text-[11px] font-black uppercase tracking-widest hover:text-blue-600 transition-all duration-300 flex items-center group">
-                    <span className="w-0 h-[2px] bg-slate-900 mr-0 transition-all duration-300 group-hover:w-3 group-hover:mr-3 rounded-full" />
+                  <Link href={`/${item.toLowerCase().replace(/ /g, "-")}`} className="text-slate-500 text-sm hover:text-blue-600 transition-all duration-300 flex items-center group">
+                    <span className="w-0 h-[2px] bg-blue-600 mr-0 transition-all duration-300 group-hover:w-2 group-hover:mr-2 rounded-full" />
                     {item}
                   </Link>
                 </li>
@@ -84,35 +82,35 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Column 4: Headquarters & Security */}
-          <div className="space-y-12">
+          {/* Column 4: Contact & Security */}
+          <div className="space-y-8">
             <div>
-              <h3 className="font-black text-[10px] uppercase tracking-[0.3em] text-slate-300 mb-10 flex items-center gap-2">
-                <Globe className="w-4 h-4 text-blue-600" /> Global Node
+              <h3 className="font-bold text-sm text-slate-900 mb-6 flex items-center gap-2">
+                <Globe className="w-4 h-4 text-blue-600" /> Contact
               </h3>
-              <ul className="space-y-6">
-                <li className="flex items-start space-x-4">
-                  <MapPin className="w-5 h-5 text-blue-600 shrink-0 mt-1" />
-                  <span className="text-slate-600 text-[12px] font-bold leading-relaxed">Strategic Hub, Hinjewadi Phase 1, <br />Pune, Maharashtra 411057</span>
+              <ul className="space-y-4">
+                <li className="flex items-start space-x-3">
+                  <MapPin className="w-5 h-5 text-blue-600 shrink-0 mt-0.5" />
+                  <span className="text-slate-500 text-sm leading-relaxed">Hinjewadi Phase 1, <br />Pune, Maharashtra 411057</span>
                 </li>
-                <li className="flex items-center space-x-4">
+                <li className="flex items-center space-x-3">
                   <Mail className="w-5 h-5 text-blue-600 shrink-0" />
-                  <a href="mailto:official@kalvex.in" className="text-slate-900 text-[12px] font-black tracking-tighter hover:text-blue-600 transition-colors">official@kalvex.in</a>
+                  <a href="mailto:contact@kalvex.in" className="text-slate-700 text-sm hover:text-blue-600 transition-colors">contact@kalvex.in</a>
                 </li>
-                <li className="flex items-center space-x-4">
+                <li className="flex items-center space-x-3">
                   <Phone className="w-5 h-5 text-blue-600 shrink-0" />
-                  <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" className="text-slate-900 text-[12px] font-black tracking-tighter hover:text-emerald-600 transition-colors">Direct WhatsApp Counsel</a>
+                  <a href={`https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}`} target="_blank" rel="noopener noreferrer" className="text-slate-700 text-sm hover:text-emerald-600 transition-colors">WhatsApp Support</a>
                 </li>
               </ul>
             </div>
             
-            <div className="p-6 bg-slate-900 rounded-[2rem] flex items-center gap-5 shadow-[0_32px_64px_-12px_rgba(15,23,42,0.3)] border border-slate-800 group hover:border-blue-600/50 transition-all duration-700">
-              <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shrink-0 shadow-xl shadow-blue-600/20 group-hover:scale-110 transition-transform duration-500">
-                <Shield className="w-6 h-6 text-white" />
+            <div className="p-4 bg-slate-50 rounded-2xl flex items-center gap-4 border border-slate-100">
+              <div className="w-10 h-10 rounded-xl bg-white flex items-center justify-center shrink-0 shadow-sm border border-slate-100">
+                <Shield className="w-5 h-5 text-blue-600" />
               </div>
               <div>
-                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-1">Encrypted Protocol</p>
-                <p className="text-[10px] font-black text-white uppercase tracking-widest">Razorpay Institutional</p>
+                <p className="text-xs font-bold text-slate-900">100% Secure Payments</p>
+                <p className="text-xs text-slate-500">Powered by Razorpay</p>
               </div>
             </div>
           </div>
@@ -120,18 +118,18 @@ export function Footer() {
         </div>
 
         {/* Brand Finale */}
-        <div className="pt-16 border-t border-slate-50 flex flex-col md:flex-row items-center justify-between gap-12">
-          <div className="flex flex-col md:flex-row items-center gap-8">
-            <p className="text-slate-300 text-[10px] font-black uppercase tracking-[0.3em]">
-              &copy; {new Date().getFullYear()} Kalvex Institutional Technologies.
+        <div className="pt-8 border-t border-slate-100 flex flex-col md:flex-row items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <p className="text-slate-500 text-sm">
+              &copy; {new Date().getFullYear()} Kalvex. All rights reserved.
             </p>
-            <div className="flex items-center space-x-8 text-slate-300 text-[10px] font-black uppercase tracking-[0.3em]">
-              <Link href="/privacy" className="hover:text-blue-600 transition-colors">Security</Link>
-              <Link href="/terms" className="hover:text-blue-600 transition-colors">Terms</Link>
+            <div className="flex items-center space-x-6 text-slate-500 text-sm">
+              <Link href="/privacy" className="hover:text-blue-600 transition-colors">Privacy Policy</Link>
+              <Link href="/terms" className="hover:text-blue-600 transition-colors">Terms of Service</Link>
             </div>
           </div>
-          <div className="flex items-center gap-4 bg-slate-50 px-8 py-3 rounded-full border border-slate-100">
-            <span className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Institutional Grade: <span className="text-blue-600">Verified</span></span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-slate-500">System Status: <span className="text-emerald-600">All Systems Operational</span></span>
             <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           </div>
         </div>
