@@ -2,202 +2,313 @@
 
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
-import { Upload, Zap, CheckCircle, AlertCircle, Loader2, Download, FileImage, Info, Sparkles } from "lucide-react";
-import { generatePatentDraft } from "@/app/actions/patent";
+import { 
+  Upload, Zap, CheckCircle, Plus, Trash2, 
+  Loader2, Download, FileImage, Info, Sparkles,
+  ChevronRight, Printer, UserPlus, Image as ImageIcon
+} from "lucide-react";
 
-const LOCARNO_CLASSES = [
-  { id: "08", label: "Tools & Hardware" }, { id: "09", label: "Packages & Containers" },
-  { id: "10", label: "Clocks, Watches, Instruments" }, { id: "12", label: "Means of Transport" },
-  { id: "13", label: "Equipment for Production" }, { id: "14", label: "Recording Equipment" },
-  { id: "15", label: "Machines, Engines" }, { id: "16", label: "Photographic / Optical Equipment" },
-  { id: "21", label: "Games, Toys, Sporting Goods" }, { id: "26", label: "Lighting Equipment" },
-  { id: "28", label: "Pharmaceutical & Cosmetic Products" }, { id: "99", label: "Miscellaneous" },
+const PATENT_VIEWS = [
+  { id: "perspective", label: "Perspective View" },
+  { id: "front", label: "Front View" },
+  { id: "back", label: "Back View" },
+  { id: "left", label: "Left View" },
+  { id: "right", label: "Right View" },
+  { id: "top", label: "Top View" },
+  { id: "bottom", label: "Bottom View" },
 ];
 
-type StepStatus = "idle" | "loading" | "done" | "error";
+type Author = {
+  id: string;
+  name: string;
+  signature: string | null;
+};
 
 export default function PatentDrafterPage() {
   const [productName, setProductName] = useState("");
-  const [productDesc, setProductDesc] = useState("");
-  const [files, setFiles] = useState<File[]>([]);
-  const [overrideClass, setOverrideClass] = useState("");
+  const [dated, setDated] = useState(new Date().toLocaleDateString('en-GB', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric'
+  }));
+  
+  // Views State
+  const [views, setViews] = useState<Record<string, string | null>>({
+    perspective: null, front: null, back: null, left: null, right: null, top: null, bottom: null
+  });
+
+  // Authors State
+  const [authors, setAuthors] = useState<Author[]>([
+    { id: "1", name: "", signature: null }
+  ]);
+
   const [drafting, setDrafting] = useState(false);
-  const [analysisStep, setAnalysisStep] = useState<StepStatus>("idle");
-  const [draftStep, setDraftStep] = useState<StepStatus>("idle");
-  const [result, setResult] = useState<{ className: string; classDesc: string; noveltyPoints: string[]; claimText: string; } | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [currentSheet, setCurrentSheet] = useState(1);
 
-  const handleFileDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    const dropped = Array.from(e.dataTransfer.files).filter((f) => f.type.startsWith("image/"));
-    setFiles((p) => [...p, ...dropped].slice(0, 6));
+  const handleViewUpload = (viewId: string, file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setViews(prev => ({ ...prev, [viewId]: e.target?.result as string }));
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleFileInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFiles((p) => [...p, ...Array.from(e.target.files ?? [])].slice(0, 6));
+  const handleSignatureUpload = (authorId: string, file: File) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setAuthors(prev => prev.map(a => 
+        a.id === authorId ? { ...a, signature: e.target?.result as string } : a
+      ));
+    };
+    reader.readAsDataURL(file);
   };
 
-  const handleAnalyze = async () => {
-    if (!productName || !productDesc) return;
-    setDrafting(true); setAnalysisStep("loading"); setDraftStep("idle"); setResult(null);
-    
-    const res = await generatePatentDraft({
-      productTitle: productName,
-      description: productDesc,
-      locarnoClass: overrideClass || undefined
-    });
+  const addAuthor = () => {
+    setAuthors([...authors, { id: Date.now().toString(), name: "", signature: null }]);
+  };
 
-    if (res.success) {
-      setAnalysisStep("done"); 
-      setDraftStep("loading");
-      await new Promise((r) => setTimeout(r, 1000));
-      setDraftStep("done");
-      setResult({
-        className: res.suggestedClass.split(" ")[1] || "15",
-        classDesc: "Machines, Engines, Motors",
-        noveltyPoints: res.noveltyPoints,
-        claimText: res.claimText,
-      });
-    } else {
-      setAnalysisStep("error");
-      alert(res.error || "Failed to generate draft");
+  const removeAuthor = (id: string) => {
+    if (authors.length > 1) {
+      setAuthors(authors.filter(a => a.id !== id));
     }
-    setDrafting(false);
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-16 bg-bg-primary">
-      <div className="container mx-auto px-4 max-w-5xl">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 bg-accent-primary/10 border border-accent-primary/20 text-accent-primary px-4 py-2 rounded-full mb-6">
-            <Sparkles className="w-4 h-4" />
-            <span className="text-sm font-semibold">Kalvex AI Labs — Design Patent Auto-Drafter</span>
-          </div>
-          <h1 className="font-heading font-extrabold text-4xl md:text-5xl text-text-primary mb-4">Draft Your Design Patent in Minutes</h1>
-          <p className="text-text-secondary text-lg max-w-2xl mx-auto">Upload product views, describe your design, and let AI classify it under the Locarno system and generate your official Disclosure Document.</p>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Input Form */}
-          <div className="lg:col-span-3 space-y-6">
-            <div className="bg-bg-card border border-border rounded-2xl p-6 space-y-4">
-              <h2 className="font-heading font-semibold text-lg flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-accent-primary text-white text-xs flex items-center justify-center font-bold">1</span>
-                Product Information
-              </h2>
-              <div>
-                <label className="block text-sm font-medium mb-1">Product / Invention Name *</label>
-                <input value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="e.g. Foldable Portable Air Purifier" className="w-full bg-bg-input border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-accent-primary" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Design Description *</label>
-                <textarea value={productDesc} onChange={(e) => setProductDesc(e.target.value)} rows={4} placeholder="Describe the visual and ornamental features — shape, surface texture, color, pattern, configuration..." className="w-full bg-bg-input border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-accent-primary resize-none" />
-              </div>
+    <div className="min-h-screen pt-24 pb-20 bg-[#F8FAFC]">
+      <div className="container-custom">
+        <div className="flex flex-col lg:flex-row gap-10">
+          
+          {/* Left Side: Editor */}
+          <div className="flex-1 space-y-8">
+            <div>
+              <h1 className="font-heading font-bold text-3xl text-text-primary mb-2 flex items-center gap-3">
+                <Sparkles className="w-8 h-8 text-accent-primary" />
+                AI Patent Designer
+              </h1>
+              <p className="text-text-secondary">Generate "The Designs Act, 2000" compliant filing documents.</p>
             </div>
 
-            <div className="bg-bg-card border border-border rounded-2xl p-6 space-y-4">
-              <h2 className="font-heading font-semibold text-lg flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-accent-primary text-white text-xs flex items-center justify-center font-bold">2</span>
-                Product Views (up to 6)
+            {/* Step 1: Basic Info */}
+            <section className="bg-white border border-border rounded-3xl p-8 shadow-sm">
+              <h2 className="font-heading font-bold text-xl mb-6 flex items-center gap-3">
+                <span className="w-8 h-8 rounded-full bg-accent-primary/10 text-accent-primary flex items-center justify-center text-sm">1</span>
+                Project Details
               </h2>
-              <div onDrop={handleFileDrop} onDragOver={(e) => e.preventDefault()} onClick={() => fileInputRef.current?.click()} className="border-2 border-dashed border-border rounded-xl p-8 text-center cursor-pointer hover:border-accent-primary hover:bg-accent-primary/5 transition-all">
-                <FileImage className="w-8 h-8 text-text-muted mx-auto mb-3" />
-                <p className="text-sm font-medium">Drop images or click to upload</p>
-                <p className="text-xs text-text-muted mt-1">Front, Back, Left, Right, Top, Bottom — PNG/JPG</p>
-                <input ref={fileInputRef} type="file" multiple accept="image/*" className="hidden" onChange={handleFileInput} />
-              </div>
-              {files.length > 0 && (
-                <div className="grid grid-cols-3 gap-3">
-                  {files.map((f, i) => (
-                    <div key={i} className="relative group aspect-square rounded-xl overflow-hidden bg-bg-surface border border-border">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={URL.createObjectURL(f)} alt={f.name} className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                        <button onClick={(e) => { e.stopPropagation(); setFiles((p) => p.filter((_, idx) => idx !== i)); }} className="text-white text-xs bg-accent-danger rounded-lg px-2 py-1">Remove</button>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="bg-bg-card border border-border rounded-2xl p-6 space-y-3">
-              <h2 className="font-heading font-semibold text-lg flex items-center gap-2">
-                <span className="w-6 h-6 rounded-full bg-accent-primary text-white text-xs flex items-center justify-center font-bold">3</span>
-                Locarno Classification (Optional)
-              </h2>
-              <p className="text-xs text-text-secondary flex items-center gap-1.5"><Info className="w-3.5 h-3.5 shrink-0" /> AI will auto-suggest a class. Override below if known.</p>
-              <select value={overrideClass} onChange={(e) => setOverrideClass(e.target.value)} className="w-full bg-bg-input border border-border rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-accent-primary">
-                <option value="">Let AI decide automatically</option>
-                {LOCARNO_CLASSES.map((c) => <option key={c.id} value={c.id}>Class {c.id} — {c.label}</option>)}
-              </select>
-            </div>
-
-            <Button onClick={handleAnalyze} disabled={drafting || !productName || !productDesc} className="w-full h-14 bg-accent-primary hover:bg-accent-primary/90 text-white text-base font-semibold shadow-glow rounded-xl">
-              {drafting ? <><Loader2 className="w-5 h-5 mr-2 animate-spin" /> Analyzing...</> : <><Zap className="w-5 h-5 mr-2" /> Generate Patent Draft</>}
-            </Button>
-          </div>
-
-          {/* Status + Output */}
-          <div className="lg:col-span-2 space-y-6">
-            <div className="bg-bg-card border border-border rounded-2xl p-6">
-              <h2 className="font-heading font-semibold text-lg mb-5">AI Processing Status</h2>
               <div className="space-y-4">
-                {[
-                  { label: "Locarno Class Classification", status: analysisStep },
-                  { label: "Novelty Point Extraction", status: draftStep },
-                  { label: "Disclosure Document Generation", status: result ? "done" as StepStatus : draftStep === "loading" ? "loading" as StepStatus : "idle" as StepStatus },
-                ].map((step, i) => (
-                  <div key={i} className="flex items-center gap-3">
-                    <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${step.status === "done" ? "bg-accent-success/10 text-accent-success" : step.status === "loading" ? "bg-accent-primary/10 text-accent-primary" : "bg-bg-surface text-text-muted"}`}>
-                      {step.status === "done" && <CheckCircle className="w-4 h-4" />}
-                      {step.status === "loading" && <Loader2 className="w-4 h-4 animate-spin" />}
-                      {step.status === "idle" && <span className="text-xs font-mono">{i + 1}</span>}
-                    </div>
-                    <span className={`text-sm ${step.status !== "idle" ? "text-text-primary font-medium" : "text-text-muted"}`}>{step.label}</span>
+                <div>
+                  <label className="text-sm font-bold text-text-secondary mb-2 block uppercase tracking-wider">Product Title</label>
+                  <input 
+                    value={productName}
+                    onChange={(e) => setProductName(e.target.value)}
+                    placeholder="e.g. AI-Based Wild Animal Detection and Alert System"
+                    className="w-full bg-bg-surface border border-border rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-primary transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="text-sm font-bold text-text-secondary mb-2 block uppercase tracking-wider">Filing Date</label>
+                  <input 
+                    value={dated}
+                    onChange={(e) => setDated(e.target.value)}
+                    className="w-full bg-bg-surface border border-border rounded-2xl px-6 py-4 focus:outline-none focus:border-accent-primary transition-all"
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* Step 2: 7 Views Upload */}
+            <section className="bg-white border border-border rounded-3xl p-8 shadow-sm">
+              <h2 className="font-heading font-bold text-xl mb-6 flex items-center gap-3">
+                <span className="w-8 h-8 rounded-full bg-accent-primary/10 text-accent-primary flex items-center justify-center text-sm">2</span>
+                Representation Sheets (7 Views)
+              </h2>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                {PATENT_VIEWS.map((view) => (
+                  <div key={view.id} className="relative group">
+                    <label className="cursor-pointer">
+                      <div className={`aspect-square rounded-2xl border-2 border-dashed transition-all flex flex-col items-center justify-center p-4 text-center ${
+                        views[view.id] ? "border-accent-success bg-accent-success/5" : "border-border hover:border-accent-primary bg-bg-surface"
+                      }`}>
+                        {views[view.id] ? (
+                          <img src={views[view.id]!} className="w-full h-full object-contain rounded-lg" alt={view.label} />
+                        ) : (
+                          <>
+                            <FileImage className="w-6 h-6 text-text-muted mb-2" />
+                            <span className="text-[10px] font-bold uppercase tracking-tighter text-text-muted">{view.label}</span>
+                          </>
+                        )}
+                      </div>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        className="hidden" 
+                        onChange={(e) => e.target.files?.[0] && handleViewUpload(view.id, e.target.files[0])}
+                      />
+                    </label>
                   </div>
                 ))}
               </div>
-            </div>
+            </section>
 
-            {result && (
-              <div className="bg-bg-card border border-accent-primary/30 rounded-2xl p-6 space-y-5">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-heading font-semibold text-base">Draft Generated</h3>
-                  <Button size="sm" className="bg-accent-success text-white h-8 px-3 rounded-lg gap-1.5 text-xs">
-                    <Download className="w-3 h-3" /> PDF
+            {/* Step 3: Authors & Signatures */}
+            <section className="bg-white border border-border rounded-3xl p-8 shadow-sm">
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="font-heading font-bold text-xl flex items-center gap-3">
+                  <span className="w-8 h-8 rounded-full bg-accent-primary/10 text-accent-primary flex items-center justify-center text-sm">3</span>
+                  Applicants & Signatures
+                </h2>
+                <Button variant="outline" onClick={addAuthor} className="rounded-xl border-accent-primary text-accent-primary hover:bg-accent-primary/5">
+                  <UserPlus className="w-4 h-4 mr-2" /> Add Applicant
+                </Button>
+              </div>
+
+              <div className="space-y-6">
+                {authors.map((author, index) => (
+                  <div key={author.id} className="p-6 bg-bg-surface rounded-2xl border border-border relative group">
+                    <button 
+                      onClick={() => removeAuthor(author.id)}
+                      className="absolute top-4 right-4 text-text-muted hover:text-accent-danger opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <label className="text-[10px] font-bold text-text-secondary mb-2 block uppercase tracking-wider">Applicant {index + 1} Name</label>
+                        <input 
+                          value={author.name}
+                          onChange={(e) => setAuthors(prev => prev.map(a => a.id === author.id ? { ...a, name: e.target.value } : a))}
+                          placeholder="FULL NAME IN BLOCK LETTERS"
+                          className="w-full bg-white border border-border rounded-xl px-4 py-3 text-sm font-bold uppercase"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-bold text-text-secondary mb-2 block uppercase tracking-wider">Wet Signature Upload</label>
+                        <div className="flex items-center gap-4">
+                          <label className="cursor-pointer flex-1">
+                            <div className={`h-12 border-2 border-dashed rounded-xl flex items-center justify-center gap-2 transition-all ${
+                              author.signature ? "border-accent-success bg-accent-success/5" : "border-border hover:border-accent-primary"
+                            }`}>
+                              {author.signature ? (
+                                <span className="text-xs font-bold text-accent-success">Signature Captured</span>
+                              ) : (
+                                <>
+                                  <Upload className="w-4 h-4 text-text-muted" />
+                                  <span className="text-xs text-text-muted">Upload Sign (PNG/JPG)</span>
+                                </>
+                              )}
+                            </div>
+                            <input 
+                              type="file" 
+                              accept="image/*" 
+                              className="hidden" 
+                              onChange={(e) => e.target.files?.[0] && handleSignatureUpload(author.id, e.target.files[0])}
+                            />
+                          </label>
+                          {author.signature && (
+                            <div className="w-12 h-12 rounded-xl border border-border bg-white p-1">
+                              <img src={author.signature} className="w-full h-full object-contain" alt="sign" />
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[10px] text-text-muted mt-4 flex items-center gap-2">
+                <Info className="w-3 h-3" /> Our AI will automatically remove the background from signatures and adjust contrast for the final PDF.
+              </p>
+            </section>
+          </div>
+
+          {/* Right Side: LIVE PREVIEW */}
+          <div className="lg:w-[450px]">
+            <div className="sticky top-24">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="font-heading font-bold text-lg">Document Preview</h3>
+                <div className="flex gap-2">
+                  <select 
+                    className="bg-white border border-border rounded-lg px-3 py-1 text-xs font-bold focus:outline-none"
+                    onChange={(e) => setCurrentSheet(parseInt(e.target.value))}
+                  >
+                    {PATENT_VIEWS.map((v, i) => (
+                      <option key={v.id} value={i + 1}>Sheet {i + 1}: {v.label}</option>
+                    ))}
+                  </select>
+                  <Button size="sm" className="bg-text-primary text-white rounded-lg">
+                    <Printer className="w-3 h-3 mr-2" /> PDF
                   </Button>
                 </div>
-                <div className="p-3 bg-accent-primary/5 border border-accent-primary/20 rounded-xl">
-                  <p className="text-xs text-text-secondary mb-0.5">Locarno Class</p>
-                  <p className="font-mono font-bold text-accent-primary text-sm">Class {result.className} — {result.classDesc}</p>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Novelty Points</p>
-                  <ul className="space-y-2">
-                    {result.noveltyPoints.map((pt, i) => (
-                      <li key={i} className="flex items-start gap-2 text-xs text-text-primary"><CheckCircle className="w-3.5 h-3.5 text-accent-success flex-shrink-0 mt-0.5" /> {pt}</li>
-                    ))}
-                  </ul>
-                </div>
-                <div>
-                  <p className="text-xs font-semibold text-text-secondary uppercase tracking-wider mb-2">Claim Text</p>
-                  <p className="text-xs text-text-secondary bg-bg-surface rounded-xl p-3 border border-border font-mono leading-relaxed">{result.claimText}</p>
-                </div>
-                <p className="text-[10px] text-text-muted text-center border-t border-border pt-3">⚡ AI-generated draft. A Kalvex expert will review before official filing.</p>
               </div>
-            )}
 
-            {!result && (
-              <div className="bg-bg-card border border-border rounded-2xl p-5 space-y-3">
-                <h3 className="text-sm font-semibold">What you&apos;ll get</h3>
-                <ul className="space-y-2">
-                  {["Auto Locarno classification", "Novelty point extraction", "Official claim text", "Disclosure Document brief", "Representation sheet placeholders", "Expert review before filing"].map((pt) => (
-                    <li key={pt} className="flex items-center gap-2 text-xs text-text-secondary"><CheckCircle className="w-3.5 h-3.5 text-accent-success" /> {pt}</li>
-                  ))}
-                </ul>
+              {/* THE DESIGNS ACT DOCUMENT MOCKUP */}
+              <div className="bg-white shadow-2xl border border-border aspect-[1/1.414] w-full p-8 font-serif overflow-hidden select-none">
+                <div className="text-center border-b-2 border-black pb-4 mb-6">
+                  <h4 className="text-[14px] font-bold uppercase tracking-widest underline">The Designs Act, 2000</h4>
+                </div>
+
+                <div className="grid grid-cols-4 border-2 border-black mb-10">
+                  <div className="col-span-3 border-r-2 border-black p-3">
+                    <p className="text-[9px] font-bold leading-tight">
+                      NAME OF THE APPLICANTS: {authors.filter(a => a.name).map(a => a.name).join(", ") || "[APPLICANT NAMES]"}
+                    </p>
+                  </div>
+                  <div className="col-span-1 p-2 space-y-1">
+                    <p className="text-[9px] font-bold">Total Sheet: 7</p>
+                    <p className="text-[9px] font-bold">Sheet No: {currentSheet}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col items-center mb-10">
+                  <div className="w-full aspect-square border border-slate-100 flex items-center justify-center mb-4">
+                    {views[PATENT_VIEWS[currentSheet - 1].id] ? (
+                      <img src={views[PATENT_VIEWS[currentSheet - 1].id]!} className="max-w-[80%] max-h-[80%] object-contain" alt="view" />
+                    ) : (
+                      <div className="text-slate-300 flex flex-col items-center">
+                        <ImageIcon className="w-20 h-20 mb-4 opacity-20" />
+                        <span className="text-xs italic">Upload {PATENT_VIEWS[currentSheet - 1].label}</span>
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-[12px] font-bold uppercase underline decoration-2 underline-offset-4 mb-6">
+                    {PATENT_VIEWS[currentSheet - 1].label}
+                  </p>
+                </div>
+
+                <div className="space-y-4 text-[10px] leading-relaxed text-justify">
+                  <p>
+                    The novelty resides in the shape and configuration of the 
+                    <span className="font-bold"> "{productName || "[Product Title]"}"</span>, as illustrated in the accompanying representations.
+                  </p>
+                  <p>No claim is made by virtue of this registration to any right to the exclusive use of the colour or colour combination appearing in the design.</p>
+                  <p>No claim is made by virtue of this registration in respect of any mechanical or other action of any mechanism whatsoever or in respect of any mode or principle of construction of the article.</p>
+                </div>
+
+                <div className="mt-8 text-[10px] font-bold mb-10">
+                  Dated: {dated}
+                </div>
+
+                <div className="flex justify-end">
+                  <div className="w-1/2 space-y-4">
+                    <p className="text-[10px] font-bold italic mb-2">For,</p>
+                    {authors.map(a => (
+                      <div key={a.id} className="flex items-center justify-between border-b border-dotted border-slate-300 pb-1">
+                        <span className="text-[9px] font-bold uppercase truncate max-w-[120px]">{a.name || "[NAME]"}</span>
+                        {a.signature && (
+                          <img src={a.signature} className="h-6 object-contain mix-blend-multiply filter contrast-125" alt="sign" />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-12 text-[9px] font-bold uppercase space-y-0.5">
+                  <p>TO,</p>
+                  <p>THE CONTROLLER OF DESIGNS,</p>
+                  <p>THE PATENT OFFICE,</p>
+                  <p>KOLKATA</p>
+                </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       </div>
