@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Filter, Heart, ShoppingCart, Sparkles, Box, Cpu, Zap, Monitor, Settings, Battery, ChevronRight, Shield, ArrowRight, CheckCircle } from "lucide-react";
+import { Search, Filter, Heart, ShoppingCart, Sparkles, Box, Cpu, Zap, Monitor, Settings, Battery, ChevronRight, Shield, ArrowRight, CheckCircle, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -21,16 +21,15 @@ const staggerContainer = {
   }
 };
 
-// Mock products data
 const PRODUCTS = [
-  { id: "1", name: "Raspberry Pi 5 4GB RAM", sku: "KVX-SBC-005", price: 6500, mrp: 7200, category: "Development Boards", stock: 15, rating: 4.8, image: "circuit" },
-  { id: "2", name: "Arduino Uno R3 Compatible", sku: "KVX-SBC-001", price: 450, mrp: 600, category: "Development Boards", stock: 120, rating: 4.5, image: "cpu" },
-  { id: "3", name: "ESP32 NodeMCU WiFi+BT", sku: "KVX-MOD-032", price: 350, mrp: 500, category: "Modules", stock: 0, rating: 4.7, image: "wifi" },
-  { id: "4", name: "L298N Motor Driver Module", sku: "KVX-MOD-015", price: 150, mrp: 200, category: "Modules", stock: 45, rating: 4.2, image: "cpu" },
-  { id: "5", name: "HC-SR04 Ultrasonic Sensor", sku: "KVX-SEN-004", price: 85, mrp: 120, category: "Sensors", stock: 200, rating: 4.6, image: "zap" },
-  { id: "6", name: "0.96 inch OLED Display I2C", sku: "KVX-DIS-096", price: 250, mrp: 350, category: "Displays", stock: 30, rating: 4.9, image: "monitor" },
-  { id: "7", name: "NEMA 17 Stepper Motor", sku: "KVX-MOT-017", price: 850, mrp: 1100, category: "Motors", stock: 12, rating: 4.4, image: "settings" },
-  { id: "8", name: "3.7V 2000mAh Li-ion Battery", sku: "KVX-PWR-037", price: 120, mrp: 180, category: "Power Supply", stock: 500, rating: 4.1, image: "battery" },
+  { id: "1", name: "Raspberry Pi 5 4GB RAM", sku: "KVX-SBC-005", price: 6500, mrp: 7200, category: "Development Boards", stock: 15, rating: 4.8, image: "https://images.unsplash.com/photo-1601814933824-fd0b574dd592?auto=format&fit=crop&q=80&w=600" },
+  { id: "2", name: "Arduino Uno R3 Compatible", sku: "KVX-SBC-001", price: 450, mrp: 600, category: "Development Boards", stock: 120, rating: 4.5, image: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&q=80&w=600" },
+  { id: "3", name: "ESP32 NodeMCU WiFi+BT", sku: "KVX-MOD-032", price: 350, mrp: 500, category: "Modules", stock: 0, rating: 4.7, image: "https://images.unsplash.com/photo-1620283085439-39620a1e21c4?auto=format&fit=crop&q=80&w=600" },
+  { id: "4", name: "L298N Motor Driver Module", sku: "KVX-MOD-015", price: 150, mrp: 200, category: "Modules", stock: 45, rating: 4.2, image: "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&q=80&w=600" },
+  { id: "5", name: "HC-SR04 Ultrasonic Sensor", sku: "KVX-SEN-004", price: 85, mrp: 120, category: "Sensors", stock: 200, rating: 4.6, image: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&q=80&w=600" },
+  { id: "6", name: "0.96 inch OLED Display I2C", sku: "KVX-DIS-096", price: 250, mrp: 350, category: "Displays", stock: 30, rating: 4.9, image: "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80&w=600" },
+  { id: "7", name: "NEMA 17 Stepper Motor", sku: "KVX-MOT-017", price: 850, mrp: 1100, category: "Motors", stock: 12, rating: 4.4, image: "https://images.unsplash.com/photo-1581092335397-9583eb92d232?auto=format&fit=crop&q=80&w=600" },
+  { id: "8", name: "3.7V 2000mAh Li-ion Battery", sku: "KVX-PWR-037", price: 120, mrp: 180, category: "Power Supply", stock: 500, rating: 4.1, image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?auto=format&fit=crop&q=80&w=600" },
 ];
 
 const CATEGORIES = [
@@ -50,77 +49,77 @@ export default function ElectronicsStore() {
     <div className="min-h-screen pt-40 pb-32 bg-slate-50 transition-colors duration-500">
       <div className="container mx-auto px-4 max-w-7xl">
         
-        {/* Header: Institutional Authority */}
+        {/* Header */}
         <motion.div 
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
-          className="flex flex-col xl:flex-row justify-between items-end mb-24 gap-12"
+          className="flex flex-col xl:flex-row justify-between items-end mb-16 gap-12"
         >
-          <div className="space-y-6">
-            <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
-              <Shield className="w-4 h-4" /> Hardware Division
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-5 py-2 rounded-xl text-xs font-bold uppercase tracking-wider shadow-xl shadow-blue-600/20">
+              <ShoppingBag className="w-4 h-4" /> Electronics Store
             </div>
-            <h1 className="font-heading font-black text-5xl md:text-7xl text-slate-900 tracking-tighter">
-              Precision <span className="text-blue-600">Assets</span>
+            <h1 className="font-heading font-black text-5xl md:text-6xl text-slate-900 tracking-tight">
+              Electronic <span className="text-blue-600">Components</span>
             </h1>
-            <p className="text-xl text-slate-400 font-bold max-w-xl">
-              Sourcing aerospace-grade components for high-stakes engineering research and rapid institutional prototyping.
+            <p className="text-lg text-slate-500 font-medium max-w-xl">
+              High-quality electronics, sensors, and development boards for your engineering projects and prototypes.
             </p>
           </div>
           
-          <div className="w-full xl:w-[540px] relative group">
-            <div className="absolute inset-0 bg-blue-600/5 rounded-3xl blur-3xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-700" />
+          <div className="w-full xl:w-[500px] relative group">
+            <div className="absolute inset-0 bg-blue-600/5 rounded-2xl blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
             <input 
               type="text" 
-              placeholder="Audit components by SKU, Brand, or Specification..." 
-              className="w-full bg-white border border-slate-100 rounded-[2rem] pl-16 pr-40 py-6 text-slate-900 font-black text-sm focus:ring-8 ring-blue-600/5 focus:border-blue-600 outline-none transition-all placeholder:text-slate-200 shadow-2xl shadow-slate-900/5 relative z-10"
+              placeholder="Search components, modules, or brands..." 
+              className="w-full bg-white border border-slate-200 rounded-2xl pl-14 pr-32 py-5 text-slate-900 font-medium text-sm focus:ring-4 ring-blue-600/10 focus:border-blue-600 outline-none transition-all placeholder:text-slate-400 shadow-lg shadow-slate-900/5 relative z-10"
             />
-            <Search className="w-6 h-6 text-slate-300 absolute left-6 top-6 group-focus-within:text-blue-600 transition-colors z-20" />
-            <Button className="absolute right-3 top-3 h-14 px-10 rounded-2xl bg-slate-900 hover:bg-blue-600 text-white font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl shadow-slate-900/20 z-20">
-              Audit Lab
+            <Search className="w-5 h-5 text-slate-400 absolute left-5 top-5 group-focus-within:text-blue-600 transition-colors z-20" />
+            <Button className="absolute right-2 top-2 bottom-2 h-auto px-6 rounded-xl bg-slate-900 hover:bg-blue-600 text-white font-bold text-xs uppercase tracking-wide transition-all shadow-md z-20">
+              Search
             </Button>
           </div>
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-16 items-start">
           
-          {/* Sidebar Filters: Administrative Controls */}
+          {/* Sidebar Filters */}
           <motion.aside 
             initial="hidden"
             animate="visible"
             variants={fadeInUp}
-            className="w-full lg:w-80 shrink-0 sticky top-40"
+            className="w-full lg:w-72 shrink-0 lg:sticky lg:top-32"
           >
-            <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-[0_48px_96px_-24px_rgba(0,0,0,0.05)] space-y-12">
-              <div className="flex items-center justify-between pb-6 border-b border-slate-50">
-                <h3 className="font-black text-[10px] uppercase tracking-[0.3em] text-slate-300 flex items-center">
-                  <Filter className="w-4 h-4 mr-3 text-blue-600" /> Parameters
+            <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-10">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-100">
+                <h3 className="font-bold text-sm uppercase tracking-wider text-slate-800 flex items-center">
+                  <Filter className="w-4 h-4 mr-2 text-blue-600" /> Filters
                 </h3>
-                <button className="text-[9px] font-black text-blue-600 hover:text-slate-900 uppercase tracking-widest transition-colors">Clear</button>
+                <button className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors">Clear All</button>
               </div>
 
-              <div className="space-y-6">
-                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                  <Box className="w-4 h-4 text-slate-300" /> Classification
+              <div className="space-y-5">
+                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                  <Box className="w-4 h-4 text-slate-400" /> Categories
                 </h4>
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {CATEGORIES.map((cat, i) => (
-                    <label key={i} className="flex items-center text-[11px] font-black uppercase tracking-widest text-slate-400 cursor-pointer hover:text-blue-600 transition-all group">
-                      <div className="relative w-5 h-5 mr-4 shrink-0">
+                    <label key={i} className="flex items-center text-sm font-medium text-slate-600 cursor-pointer hover:text-blue-600 transition-colors group">
+                      <div className="relative w-4 h-4 mr-3 shrink-0">
                         <input type="radio" name="category" className="peer absolute inset-0 opacity-0 cursor-pointer" defaultChecked={i===0} />
-                        <div className="w-full h-full border-2 border-slate-100 rounded-lg bg-slate-50 peer-checked:border-blue-600 peer-checked:bg-blue-600 transition-all" />
-                        <CheckCircle className="absolute inset-0 w-full h-full text-white scale-0 peer-checked:scale-75 transition-transform" />
+                        <div className="w-full h-full border-2 border-slate-300 rounded-full bg-white peer-checked:border-blue-600 peer-checked:bg-blue-600 transition-all" />
+                        <div className="absolute inset-1 bg-white rounded-full scale-0 peer-checked:scale-100 transition-transform" />
                       </div>
-                      <span className="group-hover:translate-x-1 transition-transform">{cat}</span>
+                      <span>{cat}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
-              <div className="space-y-6 pt-6 border-t border-slate-50">
-                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-2">
-                  <Zap className="w-4 h-4 text-slate-300" /> Valuation
+              <div className="space-y-5 pt-6 border-t border-slate-100">
+                <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider flex items-center gap-2">
+                  <Zap className="w-4 h-4 text-slate-400" /> Price Range
                 </h4>
                 <div className="flex items-center gap-4">
                   <div className="relative flex-1">
@@ -134,30 +133,30 @@ export default function ElectronicsStore() {
                 </div>
               </div>
 
-              <div className="pt-6 border-t border-slate-50">
-                <label className="flex items-center text-[11px] font-black uppercase tracking-widest text-slate-400 cursor-pointer hover:text-blue-600 transition-all group">
-                   <div className="relative w-5 h-5 mr-4 shrink-0">
+              <div className="pt-6 border-t border-slate-100">
+                <label className="flex items-center text-sm font-medium text-slate-600 cursor-pointer hover:text-emerald-600 transition-colors group">
+                   <div className="relative w-4 h-4 mr-3 shrink-0">
                     <input type="checkbox" className="peer absolute inset-0 opacity-0 cursor-pointer" />
-                    <div className="w-full h-full border-2 border-slate-100 rounded-lg bg-slate-50 peer-checked:border-emerald-600 peer-checked:bg-emerald-600 transition-all" />
-                    <CheckCircle className="absolute inset-0 w-full h-full text-white scale-0 peer-checked:scale-75 transition-transform" />
+                    <div className="w-full h-full border-2 border-slate-300 rounded bg-white peer-checked:border-emerald-600 peer-checked:bg-emerald-600 transition-all" />
+                    <CheckCircle className="absolute -inset-0.5 w-5 h-5 text-white scale-0 peer-checked:scale-100 transition-transform" />
                   </div>
-                  <span className="group-hover:translate-x-1 transition-transform">In-Stock Only</span>
+                  <span>In-Stock Only</span>
                 </label>
               </div>
             </div>
           </motion.aside>
 
-          {/* Product Grid: High-Fidelity Assets */}
-          <main className="flex-1 space-y-12">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-6">
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Inventory Status: <span className="text-slate-900">08 / 124 Registered Units</span></p>
-              <div className="flex items-center gap-4">
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-300">Sequencing:</span>
-                <select className="bg-white border border-slate-100 rounded-xl px-6 py-3 text-[10px] font-black uppercase tracking-widest text-slate-900 focus:ring-8 ring-blue-600/5 outline-none cursor-pointer shadow-xl shadow-slate-900/5 appearance-none pr-10 relative bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSIjOTQ0NzhmIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==')] bg-no-repeat bg-[center_right_1rem] bg-[length:1.25rem]">
-                  <option>Strategic Relevance</option>
-                  <option>Valuation: Low-High</option>
-                  <option>Valuation: High-Low</option>
-                  <option>Institutional Grade</option>
+          {/* Product Grid */}
+          <main className="flex-1 space-y-8">
+            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+              <p className="text-sm font-semibold text-slate-500">Showing <span className="text-slate-900">1-8</span> of 124 products</p>
+              <div className="flex items-center gap-3">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Sort By:</span>
+                <select className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 outline-none cursor-pointer appearance-none pr-8 relative bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSIjOTQ0NzhmIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==')] bg-no-repeat bg-[center_right_0.75rem] bg-[length:1rem]">
+                  <option>Relevance</option>
+                  <option>Price: Low to High</option>
+                  <option>Price: High to Low</option>
+                  <option>Top Rated</option>
                 </select>
               </div>
             </div>
@@ -175,92 +174,81 @@ export default function ElectronicsStore() {
                   <motion.div 
                     key={p.id} 
                     variants={fadeInUp} 
-                    whileHover={{ y: -15 }}
-                    className="bg-white rounded-[3rem] overflow-hidden border border-slate-100 group hover:shadow-[0_48px_96px_-24px_rgba(0,0,0,0.1)] hover:border-blue-600/20 transition-all duration-700 flex flex-col h-full relative"
+                    whileHover={{ y: -5 }}
+                    className="bg-white rounded-3xl overflow-hidden border border-slate-200 group hover:shadow-xl hover:border-blue-300 transition-all duration-300 flex flex-col h-full relative"
                   >
-                    {/* Visual Asset Area */}
-                    <div className="relative h-72 bg-slate-50 flex items-center justify-center overflow-hidden border-b border-slate-50">
-                      <div className="absolute top-8 left-8 z-10">
-                        <span className="bg-white text-slate-900 text-[9px] font-black px-4 py-2 rounded-xl uppercase tracking-widest border border-slate-100 shadow-sm group-hover:bg-blue-600 group-hover:text-white group-hover:border-blue-500 transition-all duration-500">
+                    {/* Visual Area */}
+                    <div className="relative h-60 bg-slate-100 flex items-center justify-center overflow-hidden border-b border-slate-100">
+                      <div className="absolute top-4 left-4 z-10">
+                        <span className="bg-white/90 backdrop-blur-sm text-slate-800 text-xs font-bold px-3 py-1.5 rounded-lg shadow-sm border border-slate-200">
                           {p.category}
                         </span>
                       </div>
                       
-                      <div className="absolute top-8 right-8 z-10 opacity-0 group-hover:opacity-100 transition-all duration-700 translate-x-4 group-hover:translate-x-0">
-                        <button className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center text-slate-400 hover:text-red-500 hover:shadow-2xl transition-all shadow-sm border border-slate-50">
+                      <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 hover:shadow-md transition-all border border-slate-200">
                           <Heart className="w-5 h-5" />
                         </button>
                       </div>
-                      
-                      <div className="absolute bottom-0 left-0 w-full h-1 bg-slate-100">
-                        <motion.div 
-                          initial={{ width: 0 }}
-                          whileInView={{ width: "100%" }}
-                          transition={{ duration: 1.5, ease: "easeInOut" }}
-                          className="h-full bg-blue-600/10"
-                        />
-                      </div>
 
-                      <div className="w-48 h-48 bg-white rounded-[2.5rem] flex items-center justify-center group-hover:scale-110 transition-transform duration-1000 shadow-[0_24px_48px_-12px_rgba(0,0,0,0.05)] border border-slate-50 relative">
-                        <div className="absolute inset-0 bg-blue-600/5 opacity-0 group-hover:opacity-100 transition-opacity rounded-[2.5rem]" />
-                        {p.image === 'circuit' && <Cpu className="w-16 h-16 text-blue-600 transition-colors" />}
-                        {p.image === 'cpu' && <Box className="w-16 h-16 text-slate-400 group-hover:text-blue-600 transition-colors" />}
-                        {p.image === 'wifi' && <Zap className="w-16 h-16 text-slate-400 group-hover:text-blue-600 transition-colors" />}
-                        {p.image === 'monitor' && <Monitor className="w-16 h-16 text-slate-400 group-hover:text-blue-600 transition-colors" />}
-                        {p.image === 'settings' && <Settings className="w-16 h-16 text-slate-400 group-hover:text-blue-600 transition-colors" />}
-                        {p.image === 'zap' && <Zap className="w-16 h-16 text-slate-400 group-hover:text-blue-600 transition-colors" />}
-                        {p.image === 'battery' && <Battery className="w-16 h-16 text-slate-400 group-hover:text-blue-600 transition-colors" />}
+                      <div className="w-full h-full flex items-center justify-center bg-white">
+                        <img 
+                          src={p.image} 
+                          alt={p.name}
+                          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
                       </div>
                     </div>
 
-                    {/* Technical Specifications */}
-                    <div className="p-10 flex flex-col flex-grow space-y-6">
-                      <div className="space-y-2">
-                        <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">{p.sku}</div>
+                    {/* Specifications */}
+                    <div className="p-6 flex flex-col flex-grow">
+                      <div className="space-y-1 mb-4">
+                        <div className="text-xs font-semibold text-slate-400">{p.sku}</div>
                         <Link href={`/electronics/${p.id}`}>
-                          <h3 className="font-black text-slate-900 text-xl leading-tight group-hover:text-blue-600 transition-colors line-clamp-2">{p.name}</h3>
+                          <h3 className="font-bold text-slate-900 text-lg leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">{p.name}</h3>
                         </Link>
                       </div>
                       
-                      <div className="flex items-center gap-4">
-                        <div className="flex gap-0.5">
-                          {[1, 2, 3, 4, 5].map(s => <div key={s} className={`w-1 h-3 rounded-full ${s <= Math.floor(p.rating) ? "bg-blue-600" : "bg-slate-100"}`} />)}
+                      <div className="flex items-center gap-2 mb-6">
+                        <div className="flex gap-1">
+                          {[1, 2, 3, 4, 5].map(s => (
+                            <svg key={s} className={`w-4 h-4 ${s <= Math.round(p.rating) ? "text-yellow-400 fill-yellow-400" : "text-slate-200 fill-slate-200"}`} viewBox="0 0 20 20">
+                              <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                            </svg>
+                          ))}
                         </div>
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{p.rating} Grade</span>
+                        <span className="text-xs font-semibold text-slate-500">{p.rating} Reviews</span>
                       </div>
 
-                      <div className="mt-auto space-y-8">
-                        <div className="flex items-center justify-between border-y border-slate-50 py-6">
-                          <div className="flex items-baseline gap-3">
-                            <span className="font-black text-slate-900 text-3xl tracking-tighter">₹{p.price.toLocaleString()}</span>
-                            <span className="text-xs text-slate-300 line-through font-bold">₹{p.mrp.toLocaleString()}</span>
+                      <div className="mt-auto space-y-5">
+                        <div className="flex items-center justify-between border-t border-slate-100 pt-5">
+                          <div className="flex items-baseline gap-2">
+                            <span className="font-bold text-slate-900 text-2xl">₹{p.price.toLocaleString()}</span>
+                            <span className="text-sm text-slate-400 line-through">₹{p.mrp.toLocaleString()}</span>
                           </div>
-                          <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-100">-{discount}% OFF</span>
+                          <span className="text-xs font-bold text-red-600 bg-red-50 px-2.5 py-1 rounded-md">{discount}% OFF</span>
                         </div>
 
-                        <div className="flex items-center justify-between gap-6">
-                          <div className="flex flex-col gap-1">
+                        <div className="flex items-center justify-between gap-4">
+                          <div className="flex flex-col">
                             {p.stock > 0 ? (
-                              <>
-                                <div className="flex items-center gap-2">
-                                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                                  <span className="text-[9px] font-black text-emerald-600 uppercase tracking-widest">Active Stock</span>
-                                </div>
-                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">{p.stock} Units</span>
-                              </>
+                              <div className="flex items-center gap-1.5">
+                                <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                <span className="text-xs font-semibold text-emerald-600">In Stock</span>
+                              </div>
                             ) : (
-                              <div className="flex items-center gap-2">
+                              <div className="flex items-center gap-1.5">
                                 <div className="w-2 h-2 rounded-full bg-red-500" />
-                                <span className="text-[9px] font-black text-red-600 uppercase tracking-widest">Backordered</span>
+                                <span className="text-xs font-semibold text-red-600">Out of Stock</span>
                               </div>
                             )}
                           </div>
                           
                           <Button 
                             disabled={p.stock === 0}
-                            className={`flex-1 h-16 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all duration-700 shadow-2xl ${p.stock > 0 ? "bg-slate-900 hover:bg-blue-600 text-white shadow-slate-900/10" : "bg-slate-50 text-slate-200"}`}
+                            className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm flex items-center gap-2 ${p.stock > 0 ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-slate-100 text-slate-400"}`}
                           >
-                            Authorize Order <ArrowRight className="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" />
+                            <ShoppingCart className="w-4 h-4" /> Add to Cart
                           </Button>
                         </div>
                       </div>
@@ -270,18 +258,18 @@ export default function ElectronicsStore() {
               })}
             </motion.div>
 
-            {/* Advanced Pagination */}
-            <div className="mt-24 flex justify-center">
-              <nav className="flex items-center gap-4 bg-white p-3 rounded-[2rem] border border-slate-100 shadow-2xl shadow-slate-900/5">
-                <Button variant="ghost" size="icon" className="w-14 h-14 rounded-2xl text-slate-300 hover:bg-slate-50" disabled>&lt;</Button>
-                <div className="flex items-center gap-2 px-4">
-                  <Button className="w-14 h-14 rounded-2xl bg-slate-900 text-white font-black text-sm shadow-xl shadow-slate-900/20">01</Button>
-                  <Button variant="ghost" className="w-14 h-14 rounded-2xl text-slate-400 font-black text-sm hover:bg-slate-50">02</Button>
-                  <Button variant="ghost" className="w-14 h-14 rounded-2xl text-slate-400 font-black text-sm hover:bg-slate-50">03</Button>
-                  <span className="px-4 text-slate-200 font-black tracking-[0.5em]">...</span>
-                  <Button variant="ghost" className="w-14 h-14 rounded-2xl text-slate-400 font-black text-sm hover:bg-slate-50">12</Button>
+            {/* Pagination */}
+            <div className="mt-16 flex justify-center">
+              <nav className="flex items-center gap-2">
+                <Button variant="outline" size="icon" className="w-10 h-10 rounded-lg text-slate-500" disabled>&lt;</Button>
+                <div className="flex items-center gap-1 px-2">
+                  <Button className="w-10 h-10 rounded-lg bg-blue-600 text-white font-bold">1</Button>
+                  <Button variant="ghost" className="w-10 h-10 rounded-lg text-slate-600 font-medium hover:bg-slate-100">2</Button>
+                  <Button variant="ghost" className="w-10 h-10 rounded-lg text-slate-600 font-medium hover:bg-slate-100">3</Button>
+                  <span className="px-2 text-slate-400">...</span>
+                  <Button variant="ghost" className="w-10 h-10 rounded-lg text-slate-600 font-medium hover:bg-slate-100">12</Button>
                 </div>
-                <Button variant="ghost" size="icon" className="w-14 h-14 rounded-2xl text-slate-400 hover:bg-slate-50 transition-all hover:translate-x-1">&gt;</Button>
+                <Button variant="outline" size="icon" className="w-10 h-10 rounded-lg text-slate-500 hover:bg-slate-50">&gt;</Button>
               </nav>
             </div>
           </main>

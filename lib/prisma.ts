@@ -1,9 +1,14 @@
+import { Pool } from 'pg'
+import { PrismaPg } from '@prisma/adapter-pg'
 import { PrismaClient } from '@prisma/client'
 
-// Use a simple singleton without any constructor overrides to avoid
-// type and runtime validation errors in Prisma 7 + Turbopack.
+const connectionString = `${process.env.DATABASE_URL}`
+const pool = new Pool({ connectionString })
+const adapter = new PrismaPg(pool)
+
 const prismaClientSingleton = () => {
   return new PrismaClient({
+    adapter,
     log: ['error'],
   })
 }

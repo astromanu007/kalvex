@@ -6,7 +6,7 @@ import {
   ArrowRight, Globe, Zap, Heart, Sparkles, Building2, Shield, Fingerprint
 } from "lucide-react";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { motion } from "framer-motion";
 
 const fadeInUp = {
@@ -71,12 +71,12 @@ export default function AboutPage() {
               KALVEX stands as India&apos;s premier high-authority platform, engineered to bridge the gap between abstract research and professional-grade industrial execution.
             </p>
             <div className="flex flex-wrap gap-6">
-              <Button asChild className="bg-slate-900 hover:bg-blue-600 text-white px-12 rounded-2xl shadow-2xl shadow-slate-900/20 transition-all duration-500 hover:scale-105 font-black text-[11px] uppercase tracking-widest h-20">
-                <Link href="/services" className="flex items-center gap-4">View Expertise <ArrowRight className="w-5 h-5" /></Link>
-              </Button>
-              <Button asChild variant="outline" className="border-slate-200 text-slate-900 rounded-2xl hover:bg-white hover:border-blue-600/30 px-12 font-black text-[11px] uppercase tracking-widest h-20 transition-all">
-                <Link href="/projects">Audit Marketplace</Link>
-              </Button>
+              <Link href="/services" className={buttonVariants({ className: "bg-slate-900 hover:bg-blue-600 text-white px-12 rounded-2xl shadow-2xl shadow-slate-900/20 transition-all duration-500 hover:scale-105 font-black text-[11px] uppercase tracking-widest h-20 flex items-center justify-center gap-4" })}>
+                View Expertise <ArrowRight className="w-5 h-5" />
+              </Link>
+              <Link href="/projects" className={buttonVariants({ variant: "outline", className: "border-slate-200 text-slate-900 rounded-2xl hover:bg-white hover:border-blue-600/30 px-12 font-black text-[11px] uppercase tracking-widest h-20 transition-all flex items-center justify-center" })}>
+                Audit Marketplace
+              </Link>
             </div>
           </div>
         </div>
@@ -278,9 +278,9 @@ export default function AboutPage() {
               Access the KALVEX infrastructure today and transform your technical vision into a world-class institutional asset.
             </p>
             <div className="flex justify-center">
-              <Button asChild className="bg-slate-900 hover:bg-blue-600 text-white h-24 px-16 rounded-[2rem] font-black shadow-2xl transition-all duration-500 hover:scale-105 text-xl uppercase tracking-widest">
-                <Link href="/register">Create Secure Account</Link>
-              </Button>
+              <Link href="/register" className={buttonVariants({ className: "bg-slate-900 hover:bg-blue-600 text-white h-24 px-16 rounded-[2rem] font-black shadow-2xl transition-all duration-500 hover:scale-105 text-xl uppercase tracking-widest flex items-center justify-center" })}>
+                Create Secure Account
+              </Link>
             </div>
           </div>
         </div>

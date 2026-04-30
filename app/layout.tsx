@@ -1,7 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { Syne, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeProvider } from "next-themes";
 import { Providers } from "@/components/layout/Providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
@@ -47,21 +46,14 @@ export default function RootLayout({
       <body
         className={`${dmSans.variable} ${syne.variable} ${jetbrainsMono.variable} font-sans antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-blue-600/10 selection:text-blue-600`}
       >
-        <ThemeProvider 
-          attribute="class" 
-          defaultTheme="light" 
-          enableSystem={false} 
-          forcedTheme="light"
-        >
-          <Providers>
-            <Navbar />
-            <main className="flex-grow flex flex-col relative z-0">
-              {children}
-            </main>
-            <Footer />
-            <Chatbot />
-          </Providers>
-        </ThemeProvider>
+        <Providers>
+          <Navbar />
+          <main className="flex-grow flex flex-col relative z-0">
+            {children}
+          </main>
+          <Footer />
+          <Chatbot />
+        </Providers>
       </body>
     </html>
   );
