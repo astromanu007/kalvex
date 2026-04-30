@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Search, Bell, ShoppingCart, Menu, X } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { useSession, signOut } from "next-auth/react";
+import { getNotifications } from "@/app/actions/notifications";
 import { Button } from "@/components/ui/button";
 
 const NAV_LINKS = [
@@ -19,8 +20,7 @@ const NAV_LINKS = [
 export function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  // useSession requires SessionProvider wrapping the app.
-  // Using a mock default if not wrapped yet.
+  const [unreadCount, setUnreadCount] = useState(0);
   const { data: session } = useSession({ required: false }) || { data: null };
 
   useEffect(() => {
@@ -28,8 +28,17 @@ export function Navbar() {
       setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
+
+    if (session?.user) {
+      getNotifications().then(res => {
+        if (res.notifications) {
+          setUnreadCount(res.notifications.filter(n => !n.isRead).length);
+        }
+      });
+    }
+
     return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+  }, [session]);
 
   return (
     <header
@@ -70,7 +79,11 @@ export function Navbar() {
 
           <button className="relative text-text-primary hover:text-accent-primary transition-colors">
             <Bell className="w-5 h-5" />
-            <span className="absolute -top-1 -right-1 w-2 h-2 bg-accent-secondary rounded-full"></span>
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 w-4 h-4 bg-accent-secondary text-white text-[10px] font-bold flex items-center justify-center rounded-full animate-pulse">
+                {unreadCount}
+              </span>
+            )}
           </button>
 
           <Link href="/cart" className="relative text-text-primary hover:text-accent-primary transition-colors">

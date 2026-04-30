@@ -1,11 +1,18 @@
 "use client";
 
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, CreditCard, Smartphone, Building2, CheckCircle, Loader2 } from "lucide-react";
 import { getOrders, updateOrderStatus } from "@/app/actions/orders";
+import { createPaymentOrder, verifyPayment } from "@/app/actions/payments";
+
+declare global {
+  interface Window {
+    Razorpay: any;
+  }
+}
 
 type Step = "address" | "payment" | "confirm";
 
@@ -22,6 +29,16 @@ function CheckoutContent() {
   const [address, setAddress] = useState({
     name: "", phone: "", pincode: "", address: "", city: "", state: "", landmark: "",
   });
+
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -42,17 +59,50 @@ function CheckoutContent() {
   const ORDER_TOTAL = order ? order.amount : 14399;
 
   const handlePayment = async () => {
+    if (!order) return;
     setProcessing(true);
-    // Simulate payment gateway delay
-    await new Promise((r) => setTimeout(r, 2500));
-    
-    if (order) {
-      // Update order status in DB
-      await updateOrderStatus(order.id, "RESEARCH_STARTED");
+
+    try {
+      const paymentOrder = await createPaymentOrder(order.amount, order.id);
+      if (!paymentOrder.success) {
+        alert("Failed to initiate payment. Please try again.");
+        setProcessing(false);
+        return;
+      }
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: paymentOrder.amount,
+        currency: paymentOrder.currency,
+        name: "KALVEX LABS",
+        description: `Order ${order.orderNumber} - ${order.serviceType}`,
+        image: "/logo.png",
+        order_id: paymentOrder.id,
+        handler: async function (response: any) {
+          const verifyRes = await verifyPayment(response, order.id);
+          if (verifyRes.success) {
+            await updateOrderStatus(order.id, "RESEARCH_STARTED");
+            setDone(true);
+          } else {
+            alert("Payment verification failed.");
+          }
+          setProcessing(false);
+        },
+        theme: {
+          color: "#0F52BA",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on('payment.failed', function (response: any){
+        alert(response.error.description);
+        setProcessing(false);
+      });
+      rzp.open();
+    } catch (error) {
+      console.error("Payment error:", error);
+      setProcessing(false);
     }
-    
-    setProcessing(false);
-    setDone(true);
   };
 
   if (done) {

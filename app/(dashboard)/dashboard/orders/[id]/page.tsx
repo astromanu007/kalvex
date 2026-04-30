@@ -3,9 +3,13 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Clock, CheckCircle, AlertCircle, FileText, Download, ShieldCheck, MessageSquare, CreditCard, Loader2 } from "lucide-react";
+import { 
+  ArrowLeft, Clock, FileText, CheckCircle, AlertCircle, 
+  MessageSquare, Download, CreditCard, Loader2, Paperclip 
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getOrders } from "@/app/actions/orders";
+import { uploadFile } from "@/app/actions/storage";
 
 const STATUS_MAP: Record<string, { color: string; icon: React.ElementType, desc: string }> = {
   "PENDING_PAYMENT": { color: "text-accent-warning bg-accent-warning/10", icon: AlertCircle, desc: "Awaiting your payment to begin." },
@@ -20,13 +24,12 @@ export default function OrderDetailsPage() {
   const params = useParams();
   const router = useRouter();
   const id = params.id as string;
-  const [order, setOrder] = useState<any | null>(null);
+  const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     const fetchOrder = async () => {
-      // Simplistic approach: get all orders, find the one
-      // In production, build a dedicated getOrderById action.
       const res = await getOrders();
       if (res.orders) {
         const found = res.orders.find((o: any) => o.id === id);
@@ -36,6 +39,29 @@ export default function OrderDetailsPage() {
     };
     fetchOrder();
   }, [id]);
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !order) return;
+
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+    
+    const res = await uploadFile(formData, order.id, `orders/${order.orderNumber}`);
+    if (res.success) {
+      // Re-fetch order
+      const ordersRes = await getOrders();
+      if (ordersRes.orders) {
+        const found = ordersRes.orders.find((o: any) => o.id === order.id);
+        setOrder(found);
+      }
+      alert("File uploaded successfully!");
+    } else {
+      alert(res.error || "Upload failed. Please ensure the 'kalvex' storage bucket exists in Supabase.");
+    }
+    setUploading(false);
+  };
 
   if (loading) {
     return (
@@ -98,14 +124,52 @@ export default function OrderDetailsPage() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Main Details */}
         <div className="lg:col-span-2 space-y-6">
           <div className="bg-bg-card border border-border rounded-2xl p-6">
-            <h2 className="font-heading font-semibold text-lg mb-4 flex items-center gap-2">
-              <FileText className="w-5 h-5 text-accent-primary" /> Order Requirements
-            </h2>
-            <div className="whitespace-pre-wrap text-sm text-text-secondary bg-bg-surface rounded-xl p-4 border border-border">
-              {order.requirements || "No specific requirements provided."}
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="font-heading font-semibold text-lg flex items-center gap-2">
+                <FileText className="w-5 h-5 text-accent-primary" /> Requirements & Files
+              </h2>
+              <label className="cursor-pointer">
+                <input type="file" className="hidden" onChange={handleFileUpload} disabled={uploading} />
+                <Button variant="outline" size="sm" className="h-8 text-xs border-border rounded-lg gap-2" asChild>
+                  <span>
+                    {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Paperclip className="w-3 h-3" />}
+                    Add Attachment
+                  </span>
+                </Button>
+              </label>
+            </div>
+            
+            <div className="space-y-4">
+              <div className="whitespace-pre-wrap text-sm text-text-secondary bg-bg-surface rounded-xl p-4 border border-border">
+                {order.requirements || "No specific requirements provided."}
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-border">
+                {order.orderFiles?.length > 0 ? (
+                  order.orderFiles.map((f: any) => (
+                    <div key={f.id} className="flex items-center gap-3 p-3 bg-bg-surface border border-border rounded-xl">
+                      <div className="w-10 h-10 rounded-lg bg-accent-primary/10 flex items-center justify-center">
+                        <FileText className="w-5 h-5 text-accent-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-medium text-text-primary truncate">{f.fileName}</p>
+                        <p className="text-[10px] text-text-muted">{new Date(f.createdAt).toLocaleDateString()}</p>
+                      </div>
+                      <a href={f.fileUrl} target="_blank" rel="noreferrer">
+                        <Button variant="ghost" size="icon" className="h-8 w-8 text-text-muted">
+                          <Download className="w-4 h-4" />
+                        </Button>
+                      </a>
+                    </div>
+                  ))
+                ) : (
+                  <div className="col-span-full py-4 text-center text-[10px] text-text-muted italic border border-dashed border-border rounded-xl">
+                    No files uploaded yet.
+                  </div>
+                )}
+              </div>
             </div>
             
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6 pt-6 border-t border-border">

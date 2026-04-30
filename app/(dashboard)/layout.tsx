@@ -1,11 +1,13 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession } from "next-auth/react";
+import { getNotifications } from "@/app/actions/notifications";
 import {
   LayoutDashboard, ShoppingBag, FileText, MessageSquare,
-  User, Settings, ChevronRight, Bell, Star, Wallet, HelpCircle, LogOut
+  User, Settings, ChevronRight, Bell, Star, Wallet, HelpCircle, LogOut, Share2
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 
@@ -17,6 +19,7 @@ const NAV = [
   { label: "Wallet & Credits", href: "/dashboard/wallet", icon: Wallet },
   { label: "Reviews", href: "/dashboard/reviews", icon: Star },
   { label: "Profile", href: "/dashboard/profile", icon: User },
+  { label: "Affiliate Portal", href: "/dashboard/affiliate", icon: Share2 },
   { label: "Settings", href: "/dashboard/settings", icon: Settings },
   { label: "Help", href: "/dashboard/help", icon: HelpCircle },
 ];
@@ -24,6 +27,17 @@ const NAV = [
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { data: session } = useSession();
+  const [unreadCount, setUnreadCount] = useState(0);
+
+  useEffect(() => {
+    if (session?.user) {
+      getNotifications().then(res => {
+        if (res.notifications) {
+          setUnreadCount(res.notifications.filter(n => !n.isRead).length);
+        }
+      });
+    }
+  }, [session]);
 
   return (
     <div className="min-h-screen pt-20 bg-bg-primary flex">

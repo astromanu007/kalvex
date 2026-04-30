@@ -21,6 +21,7 @@ const jetbrainsMono = JetBrains_Mono({
 import { Providers } from "@/components/layout/Providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { Chatbot } from "@/components/ui/Chatbot";
 
 export const metadata: Metadata = {
   title: "KALVEX | India's #1 Platform for Engineering Excellence",
@@ -44,6 +45,7 @@ export default function RootLayout({
               {children}
             </main>
             <Footer />
+            <Chatbot />
           </Providers>
         </ThemeProvider>
       </body>

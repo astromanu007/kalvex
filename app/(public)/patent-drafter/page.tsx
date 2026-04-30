@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Upload, Zap, CheckCircle, AlertCircle, Loader2, Download, FileImage, Info, Sparkles } from "lucide-react";
+import { generatePatentDraft } from "@/app/actions/patent";
 
 const LOCARNO_CLASSES = [
   { id: "08", label: "Tools & Hardware" }, { id: "09", label: "Packages & Containers" },
@@ -39,21 +40,28 @@ export default function PatentDrafterPage() {
   const handleAnalyze = async () => {
     if (!productName || !productDesc) return;
     setDrafting(true); setAnalysisStep("loading"); setDraftStep("idle"); setResult(null);
-    await new Promise((r) => setTimeout(r, 1800));
-    setAnalysisStep("done"); setDraftStep("loading");
-    await new Promise((r) => setTimeout(r, 2400));
-    setDraftStep("done");
-    setResult({
-      className: overrideClass || "15",
-      classDesc: "Machines, Engines, Motors",
-      noveltyPoints: [
-        "Unique bi-lateral curvature of the outer housing shell",
-        "Integrated ventilation grille with diamond lattice motif",
-        "Asymmetric control panel with recessed tactile indicators",
-        "Distinctive color gradient across the side profile",
-      ],
-      claimText: `The ornamental design for a ${productName}, as shown and described. Figure 1 is a front view; Figure 2 is a rear view; Figure 3 is a left side view; Figure 4 is a right side view; Figure 5 is a top view; Figure 6 is a bottom view thereof.`,
+    
+    const res = await generatePatentDraft({
+      productTitle: productName,
+      description: productDesc,
+      locarnoClass: overrideClass || undefined
     });
+
+    if (res.success) {
+      setAnalysisStep("done"); 
+      setDraftStep("loading");
+      await new Promise((r) => setTimeout(r, 1000));
+      setDraftStep("done");
+      setResult({
+        className: res.suggestedClass.split(" ")[1] || "15",
+        classDesc: "Machines, Engines, Motors",
+        noveltyPoints: res.noveltyPoints,
+        claimText: res.claimText,
+      });
+    } else {
+      setAnalysisStep("error");
+      alert(res.error || "Failed to generate draft");
+    }
     setDrafting(false);
   };
 

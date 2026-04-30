@@ -19,7 +19,8 @@ export async function getOrders() {
         where: { userId },
         orderBy: { createdAt: "desc" },
         include: {
-          statusHistory: { orderBy: { createdAt: "desc" }, take: 1 }
+          statusHistory: { orderBy: { createdAt: "desc" }, take: 1 },
+          orderFiles: true
         }
       });
       return { orders };
@@ -30,7 +31,8 @@ export async function getOrders() {
         where: { assignedToId: userId },
         orderBy: { createdAt: "desc" },
         include: {
-          statusHistory: { orderBy: { createdAt: "desc" }, take: 1 }
+          statusHistory: { orderBy: { createdAt: "desc" }, take: 1 },
+          orderFiles: true
         }
       });
       return { orders };
@@ -89,5 +91,80 @@ export async function createOrder({
   } catch (error) {
     console.error("Error creating order:", error);
     return { error: "Failed to create order" };
+  }
+}
+
+// Update order status
+export async function updateOrderStatus(orderId: string, status: OrderStatus, note?: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) return { error: "Unauthorized" };
+
+    const order = await prisma.order.update({
+      where: { id: orderId },
+      data: { status }
+    });
+
+    await prisma.orderStatusHistory.create({
+      data: {
+        orderId,
+        status,
+        note: note || `Status updated to ${status}`,
+        changedBy: session.user.id
+      }
+    });
+
+    revalidatePath("/dashboard/orders");
+    revalidatePath(`/dashboard/orders/${orderId}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Error updating order status:", error);
+    return { error: "Failed to update order status" };
+  }
+}
+
+// Get available orders for experts to pick up
+export async function getAvailableOrders() {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) return { error: "Unauthorized" };
+
+    const orders = await prisma.order.findMany({
+      where: {
+        assignedToId: null,
+        status: OrderStatus.RESEARCH_STARTED
+      },
+      orderBy: { createdAt: "desc" }
+    });
+
+    return { orders };
+  } catch (error) {
+    console.error("Error fetching available orders:", error);
+    return { error: "Failed to fetch available orders" };
+  }
+}
+
+// Accept an order (for experts)
+export async function acceptOrder(orderId: string) {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user) return { error: "Unauthorized" };
+    if (session.user.role !== "WRITER" && session.user.role !== "DEVELOPER") {
+      return { error: "Only experts can accept orders" };
+    }
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        assignedToId: session.user.id,
+        maskedAssigneeId: session.user.maskedId,
+      }
+    });
+
+    revalidatePath("/dashboard/expert");
+    return { success: true };
+  } catch (error) {
+    console.error("Error accepting order:", error);
+    return { error: "Failed to accept order" };
   }
 }
