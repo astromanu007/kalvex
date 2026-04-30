@@ -10,7 +10,7 @@ import {
   Document, Page, Text, View, Image as PDFImage,
   StyleSheet, PDFDownloadLink
 } from "@react-pdf/renderer";
-import { Reorder, useDragControls } from "framer-motion";
+import { motion, Reorder, useDragControls } from "framer-motion";
 
 // Define views for the patent
 const PATENT_VIEWS = [
