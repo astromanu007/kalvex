@@ -1,7 +1,11 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Syne, DM_Sans, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "next-themes";
+import { Providers } from "@/components/layout/Providers";
+import { Navbar } from "@/components/layout/Navbar";
+import { Footer } from "@/components/layout/Footer";
+import { Chatbot } from "@/components/ui/Chatbot";
 
 const syne = Syne({
   variable: "--font-syne",
@@ -18,14 +22,19 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-import { Providers } from "@/components/layout/Providers";
-import { Navbar } from "@/components/layout/Navbar";
-import { Footer } from "@/components/layout/Footer";
-import { Chatbot } from "@/components/ui/Chatbot";
+export const viewport: Viewport = {
+  themeColor: "#2563EB",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+};
 
 export const metadata: Metadata = {
-  title: "KALVEX | India's #1 Platform for Engineering Excellence",
-  description: "Components · Projects · Thesis · Patents · Research Papers",
+  title: "KALVEX | Engineering Excellence & Institutional Innovation",
+  description: "India's premier ecosystem for high-stakes engineering research, academic prototypes, and strategic industrial solutions.",
+  icons: {
+    icon: "/favicon.ico",
+  },
 };
 
 export default function RootLayout({
@@ -34,14 +43,19 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang="en" suppressHydrationWarning className="scroll-smooth">
       <body
-        className={`${dmSans.variable} ${syne.variable} ${jetbrainsMono.variable} font-sans antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col transition-colors duration-500`}
+        className={`${dmSans.variable} ${syne.variable} ${jetbrainsMono.variable} font-sans antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-blue-600/10 selection:text-blue-600`}
       >
-        <ThemeProvider attribute="data-theme" defaultTheme="light" forcedTheme="light">
+        <ThemeProvider 
+          attribute="class" 
+          defaultTheme="light" 
+          enableSystem={false} 
+          forcedTheme="light"
+        >
           <Providers>
             <Navbar />
-            <main className="flex-grow">
+            <main className="flex-grow flex flex-col relative z-0">
               {children}
             </main>
             <Footer />
