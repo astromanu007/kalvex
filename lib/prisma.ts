@@ -1,16 +1,11 @@
 import { PrismaClient } from '@prisma/client'
 
-// Final Fix for Prisma 7 + Next.js 16 (Turbopack)
-// This ensures a database URL exists during build-time analysis 
-// without breaking the Prisma constructor types.
-if (!process.env.DATABASE_URL) {
-  process.env.DATABASE_URL = "postgresql://dummy:dummy@localhost:5432/dummy"
-}
-
 const prismaClientSingleton = () => {
   return new PrismaClient({
+    // Prisma 7 specific: datasourceUrl (singular) is the correct key for direct overrides
+    datasourceUrl: process.env.DATABASE_URL,
     log: ['error'],
-  })
+  } as any)
 }
 
 declare global {
