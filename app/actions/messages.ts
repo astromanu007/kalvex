@@ -1,14 +1,13 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 // Fetch messages for a specific order
 export async function getMessages(orderId: string) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     const { id: userId, role } = session.user;
@@ -44,7 +43,7 @@ export async function getMessages(orderId: string) {
 // Send a new message
 export async function sendMessage(orderId: string, content: string) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     const { id: userId, role } = session.user;

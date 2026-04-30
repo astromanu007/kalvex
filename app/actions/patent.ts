@@ -1,8 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 
 export async function generatePatentDraft({
   productTitle,
@@ -14,7 +13,7 @@ export async function generatePatentDraft({
   locarnoClass?: string;
 }) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     // 1. Call OpenRouter for AI Drafting

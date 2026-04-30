@@ -1,15 +1,14 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 import { OrderStatus, ServiceType } from "@prisma/client";
 
 // Get all orders for the current user (if client) or assigned orders (if expert)
 export async function getOrders() {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     const { id: userId, role } = session.user;
@@ -58,7 +57,7 @@ export async function createOrder({
   deadline?: Date;
 }) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     const orderNumber = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
@@ -97,7 +96,7 @@ export async function createOrder({
 // Update order status
 export async function updateOrderStatus(orderId: string, status: OrderStatus, note?: string) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     const order = await prisma.order.update({
@@ -126,7 +125,7 @@ export async function updateOrderStatus(orderId: string, status: OrderStatus, no
 // Get available orders for experts to pick up
 export async function getAvailableOrders() {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     const orders = await prisma.order.findMany({
@@ -147,7 +146,7 @@ export async function getAvailableOrders() {
 // Accept an order (for experts)
 export async function acceptOrder(orderId: string) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
     if (session.user.role !== "WRITER" && session.user.role !== "DEVELOPER") {
       return { error: "Only experts can accept orders" };

@@ -1,8 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function updateProfile(data: {
@@ -14,7 +13,7 @@ export async function updateProfile(data: {
   year?: number;
 }) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     const { id: userId } = session.user;

@@ -1,6 +1,19 @@
 import "dotenv/config"
 import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+const prismaClientSingleton = () => {
+  return new PrismaClient({
+    log: ['query', 'info', 'warn', 'error'],
+  })
+}
 
+declare global {
+  var prismaGlobal: undefined | ReturnType<typeof prismaClientSingleton>
+}
+
+const prisma = globalThis.prismaGlobal ?? prismaClientSingleton()
+
+export { prisma }
 export default prisma
+
+if (process.env.NODE_ENV !== 'production') globalThis.prismaGlobal = prisma

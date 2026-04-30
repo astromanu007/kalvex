@@ -1,12 +1,11 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 
 export async function getAffiliateStats() {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     const affiliate = await prisma.affiliate.findUnique({
@@ -33,7 +32,7 @@ export async function getAffiliateStats() {
 
 export async function updateAffiliateUPI(upiId: string) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     await prisma.affiliate.update({

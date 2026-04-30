@@ -1,13 +1,12 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { OrderStatus } from "@prisma/client";
 
 export async function getAdminStats() {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user || session.user.role !== "ADMIN") return { error: "Unauthorized" };
 
     const [totalOrders, totalRevenue, totalUsers, activeExperts] = await Promise.all([
@@ -36,7 +35,7 @@ export async function getAdminStats() {
 
 export async function getAllOrders() {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user || session.user.role !== "ADMIN") return { error: "Unauthorized" };
 
     const orders = await prisma.order.findMany({
@@ -56,7 +55,7 @@ export async function getAllOrders() {
 
 export async function forceUpdateOrderStatus(orderId: string, status: OrderStatus) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user || session.user.role !== "ADMIN") return { error: "Unauthorized" };
 
     await prisma.order.update({

@@ -2,12 +2,11 @@
 
 import { razorpay } from "@/lib/razorpay";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 
 export async function createPaymentOrder(amount: number, orderId: string) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     const options = {
@@ -32,7 +31,7 @@ export async function createPaymentOrder(amount: number, orderId: string) {
 
 export async function verifyPayment(paymentData: any, orderId: string) {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     // In a real app, you'd use crypto to verify the signature

@@ -2,13 +2,12 @@
 
 import { supabase } from "@/lib/supabase";
 import { prisma } from "@/lib/prisma";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function uploadFile(formData: FormData, orderId: string, folder: string = "orders") {
   try {
-    const session = await getServerSession(authOptions);
+    const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
     const file = formData.get("file") as File;
