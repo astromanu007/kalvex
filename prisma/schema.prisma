@@ -1,0 +1,458 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  STUDENT
+  WRITER
+  DEVELOPER
+  ADMIN
+  AFFILIATE
+  FOUNDER
+}
+
+enum ApplicationStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum OrderStatus {
+  PENDING_PAYMENT
+  PAYMENT_CONFIRMED
+  TOPIC_CONFIRMED
+  RESEARCH_STARTED
+  DRAFT_IN_PROGRESS
+  DRAFT_SUBMITTED
+  UNDER_REVIEW
+  REVISION_REQUESTED
+  REVISION_SUBMITTED
+  FINAL_APPROVED
+  DELIVERED
+  COMPLETED
+  CANCELLED
+  REFUNDED
+}
+
+enum ServiceType {
+  PHD_THESIS
+  RESEARCH_PAPER
+  FINAL_YEAR_REPORT
+  DESIGN_PATENT_DRAFTING
+  UTILITY_PATENT_DRAFTING
+  COPYRIGHT_REGISTRATION
+  TRADEMARK_REGISTRATION
+  MINI_PROJECT
+  MAJOR_PROJECT
+  FINAL_YEAR_PROJECT
+  LAB_MANUAL
+  CUSTOM_PROJECT
+}
+
+enum IPRType {
+  COPYRIGHT
+  TRADEMARK
+  DESIGN_PATENT
+  UTILITY_PATENT
+}
+
+enum QuotationStatus {
+  PENDING
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+enum SubscriptionPlan {
+  FREE
+  PREMIUM
+}
+
+model User {
+  id               String           @id @default(cuid())
+  name             String
+  email            String           @unique
+  phone            String?          @unique
+  password         String?
+  role             Role             @default(USER)
+  maskedId         String           @unique @default(cuid())
+
+  // Student-specific
+  college          String?
+  branch           String?
+  department       String?
+  year             Int?
+  city             String?
+
+  // Developer-specific
+  skills           String[]
+  githubUrl        String?
+  portfolioUrl     String?
+  experienceYears  Int?
+  domainExpertise  String[]
+  applicationStatus ApplicationStatus? // for DEVELOPER and WRITER applicants
+
+  // Writer-specific
+  specializations  String[]
+  sampleWorkUrl    String?
+  linkedinUrl      String?
+
+  // Common
+  referralCode     String           @unique
+  referredBy       String?
+  credits          Int              @default(0)
+  subscriptionPlan SubscriptionPlan @default(FREE)
+  subscriptionEnd  DateTime?
+  emailVerified    DateTime?
+  phoneVerified    Boolean          @default(false)
+  isBlocked        Boolean          @default(false)
+  profileImage     String?
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  orders           Order[]          @relation("UserOrders")
+  assignedOrders   Order[]          @relation("AssignedOrders")
+  cartItems        CartItem[]
+  reviews          Review[]
+  messages         Message[]
+  wishlist         WishlistItem[]
+  notifications    Notification[]
+  patentDrafts     PatentDraft[]
+  customRequests   CustomProjectRequest[] @relation("RequesterRequests")
+  affiliate        Affiliate?
+  auditLogs        AuditLog[]
+  sessions         UserSession[]
+}
+
+model Order {
+  id               String       @id @default(cuid())
+  orderNumber      String       @unique
+  userId           String
+  assignedToId     String?
+  maskedClientId   String
+  maskedAssigneeId String?
+  serviceType      ServiceType?
+  productId        String?
+  iprType          IPRType?
+  status           OrderStatus  @default(PENDING_PAYMENT)
+  requirements     String?      @db.Text
+  wordCount        Int?
+  formattingStyle  String?
+  deadline         DateTime?
+  isUrgent         Boolean      @default(false)
+  amount           Float
+  discount         Float        @default(0)
+  promoCode        String?
+  deliveryFile     String?
+  plagiarismReport String?
+  plagiarismScore  Float?
+  adminNotes       String?
+  deliveredAt      DateTime?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+
+  user             User         @relation("UserOrders", fields: [userId], references: [id])
+  assignedTo       User?        @relation("AssignedOrders", fields: [assignedToId], references: [id])
+  messages         Message[]
+  review           Review?
+  orderFiles       OrderFile[]
+  statusHistory    OrderStatusHistory[]
+}
+
+model CustomProjectRequest {
+  id               String          @id @default(cuid())
+  requestNumber    String          @unique
+  userId           String
+  assignedToId     String?
+  maskedClientId   String
+  maskedAssigneeId String?
+
+  title            String
+  description      String          @db.Text
+  techStack        String[]
+  deliverables     String[]
+  deadline         DateTime
+  budgetMin        Float?
+  budgetMax        Float?
+
+  quotationAmount  Float?
+  quotationNote    String?         @db.Text
+  quotationStatus  QuotationStatus @default(PENDING)
+  quotationSentAt  DateTime?
+  userRespondedAt  DateTime?
+
+  status           OrderStatus     @default(PENDING_PAYMENT)
+  adminNotes       String?
+  deliveryFile     String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  user             User            @relation("RequesterRequests", fields: [userId], references: [id])
+  statusUpdates    CustomProjectStatusUpdate[]
+}
+
+model CustomProjectStatusUpdate {
+  id        String   @id @default(cuid())
+  requestId String
+  note      String
+  updatedBy String
+  createdAt DateTime @default(now())
+  request   CustomProjectRequest @relation(fields: [requestId], references: [id])
+}
+
+model OrderStatusHistory {
+  id        String      @id @default(cuid())
+  orderId   String
+  status    OrderStatus
+  note      String?
+  changedBy String
+  createdAt DateTime    @default(now())
+  order     Order       @relation(fields: [orderId], references: [id])
+}
+
+model OrderFile {
+  id         String   @id @default(cuid())
+  orderId    String
+  fileUrl    String
+  fileName   String
+  fileType   String
+  uploadedBy String
+  createdAt  DateTime @default(now())
+  order      Order    @relation(fields: [orderId], references: [id])
+}
+
+model Message {
+  id          String   @id @default(cuid())
+  orderId     String
+  senderId    String
+  senderRole  Role
+  content     String   @db.Text
+  isBlocked   Boolean  @default(false)
+  blockReason String?
+  readAt      DateTime?
+  createdAt   DateTime @default(now())
+  order       Order    @relation(fields: [orderId], references: [id])
+  sender      User     @relation(fields: [senderId], references: [id])
+}
+
+model Product {
+  id           String     @id @default(cuid())
+  name         String
+  slug         String     @unique
+  category     String
+  brand        String?
+  sku          String     @unique
+  price        Float
+  mrp          Float
+  stock        Int        @default(0)
+  images       String[]
+  description  String     @db.Text
+  specs        Json
+  datasheetUrl String?
+  tags         String[]
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  cartItems    CartItem[]
+  wishlistItems WishlistItem[]
+  reviews      Review[]
+}
+
+model CartItem {
+  id          String      @id @default(cuid())
+  userId      String
+  productId   String?
+  serviceType ServiceType?
+  quantity    Int         @default(1)
+  price       Float
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id])
+  product     Product?    @relation(fields: [productId], references: [id])
+}
+
+model WishlistItem {
+  id          String      @id @default(cuid())
+  userId      String
+  productId   String?
+  serviceType ServiceType?
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id])
+  product     Product?    @relation(fields: [productId], references: [id])
+}
+
+model Review {
+  id          String      @id @default(cuid())
+  userId      String
+  orderId     String?     @unique
+  productId   String?
+  serviceType ServiceType?
+  rating      Int
+  title       String?
+  comment     String      @db.Text
+  photos      String[]
+  verified    Boolean     @default(false)
+  helpful     Int         @default(0)
+  createdAt   DateTime    @default(now())
+  user        User        @relation(fields: [userId], references: [id])
+  order       Order?      @relation(fields: [orderId], references: [id])
+  product     Product?    @relation(fields: [productId], references: [id])
+}
+
+model Project {
+  id           String   @id @default(cuid())
+  title        String
+  slug         String   @unique
+  branch       String
+  year         Int
+  type         String   // MINI / MAJOR / FINAL_YEAR
+  techStack    String[]
+  abstract     String   @db.Text
+  demoVideoUrl String?
+  price        Float
+  mrp          Float
+  thumbnail    String?
+  deliverables String[]
+  downloadUrl  String?
+  isActive     Boolean  @default(true)
+  purchases    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PatentDraft {
+  id               String   @id @default(cuid())
+  userId           String
+  productTitle     String?
+  locarnoClass     String?
+  locarnoSubclass  String?
+  locarnoExplanation String? @db.Text
+  views            Json     // { perspective, front, back, left, right, top, bottom } — R2 URLs
+  authors          Json     // [{ name, signature_url, signature_cleaned_url }]
+  aiTitleOptions   Json?    // 3 suggested titles from Claude
+  confirmedTitle   String?
+  disclosureText   String?  @db.Text
+  repSheetPdfUrl   String?
+  disclosureDocUrl String?
+  paymentStatus    String   @default("UNPAID")
+  paymentAmount    Float    @default(300)
+  orderedFullService Boolean @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id])
+}
+
+model IPROrder {
+  id           String   @id @default(cuid())
+  userId       String
+  orderId      String?
+  iprType      IPRType
+  formData     Json     // All IPR-specific fields stored as JSON
+  status       String   @default("SUBMITTED")
+  assignedTo   String?
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model PromoCode {
+  id          String   @id @default(cuid())
+  code        String   @unique
+  discount    Float
+  type        String   // PERCENT or FLAT
+  minAmount   Float?
+  maxDiscount Float?
+  expiresAt   DateTime?
+  usageLimit  Int?
+  usedCount   Int      @default(0)
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+}
+
+model Affiliate {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  referralCode  String   @unique
+  clicks        Int      @default(0)
+  conversions   Int      @default(0)
+  totalEarnings Float    @default(0)
+  pendingPayout Float    @default(0)
+  tier          String   @default("STANDARD")
+  upiId         String?
+  createdAt     DateTime @default(now())
+  user          User     @relation(fields: [userId], references: [id])
+}
+
+model BlogPost {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String   @unique
+  excerpt     String
+  content     String   @db.Text
+  coverImage  String?
+  authorId    String
+  tags        String[]
+  category    String
+  isPublished Boolean  @default(false)
+  publishedAt DateTime?
+  readTime    Int?
+  views       Int      @default(0)
+  seoTitle    String?
+  seoDesc     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  title     String
+  body      String
+  type      String   // ORDER_UPDATE | MESSAGE | QUOTATION | OFFER | SYSTEM
+  link      String?
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  userId     String
+  role       Role
+  action     String
+  targetId   String?
+  targetType String?
+  ipAddress  String?
+  userAgent  String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  role      Role
+  ipAddress String?
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+}
+
+model Subscription {
+  id            String           @id @default(cuid())
+  userId        String           @unique
+  plan          SubscriptionPlan
+  startDate     DateTime
+  endDate       DateTime
+  amount        Float
+  razorpaySubId String?
+  isActive      Boolean          @default(true)
+  createdAt     DateTime         @default(now())
+}
