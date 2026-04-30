@@ -15,7 +15,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-text-secondary text-sm leading-relaxed max-w-xs">
-              India's #1 Platform for Engineering Excellence. Your trusted partner for projects, research, patents, and components.
+              India&apos;s #1 Platform for Engineering Excellence. Your trusted partner for projects, research, patents, and components.
             </p>
             <div className="flex items-center space-x-4">
               <a href="#" className="w-10 h-10 rounded-full bg-bg-surface flex items-center justify-center text-text-secondary hover:text-accent-primary hover:bg-accent-primary/10 transition-colors">

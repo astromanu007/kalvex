@@ -68,7 +68,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         session.user.id = token.userId as string
         session.user.role = token.role as Role
         session.user.maskedId = token.maskedId as string
-        session.user.applicationStatus = token.applicationStatus as any
+        session.user.applicationStatus = token.applicationStatus as "PENDING" | "APPROVED" | "REJECTED" | null
       }
       return session
     }
