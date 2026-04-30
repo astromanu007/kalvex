@@ -1,55 +1,127 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { Button } from "@/components/ui/button";
-import { User, GraduationCap, Code, PenTool, Building2, ArrowRight } from "lucide-react";
+import { User, GraduationCap, Code, PenTool, Building2, ArrowRight, Shield } from "lucide-react";
+import { motion } from "framer-motion";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 40 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] } }
+};
+const stagger = {
+  hidden: { opacity: 0 },
+  visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.2 } }
+};
+
+const ROLES = [
+  {
+    id: "user",
+    label: "Client Node",
+    icon: User,
+    desc: "For professionals, startups, and innovators procuring components or commissioning advanced engineering services.",
+    accent: "blue"
+  },
+  {
+    id: "student",
+    label: "Research Node",
+    icon: GraduationCap,
+    desc: "For engineering students and academic researchers accessing institutional projects, reports, and priority discounts.",
+    accent: "slate"
+  },
+  {
+    id: "writer",
+    label: "Scholar Node",
+    icon: PenTool,
+    desc: "Apply to join our elite network of academic and patent writers. Earn per high-stakes research commission.",
+    accent: "blue"
+  },
+  {
+    id: "developer",
+    label: "Engineer Node",
+    icon: Code,
+    desc: "Apply as a KALVEX Partner Engineer. Build proprietary systems, prototypes, and platforms at scale.",
+    accent: "slate"
+  },
+  {
+    id: "affiliate",
+    label: "Alliance Node",
+    icon: Building2,
+    desc: "Promote KALVEX and earn institutional commissions on every verified referral conversion.",
+    accent: "blue"
+  },
+];
 
 export default function RegisterHubPage() {
-  const router = useRouter();
-
-  const roles = [
-    { id: "user", label: "General User", icon: User, desc: "For professionals, startups, and hobbyists looking to buy components or order services." },
-    { id: "student", label: "Student", icon: GraduationCap, desc: "For engineering and college students. Get access to projects, reports, and discounts." },
-    { id: "writer", label: "Expert Writer", icon: PenTool, desc: "Apply to join our network of academic and patent writers. Earn per project." },
-    { id: "developer", label: "Developer", icon: Code, desc: "Apply to become a Kalvex Partner Developer. Build custom projects and get paid." },
-    { id: "affiliate", label: "Affiliate", icon: Building2, desc: "Promote Kalvex and earn commissions on every successful referral." },
-  ];
-
   return (
-    <div className="min-h-screen pt-32 pb-24 flex items-center justify-center bg-bg-primary px-4">
-      <div className="w-full max-w-2xl bg-bg-card p-8 rounded-2xl border border-border shadow-card relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-accent-secondary/10 rounded-full blur-[80px] -z-10 translate-x-1/2 -translate-y-1/2"></div>
-        
-        <div className="text-center mb-10">
-          <h1 className="font-heading font-bold text-3xl mb-3">Create Your Account</h1>
-          <p className="text-text-secondary text-sm">Select how you want to use Kalvex</p>
-        </div>
+    <div className="min-h-screen bg-slate-50 pt-40 pb-32 px-4 relative overflow-hidden">
+      <div className="absolute top-0 right-0 w-[50rem] h-[50rem] bg-blue-600/5 rounded-full -z-10 blur-[120px] -translate-y-1/2 translate-x-1/3" />
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {roles.map((r) => (
-            <Link key={r.id} href={`/register/${r.id}`}>
-              <div className="group h-full p-6 rounded-xl border border-border bg-bg-surface hover:border-accent-primary hover:bg-accent-primary/5 transition-all duration-300 flex flex-col items-start cursor-pointer hover:shadow-glow">
-                <r.icon className="w-8 h-8 text-text-primary group-hover:text-accent-primary transition-colors mb-4" />
-                <h3 className="font-heading font-semibold text-lg mb-2">{r.label}</h3>
-                <p className="text-text-secondary text-xs mb-4 flex-grow">{r.desc}</p>
-                <div className="mt-auto text-accent-primary text-sm font-medium flex items-center group-hover:underline">
-                  Join as {r.label} <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
+      <div className="max-w-4xl mx-auto">
+        {/* Header */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          className="text-center mb-20 space-y-6"
+        >
+          <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
+            <Shield className="w-4 h-4" /> Node Initialization
+          </div>
+          <h1 className="font-heading font-black text-6xl text-slate-900 tracking-tighter">
+            Select Your <span className="text-blue-600">Classification</span>
+          </h1>
+          <p className="text-slate-400 font-bold text-xl max-w-xl mx-auto">
+            Choose the node type that defines your role within the KALVEX institutional ecosystem.
+          </p>
+        </motion.div>
+
+        {/* Role Grid */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {ROLES.map((r) => (
+            <motion.div key={r.id} variants={fadeInUp} whileHover={{ y: -12 }}>
+              <Link href={`/register/${r.id}`} className="block group">
+                <div className="h-full p-10 rounded-[3rem] border-2 border-slate-100 bg-white hover:border-blue-600/30 hover:shadow-[0_48px_96px_-24px_rgba(0,0,0,0.1)] transition-all duration-700 flex flex-col relative overflow-hidden">
+                  <div className="absolute inset-0 bg-blue-600/3 opacity-0 group-hover:opacity-100 transition-opacity rounded-[3rem]" />
+
+                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-all duration-700 group-hover:scale-110 group-hover:-rotate-6 shadow-xl ${
+                    r.accent === "blue" ? "bg-blue-600 shadow-blue-600/20" : "bg-slate-900 shadow-slate-900/20"
+                  }`}>
+                    <r.icon className="w-7 h-7 text-white" />
+                  </div>
+
+                  <div className="flex-grow space-y-4 mb-8">
+                    <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">{r.label}</h3>
+                    <p className="text-slate-400 text-[13px] font-bold leading-relaxed">{r.desc}</p>
+                  </div>
+
+                  <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 group-hover:text-blue-600 transition-colors pt-6 border-t border-slate-50">
+                    Initialize Node <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </div>
-              </div>
-            </Link>
+              </Link>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
-        <div className="mt-10 text-center border-t border-border pt-6">
-          <p className="text-sm text-text-secondary">
-            Already have an account?{" "}
-            <Link href="/login" className="text-accent-primary font-medium hover:underline">
-              Sign In
+        {/* Footer Link */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="mt-16 text-center"
+        >
+          <p className="text-[11px] font-black uppercase tracking-[0.3em] text-slate-400">
+            Already authorized?{" "}
+            <Link href="/login" className="text-blue-600 hover:text-blue-500 transition-colors">
+              Access your Node
             </Link>
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
