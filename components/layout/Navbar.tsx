@@ -50,8 +50,9 @@ export function Navbar() {
     >
       <div className="container mx-auto px-4 md:px-6 flex items-center justify-between">
         {/* LOGO */}
-        <Link href="/" className="flex-shrink-0 z-50">
-          <span className="font-heading font-extrabold text-2xl tracking-tight bg-gradient-to-r from-accent-primary to-accent-secondary bg-clip-text text-transparent">
+        <Link href="/" className="flex-shrink-0 z-50 flex items-center gap-2 group">
+          <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center font-heading font-black text-white shadow-lg shadow-blue-500/20 group-hover:scale-110 transition-transform">K</div>
+          <span className="font-heading font-extrabold text-2xl tracking-tight bg-gradient-to-r from-blue-600 to-blue-400 bg-clip-text text-transparent">
             KALVEX
           </span>
         </Link>

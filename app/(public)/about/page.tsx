@@ -98,6 +98,72 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Founders Section */}
+      <section className="py-24 bg-slate-50 dark:bg-slate-900/20">
+        <div className="container-custom">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold dark:text-white mb-4 font-heading">The Visionaries</h2>
+            <p className="text-slate-600 dark:text-slate-400 max-w-2xl mx-auto italic font-medium">
+              "Engineering is not just about building things; it's about solving the problems of tomorrow with the precision of today."
+            </p>
+          </div>
+          
+          <div className="flex justify-center">
+            <div className="max-w-6xl w-full">
+              <div className="grid md:grid-cols-2 gap-12 items-stretch">
+                {/* Manish Card */}
+                <div className="group relative h-full">
+                  <div className="absolute inset-0 bg-blue-600 rounded-[48px] rotate-2 opacity-5 group-hover:rotate-3 transition-transform" />
+                  <div className="h-full bg-white dark:bg-slate-900 overflow-hidden rounded-[48px] border border-slate-100 dark:border-slate-800 shadow-xl flex flex-col relative z-10 transition-all hover:-translate-y-2">
+                    <div className="aspect-[4/5] overflow-hidden bg-slate-100 shrink-0 relative group-hover:after:opacity-100 after:opacity-0 after:absolute after:inset-0 after:bg-blue-600/10 after:transition-opacity">
+                      <img 
+                        src="https://images.unsplash.com/photo-1556157382-97eda2d62296?auto=format&fit=crop&q=80&w=800" 
+                        alt="Manish Avishkar Dhatrak" 
+                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
+                      />
+                    </div>
+                    <div className="p-10 space-y-4 text-center">
+                      <div>
+                        <h3 className="text-3xl font-bold dark:text-white mb-2 font-heading tracking-tight">Manish Avishkar Dhatrak</h3>
+                        <p className="text-blue-600 font-black uppercase tracking-[0.2em] text-xs">Founder & CEO</p>
+                      </div>
+                      <div className="w-12 h-0.5 bg-slate-100 dark:bg-slate-800 mx-auto" />
+                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-base italic font-medium">
+                        "Engineering is the bridge between pure science and the practical needs of humanity. At KALVEX, we build that bridge every day."
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Samarth Card */}
+                <div className="group relative h-full">
+                  <div className="absolute inset-0 bg-blue-600 rounded-[48px] -rotate-2 opacity-5 group-hover:-rotate-3 transition-transform" />
+                  <div className="h-full bg-white dark:bg-slate-900 overflow-hidden rounded-[48px] border border-slate-100 dark:border-slate-800 shadow-xl flex flex-col relative z-10 transition-all hover:-translate-y-2">
+                    <div className="aspect-[4/5] overflow-hidden bg-slate-100 shrink-0 relative group-hover:after:opacity-100 after:opacity-0 after:absolute after:inset-0 after:bg-blue-600/10 after:transition-opacity">
+                      <img 
+                        src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800" 
+                        alt="Samarth Bharat Jadhav" 
+                        className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-105 group-hover:scale-100"
+                      />
+                    </div>
+                    <div className="p-10 space-y-4 text-center">
+                      <div>
+                        <h3 className="text-3xl font-bold dark:text-white mb-2 font-heading tracking-tight">Samarth Bharat Jadhav</h3>
+                        <p className="text-blue-600 font-black uppercase tracking-[0.2em] text-xs">Co-Founder & CTO</p>
+                      </div>
+                      <div className="w-12 h-0.5 bg-slate-100 dark:bg-slate-800 mx-auto" />
+                      <p className="text-slate-600 dark:text-slate-400 leading-relaxed text-base italic font-medium">
+                        "Technology should be invisible yet indispensable. We focus on building tools that empower creators without getting in their way."
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Values Section */}
       <section className="py-24 bg-slate-950 text-white overflow-hidden relative">
         <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-600/20 blur-[120px] rounded-full" />
