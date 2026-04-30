@@ -94,11 +94,11 @@ export default function AboutPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-16">
             {stats.map((stat, i) => (
               <motion.div key={i} variants={fadeInUp} className="text-center group">
-                <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-slate-50 text-slate-400 mb-6 transition-all group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 shadow-sm border border-slate-100 group-hover:border-blue-500">
-                  <stat.icon className="w-6 h-6" />
+                <div className="inline-flex items-center justify-center w-20 h-20 rounded-[2rem] bg-white text-slate-400 mb-6 transition-all group-hover:bg-blue-600 group-hover:text-white group-hover:scale-110 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.1)] border border-slate-100 group-hover:border-blue-500 group-hover:shadow-blue-600/25">
+                  <stat.icon className="w-8 h-8 transition-transform group-hover:rotate-12" />
                 </div>
-                <div className="text-4xl font-black text-slate-900 mb-2 tracking-tighter">{stat.value}</div>
-                <div className="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">{stat.label}</div>
+                <div className="text-5xl font-black text-slate-900 mb-2 tracking-tighter group-hover:text-blue-600 transition-colors">{stat.value}</div>
+                <div className="text-[10px] text-slate-400 font-black uppercase tracking-[0.3em]">{stat.label}</div>
               </motion.div>
             ))}
           </div>
@@ -142,21 +142,21 @@ export default function AboutPage() {
               
               <div className="space-y-6">
                 {[
-                  { title: "Identity Encryption", desc: "Your strategic intellectual property is safe with our advanced masked identity protocols.", icon: ShieldCheck },
-                  { title: "Elite Vetting", desc: "Every project is coordinated by industry-certified engineering consultants.", icon: Award },
-                  { title: "Global Recognition", desc: "Empowering Indian innovation to meet global patent standards.", icon: Globe },
+                  { title: "Identity Encryption", desc: "Your strategic intellectual property is safe with our advanced masked identity protocols.", icon: ShieldCheck, color: "text-blue-600", bg: "bg-blue-50", shadow: "hover:shadow-blue-600/10" },
+                  { title: "Elite Vetting", desc: "Every project is coordinated by industry-certified engineering consultants.", icon: Award, color: "text-emerald-600", bg: "bg-emerald-50", shadow: "hover:shadow-emerald-600/10" },
+                  { title: "Global Recognition", desc: "Empowering Indian innovation to meet global patent standards.", icon: Globe, color: "text-purple-600", bg: "bg-purple-50", shadow: "hover:shadow-purple-600/10" },
                 ].map((item, i) => (
                   <motion.div 
                     key={i} 
-                    whileHover={{ x: 10 }}
-                    className="flex gap-6 p-8 rounded-[2.5rem] border border-slate-100 bg-white shadow-xl shadow-slate-900/5 transition-all group"
+                    whileHover={{ x: 10, scale: 1.02 }}
+                    className={`flex gap-8 p-10 rounded-[3rem] border border-slate-100 bg-white shadow-xl shadow-slate-900/5 transition-all duration-500 group ${item.shadow} hover:border-slate-200`}
                   >
-                    <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center text-slate-400 shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all duration-500 border border-slate-100 group-hover:border-blue-500">
-                      <item.icon className="w-6 h-6" />
+                    <div className={`w-20 h-20 rounded-[1.5rem] ${item.bg} flex items-center justify-center ${item.color} shrink-0 group-hover:scale-110 transition-all duration-500 border border-slate-100`}>
+                      <item.icon className="w-10 h-10 transition-transform group-hover:rotate-12" />
                     </div>
                     <div>
-                      <h4 className="font-black text-slate-900 text-sm uppercase tracking-widest mb-1">{item.title}</h4>
-                      <p className="text-[11px] text-slate-400 font-bold uppercase tracking-widest leading-loose">{item.desc}</p>
+                      <h4 className="font-black text-slate-900 text-lg uppercase tracking-tight mb-2">{item.title}</h4>
+                      <p className="text-[12px] text-slate-500 font-bold leading-relaxed">{item.desc}</p>
                     </div>
                   </motion.div>
                 ))}

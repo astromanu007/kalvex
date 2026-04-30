@@ -125,13 +125,39 @@ export default function PatentDrafterPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-20 bg-[#F1F5F9] dark:bg-slate-950 transition-colors duration-300">
-      <div className="container-custom">
-        <div className="flex flex-col lg:flex-row gap-8 items-start">
+    <div className="min-h-screen pt-40 pb-32 bg-white transition-colors duration-500 overflow-hidden relative">
+      {/* Background Decor */}
+      <div className="absolute top-0 right-0 w-[60rem] h-[60rem] bg-blue-50 rounded-full -z-10 blur-[120px] -translate-y-1/2 translate-x-1/3" />
+      <div className="absolute bottom-0 left-0 w-[40rem] h-[40rem] bg-indigo-50 rounded-full -z-10 blur-[100px] translate-y-1/3 -translate-x-1/4" />
+
+      <div className="container mx-auto px-4 max-w-7xl relative z-10">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center max-w-4xl mx-auto mb-24 space-y-8"
+        >
+          <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
+            <Sparkles className="w-4 h-4" /> AI Patent Engineering
+          </div>
+          <h1 className="text-6xl md:text-8xl font-black font-heading text-slate-900 leading-[0.9] tracking-tighter">
+            Draft Like a <br />
+            <span className="text-blue-600">Pro Architect.</span>
+          </h1>
+          <p className="text-xl text-slate-400 font-bold leading-relaxed max-w-3xl mx-auto">
+            Our intelligent drafting engine generates production-grade IP documentation. Simply upload your technical views and witness the transformation.
+          </p>
+        </motion.div>
+
+        <div className="flex flex-col lg:flex-row gap-16 items-start">
 
           <div className="flex-1 space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200 dark:border-slate-800 shadow-sm transition-all">
-              <h2 className="text-xl font-bold mb-6 flex items-center gap-2 font-heading dark:text-white"><Sparkles className="text-blue-600" /> Patent Designer v2.0</h2>
+            <div className="bg-white rounded-[3rem] p-12 border border-slate-100 shadow-2xl shadow-slate-900/5 transition-all">
+              <h2 className="text-2xl font-black mb-10 flex items-center gap-4 font-heading text-slate-900 uppercase tracking-tight">
+                <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center text-white shadow-xl shadow-blue-600/20">
+                  <Sparkles className="w-6 h-6" />
+                </div>
+                Drafting Terminal
+              </h2>
 
               <div className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

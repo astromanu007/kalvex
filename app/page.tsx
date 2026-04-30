@@ -122,44 +122,52 @@ export default function Home() {
         <div className="relative flex overflow-x-hidden group">
           <div className="animate-marquee whitespace-nowrap flex items-center space-x-24 px-12">
             {[
-              { name: "IIT BOMBAY", color: "text-blue-500", logo: "https://www.iitb.ac.in/themes/custom/iitb_bootstrap/logo.png" },
-              { name: "IIT DELHI", color: "text-red-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/fd/Indian_Institute_of_Technology_Delhi_Logo.svg/220px-Indian_Institute_of_Technology_Delhi_Logo.svg.png" },
-              { name: "IIT MADRAS", color: "text-orange-500", logo: "https://www.iitm.ac.in/themes/custom/iitm/assets/images/iitm_logo.png" },
-              { name: "IIT KANPUR", color: "text-indigo-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a3/IIT_Kanpur_Logo.svg/220px-IIT_Kanpur_Logo.svg.png" },
-              { name: "IIT KHARAGPUR", color: "text-amber-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/IIT_Kharagpur_Logo.svg/220px-IIT_Kharagpur_Logo.svg.png" },
-              { name: "IIT ROORKEE", color: "text-emerald-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6f/Indian_Institute_of_Technology_Roorkee_logo.png/220px-Indian_Institute_of_Technology_Roorkee_logo.png" },
-              { name: "IIT GUWAHATI", color: "text-cyan-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/12/IIT_Guwahati_Logo.svg/220px-IIT_Guwahati_Logo.svg.png" },
-              { name: "IIT HYDERABAD", color: "text-violet-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/19/IIT_Hyderabad_Insignia.svg/220px-IIT_Hyderabad_Insignia.svg.png" }
+              { name: "IIT BOMBAY", color: "text-blue-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/200px-Indian_Institute_of_Technology_Bombay_Logo.svg.png" },
+              { name: "IIT DELHI", color: "text-red-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/fd/Indian_Institute_of_Technology_Delhi_Logo.svg/200px-Indian_Institute_of_Technology_Delhi_Logo.svg.png" },
+              { name: "IIT MADRAS", color: "text-emerald-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Indian_Institute_of_Technology_Madras_Logo.svg/200px-Indian_Institute_of_Technology_Madras_Logo.svg.png" },
+              { name: "IIT KANPUR", color: "text-indigo-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a3/IIT_Kanpur_Logo.svg/200px-IIT_Kanpur_Logo.svg.png" },
+              { name: "IIT KHARAGPUR", color: "text-amber-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/IIT_Kharagpur_Logo.svg/200px-IIT_Kharagpur_Logo.svg.png" },
+              { name: "IIT ROORKEE", color: "text-cyan-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6f/Indian_Institute_of_Technology_Roorkee_logo.png/200px-Indian_Institute_of_Technology_Roorkee_logo.png" },
+              { name: "IIT GUWAHATI", color: "text-pink-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/12/IIT_Guwahati_Logo.svg/200px-IIT_Guwahati_Logo.svg.png" },
+              { name: "IIT HYDERABAD", color: "text-violet-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/19/IIT_Hyderabad_Insignia.svg/200px-IIT_Hyderabad_Insignia.svg.png" }
             ].map((iit, i) => (
-              <div key={i} className="flex items-center gap-4">
-                <div className={`w-16 h-16 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center overflow-hidden p-2`}>
+              <motion.div 
+                key={i} 
+                whileHover={{ scale: 1.1, rotate: 2, y: -5 }}
+                className="flex items-center gap-6 group cursor-pointer"
+              >
+                <div className="w-20 h-20 rounded-3xl bg-white border border-slate-100 shadow-xl flex items-center justify-center overflow-hidden p-3 group-hover:shadow-2xl group-hover:border-blue-500/30 transition-all duration-500">
                   <img src={iit.logo} alt={iit.name} className="w-full h-full object-contain" />
                 </div>
-                <div className={`text-4xl font-heading font-black tracking-tighter uppercase ${iit.color}`}>
+                <div className={`text-5xl font-heading font-black tracking-tighter uppercase ${iit.color} opacity-60 group-hover:opacity-100 transition-all duration-500`}>
                   {iit.name}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
           <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-24 px-12">
             {[
-              { name: "IIT BOMBAY", color: "text-blue-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/220px-Indian_Institute_of_Technology_Bombay_Logo.svg.png" },
-              { name: "IIT DELHI", color: "text-red-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/fd/Indian_Institute_of_Technology_Delhi_Logo.svg/220px-Indian_Institute_of_Technology_Delhi_Logo.svg.png" },
-              { name: "IIT MADRAS", color: "text-orange-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Indian_Institute_of_Technology_Madras_Logo.svg/220px-Indian_Institute_of_Technology_Madras_Logo.svg.png" },
-              { name: "IIT KANPUR", color: "text-indigo-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a3/IIT_Kanpur_Logo.svg/220px-IIT_Kanpur_Logo.svg.png" },
-              { name: "IIT KHARAGPUR", color: "text-amber-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/IIT_Kharagpur_Logo.svg/220px-IIT_Kharagpur_Logo.svg.png" },
-              { name: "IIT ROORKEE", color: "text-emerald-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6f/Indian_Institute_of_Technology_Roorkee_logo.png/220px-Indian_Institute_of_Technology_Roorkee_logo.png" },
-              { name: "IIT GUWAHATI", color: "text-cyan-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/12/IIT_Guwahati_Logo.svg/220px-IIT_Guwahati_Logo.svg.png" },
-              { name: "IIT HYDERABAD", color: "text-violet-500", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/19/IIT_Hyderabad_Insignia.svg/220px-IIT_Hyderabad_Insignia.svg.png" }
+              { name: "IIT BOMBAY", color: "text-blue-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1d/Indian_Institute_of_Technology_Bombay_Logo.svg/200px-Indian_Institute_of_Technology_Bombay_Logo.svg.png" },
+              { name: "IIT DELHI", color: "text-red-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/f/fd/Indian_Institute_of_Technology_Delhi_Logo.svg/200px-Indian_Institute_of_Technology_Delhi_Logo.svg.png" },
+              { name: "IIT MADRAS", color: "text-emerald-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/69/Indian_Institute_of_Technology_Madras_Logo.svg/200px-Indian_Institute_of_Technology_Madras_Logo.svg.png" },
+              { name: "IIT KANPUR", color: "text-indigo-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/a/a3/IIT_Kanpur_Logo.svg/200px-IIT_Kanpur_Logo.svg.png" },
+              { name: "IIT KHARAGPUR", color: "text-amber-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/1c/IIT_Kharagpur_Logo.svg/200px-IIT_Kharagpur_Logo.svg.png" },
+              { name: "IIT ROORKEE", color: "text-cyan-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/6/6f/Indian_Institute_of_Technology_Roorkee_logo.png/200px-Indian_Institute_of_Technology_Roorkee_logo.png" },
+              { name: "IIT GUWAHATI", color: "text-pink-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/12/IIT_Guwahati_Logo.svg/200px-IIT_Guwahati_Logo.svg.png" },
+              { name: "IIT HYDERABAD", color: "text-violet-600", logo: "https://upload.wikimedia.org/wikipedia/en/thumb/1/19/IIT_Hyderabad_Insignia.svg/200px-IIT_Hyderabad_Insignia.svg.png" }
             ].map((iit, i) => (
-              <div key={`dup-${i}`} className="flex items-center gap-4">
-                <div className={`w-16 h-16 rounded-full bg-white border border-slate-100 shadow-sm flex items-center justify-center overflow-hidden p-2`}>
+              <motion.div 
+                key={`dup-${i}`} 
+                whileHover={{ scale: 1.1, rotate: 2, y: -5 }}
+                className="flex items-center gap-6 group cursor-pointer"
+              >
+                <div className="w-20 h-20 rounded-3xl bg-white border border-slate-100 shadow-xl flex items-center justify-center overflow-hidden p-3 group-hover:shadow-2xl group-hover:border-blue-500/30 transition-all duration-500">
                   <img src={iit.logo} alt={iit.name} className="w-full h-full object-contain" />
                 </div>
-                <div className={`text-4xl font-heading font-black tracking-tighter uppercase ${iit.color}`}>
+                <div className={`text-5xl font-heading font-black tracking-tighter uppercase ${iit.color} opacity-60 group-hover:opacity-100 transition-all duration-500`}>
                   {iit.name}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
@@ -291,30 +299,29 @@ export default function Home() {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
             {[
-              { name: "Arduino Uno R3", price: "₹699.00", img: "https://images.unsplash.com/photo-1608564697071-ddf911d81370?auto=format&fit=crop&q=80&w=400" },
-              { name: "Raspberry Pi 4", price: "₹4,500.00", img: "https://images.unsplash.com/photo-1628126235206-5260b9ea6441?auto=format&fit=crop&q=80&w=400" },
-              { name: "NodeMCU ESP8266", price: "₹299.00", img: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&q=80&w=400" },
-              { name: "L298N Motor Driver", price: "₹149.00", img: "https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?auto=format&fit=crop&q=80&w=400" },
-
+              { name: "Arduino Uno R3", price: "₹699.00", img: "https://images.unsplash.com/photo-1608564697071-ddf911d81370?auto=format&fit=crop&q=80&w=400", color: "text-blue-600", bg: "bg-blue-50" },
+              { name: "Raspberry Pi 4", price: "₹4,500.00", img: "https://images.unsplash.com/photo-1628126235206-5260b9ea6441?auto=format&fit=crop&q=80&w=400", color: "text-purple-600", bg: "bg-purple-50" },
+              { name: "NodeMCU ESP8266", price: "₹299.00", img: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&q=80&w=400", color: "text-cyan-600", bg: "bg-cyan-50" },
+              { name: "L298N Motor Driver", price: "₹149.00", img: "https://images.unsplash.com/photo-1580927752452-89d86da3fa0a?auto=format&fit=crop&q=80&w=400", color: "text-orange-600", bg: "bg-orange-50" },
             ].map((item, i) => (
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                whileHover={{ y: -10 }}
-                className="bg-white rounded-[3.5rem] overflow-hidden border border-slate-100 group cursor-pointer hover:shadow-[0_48px_96px_-24px_rgba(16,185,129,0.15)] hover:border-emerald-200 transition-all duration-700"
+                whileHover={{ y: -15, scale: 1.02 }}
+                className={`bg-white rounded-[4rem] overflow-hidden border border-slate-100 group cursor-pointer hover:shadow-2xl transition-all duration-700`}
               >
-                <div className="aspect-square bg-slate-50 relative overflow-hidden group-hover:bg-slate-100 transition-colors">
-                  <div className="absolute top-6 left-6 bg-slate-900 text-white text-[9px] font-black tracking-[0.2em] px-4 py-1.5 rounded-full z-10 uppercase">
+                <div className="aspect-square bg-slate-50 relative overflow-hidden group-hover:bg-white transition-colors p-8">
+                  <div className={`absolute top-6 left-6 ${item.bg} ${item.color} text-[9px] font-black tracking-[0.2em] px-4 py-1.5 rounded-xl z-10 uppercase shadow-sm border border-slate-100`}>
                     In Stock
                   </div>
-                  <img src={item.img} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 mix-blend-multiply opacity-90" />
+                  <img src={item.img} alt={item.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-1000" />
                 </div>
-                <div className="p-8 space-y-6">
+                <div className="p-10 space-y-6">
                   <h3 className="font-black text-slate-900 text-xl leading-tight group-hover:text-emerald-600 transition-colors">{item.name}</h3>
                   <div className="flex items-center justify-between border-y border-slate-50 py-4">
                     <span className="font-black text-slate-900 text-2xl tracking-tighter">{item.price}</span>
                   </div>
-                  <Button className="w-full bg-slate-900 hover:bg-emerald-600 text-white rounded-2xl h-14 font-black text-[10px] uppercase tracking-widest transition-all duration-500 shadow-xl shadow-slate-900/10">Add to Cart</Button>
+                  <Button className={`w-full bg-slate-900 hover:bg-emerald-600 text-white rounded-2xl h-16 font-black text-[10px] uppercase tracking-widest transition-all duration-500 shadow-xl shadow-slate-900/10 group-hover:shadow-emerald-600/20`}>Add to Cart</Button>
                 </div>
               </motion.div>
             ))}
@@ -366,6 +373,72 @@ export default function Home() {
                 </div>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </motion.section>
+
+      {/* SECTION 7 - INFRA OF TOMORROW */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerContainer}
+        className="py-40 bg-slate-950 relative overflow-hidden"
+      >
+        <div className="absolute top-0 right-0 w-[80rem] h-[80rem] bg-blue-600/10 rounded-full blur-[160px] translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 left-0 w-[60rem] h-[60rem] bg-emerald-600/10 rounded-full blur-[140px] -translate-x-1/2 translate-y-1/2" />
+        
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
+          <div className="grid lg:grid-cols-12 gap-24 items-center">
+            <div className="lg:col-span-6 space-y-12">
+              <motion.div variants={fadeInUp} className="space-y-8">
+                <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em]">
+                  <Globe className="w-4 h-4" /> Global Impact
+                </div>
+                <h2 className="text-6xl md:text-8xl font-black font-heading text-white leading-[0.85] tracking-tighter">
+                  Lead the <br />
+                  <span className="text-blue-500 text-glow">Infra of Tomorrow.</span>
+                </h2>
+                <p className="text-xl text-slate-400 font-bold leading-relaxed max-w-xl">
+                  We are not just a service provider; we are the foundation for the next decade of Indian engineering excellence. Join the movement that is redefining innovation.
+                </p>
+              </motion.div>
+
+              <motion.div variants={fadeInUp} className="grid grid-cols-2 gap-8">
+                <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 group hover:border-blue-500/50 transition-all duration-500">
+                  <div className="text-4xl font-black text-white mb-2 tracking-tighter">50k+</div>
+                  <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Active Patents</div>
+                </div>
+                <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 group hover:border-emerald-500/50 transition-all duration-500">
+                  <div className="text-4xl font-black text-white mb-2 tracking-tighter">100+</div>
+                  <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest">IIT Collaborations</div>
+                </div>
+              </motion.div>
+            </div>
+
+            <motion.div variants={fadeInUp} className="lg:col-span-6 relative">
+              <div className="relative rounded-[4rem] overflow-hidden border border-white/10 group">
+                <img 
+                  src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200" 
+                  className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 scale-110 group-hover:scale-100"
+                  alt="Future Infra"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="w-32 h-32 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center animate-pulse">
+                    <Zap className="w-12 h-12 text-blue-500" />
+                  </div>
+                </div>
+              </div>
+              {/* 3D Floating Element */}
+              <motion.div 
+                animate={{ y: [0, -20, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="absolute -top-12 -right-12 bg-blue-600 p-8 rounded-[3rem] shadow-2xl shadow-blue-600/40 z-20"
+              >
+                <Cpu className="w-12 h-12 text-white" />
+              </motion.div>
+            </motion.div>
           </div>
         </div>
       </motion.section>
