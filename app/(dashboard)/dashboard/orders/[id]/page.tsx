@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { 
   ArrowLeft, Clock, FileText, CheckCircle, AlertCircle, 
-  MessageSquare, Download, CreditCard, Loader2, Paperclip 
+  MessageSquare, Download, CreditCard, Loader2, Paperclip, ShieldCheck
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getOrders } from "@/app/actions/orders";
@@ -132,7 +132,7 @@ export default function OrderDetailsPage() {
               </h2>
               <label className="cursor-pointer">
                 <input type="file" className="hidden" onChange={handleFileUpload} disabled={uploading} />
-                <Button variant="outline" size="sm" className="h-8 text-xs border-border rounded-lg gap-2" asChild>
+                <Button variant="outline" size="sm" className="h-8 text-xs border-border rounded-lg gap-2">
                   <span>
                     {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Paperclip className="w-3 h-3" />}
                     Add Attachment
