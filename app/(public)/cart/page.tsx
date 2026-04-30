@@ -2,8 +2,14 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Shield, Truck } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Shield, Truck, Sparkles, CreditCard } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion, AnimatePresence } from "framer-motion";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] } }
+};
 
 const INITIAL_CART = [
   { id: "c1", name: "Raspberry Pi 5 4GB RAM", sku: "KVX-SBC-005", price: 6500, qty: 2, category: "Development Boards" },
@@ -28,127 +34,193 @@ export default function CartPage() {
   const total = subtotal - discount + shipping;
 
   return (
-    <div className="min-h-screen pt-24 pb-16 bg-bg-primary">
-      <div className="container mx-auto px-4">
-        <h1 className="font-heading font-bold text-3xl text-text-primary mb-8">Your Cart</h1>
-
-        {cart.length === 0 ? (
-          <div className="text-center py-24">
-            <ShoppingBag className="w-16 h-16 text-text-muted mx-auto mb-4" />
-            <h2 className="font-heading font-semibold text-xl mb-2">Your cart is empty</h2>
-            <p className="text-text-secondary text-sm mb-8">Looks like you haven&apos;t added anything yet.</p>
-            <Link href="/electronics"><Button className="bg-accent-primary text-white rounded-xl shadow-glow">Browse Store</Button></Link>
+    <div className="min-h-screen pt-32 pb-24 bg-slate-50 transition-colors duration-300">
+      <div className="container mx-auto px-4 max-w-7xl">
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          className="flex items-center gap-4 mb-12"
+        >
+          <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center border border-blue-100">
+            <ShoppingBag className="w-6 h-6 text-blue-600" />
           </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Cart Items */}
-            <div className="lg:col-span-2 space-y-4">
-              {cart.map((item) => (
-                <div key={item.id} className="bg-bg-card border border-border rounded-2xl p-5 flex flex-col sm:flex-row gap-4">
-                  {/* Placeholder image */}
-                  <div className="w-20 h-20 rounded-xl bg-bg-surface border border-border flex items-center justify-center flex-shrink-0">
-                    <ShoppingBag className="w-8 h-8 text-text-muted" />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <p className="text-[10px] font-mono text-text-muted mb-1">{item.sku}</p>
-                    <h3 className="font-medium text-text-primary text-sm mb-1 line-clamp-1">{item.name}</h3>
-                    <p className="text-[10px] text-text-muted bg-bg-surface border border-border rounded-full px-2 py-0.5 inline-block">{item.category}</p>
-                  </div>
-                  <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-3 flex-shrink-0">
-                    <p className="font-mono font-bold text-accent-primary">₹{(item.price * item.qty).toLocaleString()}</p>
-                    <div className="flex items-center border border-border rounded-lg overflow-hidden">
-                      <button onClick={() => updateQty(item.id, -1)} className="w-8 h-8 flex items-center justify-center hover:bg-bg-surface transition-colors">
-                        <Minus className="w-3 h-3" />
-                      </button>
-                      <span className="w-8 h-8 flex items-center justify-center text-sm font-semibold border-x border-border">{item.qty}</span>
-                      <button onClick={() => updateQty(item.id, 1)} className="w-8 h-8 flex items-center justify-center hover:bg-bg-surface transition-colors">
-                        <Plus className="w-3 h-3" />
-                      </button>
-                    </div>
-                    <button onClick={() => removeItem(item.id)} className="text-text-muted hover:text-accent-danger transition-colors">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-              ))}
-
-              {/* Trust Badges */}
-              <div className="grid grid-cols-3 gap-3 mt-6">
-                {[
-                  { icon: Shield, text: "Secure Checkout via Razorpay" },
-                  { icon: Truck, text: "Free Shipping above ₹5,000" },
-                  { icon: Tag, text: "Use KALVEX10 for 10% off" },
-                ].map((b) => (
-                  <div key={b.text} className="bg-bg-card border border-border rounded-xl p-3 text-center flex flex-col items-center gap-2">
-                    <b.icon className="w-5 h-5 text-accent-primary" />
-                    <p className="text-[10px] text-text-secondary leading-tight">{b.text}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Order Summary */}
-            <div className="lg:col-span-1">
-              <div className="bg-bg-card border border-border rounded-2xl p-6 sticky top-24 space-y-5">
-                <h2 className="font-heading font-semibold text-lg">Order Summary</h2>
-
-                <div className="space-y-3 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-text-secondary">Subtotal ({cart.reduce((a, i) => a + i.qty, 0)} items)</span>
-                    <span className="font-medium">₹{subtotal.toLocaleString()}</span>
-                  </div>
-                  {discount > 0 && (
-                    <div className="flex justify-between text-accent-success">
-                      <span>Coupon Discount (10%)</span>
-                      <span>- ₹{discount.toLocaleString()}</span>
-                    </div>
-                  )}
-                  <div className="flex justify-between">
-                    <span className="text-text-secondary">Shipping</span>
-                    <span className={shipping === 0 ? "text-accent-success font-medium" : "font-medium"}>
-                      {shipping === 0 ? "FREE" : `₹${shipping}`}
-                    </span>
-                  </div>
-                  <div className="border-t border-border pt-3 flex justify-between font-bold text-base">
-                    <span>Total</span>
-                    <span className="text-accent-primary">₹{total.toLocaleString()}</span>
-                  </div>
-                </div>
-
-                {/* Coupon */}
-                <div className="flex gap-2">
-                  <input
-                    value={coupon}
-                    onChange={(e) => setCoupon(e.target.value.toUpperCase())}
-                    placeholder="Coupon code"
-                    className="flex-1 bg-bg-input border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-accent-primary font-mono"
-                    disabled={couponApplied}
-                  />
-                  <Button
-                    onClick={() => { if (coupon === "KALVEX10") setCouponApplied(true); }}
-                    variant="outline"
-                    size="sm"
-                    disabled={couponApplied}
-                    className="border-accent-primary text-accent-primary hover:bg-accent-primary/10 rounded-lg px-4"
-                  >
-                    {couponApplied ? "✓" : "Apply"}
-                  </Button>
-                </div>
-                {couponApplied && <p className="text-xs text-accent-success -mt-2">✓ Coupon applied — 10% off!</p>}
-
-                <Link href="/checkout">
-                  <Button className="w-full bg-accent-primary hover:bg-accent-primary/90 text-white shadow-glow h-12 rounded-xl font-semibold gap-2">
-                    Proceed to Checkout <ArrowRight className="w-4 h-4" />
-                  </Button>
-                </Link>
-
-                <p className="text-[10px] text-text-muted text-center">
-                  By placing an order, you agree to our <Link href="/terms" className="underline hover:text-accent-primary">Terms</Link> and <Link href="/privacy" className="underline hover:text-accent-primary">Privacy Policy</Link>.
-                </p>
-              </div>
-            </div>
+          <div>
+            <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tighter">Your <span className="text-blue-600">Inventory</span></h1>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-1">Review your procurement request</p>
           </div>
-        )}
+        </motion.div>
+
+        <AnimatePresence mode="wait">
+          {cart.length === 0 ? (
+            <motion.div 
+              key="empty"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="text-center py-32 bg-white rounded-[3rem] border border-slate-100 shadow-2xl shadow-slate-900/5"
+            >
+              <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-8 border border-slate-100">
+                <ShoppingBag className="w-10 h-10 text-slate-200" />
+              </div>
+              <h2 className="font-black text-2xl text-slate-900 mb-3 tracking-tight">Your request is currently empty</h2>
+              <p className="text-slate-400 font-bold text-sm mb-10 max-w-sm mx-auto">Initialize your engineering build by sourcing high-performance components from our laboratory.</p>
+              <Link href="/electronics">
+                <Button className="bg-slate-900 hover:bg-blue-600 text-white rounded-2xl h-14 px-10 font-black text-[10px] uppercase tracking-widest transition-all duration-500 shadow-xl shadow-slate-900/20">
+                  Access Laboratory Store
+                </Button>
+              </Link>
+            </motion.div>
+          ) : (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+              {/* Cart Items */}
+              <div className="lg:col-span-2 space-y-6">
+                <AnimatePresence>
+                  {cart.map((item, index) => (
+                    <motion.div 
+                      key={item.id} 
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: 20 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="bg-white border border-slate-100 rounded-[2.5rem] p-8 flex flex-col sm:flex-row gap-8 items-center group hover:border-blue-600/20 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-900/5"
+                    >
+                      {/* Placeholder image */}
+                      <div className="w-28 h-28 rounded-3xl bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform duration-500 shadow-inner">
+                        <CreditCard className="w-10 h-10 text-slate-200" />
+                      </div>
+                      <div className="flex-1 min-w-0 text-center sm:text-left">
+                        <div className="inline-flex items-center gap-2 text-[9px] font-black text-slate-300 uppercase tracking-widest mb-3 border border-slate-50 px-3 py-1 rounded-full">{item.sku}</div>
+                        <h3 className="font-black text-slate-900 text-xl mb-2 line-clamp-1 group-hover:text-blue-600 transition-colors">{item.name}</h3>
+                        <p className="text-[10px] font-black text-blue-600 bg-blue-50/50 px-3 py-1 inline-block rounded-lg tracking-widest uppercase">{item.category}</p>
+                      </div>
+                      <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-6 flex-shrink-0 w-full sm:w-auto">
+                        <p className="font-black text-slate-900 text-2xl tracking-tighter">₹{(item.price * item.qty).toLocaleString()}</p>
+                        <div className="flex items-center bg-slate-50 border border-slate-100 rounded-2xl p-1 shadow-sm">
+                          <button onClick={() => updateQty(item.id, -1)} className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:bg-white hover:text-blue-600 transition-all">
+                            <Minus className="w-4 h-4" />
+                          </button>
+                          <span className="w-12 text-center text-sm font-black text-slate-900">{item.qty}</span>
+                          <button onClick={() => updateQty(item.id, 1)} className="w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:bg-white hover:text-blue-600 transition-all">
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        </div>
+                        <button onClick={() => removeItem(item.id)} className="w-10 h-10 flex items-center justify-center rounded-2xl text-slate-200 hover:bg-red-50 hover:text-red-500 transition-all border border-transparent hover:border-red-100">
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </div>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+
+                {/* Trust Badges */}
+                <motion.div 
+                  initial="hidden"
+                  animate="visible"
+                  variants={fadeInUp}
+                  className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-12"
+                >
+                  {[
+                    { icon: Shield, text: "Authorized Secure Gateway", sub: "AES-256 Protocol" },
+                    { icon: Truck, text: "Institutional Logistics", sub: "Priority Ground Shipping" },
+                    { icon: Tag, text: "KALVEX10 Research Grant", sub: "10% Institutional Discount" },
+                  ].map((b) => (
+                    <div key={b.text} className="bg-white border border-slate-100 rounded-[2rem] p-6 flex items-center gap-5 group hover:bg-slate-50 transition-all">
+                      <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center shrink-0 border border-blue-100">
+                        <b.icon className="w-5 h-5 text-blue-600" />
+                      </div>
+                      <div>
+                        <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest">{b.text}</h4>
+                        <p className="text-[9px] text-slate-400 font-bold uppercase tracking-widest mt-1">{b.sub}</p>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
+
+              {/* Order Summary */}
+              <motion.div 
+                initial="hidden"
+                animate="visible"
+                variants={fadeInUp}
+                className="lg:col-span-1"
+              >
+                <div className="bg-white border border-slate-100 rounded-[3rem] p-10 sticky top-32 shadow-2xl shadow-slate-900/5 space-y-10">
+                  <div>
+                    <h2 className="font-black text-slate-900 text-xl tracking-tight mb-2">Statement of <span className="text-blue-600">Accounts</span></h2>
+                    <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Procurement Summary</p>
+                  </div>
+
+                  <div className="space-y-6">
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-slate-400 font-bold">Base Assessment</span>
+                      <span className="font-black text-slate-900">₹{subtotal.toLocaleString()}</span>
+                    </div>
+                    {discount > 0 && (
+                      <div className="flex justify-between items-center text-sm">
+                        <span className="text-blue-600 font-black uppercase tracking-widest text-[10px]">Research Grant Application</span>
+                        <span className="font-black text-blue-600">- ₹{discount.toLocaleString()}</span>
+                      </div>
+                    )}
+                    <div className="flex justify-between items-center text-sm">
+                      <span className="text-slate-400 font-bold">Strategic Logistics</span>
+                      <span className={shipping === 0 ? "text-emerald-500 font-black uppercase tracking-widest text-[10px]" : "font-black text-slate-900"}>
+                        {shipping === 0 ? "Complimentary" : `₹${shipping}`}
+                      </span>
+                    </div>
+                    <div className="pt-8 border-t border-slate-50 flex justify-between items-end">
+                      <div>
+                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Total Liability</span>
+                        <div className="text-4xl font-black text-slate-900 tracking-tighter">₹{total.toLocaleString()}</div>
+                      </div>
+                      <div className="bg-blue-50 px-3 py-1 rounded-lg text-[9px] font-black text-blue-600 uppercase tracking-widest mb-1">INR</div>
+                    </div>
+                  </div>
+
+                  {/* Coupon */}
+                  <div className="space-y-4">
+                    <p className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Authorization Token</p>
+                    <div className="flex gap-3">
+                      <input
+                        value={coupon}
+                        onChange={(e) => setCoupon(e.target.value.toUpperCase())}
+                        placeholder="ENTER CODE"
+                        className="flex-1 bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-xs font-black focus:outline-none focus:border-blue-600 transition-all placeholder:text-slate-200"
+                        disabled={couponApplied}
+                      />
+                      <Button
+                        onClick={() => { if (coupon === "KALVEX10") setCouponApplied(true); }}
+                        disabled={couponApplied}
+                        className="bg-slate-900 hover:bg-blue-600 text-white rounded-2xl px-8 font-black text-[10px] uppercase tracking-widest transition-all"
+                      >
+                        {couponApplied ? "✓" : "Validate"}
+                      </Button>
+                    </div>
+                    {couponApplied && (
+                      <motion.p 
+                        initial={{ opacity: 0, y: -10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="text-[10px] text-emerald-500 font-black uppercase tracking-widest flex items-center gap-2"
+                      >
+                        <Sparkles className="w-3 h-3" /> Token Accepted — 10% Research Grant Applied
+                      </motion.p>
+                    )}
+                  </div>
+
+                  <Link href="/checkout">
+                    <Button className="w-full bg-slate-900 hover:bg-blue-600 text-white shadow-xl shadow-slate-900/20 h-16 rounded-2xl font-black text-[11px] uppercase tracking-widest gap-4 group transition-all duration-500">
+                      Proceed to Secure Settlement <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                    </Button>
+                  </Link>
+
+                  <div className="text-[9px] text-slate-300 text-center font-black uppercase tracking-widest leading-relaxed">
+                    By finalizing, you acknowledge the <Link href="/terms" className="text-slate-400 hover:text-blue-600 transition-colors">Institutional Protocol</Link> and <Link href="/privacy" className="text-slate-400 hover:text-blue-600 transition-colors">Secure Data Policy</Link>.
+                  </div>
+                </div>
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );

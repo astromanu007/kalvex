@@ -1,6 +1,23 @@
 import Link from "next/link";
-import { Search, Filter, Heart, ShoppingCart } from "lucide-react";
+import { Search, Filter, Heart, ShoppingCart, Sparkles, Box, Cpu, Zap, Monitor, Settings, Battery } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+
+const fadeInUp = {
+  hidden: { opacity: 0, y: 30 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+};
+
+const staggerContainer = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.1,
+      delayChildren: 0.2
+    }
+  }
+};
 
 // Mock products data
 const PRODUCTS = [
@@ -28,166 +45,191 @@ const CATEGORIES = [
 
 export default function ElectronicsStore() {
   return (
-    <div className="min-h-screen pt-24 pb-16 bg-bg-primary">
-      <div className="container mx-auto px-4">
+    <div className="min-h-screen pt-32 pb-24 bg-slate-50 transition-colors duration-300">
+      <div className="container mx-auto px-4 max-w-7xl">
         
         {/* Header */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-          <div>
-            <h1 className="font-heading font-bold text-3xl md:text-4xl text-text-primary mb-2">Electronics Store</h1>
-            <p className="text-text-secondary text-sm">Premium components for your next project</p>
+        <motion.div 
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          className="flex flex-col lg:flex-row justify-between items-end mb-16 gap-8"
+        >
+          <div className="space-y-4">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-[10px] font-black uppercase tracking-widest text-blue-600">
+              <Sparkles className="w-3 h-3" />
+              Institutional Procurement
+            </div>
+            <h1 className="font-heading font-black text-4xl md:text-6xl text-slate-900 tracking-tighter">
+              Precision <span className="text-blue-600">Assets</span>
+            </h1>
+            <p className="text-slate-500 font-medium max-w-lg">Sourcing military-grade components for high-stakes engineering and academic research.</p>
           </div>
           
-          <div className="w-full md:w-auto flex flex-1 max-w-md relative">
+          <div className="w-full lg:w-[480px] relative group">
             <input 
               type="text" 
-              placeholder="Search components, SKUs..." 
-              className="w-full bg-bg-input border border-border rounded-l-lg pl-10 pr-4 py-2.5 text-text-primary focus:outline-none focus:border-accent-primary"
+              placeholder="Search components by SKU, Brand, or Spec..." 
+              className="w-full bg-white border border-slate-200 rounded-3xl pl-14 pr-32 py-5 text-slate-900 font-bold focus:ring-8 ring-blue-600/5 focus:border-blue-600 outline-none transition-all placeholder:text-slate-300 shadow-2xl shadow-slate-900/5"
             />
-            <Search className="w-4 h-4 text-text-secondary absolute left-3 top-3.5" />
-            <Button className="rounded-l-none bg-accent-primary hover:bg-accent-primary/90 text-white px-6">
-              Search
+            <Search className="w-6 h-6 text-slate-300 absolute left-5 top-5 group-focus-within:text-blue-600 transition-colors" />
+            <Button className="absolute right-2 top-2 h-11 px-8 rounded-2xl bg-slate-900 hover:bg-blue-600 text-white font-black text-[10px] uppercase tracking-widest transition-all duration-500 shadow-xl shadow-slate-900/20">
+              Search Laboratory
             </Button>
           </div>
-        </div>
+        </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-8">
           
           {/* Sidebar Filters */}
-          <aside className="w-full lg:w-64 flex-shrink-0">
-            <div className="bg-bg-card border border-border rounded-xl p-5 sticky top-24">
-              <div className="flex items-center justify-between mb-4 pb-4 border-b border-border">
-                <h3 className="font-heading font-semibold text-lg flex items-center">
-                  <Filter className="w-4 h-4 mr-2" /> Filters
+          <motion.aside 
+            initial="hidden"
+            animate="visible"
+            variants={fadeInUp}
+            className="w-full lg:w-72 flex-shrink-0"
+          >
+            <div className="bg-white rounded-3xl p-8 sticky top-32 border border-slate-100 shadow-2xl shadow-slate-900/5">
+              <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-50">
+                <h3 className="font-black text-xs uppercase tracking-[0.2em] text-slate-400 flex items-center">
+                  <Filter className="w-4 h-4 mr-3 text-blue-600" /> Filters
                 </h3>
-                <button className="text-xs text-accent-primary hover:underline">Clear All</button>
+                <button className="text-[10px] font-black text-blue-600 hover:text-slate-900 uppercase tracking-widest transition-colors">Reset</button>
               </div>
 
-              <div className="mb-6">
-                <h4 className="font-medium text-sm text-text-primary mb-3">Categories</h4>
-                <div className="space-y-2">
+              <div className="mb-10">
+                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest mb-5">Categories</h4>
+                <div className="space-y-4">
                   {CATEGORIES.map((cat, i) => (
-                    <label key={i} className="flex items-center text-sm text-text-secondary cursor-pointer hover:text-accent-primary">
-                      <input type="radio" name="category" className="mr-2 accent-accent-primary" defaultChecked={i===0} />
-                      {cat}
+                    <label key={i} className="flex items-center text-sm font-bold text-slate-500 cursor-pointer hover:text-blue-600 transition-colors group">
+                      <input type="radio" name="category" className="mr-3 w-4 h-4 accent-blue-600 border-slate-200" defaultChecked={i===0} />
+                      <span className="group-hover:translate-x-1 transition-transform">{cat}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
-              <div className="mb-6">
-                <h4 className="font-medium text-sm text-text-primary mb-3">Price Range</h4>
-                <div className="flex items-center gap-2 mb-2">
-                  <input type="number" placeholder="Min" className="w-full bg-bg-input border border-border rounded px-2 py-1 text-xs" />
-                  <span className="text-text-secondary">-</span>
-                  <input type="number" placeholder="Max" className="w-full bg-bg-input border border-border rounded px-2 py-1 text-xs" />
+              <div className="mb-10">
+                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest mb-5">Price Range (₹)</h4>
+                <div className="flex items-center gap-3 mb-6">
+                  <input type="number" placeholder="Min" className="w-full bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 text-xs font-bold focus:border-blue-600 outline-none" />
+                  <span className="text-slate-300">—</span>
+                  <input type="number" placeholder="Max" className="w-full bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 text-xs font-bold focus:border-blue-600 outline-none" />
                 </div>
-                <input type="range" className="w-full accent-accent-primary" />
+                <input type="range" className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-blue-600" />
               </div>
 
               <div>
-                <h4 className="font-medium text-sm text-text-primary mb-3">Availability</h4>
-                <label className="flex items-center text-sm text-text-secondary cursor-pointer hover:text-accent-primary">
-                  <input type="checkbox" className="mr-2 rounded border-border accent-accent-primary" />
-                  In Stock Only
+                <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest mb-5">Availability</h4>
+                <label className="flex items-center text-sm font-bold text-slate-500 cursor-pointer hover:text-blue-600 transition-colors group">
+                  <input type="checkbox" className="mr-3 w-4 h-4 rounded-md border-slate-200 accent-blue-600" />
+                  <span className="group-hover:translate-x-1 transition-transform">In Stock Only</span>
                 </label>
               </div>
             </div>
-          </aside>
+          </motion.aside>
 
           {/* Product Grid */}
           <main className="flex-1">
-            <div className="flex justify-between items-center mb-6">
-              <p className="text-sm text-text-secondary">Showing 1-8 of 124 products</p>
-              <div className="flex items-center space-x-2">
-                <span className="text-sm text-text-secondary">Sort by:</span>
-                <select className="bg-bg-input border border-border rounded-md px-3 py-1.5 text-sm text-text-primary focus:outline-none focus:border-accent-primary">
-                  <option>Popularity</option>
+            <div className="flex justify-between items-center mb-10">
+              <p className="text-[11px] font-black uppercase tracking-widest text-slate-400">Inventory Status: <span className="text-slate-900">8 / 124 Units</span></p>
+              <div className="flex items-center space-x-3">
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Sort:</span>
+                <select className="bg-white border border-slate-100 rounded-xl px-4 py-2 text-xs font-bold text-slate-900 focus:ring-4 ring-blue-600/5 outline-none cursor-pointer shadow-sm">
+                  <option>Relevance</option>
                   <option>Price: Low to High</option>
                   <option>Price: High to Low</option>
-                  <option>Newest Arrivals</option>
+                  <option>Technical Grade</option>
                 </select>
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+            <motion.div 
+              variants={staggerContainer}
+              initial="hidden"
+              animate="visible"
+              className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-8"
+            >
               {PRODUCTS.map((p) => {
                 const discount = Math.round(((p.mrp - p.price) / p.mrp) * 100);
                 
                 return (
-                  <div key={p.id} className="bg-bg-card rounded-xl overflow-hidden border border-border group hover:shadow-card hover:border-accent-primary/30 transition-all duration-300 flex flex-col h-full">
+                  <motion.div key={p.id} variants={fadeInUp} className="bg-white rounded-[2rem] overflow-hidden border border-slate-100 group hover:shadow-2xl hover:shadow-slate-900/10 hover:border-blue-600/20 transition-all duration-500 flex flex-col h-full relative">
                     {/* Image Area */}
-                    <Link href={`/electronics/${p.id}`} className="block relative h-48 bg-white p-4 flex items-center justify-center overflow-hidden">
-                      <div className="absolute top-2 left-2 z-10">
-                        <span className="bg-bg-surface/80 backdrop-blur text-text-primary border border-border/50 text-[10px] font-bold px-2 py-1 rounded-full uppercase tracking-wider">
+                    <Link href={`/electronics/${p.id}`} className="block relative h-64 bg-slate-50 flex items-center justify-center overflow-hidden">
+                      <div className="absolute top-6 left-6 z-10">
+                        <span className="bg-white text-slate-900 text-[9px] font-black px-3 py-1.5 rounded-full uppercase tracking-widest border border-slate-100 shadow-sm">
                           {p.category}
                         </span>
                       </div>
-                      <div className="absolute top-2 right-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="w-8 h-8 bg-white/80 backdrop-blur rounded-full flex items-center justify-center text-text-secondary hover:text-accent-secondary hover:bg-white transition-colors shadow-sm">
-                          <Heart className="w-4 h-4" />
+                      <div className="absolute top-6 right-6 z-10 opacity-0 group-hover:opacity-100 transition-all duration-500 translate-x-4 group-hover:translate-x-0">
+                        <button className="w-11 h-11 bg-white rounded-2xl flex items-center justify-center text-slate-400 hover:text-red-500 hover:shadow-xl transition-all shadow-sm">
+                          <Heart className="w-5 h-5" />
                         </button>
                       </div>
                       
                       {/* Placeholder for actual product image */}
-                      <div className="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
-                         <span className="text-gray-400 font-mono text-xs">IMG_{p.image.toUpperCase()}</span>
+                      <div className="w-40 h-40 bg-white rounded-3xl flex items-center justify-center group-hover:scale-110 transition-transform duration-700 shadow-2xl shadow-slate-900/5">
+                        {p.image === 'circuit' && <Cpu className="w-16 h-16 text-blue-600 opacity-20" />}
+                        {p.image === 'cpu' && <Box className="w-16 h-16 text-blue-600 opacity-20" />}
+                        {p.image === 'wifi' && <Zap className="w-16 h-16 text-blue-600 opacity-20" />}
+                        {p.image === 'monitor' && <Monitor className="w-16 h-16 text-blue-600 opacity-20" />}
+                        {p.image === 'settings' && <Settings className="w-16 h-16 text-blue-600 opacity-20" />}
+                        {p.image === 'zap' && <Zap className="w-16 h-16 text-blue-600 opacity-20" />}
+                        {p.image === 'battery' && <Battery className="w-16 h-16 text-blue-600 opacity-20" />}
                       </div>
                     </Link>
 
                     {/* Details */}
-                    <div className="p-4 flex flex-col flex-grow">
-                      <Link href={`/electronics/${p.id}`} className="group-hover:text-accent-primary transition-colors">
-                        <h3 className="font-medium text-text-primary text-sm line-clamp-2 mb-1" title={p.name}>{p.name}</h3>
+                    <div className="p-8 flex flex-col flex-grow">
+                      <Link href={`/electronics/${p.id}`} className="group-hover:text-blue-600 transition-colors">
+                        <h3 className="font-black text-slate-900 text-lg leading-tight mb-2 line-clamp-2" title={p.name}>{p.name}</h3>
                       </Link>
-                      <p className="font-mono text-[10px] text-text-muted mb-3">{p.sku}</p>
+                      <div className="inline-flex text-[10px] font-black text-slate-300 uppercase tracking-widest mb-6 border border-slate-50 px-2 py-0.5 rounded-lg">{p.sku}</div>
                       
                       <div className="mt-auto">
-                        <div className="flex items-end space-x-2 mb-1">
-                          <span className="font-bold text-accent-primary text-lg">₹{p.price.toFixed(2)}</span>
-                          <span className="text-xs text-text-muted line-through mb-1">₹{p.mrp.toFixed(2)}</span>
-                          <span className="text-[10px] font-bold text-accent-secondary mb-1">({discount}% OFF)</span>
+                        <div className="flex items-center gap-3 mb-6">
+                          <span className="font-black text-slate-900 text-2xl tracking-tighter">₹{p.price.toLocaleString()}</span>
+                          <span className="text-sm text-slate-300 line-through font-bold">₹{p.mrp.toLocaleString()}</span>
+                          <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-1 rounded-lg">-{discount}%</span>
                         </div>
-                        <p className="text-[10px] text-text-muted mb-3">Inclusive of all taxes</p>
 
-                        <div className="flex items-center justify-between mt-4 pt-4 border-t border-border">
+                        <div className="flex items-center justify-between gap-4 pt-6 border-t border-slate-50">
                           {p.stock > 0 ? (
-                            <span className="text-[10px] font-medium text-accent-success bg-accent-success/10 px-2 py-1 rounded-md flex items-center">
-                              <span className="w-1.5 h-1.5 rounded-full bg-accent-success mr-1.5"></span>
-                              In Stock
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Active Stock</span>
+                            </div>
                           ) : (
-                            <span className="text-[10px] font-medium text-accent-danger bg-accent-danger/10 px-2 py-1 rounded-md flex items-center">
-                              <span className="w-1.5 h-1.5 rounded-full bg-accent-danger mr-1.5"></span>
-                              Out of Stock
-                            </span>
+                            <div className="flex items-center gap-2">
+                              <div className="w-2 h-2 rounded-full bg-red-500"></div>
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Backordered</span>
+                            </div>
                           )}
                           
                           <Button 
-                            size="sm" 
                             disabled={p.stock === 0}
-                            className={`${p.stock > 0 ? "bg-accent-primary hover:bg-accent-primary/90 text-white" : "bg-bg-surface text-text-muted"} h-8 px-3 rounded-lg flex items-center`}
+                            className={`flex-1 ${p.stock > 0 ? "bg-slate-900 hover:bg-blue-600 text-white shadow-xl shadow-slate-900/10" : "bg-slate-50 text-slate-300"} h-14 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-500`}
                           >
-                            <ShoppingCart className="w-3.5 h-3.5 mr-1.5" /> Add
+                            <ShoppingCart className="w-4 h-4 mr-3" /> Add to Order
                           </Button>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
-            </div>
+            </motion.div>div>
 
             {/* Pagination */}
-            <div className="mt-10 flex justify-center">
-              <div className="flex items-center space-x-1">
-                <Button variant="outline" size="sm" className="w-8 h-8 p-0 border-border" disabled>&lt;</Button>
-                <Button variant="outline" size="sm" className="w-8 h-8 p-0 border-accent-primary bg-accent-primary/10 text-accent-primary">1</Button>
-                <Button variant="outline" size="sm" className="w-8 h-8 p-0 border-border hover:border-accent-primary">2</Button>
-                <Button variant="outline" size="sm" className="w-8 h-8 p-0 border-border hover:border-accent-primary">3</Button>
-                <span className="px-2 text-text-muted">...</span>
-                <Button variant="outline" size="sm" className="w-8 h-8 p-0 border-border hover:border-accent-primary">12</Button>
-                <Button variant="outline" size="sm" className="w-8 h-8 p-0 border-border hover:border-accent-primary">&gt;</Button>
+            <div className="mt-20 flex justify-center">
+              <div className="flex items-center space-x-3">
+                <Button variant="outline" size="sm" className="w-12 h-12 rounded-xl border-slate-100 text-slate-400 font-black hover:bg-slate-50" disabled>&lt;</Button>
+                <Button className="w-12 h-12 rounded-xl bg-slate-900 text-white font-black shadow-xl shadow-slate-900/20">1</Button>
+                <Button variant="outline" size="sm" className="w-12 h-12 rounded-xl border-slate-100 text-slate-400 font-black hover:bg-slate-50 transition-all">2</Button>
+                <Button variant="outline" size="sm" className="w-12 h-12 rounded-xl border-slate-100 text-slate-400 font-black hover:bg-slate-50 transition-all">3</Button>
+                <span className="px-4 text-slate-300 font-black tracking-widest">...</span>
+                <Button variant="outline" size="sm" className="w-12 h-12 rounded-xl border-slate-100 text-slate-400 font-black hover:bg-slate-50 transition-all">12</Button>
+                <Button variant="outline" size="sm" className="w-12 h-12 rounded-xl border-slate-100 text-slate-400 font-black hover:bg-slate-50 transition-all">&gt;</Button>
               </div>
             </div>
           </main>
