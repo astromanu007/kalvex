@@ -236,7 +236,7 @@ export default function ProjectShopPage() {
       )}
 
       <div className="container mx-auto px-4 max-w-[1800px]">
-        {/* Header: Institutional Authority */}
+        {/* Header: Project Marketplace */}
         <motion.div 
           initial="hidden"
           animate="visible"
@@ -247,13 +247,13 @@ export default function ProjectShopPage() {
             <Building2 className="w-3 h-3" /> Innovation Marketplace
           </div>
           <h1 className="font-heading font-black text-5xl md:text-7xl text-slate-900 tracking-tighter leading-[1]">
-            Engineering <span className="text-blue-600">Registry</span>
+            Engineering <span className="text-blue-600">Projects</span>
           </h1>
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-12">
           
-          {/* Intelligence Sidebar */}
+          {/* Filters Sidebar */}
           <motion.div 
             initial="hidden"
             animate="visible"
@@ -261,23 +261,23 @@ export default function ProjectShopPage() {
             className="lg:w-72 shrink-0"
           >
             <div className="sticky top-32 space-y-8">
-              {/* Search Architecture */}
+              {/* Search */}
               <div className="relative group">
                 <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
                 <input 
                   type="text"
-                  placeholder="Audit registry..."
+                  placeholder="Search projects..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                   className="w-full bg-white border border-slate-100 rounded-2xl pl-14 pr-6 py-4 text-[10px] font-black outline-none focus:ring-4 ring-blue-600/5 transition-all shadow-lg shadow-slate-900/5"
                 />
               </div>
 
-              {/* Categorization Matrix */}
+              {/* Categories */}
               <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-lg shadow-slate-900/5 space-y-6">
                 <div className="flex items-center gap-3 mb-2">
                   <Filter className="w-3 h-3 text-blue-600" />
-                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-900">Research Focus</p>
+                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-900">Project Category</p>
                 </div>
                 <div className="space-y-2">
                   {CATEGORIES.map(cat => (
@@ -301,9 +301,9 @@ export default function ProjectShopPage() {
               <div className="bg-slate-900 rounded-[2rem] p-6 text-white space-y-4 shadow-2xl shadow-slate-900/20">
                 <div className="flex items-center gap-3">
                   <Zap className="w-4 h-4 text-blue-400" />
-                  <p className="text-[9px] font-black uppercase tracking-widest leading-none">Active Nodes: {PROJECTS.length}</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest leading-none">Total Projects: {PROJECTS.length}</p>
                 </div>
-                <p className="text-[8px] opacity-60 leading-relaxed uppercase tracking-widest">V4.0 Institutional Standards Applied.</p>
+                <p className="text-[8px] opacity-60 leading-relaxed uppercase tracking-widest">High Quality Standards Applied.</p>
               </div>
             </div>
           </motion.div>
@@ -353,7 +353,7 @@ export default function ProjectShopPage() {
 
                       <div className="pt-4 mt-auto border-t border-slate-50 flex items-center justify-between">
                         <div className="space-y-0.5">
-                          <p className="text-[7px] text-slate-300 uppercase tracking-widest font-black">Valuation</p>
+                          <p className="text-[7px] text-slate-300 uppercase tracking-widest font-black">Price</p>
                           <span className="text-lg font-black text-slate-900">₹{project.price.toLocaleString()}</span>
                         </div>
                         <Button 
@@ -379,8 +379,8 @@ export default function ProjectShopPage() {
           className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6"
         >
           {[
-            { icon: Download, title: "Immediate Deployment", desc: "Instant source code access." },
-            { icon: ShieldCheck, title: "Institutional Integrity", desc: "Exhaustive technical audit." },
+            { icon: Download, title: "Instant Download", desc: "Immediate source code access." },
+            { icon: ShieldCheck, title: "Verified Quality", desc: "Exhaustive technical audit." },
             { icon: GraduationCap, title: "Academic Excellence", desc: "IEEE Standardized documentation." }
           ].map((item, i) => (
             <div key={i} className="flex items-center gap-6 p-8 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
@@ -397,8 +397,8 @@ export default function ProjectShopPage() {
         
         <div className="mt-20 text-center">
           <div className="inline-flex items-center gap-3 bg-slate-900/5 px-8 py-4 rounded-full border border-slate-100 group">
-            <Fingerprint className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
-            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">Identity Masked Encryption Active</span>
+            <Shield className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
+            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">Secure & Encrypted Platform</span>
           </div>
         </div>
       </div>

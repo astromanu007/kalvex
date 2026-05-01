@@ -128,15 +128,15 @@ function CheckoutContent() {
           <div>
             <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tighter mb-4">Order <span className="text-emerald-500">Confirmed</span></h1>
             <p className="text-slate-400 font-bold text-sm max-w-sm mx-auto leading-relaxed">
-              Your institutional request <span className="text-blue-600 font-black tracking-widest uppercase ml-1">#{order ? order.orderNumber : "ORD-007"}</span> is now in processing.
+              Your order <span className="text-blue-600 font-black tracking-widest uppercase ml-1">#{order ? order.orderNumber : "ORD-007"}</span> is being processed.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 pt-6">
             <Link href={order ? `/dashboard/orders/${order.id}` : "/dashboard/orders"} className="flex-1">
-              <Button className="w-full bg-slate-900 hover:bg-blue-600 text-white rounded-2xl h-16 font-black text-[10px] uppercase tracking-widest transition-all duration-500 shadow-xl shadow-slate-900/20">Track Assets</Button>
+              <Button className="w-full bg-slate-900 hover:bg-blue-600 text-white rounded-2xl h-16 font-black text-[10px] uppercase tracking-widest transition-all duration-500 shadow-xl shadow-slate-900/20">Track Order</Button>
             </Link>
             <Link href={order ? "/dashboard" : "/electronics"} className="flex-1">
-              <Button variant="outline" className="w-full border-slate-100 hover:border-blue-600/30 rounded-2xl h-16 font-black text-[10px] uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-all">{order ? "Access Dashboard" : "Return to Store"}</Button>
+              <Button variant="outline" className="w-full border-slate-100 hover:border-blue-600/30 rounded-2xl h-16 font-black text-[10px] uppercase tracking-widest text-slate-400 hover:text-blue-600 transition-all">{order ? "Go to Dashboard" : "Return to Store"}</Button>
             </Link>
           </div>
         </motion.div>
@@ -148,7 +148,7 @@ function CheckoutContent() {
     return (
       <div className="min-h-screen pt-32 pb-24 flex flex-col justify-center items-center gap-4 bg-slate-50">
         <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
-        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Syncing Secure Nodes...</p>
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Loading your order...</p>
       </div>
     );
   }
@@ -166,8 +166,8 @@ function CheckoutContent() {
             <ShieldCheck className="w-6 h-6 text-blue-600" />
           </div>
           <div>
-            <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tighter">Secure <span className="text-blue-600">Settlement</span></h1>
-            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-1">Finalize institutional procurement protocol</p>
+            <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tighter">Secure <span className="text-blue-600">Payment</span></h1>
+            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-1">Complete your purchase</p>
           </div>
         </motion.div>
 
@@ -208,17 +208,17 @@ function CheckoutContent() {
                     <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100">
                       <MapPin className="w-5 h-5 text-slate-400" />
                     </div>
-                    <h2 className="font-black text-slate-900 text-xl tracking-tight">Delivery Infrastructure</h2>
+                    <h2 className="font-black text-slate-900 text-xl tracking-tight">Shipping Address</h2>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
                     {[
-                      { key: "name", label: "Consignee Name", type: "text", placeholder: "Dr. Rahul Sharma" },
-                      { key: "phone", label: "Contact Frequency", type: "tel", placeholder: "+91 98765 43210" },
-                      { key: "pincode", label: "Postal Node", type: "text", placeholder: "411057" },
-                      { key: "city", label: "Regional Center", type: "text", placeholder: "Pune" },
-                      { key: "state", label: "State Protocol", type: "text", placeholder: "Maharashtra" },
-                      { key: "landmark", label: "Proximity Beacon (Optional)", type: "text", placeholder: "Near Innovation Lab" },
+                      { key: "name", label: "Full Name", type: "text", placeholder: "Rahul Sharma" },
+                      { key: "phone", label: "Phone Number", type: "tel", placeholder: "+91 98765 43210" },
+                      { key: "pincode", label: "Pincode", type: "text", placeholder: "411057" },
+                      { key: "city", label: "City", type: "text", placeholder: "Pune" },
+                      { key: "state", label: "State", type: "text", placeholder: "Maharashtra" },
+                      { key: "landmark", label: "Landmark (Optional)", type: "text", placeholder: "Near main gate" },
                     ].map(({ key, label, type, placeholder }) => (
                       <div key={key} className="space-y-3">
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{label}</label>
@@ -232,7 +232,7 @@ function CheckoutContent() {
                       </div>
                     ))}
                     <div className="sm:col-span-2 space-y-3">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Geographic Address</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Full Address</label>
                       <textarea
                         rows={3}
                         placeholder="Campus, Building No., Floor, Lab Reference"
@@ -243,7 +243,7 @@ function CheckoutContent() {
                     </div>
                   </div>
                   <Button onClick={() => setStep("payment")} className="w-full bg-slate-900 hover:bg-blue-600 text-white h-16 rounded-2xl font-black text-[10px] uppercase tracking-widest transition-all duration-500 shadow-xl shadow-slate-900/20 group">
-                    Advance to Payment Protocol <ArrowRight className="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" />
+                    Proceed to Payment <ArrowRight className="w-4 h-4 ml-3 group-hover:translate-x-1 transition-transform" />
                   </Button>
                 </motion.div>
               )}
@@ -266,9 +266,9 @@ function CheckoutContent() {
 
                   <div className="space-y-4">
                     {[
-                      { id: "upi", icon: Smartphone, label: "Institutional UPI", sub: "Instant Verification" },
-                      { id: "card", icon: CreditCard, label: "Corporate Card", sub: "Visa, Mastercard, Amex" },
-                      { id: "netbanking", icon: Building2, label: "Institutional Banking", sub: "Secure Bank-Level Bridge" },
+                      { id: "upi", icon: Smartphone, label: "UPI (Instant)", sub: "PhonePe, Google Pay, etc." },
+                      { id: "card", icon: CreditCard, label: "Credit / Debit Card", sub: "Visa, Mastercard, Amex" },
+                      { id: "netbanking", icon: Building2, label: "Net Banking", sub: "All Indian Banks" },
                     ].map((pm) => (
                       <button
                         key={pm.id}
@@ -289,7 +289,7 @@ function CheckoutContent() {
 
                   <div className="flex items-center gap-4 text-[10px] text-slate-400 bg-slate-50 border border-slate-100 rounded-[1.5rem] p-6 font-bold uppercase tracking-widest leading-relaxed">
                     <ShieldCheck className="w-6 h-6 text-emerald-500 flex-shrink-0" />
-                    All transactions are governed by Razorpay AES-256 PCI-DSS high-security standards.
+                    All transactions are protected by Razorpay&apos;s high-security payment standards.
                   </div>
 
                   <div className="flex gap-4">
@@ -312,7 +312,7 @@ function CheckoutContent() {
                     <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center border border-slate-100">
                       <Sparkles className="w-5 h-5 text-blue-600" />
                     </div>
-                    <h2 className="font-black text-slate-900 text-xl tracking-tight">Final Authorization</h2>
+                    <h2 className="font-black text-slate-900 text-xl tracking-tight">Review & Confirm</h2>
                   </div>
 
                   <div className="bg-slate-50 rounded-[2rem] border border-slate-100 divide-y divide-slate-100 overflow-hidden">
@@ -323,16 +323,16 @@ function CheckoutContent() {
                           <span className="text-slate-900">₹{order.amount?.toLocaleString()}</span>
                         </div>
                         <div className="flex justify-between p-6 text-[10px] font-black uppercase tracking-widest">
-                          <span className="text-slate-400">Institutional Platform Fee</span>
+                          <span className="text-slate-400">Platform Fee</span>
                           <span className="text-emerald-500">Waived</span>
                         </div>
                       </>
                     ) : (
                       [
-                        { label: "Raspberry Pi 5 4GB Core Node × 2", amount: "₹13,000" },
-                        { label: "Sensor Array - Institutional Pack", amount: "₹399" },
-                        { label: "OLED Display Interface Unit × 3", amount: "₹750" },
-                        { label: "Global Logistics", amount: "Complimentary" },
+                        { label: "Raspberry Pi 5 4GB Unit × 2", amount: "₹13,000" },
+                        { label: "Sensor Array - Standard Pack", amount: "₹399" },
+                        { label: "OLED Display Module × 3", amount: "₹750" },
+                        { label: "Shipping", amount: "Free" },
                         { label: "KALVEX10 Research Grant", amount: "- ₹1,415", green: true },
                       ].map((row) => (
                         <div key={row.label} className="flex justify-between p-6 text-[10px] font-black uppercase tracking-widest">
@@ -343,10 +343,10 @@ function CheckoutContent() {
                     )}
                     <div className="flex justify-between p-8 bg-slate-900 text-white items-end">
                       <div>
-                        <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40">Final Liability</span>
+                        <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40">Total Amount</span>
                         <div className="text-4xl font-black tracking-tighter">₹{ORDER_TOTAL.toLocaleString()}</div>
                       </div>
-                      <div className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1">INR Assessment</div>
+                      <div className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1">Price in INR</div>
                     </div>
                   </div>
 
@@ -355,7 +355,7 @@ function CheckoutContent() {
                     disabled={processing}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white h-20 rounded-[1.5rem] shadow-[0_24px_48px_-12px_rgba(37,99,235,0.3)] text-[12px] font-black uppercase tracking-[0.2em] transition-all duration-500 group"
                   >
-                    {processing ? <><Loader2 className="w-5 h-5 mr-4 animate-spin" /> Verifying Bank Nodes...</> : `Finalize Secure Settlement - ₹${ORDER_TOTAL.toLocaleString()}`}
+                    {processing ? <><Loader2 className="w-5 h-5 mr-4 animate-spin" /> Processing payment...</> : `Pay Now - ₹${ORDER_TOTAL.toLocaleString()}`}
                   </Button>
                 </motion.div>
               )}
@@ -370,7 +370,7 @@ function CheckoutContent() {
             className="hidden lg:block"
           >
             <div className="bg-white border border-slate-100 rounded-[2.5rem] p-8 sticky top-32 shadow-2xl shadow-slate-900/5 space-y-8">
-              <h3 className="font-black text-slate-900 text-xs uppercase tracking-[0.2em] pb-4 border-b border-slate-50">Statement Preview</h3>
+              <h3 className="font-black text-slate-900 text-xs uppercase tracking-[0.2em] pb-4 border-b border-slate-50">Order Summary</h3>
               <div className="space-y-4">
                 {order ? (
                   <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
@@ -385,7 +385,7 @@ function CheckoutContent() {
                 )}
               </div>
               <div className="pt-8 border-t border-slate-50 flex justify-between items-center">
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Total Liability</span>
+                <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Total Amount</span>
                 <span className="text-2xl font-black text-slate-900 tracking-tighter">₹{ORDER_TOTAL.toLocaleString()}</span>
               </div>
             </div>
@@ -398,7 +398,7 @@ function CheckoutContent() {
 
 export default function CheckoutPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex flex-col items-center justify-center bg-slate-50"><Loader2 className="w-10 h-10 text-blue-600 animate-spin" /><p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-4">Initializing Secure Environment...</p></div>}>
+    <Suspense fallback={<div className="min-h-screen flex flex-col items-center justify-center bg-slate-50"><Loader2 className="w-10 h-10 text-blue-600 animate-spin" /><p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400 mt-4">Setting up secure checkout...</p></div>}>
       <CheckoutContent />
     </Suspense>
   );

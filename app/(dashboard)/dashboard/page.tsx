@@ -47,7 +47,7 @@ export default function DashboardHome() {
             {greeting}, {firstName} 👋
           </h1>
           <p className="text-text-secondary text-sm mt-1">
-            Identity: <span className="font-mono text-accent-primary">{session?.user?.maskedId ?? "KV-0000"}</span>
+            Account ID: <span className="font-mono text-accent-primary">{session?.user?.maskedId ?? "KV-0000"}</span>
             &nbsp;·&nbsp;
             Role: <span className="font-semibold capitalize">{session?.user?.role?.toLowerCase() ?? "user"}</span>
           </p>
@@ -65,7 +65,7 @@ export default function DashboardHome() {
           { label: "Total Orders", value: loading ? "-" : orders.length.toString(), sub: "+0 this month", icon: ShoppingBag, color: "text-accent-primary", bg: "bg-accent-primary/10" },
           { label: "Active Projects", value: loading ? "-" : activeOrdersCount.toString(), sub: "In progress", icon: FileText, color: "text-accent-warning", bg: "bg-accent-warning/10" },
           { label: "Wallet Balance", value: "₹0", sub: "Available credits", icon: Wallet, color: "text-accent-success", bg: "bg-accent-success/10" },
-          { label: "Unread Messages", value: "0", sub: "From experts", icon: MessageSquare, color: "text-accent-secondary", bg: "bg-accent-secondary/10" },
+          { label: "Unread Messages", value: "0", sub: "From support", icon: MessageSquare, color: "text-accent-secondary", bg: "bg-accent-secondary/10" },
         ].map((stat) => (
           <div key={stat.label} className="bg-bg-card border border-border rounded-2xl p-5 flex flex-col gap-3 hover:border-accent-primary/30 transition-colors">
             <div className={`w-10 h-10 rounded-lg ${stat.bg} flex items-center justify-center`}>
@@ -110,7 +110,7 @@ export default function DashboardHome() {
                       <span className="text-[10px] font-medium text-text-muted">{typeLabel}</span>
                     </div>
                     <p className="text-sm font-medium text-text-primary truncate">{title}</p>
-                    <p className="text-xs text-text-muted mt-0.5">Placed {new Date(order.createdAt).toLocaleDateString()} · Expert: <span className="font-mono text-accent-primary">{order.maskedAssigneeId ?? "—"}</span></p>
+                    <p className="text-xs text-text-muted mt-0.5">Placed {new Date(order.createdAt).toLocaleDateString()} · Specialist: <span className="font-mono text-accent-primary">{order.maskedAssigneeId ?? "—"}</span></p>
                   </div>
                   <div className="flex items-center gap-4 flex-shrink-0">
                     <p className="font-mono font-semibold text-text-primary">₹{order.amount?.toLocaleString()}</p>
@@ -135,7 +135,7 @@ export default function DashboardHome() {
           {[
             { label: "Track Order", href: "/dashboard/orders", icon: ShoppingBag, color: "text-accent-primary bg-accent-primary/10" },
             { label: "New Request", href: "/services", icon: Plus, color: "text-accent-success bg-accent-success/10" },
-            { label: "Chat with Expert", href: "/dashboard/messages", icon: MessageSquare, color: "text-accent-secondary bg-accent-secondary/10" },
+            { label: "Support Chat", href: "/dashboard/messages", icon: MessageSquare, color: "text-accent-secondary bg-accent-secondary/10" },
             { label: "AI Patent Drafter", href: "/patent-drafter", icon: FileText, color: "text-accent-warning bg-accent-warning/10" },
           ].map((qa) => (
             <Link key={qa.label} href={qa.href}>

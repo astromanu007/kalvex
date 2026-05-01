@@ -69,21 +69,21 @@ export default function AboutPage() {
               className="lg:col-span-7 space-y-10"
             >
               <motion.div variants={fadeInUp} className="inline-flex items-center gap-2.5 bg-blue-50 text-blue-600 px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.25em] border border-blue-100 shadow-sm">
-                <Building2 className="w-4 h-4" /> Institutional Protocol
+                <Building2 className="w-4 h-4" /> About Kalvex
               </motion.div>
               <motion.h1 variants={fadeInUp} className="text-6xl md:text-7xl font-black font-heading text-slate-900 leading-[1] tracking-tight">
-                Architecting the Nexus of <br />
-                <span className="text-blue-600">Engineering Authority.</span>
+                Your Partner for <br />
+                <span className="text-blue-600">Engineering Excellence.</span>
               </motion.h1>
               <motion.p variants={fadeInUp} className="text-xl text-slate-400 font-bold leading-relaxed max-w-2xl">
-                KALVEX is India&apos;s premier ecosystem for high-stakes engineering research, industrial-grade execution, and strategic IP protection.
+                KALVEX is India&apos;s leading platform for engineering research, professional project building, and expert patent services.
               </motion.p>
               <motion.div variants={fadeInUp} className="flex flex-wrap gap-5 pt-2">
                 <Link href="/services" className={buttonVariants({ className: "bg-slate-900 hover:bg-blue-600 text-white px-10 rounded-2xl transition-all duration-500 font-black text-xs uppercase tracking-[0.15em] h-16 flex items-center justify-center gap-3 shadow-xl shadow-slate-900/10 hover:scale-105" })}>
-                  Explore Expertise <ArrowRight className="w-4 h-4" />
+                  Our Services <ArrowRight className="w-4 h-4" />
                 </Link>
                 <Link href="/projects" className={buttonVariants({ variant: "outline", className: "border-slate-200 text-slate-600 rounded-2xl hover:bg-white hover:border-blue-600/30 px-10 font-black text-xs uppercase tracking-[0.15em] h-16 transition-all flex items-center justify-center bg-white/50 backdrop-blur-md" })}>
-                  Marketplace Audit
+                  View Projects
                 </Link>
               </motion.div>
             </motion.div>
@@ -117,7 +117,7 @@ export default function AboutPage() {
                   </div>
                   <div>
                     <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Security Status</p>
-                    <p className="text-sm font-black text-slate-900 tracking-tight">IP Masking Active</p>
+                    <p className="text-sm font-black text-slate-900 tracking-tight">Protected & Secure</p>
                   </div>
                 </motion.div>
               </div>
@@ -161,14 +161,14 @@ export default function AboutPage() {
               whileInView={{ opacity: 1, y: 0 }}
               className="inline-flex items-center gap-3 text-blue-600 font-black text-[10px] uppercase tracking-[0.4em]"
             >
-              <Users className="w-5 h-5" /> The Strategic Command
+              <Users className="w-5 h-5" /> Our Leadership
             </motion.div>
             <motion.h2 
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               className="text-6xl md:text-8xl font-black text-slate-900 font-heading tracking-tighter leading-tight"
             >
-              The <span className="text-blue-600">Visionaries.</span>
+              Meet Our <span className="text-blue-600">Team.</span>
             </motion.h2>
             <motion.p 
               initial={{ opacity: 0 }}
@@ -246,16 +246,16 @@ export default function AboutPage() {
           <div className="grid lg:grid-cols-2 gap-24 items-center">
             <div className="space-y-12">
               <div className="space-y-6">
-                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">The KALVEX Protocol</p>
+                <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">The KALVEX Way</p>
                 <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter leading-tight">Professional Engineering <br />for Global Impact.</h2>
                 <p className="text-xl text-slate-400 font-bold leading-relaxed">
-                  Every technical challenge deserves an institutional-grade solution. We provide the architecture to scale your vision.
+                  Every technical challenge deserves a professional solution. We provide the platform to scale your vision.
                 </p>
               </div>
               <div className="grid gap-6">
                 {[
-                  { title: "Institutional Reliability", desc: "Military-grade precision in every technical interaction and project deployment.", icon: ShieldCheck },
-                  { title: "Strategic IP Guard", desc: "Identity-masked protocols ensuring your innovations remain your exclusive property.", icon: Fingerprint }
+                  { title: "Reliability & Precision", desc: "Expert precision in every technical interaction and project deployment.", icon: ShieldCheck },
+                  { title: "Intellectual Property Support", desc: "Secure protocols ensuring your innovations remain your exclusive property.", icon: Fingerprint }
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-8 p-8 rounded-[3rem] bg-white border border-slate-100 hover:border-blue-600/20 transition-all group shadow-sm hover:shadow-xl">
                     <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-blue-600 shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all">
@@ -297,15 +297,15 @@ export default function AboutPage() {
                 Join the Elite Network
               </div>
               <h2 className="text-6xl md:text-8xl font-black text-slate-900 leading-[0.9] tracking-tighter">
-                Initiate Your <br />
-                <span className="text-blue-600">Breakthrough.</span>
+                Start Your <br />
+                <span className="text-blue-600">Journey.</span>
               </h2>
               <p className="text-2xl text-slate-400 font-bold leading-relaxed max-w-2xl mx-auto">
-                Transform your technical vision into a world-class institutional asset with the KALVEX infrastructure.
+                Transform your technical vision into a world-class success with the KALVEX platform.
               </p>
               <div className="flex justify-center pt-8">
                 <Link href="/contact" className="group flex items-center gap-6 bg-slate-900 hover:bg-blue-600 text-white px-16 h-24 rounded-[2.5rem] transition-all duration-700 hover:scale-105 shadow-2xl">
-                  <span className="font-black text-xl uppercase tracking-widest">Connect with Command</span>
+                  <span className="font-black text-xl uppercase tracking-widest">Get In Touch</span>
                   <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center transition-colors">
                     <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
                   </div>

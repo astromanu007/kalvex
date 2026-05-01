@@ -108,7 +108,7 @@ export function Navbar() {
             className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white border border-slate-100 text-slate-900 text-[11px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all duration-700 group shadow-2xl shadow-slate-900/5"
           >
             <ChevronRight className="w-4 h-4 rotate-180 group-hover:-translate-x-2 transition-transform duration-500" />
-            Return to Home Portal
+            Back to Homepage
           </Link>
         </div>
       </header>
@@ -191,21 +191,21 @@ export function Navbar() {
                 </button>
                 <div className="absolute right-0 top-full mt-6 w-72 bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_48px_96px_-24px_rgba(0,0,0,0.15)] opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-4 group-hover:translate-y-0 transition-all duration-700 flex flex-col py-6 px-3 z-[120]">
                   <div className="px-6 py-4 mb-2 border-b border-slate-50">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">Authorized Personnel</p>
-                    <p className="text-sm font-black text-slate-900 mt-1 truncate">{session.user?.name || "Member Node"}</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">User Account</p>
+                    <p className="text-sm font-black text-slate-900 mt-1 truncate">{session.user?.name || "Member"}</p>
                   </div>
                   <Link href="/dashboard" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
                     <LayoutDashboard className="w-4 h-4" /> Dashboard <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
                   </Link>
                   <Link href="/dashboard/orders" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
-                    <ShoppingCart className="w-4 h-4" /> Commissions <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                    <ShoppingCart className="w-4 h-4" /> My Orders <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
                   </Link>
                   <Link href="/dashboard/profile" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
-                    <Settings className="w-4 h-4" /> Parameters <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                    <Settings className="w-4 h-4" /> Settings <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
                   </Link>
                   <div className="h-px bg-slate-50 my-4 mx-6" />
                   <button onClick={() => signOut()} className="flex items-center gap-4 px-6 py-4 hover:bg-red-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-red-600 transition-all group/item">
-                    <LogOut className="w-4 h-4" /> Deauthorize
+                    <LogOut className="w-4 h-4" /> Sign Out
                   </button>
                 </div>
               </motion.div>
@@ -277,11 +277,11 @@ export function Navbar() {
                   <>
                     <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
                       <Button variant="outline" className="w-full h-20 rounded-[2rem] border-slate-200 text-slate-900 font-black text-xl uppercase tracking-widest shadow-xl shadow-slate-900/5">
-                        <LayoutDashboard className="w-6 h-6 mr-4" /> Command Center
+                        <LayoutDashboard className="w-6 h-6 mr-4" /> Dashboard
                       </Button>
                     </Link>
                     <Button onClick={() => signOut()} variant="ghost" className="w-full h-20 text-red-600 font-black text-xl uppercase tracking-widest">
-                      <LogOut className="w-6 h-6 mr-4" /> Deauthorize
+                      <LogOut className="w-6 h-6 mr-4" /> Sign Out
                     </Button>
                   </>
                 ) : (
@@ -299,7 +299,7 @@ export function Navbar() {
                   </div>
                   <div className="flex flex-col items-center gap-2">
                     <Shield className="w-6 h-6 text-slate-900" />
-                    <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Secure Node</span>
+                    <span className="text-[8px] font-black uppercase tracking-widest text-slate-400">Secure Platform</span>
                   </div>
                 </div>
               </motion.div>
@@ -328,7 +328,7 @@ export function Navbar() {
                 <Search className="w-8 h-8 text-blue-600" />
                 <input
                   autoFocus
-                  placeholder="Search KALVEX Institutional..."
+                  placeholder="Search KALVEX..."
                   className="bg-transparent border-none outline-none text-2xl font-black text-slate-900 placeholder:text-slate-200 w-full tracking-tighter"
                   value={searchQuery}
                   onChange={e => setSearchQuery(e.target.value)}

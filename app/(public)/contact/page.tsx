@@ -50,7 +50,7 @@ export default function ContactPage() {
       });
 
       if (response.ok) {
-        alert("Transmission Received. We will contact you shortly.");
+        alert("Message Received. We will contact you shortly.");
         setFormData({
           fullName: "",
           email: "",
@@ -59,7 +59,7 @@ export default function ContactPage() {
         });
       } else {
         const errorData = await response.json();
-        alert(errorData.error || "Failed to send transmission. Please try again.");
+        alert(errorData.error || "Failed to send message. Please try again.");
       }
     } catch (error) {
       console.error('Submission error:', error);
@@ -163,7 +163,7 @@ export default function ContactPage() {
               <div className="relative z-10 space-y-10">
                 <div className="space-y-4">
                   <h2 className="text-4xl font-black font-heading tracking-tight">Send a Message</h2>
-                  <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Secure & Encrypted Transmission</p>
+                  <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Secure & Private Message</p>
                 </div>
 
                 <form onSubmit={handleSubmit} className="space-y-8">
@@ -222,14 +222,14 @@ export default function ContactPage() {
                     disabled={isSubmitting}
                     className="w-full bg-blue-600 hover:bg-blue-500 text-white h-20 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-blue-600/30 transition-all duration-500 hover:scale-[1.02] group disabled:opacity-50"
                   >
-                    {isSubmitting ? "Processing..." : "Send Transmission"} 
+                    {isSubmitting ? "Processing..." : "Send Message"} 
                     {!isSubmitting && <Send className="ml-4 w-5 h-5 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform" />}
                   </Button>
                 </form>
               </div>
             </div>
 
-            {/* Trust Badges: Institutional Validation */}
+            {/* Trust Badges */}
             <div className="mt-16 flex flex-wrap justify-center gap-6">
               {[
                 { icon: Globe, text: "ISO Certified 9001", color: "text-blue-600", bg: "bg-blue-50/50", border: "border-blue-100" },

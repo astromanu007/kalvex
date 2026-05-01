@@ -72,7 +72,7 @@ const SERVICES = [
     slug: "utility-patent",
     icon: Cpu,
     title: "Utility Patents",
-    shortDesc: "Technical drafting and claims architecture for your functional engineering inventions.",
+    shortDesc: "Technical drafting and claims preparation for your functional engineering inventions.",
     color: "text-rose-600",
     bg: "bg-rose-600/10",
     glow: "group-hover:shadow-rose-600/20",
@@ -137,7 +137,7 @@ export default function ServicesPage() {
       <div className="absolute top-0 right-0 w-[50rem] h-[50rem] bg-blue-600/5 rounded-full -z-10 blur-[120px] -translate-y-1/2 translate-x-1/3" />
       
       <div className="container mx-auto px-4 max-w-7xl">
-        {/* Header: Institutional Authority */}
+        {/* Header: Professional Expertise */}
         <motion.div 
           initial="hidden"
           animate="visible"
@@ -155,7 +155,7 @@ export default function ServicesPage() {
           </p>
         </motion.div>
 
-        {/* Strategic Trust Protocol */}
+        {/* Why Choose Us */}
         <motion.div 
           initial="hidden"
           animate="visible"
@@ -174,7 +174,7 @@ export default function ServicesPage() {
           ))}
         </motion.div>
 
-        {/* Services Grid: High-Fidelity Expertise */}
+        {/* Services Grid: Our Expertise */}
         <motion.div 
           variants={staggerContainer}
           initial="hidden"
@@ -257,7 +257,7 @@ export default function ServicesPage() {
           ))}
         </motion.div>
 
-        {/* Bottom CTA: Custom Mission Protocol */}
+        {/* Bottom CTA: Custom Solutions */}
         <motion.div 
           initial="hidden"
           whileInView="visible"

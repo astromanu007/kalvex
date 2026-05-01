@@ -81,14 +81,14 @@ export function Footer() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             <div className="lg:col-span-7 space-y-8">
               <div className="inline-flex items-center gap-3 px-6 py-2 rounded-2xl bg-white text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] border border-blue-100 shadow-xl shadow-blue-600/5">
-                <Sparkles className="w-4 h-4" /> Strategic Nexus
+                <Sparkles className="w-4 h-4" /> Our Mission
               </div>
               <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.95] font-heading">
-                Engineering <br />
-                <span className="text-blue-600">Pure Potential.</span>
+                Building <br />
+                <span className="text-blue-600">The Future.</span>
               </h2>
               <p className="text-slate-400 text-xl font-bold leading-relaxed max-w-xl">
-                Connect with India&apos;s most authoritative ecosystem for engineering research and IP strategy.
+                Join India&apos;s leading platform for engineering research and intellectual property.
               </p>
             </div>
             <div className="lg:col-span-5">
@@ -200,7 +200,7 @@ export function Footer() {
               <div className="relative inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-blue-50/50 border border-blue-100/50 overflow-hidden group/header cursor-default">
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-100/0 via-blue-100/30 to-blue-100/0 -translate-x-full group-hover/header:translate-x-full transition-transform duration-1000" />
                 <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                <span className="text-[12px] font-bold text-blue-900 uppercase tracking-wider">Ecosystem</span>
+                <span className="text-[12px] font-bold text-blue-900 uppercase tracking-wider">Services</span>
               </div>
               <ul className="space-y-3">
                 {[
@@ -259,7 +259,7 @@ export function Footer() {
               <div className="relative inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden group/header cursor-default">
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-200/0 via-slate-200/30 to-slate-200/0 -translate-x-full group-hover/header:translate-x-full transition-transform duration-1000" />
                 <div className="w-2 h-2 rounded-full bg-slate-900" />
-                <span className="text-[12px] font-bold text-slate-900 uppercase tracking-wider">Command HQ</span>
+                <span className="text-[12px] font-bold text-slate-900 uppercase tracking-wider">Headquarters</span>
               </div>
               <ul className="space-y-4">
                 <li className="flex items-start gap-4">
@@ -275,8 +275,8 @@ export function Footer() {
                 <div className="p-5 bg-slate-50 rounded-2xl border border-slate-100 flex items-center gap-4 group/sec hover:bg-white hover:shadow-xl transition-all duration-500">
                   <Shield className="w-6 h-6 text-slate-900 group-hover/sec:text-blue-600 transition-colors" />
                   <div className="flex flex-col">
-                    <span className="text-[11px] font-bold text-slate-900 uppercase tracking-widest">Secure Node</span>
-                    <span className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">Protocol v2.4.0</span>
+                    <span className="text-[11px] font-bold text-slate-900 uppercase tracking-widest">Secure Platform</span>
+                    <span className="text-[10px] font-medium text-slate-400 uppercase tracking-widest">Verified Security</span>
                   </div>
                 </div>
               </div>
