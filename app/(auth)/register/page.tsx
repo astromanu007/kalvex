@@ -37,9 +37,9 @@ const ROLES = [
   },
   {
     id: "developer",
-    label: "Engineer",
+    label: "Developer",
     icon: Code,
-    desc: "Apply as a KALVEX Engineer. Build proprietary systems and prototypes.",
+    desc: "Apply as a KALVEX Developer. Build proprietary systems and prototypes.",
     accent: "slate"
   },
   {

@@ -51,8 +51,8 @@ export default function ScholarRegisterPage() {
           <div className="w-16 h-16 bg-slate-900 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-slate-900/20">
             <PenTool className="w-8 h-8 text-indigo-400" />
           </div>
-          <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tight mb-2">Scholar Network</h1>
-          <p className="text-slate-400 font-bold text-sm italic">Join the Elite Circle of Technical & Patent Writers</p>
+          <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tight mb-2">Scholar Registration</h1>
+          <p className="text-slate-400 font-bold text-sm">Join our network of technical & patent writers</p>
         </div>
 
         {/* Progress Tracker */}
@@ -87,8 +87,8 @@ export default function ScholarRegisterPage() {
               {step === 1 && (
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Legal Name</label>
-                    <input type="text" required placeholder="Dr./Mr./Ms. Full Name" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:bg-white focus:border-indigo-600 outline-none transition-all" />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Full Name</label>
+                    <input type="text" required placeholder="Full Name (e.g. Dr. Rahul Sharma)" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:bg-white focus:border-indigo-600 outline-none transition-all" />
                   </div>
                   <div className="space-y-2">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Academic Email</label>
@@ -127,13 +127,13 @@ export default function ScholarRegisterPage() {
               {step === 3 && (
                 <div className="space-y-6">
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Create Secure Password</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 ml-1">Password</label>
                     <input type="password" required value={formData.password} onChange={e => setFormData({...formData, password: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:bg-white focus:border-indigo-600 outline-none transition-all" />
                   </div>
                   <div className="flex items-start gap-3 p-4 bg-indigo-50/50 border border-indigo-100 rounded-2xl">
                     <BookOpen className="w-5 h-5 text-indigo-600 mt-1 shrink-0" />
                     <p className="text-[11px] font-bold text-slate-500 leading-relaxed">
-                      By joining, you agree to KALVEX’s <span className="text-indigo-600">Confidentiality Protocol</span> and academic integrity guidelines. Your expertise will be verified via institutional records.
+                      By joining, you agree to KALVEX’s <span className="text-indigo-600">Confidentiality Agreement</span> and academic integrity guidelines. Your expertise will be verified via institutional records.
                     </p>
                   </div>
                 </div>
@@ -145,7 +145,7 @@ export default function ScholarRegisterPage() {
                 </Button>
                 
                 <Button type="submit" disabled={loading} className="bg-slate-900 hover:bg-indigo-600 text-white rounded-2xl px-10 h-16 font-black uppercase tracking-widest text-[10px] shadow-2xl transition-all duration-500">
-                  {loading ? "Processing..." : step === 3 ? "Complete Enrollment" : "Continue"} 
+                  {loading ? "Processing..." : step === 3 ? "Complete Registration" : "Continue"} 
                   {!loading && step < 3 && <ArrowRight className="w-4 h-4 ml-3" />}
                 </Button>
               </div>
@@ -155,7 +155,7 @@ export default function ScholarRegisterPage() {
               <div className="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto shadow-xl">
                 <Award className="w-10 h-10" />
               </div>
-              <h3 className="text-2xl font-black text-slate-900">Expertise Acknowledged</h3>
+              <h3 className="text-2xl font-black text-slate-900">Registration Successful</h3>
               <p className="text-slate-400 font-bold">Please check your inbox at <span className="text-indigo-600">{formData.email}</span> to verify your academic credentials.</p>
               <Button onClick={() => router.push("/dashboard")} className="w-full h-16 bg-slate-900 rounded-2xl text-white font-black uppercase tracking-widest text-xs">Verify & Login</Button>
             </div>

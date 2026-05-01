@@ -17,7 +17,7 @@ const ROLES = [
   { id: "USER",       label: "Client",     icon: User },
   { id: "STUDENT",    label: "Student",    icon: GraduationCap },
   { id: "WRITER",     label: "Scholar",    icon: PenTool },
-  { id: "DEVELOPER",  label: "Engineer",   icon: Code },
+  { id: "DEVELOPER",  label: "Developer",   icon: Code },
   { id: "AFFILIATE",  label: "Partner",    icon: Building2 },
   { id: "ADMIN",      label: "Admin",      icon: Shield },
 ];

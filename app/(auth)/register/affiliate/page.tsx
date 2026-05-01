@@ -42,8 +42,8 @@ export default function PartnerRegisterPage() {
           <div className="w-16 h-16 bg-emerald-600 text-white rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-600/20 rotate-3">
             <TrendingUp className="w-8 h-8" />
           </div>
-          <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tight mb-2">Partner Program</h1>
-          <p className="text-slate-400 font-bold text-sm tracking-tight">Scale with KALVEX Institutional Growth</p>
+          <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tight mb-2">Partner Registration</h1>
+          <p className="text-slate-400 font-bold text-sm tracking-tight">Scale with KALVEX Business Growth</p>
         </div>
 
         {/* Progress Tracker */}
@@ -133,11 +133,11 @@ export default function PartnerRegisterPage() {
 
               <div className="flex items-center justify-between pt-8 border-t border-slate-50 mt-4">
                 <Button type="button" variant="ghost" onClick={step > 1 ? handlePrev : undefined} className="text-slate-400 font-black uppercase tracking-widest text-[10px]">
-                  {step > 1 ? <><ArrowLeft className="w-4 h-4 mr-2" /> Previous</> : <Link href="/register">Change Role</Link>}
+                  {step > 1 ? <><ArrowLeft className="w-4 h-4 mr-2" /> Back</> : <Link href="/register">Change Role</Link>}
                 </Button>
                 
                 <Button type="submit" disabled={loading} className="bg-emerald-600 hover:bg-slate-900 text-white rounded-2xl px-12 h-16 font-black uppercase tracking-[0.2em] text-[10px] shadow-2xl shadow-emerald-600/20 transition-all duration-500">
-                  {loading ? "Registering..." : step === 3 ? "Initialize Partnership" : "Next Phase"} 
+                  {loading ? "Registering..." : step === 3 ? "Complete Registration" : "Continue"} 
                   {!loading && step < 3 && <ArrowRight className="w-4 h-4 ml-3" />}
                 </Button>
               </div>
@@ -147,9 +147,9 @@ export default function PartnerRegisterPage() {
               <div className="w-20 h-20 bg-emerald-600 text-white rounded-3xl flex items-center justify-center mx-auto shadow-xl shadow-emerald-600/30 rotate-12">
                 <Building2 className="w-10 h-10" />
               </div>
-              <h3 className="text-2xl font-black text-slate-900 tracking-tight">Onboarding Request Received</h3>
-              <p className="text-slate-400 font-bold px-6 leading-relaxed">Our partnership team will review your channel and activate your referral console within <span className="text-emerald-600 font-black">24 hours</span>.</p>
-              <Button onClick={() => router.push("/dashboard")} className="w-full h-16 bg-slate-900 rounded-2xl text-white font-black uppercase tracking-widest text-xs hover:bg-emerald-600 transition-colors duration-500">View My Referral Stats</Button>
+              <h3 className="text-2xl font-black text-slate-900 tracking-tight">Registration Request Received</h3>
+              <p className="text-slate-400 font-bold px-6 leading-relaxed">Our partnership team will review your application and activate your partner dashboard within <span className="text-emerald-600 font-black">24 hours</span>.</p>
+              <Button onClick={() => router.push("/dashboard")} className="w-full h-16 bg-slate-900 rounded-2xl text-white font-black uppercase tracking-widest text-xs hover:bg-emerald-600 transition-colors duration-500">Go to Dashboard</Button>
             </div>
           )}
         </AnimatePresence>
