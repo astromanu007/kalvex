@@ -207,7 +207,7 @@ export function Footer() {
                   { name: "Research Drafting", href: "/services/research-paper" },
                   { name: "AI Patent Engine", href: "/patent-drafter" },
                   { name: "IPR & Licensing", href: "/ipr" },
-                  { name: "Development Hub", href: "/projects" },
+                  { name: "Engineering Hub", href: "/projects" },
                   { name: "Component Store", href: "/electronics" },
                 ].map((link) => (
                   <li key={link.name}>
