@@ -95,17 +95,12 @@ export function Navbar() {
     return (
       <header className="fixed top-0 left-0 right-0 z-[100] py-8 transition-all duration-500">
         <div className="container mx-auto px-12 max-w-7xl flex items-center justify-between">
-          <Link href="/" className="group flex items-center gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center group-hover:scale-110 transition-all duration-700 shadow-2xl shadow-white/10 border border-white/20">
-              <Shield className="w-6 h-6 text-slate-900" />
-            </div>
-            <div className="flex flex-col">
-              <h1 className="text-xl font-black text-white tracking-tighter uppercase leading-none">KALVEX</h1>
-              <div className="flex items-center gap-2 mt-1">
-                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
-                <span className="text-[10px] font-black text-blue-400 tracking-[0.3em] uppercase leading-none">Institutional Node</span>
-              </div>
-            </div>
+          <Link href="/" className="relative z-[110] flex items-center group">
+            <img 
+              src="/kalvex-logo.png" 
+              alt="KALVEX" 
+              className="h-10 md:h-12 w-auto object-contain transition-all duration-700 group-hover:scale-105 mix-blend-multiply"
+            />
           </Link>
 
           <Link 
@@ -116,7 +111,6 @@ export function Navbar() {
             Return to Home Portal
           </Link>
         </div>
-        <div className="absolute bottom-0 left-12 right-12 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
       </header>
     );
   }
