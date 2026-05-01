@@ -19,7 +19,7 @@ const fadeInUp = {
 const RESOURCES = [
   {
     title: "Technical Blog",
-    desc: "In-depth analysis of emerging development trends and AI architectures.",
+    desc: "In-depth analysis of emerging engineering trends and AI architectures.",
     icon: BookOpen,
     link: "/blog",
     color: "from-blue-600 to-indigo-600",
@@ -27,7 +27,7 @@ const RESOURCES = [
   },
   {
     title: "Success Stories",
-    desc: "Explore our most impactful technical transformations and deployments.",
+    desc: "Explore our most impactful engineering transformations and deployments.",
     icon: Award,
     link: "/success-stories",
     color: "from-emerald-600 to-teal-600",
@@ -51,7 +51,7 @@ const RESOURCES = [
   },
   {
     title: "Research Papers",
-    desc: "Access our collection of peer-reviewed technical research publications.",
+    desc: "Access our collection of peer-reviewed engineering research publications.",
     icon: Database,
     link: "/blog?category=Academic",
     color: "from-cyan-600 to-blue-600",
@@ -167,7 +167,7 @@ export default function ResourceCenterPage() {
               </div>
               <h2 className="text-5xl md:text-7xl font-black text-white leading-[0.95] tracking-tighter">
                 The State of IP <br />
-                <span className="text-blue-500">Development</span> 2024.
+                <span className="text-blue-500">Engineering</span> 2024.
               </h2>
               <p className="text-slate-400 text-xl font-bold leading-relaxed max-w-xl">
                 Download our comprehensive 120-page guide on navigating the new institutional patent landscape in the age of AI.

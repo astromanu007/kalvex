@@ -29,7 +29,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "KALVEX | Technical Excellence & Technology Innovation",
+  title: "KALVEX | Engineering Excellence & Technology Innovation",
   description: "India's premier ecosystem for high-stakes technical research, academic prototypes, and strategic industrial solutions.",
   icons: {
     icon: "/favicon.ico",
