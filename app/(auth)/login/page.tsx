@@ -37,12 +37,12 @@ export default function LoginPage() {
     try {
       const res = await signIn("credentials", { redirect: false, email, password });
       if (res?.error) {
-        setError("Authentication failed. Verify your credentials.");
+        setError("Invalid email or password. Please try again.");
       } else {
         router.push("/dashboard");
       }
     } catch {
-      setError("A connection anomaly occurred. Please retry.");
+      setError("Connection error. Please try again later.");
     } finally {
       setLoading(false);
     }
@@ -92,7 +92,7 @@ export default function LoginPage() {
               {/* Header */}
               <div className="text-center space-y-3">
                 <h1 className="text-3xl font-black text-slate-900 tracking-tighter">Sign In</h1>
-                <p className="text-slate-600 font-bold text-sm">Welcome back to KALVEX. Please enter your details.</p>
+                <p className="text-slate-600 font-bold text-sm">Welcome back. Log in to your account.</p>
               </div>
 
               {/* Role Selectors */}

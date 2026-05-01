@@ -7,11 +7,12 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowLeft, CheckCircle2, Code, Terminal, Cpu, Github } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function EngineerRegisterPage() {
+export default function DeveloperRegisterPage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
+    title: "IP Strategy Developer",
     name: "", email: "", phone: "",
     skills: "", github: "", experience: "", specialism: "",
     password: "", confirmPassword: ""
@@ -46,8 +47,8 @@ export default function EngineerRegisterPage() {
           <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-600/20">
             <Code className="w-8 h-8" />
           </div>
-          <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tight mb-2 uppercase">Developer Registration</h1>
-          <p className="text-slate-500 font-bold text-sm tracking-widest uppercase">Setup your professional developer account</p>
+          <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tight mb-2 uppercase">Developer Account</h1>
+          <p className="text-slate-500 font-bold text-sm tracking-widest uppercase">Join our network of elite developers</p>
         </div>
 
         {/* Progress Tracker */}
@@ -105,7 +106,7 @@ export default function EngineerRegisterPage() {
                         <option value="">Select Domain</option>
                         <option value="FullStack">Full Stack Dev</option>
                         <option value="Hardware">Hardware / IoT</option>
-                        <option value="AI">AI / ML Engineer</option>
+                        <option value="AI">AI / ML Developer</option>
                         <option value="Embedded">Embedded Systems</option>
                       </select>
                     </div>
@@ -129,7 +130,7 @@ export default function EngineerRegisterPage() {
                   <div className="flex items-start gap-4 p-5 bg-blue-50 border border-blue-100 rounded-2xl">
                     <Terminal className="w-5 h-5 text-blue-600 mt-1 shrink-0" />
                     <p className="text-[10px] font-bold text-slate-600 leading-relaxed uppercase tracking-wider">
-                      By proceeding, you agree to KALVEX&apos;s <span className="text-blue-600">Terms of Service</span> and <span className="text-blue-600">NDA</span> for professional development services.
+                      Join KALVEX as a developer. Work on high-value projects and build amazing prototypes.
                     </p>
                   </div>
                 </div>

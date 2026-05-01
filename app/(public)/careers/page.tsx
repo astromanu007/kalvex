@@ -36,7 +36,7 @@ const JOBS = [
     experience: "5+ Years"
   },
   {
-    title: "IP Strategy Engineer",
+    title: "IP Strategy Developer",
     category: "Legal Tech",
     location: "Bangalore",
     type: "Full Time",
@@ -92,7 +92,7 @@ export default function CareersPage() {
             <span className="text-blue-600">KALVEX</span> Elite.
           </motion.h1>
           <motion.p variants={fadeInUp} className="text-xl text-slate-400 font-bold leading-relaxed max-w-2xl mx-auto">
-            We are looking for the world&apos;s most ambitious engineers, researchers, and strategists to build the high-authority ecosystem of the future.
+            We are looking for the world&apos;s most ambitious developers, researchers, and strategists to build the high-authority ecosystem of the future.
           </motion.p>
         </motion.div>
 
@@ -200,7 +200,7 @@ export default function CareersPage() {
                 <Heart className="w-4 h-4" /> Living the Protocol
               </div>
               <h2 className="text-5xl md:text-7xl font-black text-white leading-tight tracking-tighter">
-                Engineering <br />Life at Kalvex.
+                Developer <br />Life at Kalvex.
               </h2>
               <div className="space-y-8">
                 {[
@@ -238,7 +238,7 @@ export default function CareersPage() {
         <div className="mt-40 text-center space-y-12">
           <h2 className="text-5xl font-black text-slate-900 tracking-tighter">Don&apos;t see a fit?</h2>
           <p className="text-xl text-slate-400 font-bold max-w-2xl mx-auto">
-            We are always scouting for elite talent. Send your transmission directly to our engineering command.
+            We are always scouting for elite talent. Send your transmission directly to our development command.
           </p>
           <Button variant="outline" className="h-20 px-12 rounded-[2rem] border-slate-200 text-slate-900 hover:border-blue-600 hover:text-blue-600 font-black text-xs uppercase tracking-widest transition-all duration-500 group">
             Send Open Transmission <ArrowRight className="ml-4 w-5 h-5 group-hover:translate-x-2 transition-transform" />

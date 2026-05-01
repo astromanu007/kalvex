@@ -76,7 +76,7 @@ export default function AboutPage() {
                 <span className="text-blue-600">Engineering Excellence.</span>
               </motion.h1>
               <motion.p variants={fadeInUp} className="text-xl text-slate-400 font-bold leading-relaxed max-w-2xl">
-                KALVEX is India&apos;s leading platform for engineering research, professional project building, and expert patent services.
+                KALVEX is your platform for research, high-quality projects, and expert patent services.
               </motion.p>
               <motion.div variants={fadeInUp} className="flex flex-wrap gap-5 pt-2">
                 <Link href="/services" className={buttonVariants({ className: "bg-slate-900 hover:bg-blue-600 text-white px-10 rounded-2xl transition-all duration-500 font-black text-xs uppercase tracking-[0.15em] h-16 flex items-center justify-center gap-3 shadow-xl shadow-slate-900/10 hover:scale-105" })}>
@@ -175,7 +175,7 @@ export default function AboutPage() {
               whileInView={{ opacity: 1 }}
               className="text-slate-400 font-bold text-xl max-w-2xl mx-auto leading-relaxed"
             >
-              Architecting the bridge between pure science and industrial-grade execution.
+              Building the connection between science and real-world results.
             </motion.p>
           </div>
 
@@ -249,13 +249,13 @@ export default function AboutPage() {
                 <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest">The KALVEX Way</p>
                 <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter leading-tight">Professional Engineering <br />for Global Impact.</h2>
                 <p className="text-xl text-slate-400 font-bold leading-relaxed">
-                  Every technical challenge deserves a professional solution. We provide the platform to scale your vision.
+                  We help you solve technical challenges with professional solutions.
                 </p>
               </div>
               <div className="grid gap-6">
                 {[
-                  { title: "Reliability & Precision", desc: "Expert precision in every technical interaction and project deployment.", icon: ShieldCheck },
-                  { title: "Intellectual Property Support", desc: "Secure protocols ensuring your innovations remain your exclusive property.", icon: Fingerprint }
+                  { title: "High Quality Support", desc: "Technical support for every project from start to finish.", icon: ShieldCheck },
+                  { title: "Secure Ownership", desc: "Your ideas and inventions stay yours with our secure platform.", icon: Fingerprint }
                 ].map((item, idx) => (
                   <div key={idx} className="flex gap-8 p-8 rounded-[3rem] bg-white border border-slate-100 hover:border-blue-600/20 transition-all group shadow-sm hover:shadow-xl">
                     <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-blue-600 shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all">

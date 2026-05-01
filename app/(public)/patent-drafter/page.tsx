@@ -275,7 +275,7 @@ export default function PatentDrafterPage() {
           className="text-center max-w-4xl mx-auto mb-24 space-y-8"
         >
           <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
-            <Sparkles className="w-4 h-4" /> AI Patent Engineering
+            <Sparkles className="w-4 h-4" /> AI Patent Development
           </div>
           <h1 className="text-6xl md:text-8xl font-black font-heading text-slate-900 leading-[0.9] tracking-tighter">
             Draft Like a <br />

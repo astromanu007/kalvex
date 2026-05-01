@@ -40,7 +40,7 @@ const ROLES = [
     label: "Developer",
     icon: Code,
     desc: "Apply as a KALVEX Developer. Build proprietary systems and prototypes.",
-    accent: "slate"
+    accent: "blue"
   },
   {
     id: "affiliate",
