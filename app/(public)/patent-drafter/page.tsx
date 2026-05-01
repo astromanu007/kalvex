@@ -22,8 +22,8 @@ const PATENT_VIEWS = [
   { id: "perspective", label: "Perspective View" },
   { id: "front", label: "Front View" },
   { id: "back", label: "Back View" },
-  { id: "left", label: "Left View" },
-  { id: "right", label: "Right View" },
+  { id: "left", label: "Left Hand Side View" },
+  { id: "right", label: "Right Hand Side View" },
   { id: "top", label: "Top View" },
   { id: "bottom", label: "Bottom View" },
 ];
@@ -297,16 +297,16 @@ export default function PatentDrafterPage() {
                 Drafting Terminal
               </h2>
 
-              <div className="flex gap-2 mb-8 bg-slate-50 dark:bg-slate-800/50 p-1.5 rounded-2xl border border-slate-200 dark:border-slate-700">
+              <div className="flex gap-2 mb-8 bg-slate-50/50 p-2 rounded-2xl border border-slate-100">
                 <button 
                   onClick={() => setActiveTab("general")}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === "general" ? "bg-white dark:bg-slate-700 text-blue-600 shadow-lg shadow-blue-500/10" : "text-slate-400 hover:text-slate-600"}`}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === "general" ? "bg-white text-blue-600 shadow-xl shadow-slate-200" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"}`}
                 >
                   <Layout className="w-4 h-4" /> General Info
                 </button>
                 <button 
                   onClick={() => setActiveTab("ai")}
-                  className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === "ai" ? "bg-white dark:bg-slate-700 text-blue-600 shadow-lg shadow-blue-500/10" : "text-slate-400 hover:text-slate-600"}`}
+                  className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === "ai" ? "bg-white text-blue-600 shadow-xl shadow-slate-200" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"}`}
                 >
                   <BrainCircuit className="w-4 h-4" /> AI Insights
                 </button>
@@ -316,44 +316,44 @@ export default function PatentDrafterPage() {
                 <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-500">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Product Name</label>
-                      <input value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" placeholder="e.g. AI-Based Detection System" />
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Product Name</label>
+                      <input value={productName} onChange={e => setProductName(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-sm focus:ring-4 ring-blue-500/10 focus:border-blue-500 outline-none font-bold text-slate-800 transition-all shadow-sm" placeholder="e.g. AI-Based Detection System" />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Filing Date</label>
-                      <input value={dated} onChange={e => setDated(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" />
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Filing Date</label>
+                      <input value={dated} onChange={e => setDated(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-sm focus:ring-4 ring-blue-500/10 focus:border-blue-500 outline-none font-bold text-slate-800 transition-all shadow-sm" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Locarno Class</label>
-                      <input value={locarnoClass} onChange={e => setLocarnoClass(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" placeholder="e.g. 14" />
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Locarno Class</label>
+                      <input value={locarnoClass} onChange={e => setLocarnoClass(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-sm focus:ring-4 ring-blue-500/10 focus:border-blue-500 outline-none font-bold text-slate-800 transition-all shadow-sm" placeholder="e.g. 14" />
                     </div>
                     <div className="space-y-1">
-                      <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-tighter">Sub-Class</label>
-                      <input value={locarnoSubClass} onChange={e => setLocarnoSubClass(e.target.value)} className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-4 py-3 text-sm focus:ring-2 ring-blue-500/20 outline-none font-bold text-slate-700 dark:text-slate-200 transition-all" placeholder="e.g. 04" />
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Sub-Class</label>
+                      <input value={locarnoSubClass} onChange={e => setLocarnoSubClass(e.target.value)} className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-4 text-sm focus:ring-4 ring-blue-500/10 focus:border-blue-500 outline-none font-bold text-slate-800 transition-all shadow-sm" placeholder="e.g. 04" />
                     </div>
                   </div>
 
                   <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
                     {PATENT_VIEWS.map(v => (
                       <label key={v.id} className="cursor-pointer group/view">
-                        <div className={`relative aspect-square rounded-xl border-2 border-dashed flex flex-col items-center justify-center p-1 transition-all ${views[v.id] ? "border-green-500 bg-green-50 dark:bg-green-900/10" : "border-slate-200 dark:border-slate-800 hover:border-blue-500 dark:hover:border-blue-400 bg-slate-50 dark:bg-slate-800/30"}`}>
+                        <div className={`relative aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-1 transition-all ${views[v.id] ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:border-blue-400 bg-slate-50"}`}>
                           {views[v.id] ? (
                             <>
-                              <img src={views[v.id]!} className="w-full h-full object-contain" alt="v" />
+                              <img src={views[v.id]!} className="w-full h-full object-contain rounded-xl" alt="v" />
                               <button
                                 onClick={(e) => { e.preventDefault(); e.stopPropagation(); setViews(p => ({ ...p, [v.id]: null })); }}
-                                className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full p-1 shadow-lg hover:bg-red-600 transition-colors z-10"
+                                className="absolute -top-3 -right-3 bg-white text-red-500 border border-red-100 rounded-full p-1.5 shadow-xl hover:bg-red-50 hover:scale-110 transition-all z-10"
                               >
-                                <Plus className="w-3 h-3 rotate-45" />
+                                <Plus className="w-4 h-4 rotate-45" />
                               </button>
                             </>
                           ) : (
                             <div className="text-center">
-                              <FileImage className="w-3 h-3 mx-auto text-slate-400 dark:text-slate-600 mb-0.5 group-hover/view:text-blue-500 transition-colors" />
-                              <span className="text-[6px] font-bold text-slate-400 dark:text-slate-600 uppercase leading-none">{v.id}</span>
+                              <FileImage className="w-5 h-5 mx-auto text-slate-300 mb-2 group-hover/view:text-blue-500 transition-colors" />
+                              <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none">{v.id}</span>
                             </div>
                           )}
                         </div>
@@ -368,27 +368,29 @@ export default function PatentDrafterPage() {
                       <Button variant="ghost" size="sm" onClick={() => setAuthors([...authors, { id: Date.now().toString(), name: "", signature: null }])} className="text-blue-600 font-bold h-8"><Plus className="w-3 h-3 mr-1" /> Add Applicant</Button>
                     </div>
 
-                    <Reorder.Group axis="y" values={authors} onReorder={setAuthors} className="space-y-2">
+                    <Reorder.Group axis="y" values={authors} onReorder={setAuthors} className="space-y-3">
                       {authors.map((a) => (
-                        <Reorder.Item key={a.id} value={a} className="flex gap-2 items-center bg-slate-50 dark:bg-slate-800/30 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 cursor-default group/author transition-all">
-                          <GripVertical className="w-4 h-4 text-slate-300 dark:text-slate-700 group-hover/author:text-slate-500 transition-colors cursor-grab active:cursor-grabbing shrink-0" />
-                          <input value={a.name} onChange={e => setAuthors(p => p.map(x => x.id === a.id ? { ...x, name: e.target.value } : x))} placeholder="Full Name" className="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs uppercase font-bold text-slate-700 dark:text-slate-200 focus:border-blue-300 dark:focus:border-blue-500 outline-none transition-all" />
-                          <label className="cursor-pointer bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-[9px] font-bold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 whitespace-nowrap text-slate-700 dark:text-slate-300" onClick={e => e.stopPropagation()}>
-                            {a.signature ? "✓ Signed" : "Upload Sign"}
+                        <Reorder.Item key={a.id} value={a} className="flex gap-3 items-center bg-white p-2 pl-4 rounded-2xl border border-slate-100 shadow-md shadow-slate-100 cursor-default group/author transition-all">
+                          <GripVertical className="w-5 h-5 text-slate-300 group-hover/author:text-slate-400 transition-colors cursor-grab active:cursor-grabbing shrink-0" />
+                          <input value={a.name} onChange={e => setAuthors(p => p.map(x => x.id === a.id ? { ...x, name: e.target.value } : x))} placeholder="Full Name" className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-4 py-3 text-sm uppercase font-black text-slate-800 focus:border-blue-400 focus:ring-4 ring-blue-500/10 outline-none transition-all" />
+                          
+                          <label className={`cursor-pointer rounded-xl px-4 py-3 text-[10px] font-black tracking-widest transition-all shrink-0 whitespace-nowrap flex items-center gap-2 ${a.signature ? "bg-green-50 text-green-600 border border-green-200" : "bg-slate-50 text-slate-500 border border-slate-200 hover:bg-slate-100"}`} onClick={e => e.stopPropagation()}>
+                            {a.signature ? <><CheckCircle2 className="w-3 h-3"/> Signed</> : "Upload Sign"}
                             <input type="file" className="hidden" onChange={e => handleUpload(a.id, e, 'sig', a.id)} />
                           </label>
+                          
                           {a.signature && (
                             <div className="relative group shrink-0">
-                              <img src={a.signature} className="w-8 h-8 rounded border dark:border-slate-700 bg-white object-contain" alt="s" />
+                              <img src={a.signature} className="w-10 h-10 rounded-lg border border-slate-200 bg-white object-contain" alt="s" />
                               <button
                                 onClick={() => setAuthors(p => p.map(x => x.id === a.id ? { ...x, signature: null } : x))}
-                                className="absolute -top-1 -right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                                className="absolute -top-2 -right-2 bg-white border border-red-100 text-red-500 rounded-full p-1 opacity-0 group-hover:opacity-100 shadow-lg hover:scale-110 transition-all"
                               >
-                                <Plus className="w-2 h-2 rotate-45" />
+                                <Plus className="w-3 h-3 rotate-45" />
                               </button>
                             </div>
                           )}
-                          <button onClick={() => removeAuthor(a.id)} className="p-2 text-slate-300 dark:text-slate-700 hover:text-red-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                          <button onClick={() => removeAuthor(a.id)} className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"><Trash2 className="w-4 h-4" /></button>
                         </Reorder.Item>
                       ))}
                     </Reorder.Group>
@@ -404,12 +406,12 @@ export default function PatentDrafterPage() {
                       <h3 className="text-sm font-black text-slate-900 uppercase tracking-tighter">Patent Intelligence</h3>
                     </div>
                     <div className="space-y-2">
-                      <label className="text-[10px] font-bold text-slate-500 uppercase tracking-tighter">Technical Description</label>
+                      <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Technical Description</label>
                       <textarea 
                         value={projectDescription}
                         onChange={e => setProjectDescription(e.target.value)}
                         placeholder="Describe your invention's core functionality, field of use, and key technical features..."
-                        className="w-full bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-2xl px-6 py-4 text-sm focus:ring-2 ring-blue-500/20 outline-none font-medium text-slate-700 dark:text-slate-200 transition-all min-h-[160px] resize-none"
+                        className="w-full bg-slate-50 border border-slate-200 rounded-2xl px-6 py-5 text-sm focus:ring-4 ring-blue-500/10 focus:border-blue-500 outline-none font-medium text-slate-700 transition-all min-h-[200px] resize-none leading-relaxed shadow-sm"
                       />
                     </div>
                   </div>
@@ -417,69 +419,69 @@ export default function PatentDrafterPage() {
                   <Button 
                     onClick={getAiRecommendation}
                     disabled={isAiLoading || !projectDescription}
-                    className="w-full py-8 rounded-2xl bg-slate-900 text-white font-black text-sm uppercase tracking-widest shadow-2xl shadow-slate-900/20 group relative overflow-hidden"
+                    className="w-full py-8 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-black text-sm uppercase tracking-widest shadow-xl shadow-blue-600/20 hover:shadow-2xl hover:shadow-blue-600/30 group relative overflow-hidden transition-all"
                   >
                     {isAiLoading ? (
                       <div className="flex flex-col items-center gap-2">
                         <Loader2 className="w-5 h-5 animate-spin" />
-                        <span className="text-[8px] opacity-50">Processing Neural Mapping</span>
+                        <span className="text-[8px] opacity-80">Processing Neural Mapping</span>
                       </div>
                     ) : (
                       <span className="relative z-10 flex items-center gap-2">
-                        <BrainCircuit className="w-5 h-5 group-hover:scale-120 transition-transform" /> 
+                        <BrainCircuit className="w-5 h-5 group-hover:scale-110 transition-transform" /> 
                         Generate Recommendations
                       </span>
                     )}
-                    <div className="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/20 to-blue-600/0 -translate-x-full group-hover:animate-shimmer" />
+                    <div className="absolute inset-0 bg-gradient-to-r from-white/0 via-white/20 to-white/0 -translate-x-full group-hover:animate-shimmer" />
                   </Button>
 
                   {aiResult && (
                     <motion.div 
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="bg-slate-950 rounded-2xl p-8 border border-blue-500/30 shadow-2xl shadow-blue-500/10"
+                      className="bg-gradient-to-b from-blue-50 to-white rounded-3xl p-8 border border-blue-100 shadow-2xl shadow-blue-900/5"
                     >
-                      <div className="flex items-center justify-between mb-6">
+                      <div className="flex items-center justify-between mb-8 pb-6 border-b border-blue-100/50">
                         <div className="flex items-center gap-3">
-                          <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                          <span className="text-white font-black text-xs uppercase tracking-widest">Neural Recommendation Active</span>
+                          <div className="w-2.5 h-2.5 rounded-full bg-blue-600 animate-pulse shadow-[0_0_10px_rgba(37,99,235,0.5)]" />
+                          <span className="text-blue-900 font-black text-xs uppercase tracking-widest">Neural Recommendation Active</span>
                         </div>
                         <div className="flex flex-col items-end">
-                          <span className="text-[8px] text-blue-400 font-bold uppercase mb-1">Confidence Score</span>
-                          <span className="text-2xl font-black text-white">{aiResult.confidence}%</span>
+                          <span className="text-[9px] text-slate-400 font-black uppercase mb-1 tracking-widest">Confidence Score</span>
+                          <span className="text-3xl font-black text-blue-600">{aiResult.confidence}%</span>
                         </div>
                       </div>
 
-                      <div className="space-y-4">
-                        <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
-                          <span className="text-[8px] text-slate-500 font-bold uppercase block mb-2">Synthesized Title</span>
-                          <span className="text-blue-400 font-bold text-sm leading-tight italic">"{productName}"</span>
+                      <div className="space-y-6">
+                        <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                          <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest block mb-2">Synthesized Title</span>
+                          <span className="text-slate-800 font-black text-lg leading-tight">"{productName}"</span>
                         </div>
                         
                         <div className="grid grid-cols-2 gap-4">
-                          <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
-                            <span className="text-[8px] text-slate-500 font-bold uppercase block mb-1">Assigned Class</span>
-                            <span className="text-white font-black text-lg">{locarnoClass}</span>
+                          <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                            <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest block mb-2">Assigned Class</span>
+                            <span className="text-slate-800 font-black text-2xl">{locarnoClass}</span>
                           </div>
-                          <div className="bg-slate-900/50 rounded-xl p-4 border border-slate-800">
-                            <span className="text-[8px] text-slate-500 font-bold uppercase block mb-1">Sub-Class</span>
-                            <span className="text-white font-black text-lg">{locarnoSubClass}</span>
+                          <div className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
+                            <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest block mb-2">Sub-Class</span>
+                            <span className="text-slate-800 font-black text-2xl">{locarnoSubClass}</span>
                           </div>
                         </div>
 
-                        <div className="pt-4 border-t border-slate-800">
-                          <span className="text-[8px] text-slate-500 font-bold uppercase block mb-3">AI Reasoning Path</span>
-                          <div className="space-y-2 mb-4">
+                        <div className="pt-6">
+                          <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest block mb-4">AI Reasoning Path</span>
+                          <div className="space-y-3 mb-6">
                             {aiResult.reasoning.map((r, i) => (
-                              <div key={i} className="flex items-center gap-2 text-[9px] text-slate-400">
-                                <div className="w-1 h-1 rounded-full bg-blue-500/50" />
+                              <div key={i} className="flex items-start gap-3 text-xs font-bold text-slate-600 leading-relaxed bg-white p-4 rounded-xl border border-slate-50">
+                                <div className="w-1.5 h-1.5 rounded-full bg-blue-500 mt-1.5 shrink-0" />
                                 {r}
                               </div>
                             ))}
                           </div>
                           
-                          <div className="bg-blue-500/5 rounded-lg p-3 border border-blue-500/10">
-                            <p className="text-[9px] text-blue-400/60 text-center italic font-medium">
+                          <div className="bg-slate-50 rounded-xl p-4 border border-slate-100">
+                            <p className="text-[10px] text-slate-500 text-center font-bold uppercase tracking-widest">
                               Note: These are neural-generated recommendations for institutional guidance only.
                             </p>
                           </div>
@@ -500,19 +502,19 @@ export default function PatentDrafterPage() {
           </div>
 
           <div className="lg:w-[480px] shrink-0 sticky top-24">
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="font-bold text-slate-700 dark:text-slate-300">Live Document Preview</h3>
-              <div className="flex gap-2">
-                <select className="bg-white dark:bg-slate-900 dark:text-slate-300 border border-slate-200 dark:border-slate-800 rounded px-2 py-1 text-[10px] font-bold outline-none" value={currentSheet} onChange={e => setCurrentSheet(parseInt(e.target.value))}>
+            <div className="flex justify-between items-center mb-6">
+              <h3 className="text-sm font-black uppercase tracking-widest text-slate-800 flex items-center gap-2"><Layout className="w-4 h-4 text-blue-600"/> Live Preview</h3>
+              <div className="flex gap-3">
+                <select className="bg-white border border-slate-200 rounded-xl px-4 py-2 text-xs font-black outline-none shadow-sm text-slate-700 hover:border-slate-300 transition-colors" value={currentSheet} onChange={e => setCurrentSheet(parseInt(e.target.value))}>
                   {PATENT_VIEWS.map((_, i) => <option key={i} value={i + 1}>Sheet {i + 1}</option>)}
                 </select>
                 {session ? (
                   <PDFDownloadLink document={<PatentDocument productName={productName} dated={dated} views={views} authors={authors} />} fileName="Patent_Document.pdf">
-                    {({ loading }) => <Button size="sm" className="bg-blue-600 text-white rounded-lg h-8 shadow-lg shadow-blue-500/20" disabled={loading}>{loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <><Download className="w-3 h-3 mr-2" /> Download</>}</Button>}
+                    {({ loading }) => <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl h-10 px-6 font-black text-[10px] uppercase tracking-widest shadow-xl shadow-blue-500/20 transition-all" disabled={loading}>{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <><Download className="w-4 h-4 mr-2" /> Download</>}</Button>}
                   </PDFDownloadLink>
                 ) : (
-                  <Button size="sm" onClick={() => router.push("/login")} className="bg-slate-900 text-white rounded-lg h-8 shadow-lg shadow-slate-900/20">
-                    <Download className="w-3 h-3 mr-2" /> Sign in to Download
+                  <Button onClick={() => router.push("/login")} className="bg-gradient-to-r from-slate-800 to-slate-900 hover:from-slate-700 hover:to-slate-800 text-white rounded-xl h-10 px-6 font-black text-[10px] uppercase tracking-widest shadow-xl shadow-slate-900/20 transition-all">
+                    <Download className="w-4 h-4 mr-2" /> Sign in to Download
                   </Button>
                 )}
               </div>

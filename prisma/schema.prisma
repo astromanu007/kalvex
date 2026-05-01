@@ -456,3 +456,20 @@ model Subscription {
   isActive      Boolean          @default(true)
   createdAt     DateTime         @default(now())
 }
+
+model NewsletterSubscription {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model ContactSubmission {
+  id          String   @id @default(cuid())
+  fullName    String
+  email       String
+  inquiryType String
+  message     String   @db.Text
+  status      String   @default("UNREAD")
+  createdAt   DateTime @default(now())
+}

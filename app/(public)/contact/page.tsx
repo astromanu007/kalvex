@@ -1,11 +1,13 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { 
   Mail, MessageSquare, MapPin, Phone, 
   Send, Sparkles, Zap, Globe, Github, 
-  Twitter, Linkedin, Instagram, ArrowRight
+  Twitter, Linkedin, Instagram, ArrowRight,
+  Shield, Youtube
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,6 +29,46 @@ const staggerContainer = {
 };
 
 export default function ContactPage() {
+  const [formData, setFormData] = React.useState({
+    fullName: "",
+    email: "",
+    inquiryType: "Academic Project Support",
+    message: ""
+  });
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch('/api/contact/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(formData),
+      });
+
+      if (response.ok) {
+        alert("Transmission Received. We will contact you shortly.");
+        setFormData({
+          fullName: "",
+          email: "",
+          inquiryType: "Academic Project Support",
+          message: ""
+        });
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || "Failed to send transmission. Please try again.");
+      }
+    } catch (error) {
+      console.error('Submission error:', error);
+      alert("System error. Please check your network connection.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-white transition-colors duration-500 pt-32 pb-20 overflow-hidden relative">
       {/* Background Decorative Elements */}
@@ -78,13 +120,25 @@ export default function ContactPage() {
               ))}
             </motion.div>
 
-            <motion.div variants={fadeInUp} className="pt-8 space-y-6">
-              <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-1">Follow Our Progress</p>
-              <div className="flex gap-4">
-                {[Twitter, Linkedin, Instagram, Github].map((Icon, i) => (
-                  <Button key={i} variant="outline" size="icon" className="w-14 h-14 rounded-2xl border-slate-100 hover:border-blue-600 hover:text-blue-600 transition-all duration-500">
-                    <Icon className="w-6 h-6" />
-                  </Button>
+            <motion.div variants={fadeInUp} className="pt-8 space-y-8">
+              <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] ml-1">Follow Our Progress</p>
+              <div className="flex gap-5">
+                {[
+                  { icon: Linkedin, color: "bg-blue-50", iconColor: "text-[#0077B5]", href: "https://linkedin.com/company/kalvex" },
+                  { icon: Twitter, color: "bg-sky-50", iconColor: "text-[#1DA1F2]", href: "https://x.com/kalvex" },
+                  { icon: Instagram, color: "bg-pink-50", iconColor: "text-[#DD2A7B]", href: "https://instagram.com/kalvex" },
+                  { icon: Github, color: "bg-slate-50", iconColor: "text-slate-900", href: "https://github.com/kalvex" }
+                ].map((social, i) => (
+                  <Link 
+                    key={i} 
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`w-14 h-14 rounded-2xl bg-white border border-slate-100 flex items-center justify-center transition-all duration-500 hover:-translate-y-2 group shadow-sm hover:shadow-xl relative overflow-hidden`}
+                  >
+                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${social.color}`} />
+                    <social.icon className={`w-6 h-6 relative z-10 transition-all duration-500 ${social.iconColor} group-hover:scale-110 group-hover:rotate-[15deg]`} />
+                  </Link>
                 ))}
               </div>
             </motion.div>
@@ -112,12 +166,15 @@ export default function ContactPage() {
                   <p className="text-slate-400 font-bold uppercase tracking-widest text-[10px]">Secure & Encrypted Transmission</p>
                 </div>
 
-                <form className="space-y-8">
+                <form onSubmit={handleSubmit} className="space-y-8">
                   <div className="grid md:grid-cols-2 gap-8">
                     <div className="space-y-3">
                       <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-4">Full Name</label>
                       <Input 
                         placeholder="John Doe" 
+                        value={formData.fullName}
+                        onChange={(e) => setFormData({...formData, fullName: e.target.value})}
+                        required
                         className="bg-white/5 border-white/10 h-16 rounded-2xl px-6 focus:border-blue-500 focus:ring-blue-500/20 transition-all text-white placeholder:text-slate-600 font-bold" 
                       />
                     </div>
@@ -126,6 +183,9 @@ export default function ContactPage() {
                       <Input 
                         type="email" 
                         placeholder="john@example.com" 
+                        value={formData.email}
+                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                        required
                         className="bg-white/5 border-white/10 h-16 rounded-2xl px-6 focus:border-blue-500 focus:ring-blue-500/20 transition-all text-white placeholder:text-slate-600 font-bold" 
                       />
                     </div>
@@ -133,12 +193,16 @@ export default function ContactPage() {
 
                   <div className="space-y-3">
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-4">Inquiry Type</label>
-                    <select className="w-full bg-white/5 border border-white/10 h-16 rounded-2xl px-6 focus:border-blue-500 focus:ring-blue-500/20 transition-all text-white font-bold outline-none appearance-none">
-                      <option className="bg-slate-900">Academic Project Support</option>
-                      <option className="bg-slate-900">Patent Drafting / IP Services</option>
-                      <option className="bg-slate-900">Hardware Lab / Components</option>
-                      <option className="bg-slate-900">Institutional Partnership</option>
-                      <option className="bg-slate-900">Other Inquiry</option>
+                    <select 
+                      value={formData.inquiryType}
+                      onChange={(e) => setFormData({...formData, inquiryType: e.target.value})}
+                      className="w-full bg-white/5 border border-white/10 h-16 rounded-2xl px-6 focus:border-blue-500 focus:ring-blue-500/20 transition-all text-white font-bold outline-none appearance-none cursor-pointer"
+                    >
+                      <option className="bg-slate-900" value="Academic Project Support">Academic Project Support</option>
+                      <option className="bg-slate-900" value="Patent Drafting / IP Services">Patent Drafting / IP Services</option>
+                      <option className="bg-slate-900" value="Hardware Lab / Components">Hardware Lab / Components</option>
+                      <option className="bg-slate-900" value="Institutional Partnership">Institutional Partnership</option>
+                      <option className="bg-slate-900" value="Other Inquiry">Other Inquiry</option>
                     </select>
                   </div>
 
@@ -146,28 +210,42 @@ export default function ContactPage() {
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-500 ml-4">Message Details</label>
                     <Textarea 
                       placeholder="Tell us about your project..." 
+                      value={formData.message}
+                      onChange={(e) => setFormData({...formData, message: e.target.value})}
+                      required
                       className="bg-white/5 border-white/10 min-h-[200px] rounded-[2rem] p-6 focus:border-blue-500 focus:ring-blue-500/20 transition-all text-white placeholder:text-slate-600 font-bold" 
                     />
                   </div>
 
-                  <Button className="w-full bg-blue-600 hover:bg-blue-500 text-white h-20 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-blue-600/30 transition-all duration-500 hover:scale-[1.02] group">
-                    Send Transmission <Send className="ml-4 w-5 h-5 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform" />
+                  <Button 
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full bg-blue-600 hover:bg-blue-500 text-white h-20 rounded-[2rem] font-black text-[11px] uppercase tracking-[0.2em] shadow-2xl shadow-blue-600/30 transition-all duration-500 hover:scale-[1.02] group disabled:opacity-50"
+                  >
+                    {isSubmitting ? "Processing..." : "Send Transmission"} 
+                    {!isSubmitting && <Send className="ml-4 w-5 h-5 group-hover:translate-x-2 group-hover:-translate-y-2 transition-transform" />}
                   </Button>
                 </form>
               </div>
             </div>
 
-            {/* Trust Badges */}
-            <div className="mt-12 flex flex-wrap justify-center gap-12 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
-              <div className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest">
-                <Globe className="w-4 h-4" /> ISO Certified 9001
-              </div>
-              <div className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest">
-                <Zap className="w-4 h-4" /> Fast Response
-              </div>
-              <div className="flex items-center gap-2 font-black text-slate-400 text-[10px] uppercase tracking-widest">
-                <ArrowRight className="w-4 h-4" /> 24/7 Support
-              </div>
+            {/* Trust Badges: Institutional Validation */}
+            <div className="mt-16 flex flex-wrap justify-center gap-6">
+              {[
+                { icon: Globe, text: "ISO Certified 9001", color: "text-blue-600", bg: "bg-blue-50/50", border: "border-blue-100" },
+                { icon: Zap, text: "Fast Response", color: "text-emerald-600", bg: "bg-emerald-50/50", border: "border-emerald-100" },
+                { icon: Shield, text: "24/7 Global Support", color: "text-indigo-600", bg: "bg-indigo-50/50", border: "border-indigo-100" }
+              ].map((badge, idx) => (
+                <div 
+                  key={idx}
+                  className={`flex items-center gap-3 px-6 py-3 rounded-2xl border ${badge.border} ${badge.bg} transition-all duration-500 hover:scale-105 hover:shadow-xl hover:shadow-slate-200/50 group`}
+                >
+                  <badge.icon className={`w-4 h-4 ${badge.color} transition-transform duration-500 group-hover:rotate-[360deg]`} />
+                  <span className="font-black text-slate-900 text-[10px] uppercase tracking-[0.2em]">
+                    {badge.text}
+                  </span>
+                </div>
+              ))}
             </div>
           </motion.div>
         </motion.div>

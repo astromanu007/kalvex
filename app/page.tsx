@@ -142,15 +142,22 @@ export default function Home() {
               </motion.div>
 
               <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center gap-6">
-                <Link href="/services" className="w-full sm:w-auto">
-                  <Button className="bg-slate-900 hover:bg-blue-600 text-white h-20 px-12 rounded-[2rem] shadow-2xl shadow-slate-900/20 transition-all duration-500 hover:scale-105 font-black text-[11px] uppercase tracking-widest group w-full">
-                    Explore Services <ArrowRight className="ml-4 w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                  </Button>
+                <Link href="/services" className="w-full sm:w-auto group/btn-main">
+                  <div className="relative overflow-hidden bg-slate-950 rounded-[2.5rem] h-20 px-12 flex items-center justify-center transition-all duration-700 hover:scale-105 hover:shadow-[0_20px_60px_-15px_rgba(37,99,235,0.4)] cursor-pointer border border-white/5">
+                    <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-500 translate-y-full group-hover/btn-main:translate-y-0 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
+                    <span className="relative z-10 flex items-center text-white font-black text-[12px] uppercase tracking-[0.25em]">
+                      Explore Services 
+                      <ArrowRight className="ml-4 w-5 h-5 group-hover/btn-main:translate-x-2 transition-transform duration-500" />
+                    </span>
+                  </div>
                 </Link>
-                <Link href="/electronics" className="w-full sm:w-auto">
-                  <Button variant="outline" className="border-slate-200 text-slate-900 hover:bg-white hover:border-blue-600/30 h-20 px-12 rounded-[2rem] font-black text-[11px] uppercase tracking-widest transition-all w-full">
-                    Shop Electronics
-                  </Button>
+                <Link href="/electronics" className="w-full sm:w-auto group/btn-sec">
+                  <div className="relative overflow-hidden bg-white rounded-[2.5rem] h-20 px-12 flex items-center justify-center transition-all duration-500 hover:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.05)] cursor-pointer border border-slate-100 group-hover/btn-sec:border-blue-200">
+                    <div className="absolute inset-0 bg-blue-50/50 translate-x-full group-hover/btn-sec:translate-x-0 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
+                    <span className="relative z-10 text-slate-900 font-black text-[12px] uppercase tracking-[0.25em] group-hover/btn-sec:text-blue-600 transition-colors duration-500">
+                      Shop Electronics
+                    </span>
+                  </div>
                 </Link>
               </motion.div>
 
