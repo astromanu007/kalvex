@@ -1,14 +1,26 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Linkedin, Twitter, Instagram, Youtube, MapPin, Mail, Phone, CheckCircle, Shield, Sparkles, Building2, Globe, Search, X, ChevronRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export function Footer() {
+  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  // Hide footer on login and register pages (Client-side only)
+  if (mounted && (pathname?.startsWith("/login") || pathname?.startsWith("/register"))) {
+    return null;
+  }
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();

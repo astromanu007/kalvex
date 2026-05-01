@@ -1,5 +1,6 @@
 "use client";
 
+import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { MessageSquare, X, Send, Sparkles, Minus, Maximize2 } from "lucide-react";
 import { Button } from "./button";
@@ -7,6 +8,8 @@ import { askChatbot } from "@/app/actions/chatbot";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Chatbot() {
+  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([
     { role: "assistant", content: "Hi! I'm your KALVEX Intelligence unit. How can I assist with your engineering or patent requirements today?" }
@@ -14,6 +17,10 @@ export function Chatbot() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -43,6 +50,11 @@ export function Chatbot() {
     }
     setLoading(false);
   };
+
+  // Hide chatbot on login and register pages (Client-side only)
+  if (mounted && (pathname?.startsWith("/login") || pathname?.startsWith("/register"))) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-8 right-8 z-[9999]">

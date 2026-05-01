@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, ShoppingCart, Menu, X, Bell, User, LogOut, LayoutDashboard, Settings, Sparkles, Shield, ChevronRight } from "lucide-react";
@@ -20,6 +20,8 @@ const NAV_LINKS = [
 ];
 
 export function Navbar() {
+  const pathname = usePathname();
+  const [mounted, setMounted] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -27,6 +29,10 @@ export function Navbar() {
   const [unreadCount, setUnreadCount] = useState(0);
   const { data: session } = useSession({ required: false }) || { data: null };
   const router = useRouter();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const searchableContent = [
     { title: "Home", description: "Main landing page", href: "/", category: "Navigation" },
@@ -83,6 +89,37 @@ export function Navbar() {
       window.removeEventListener("keydown", handleKeyDown);
     };
   }, [session]);
+
+  // Minimal Navbar for Auth Pages (Moved down to follow Rules of Hooks)
+  if (mounted && (pathname?.startsWith("/login") || pathname?.startsWith("/register"))) {
+    return (
+      <header className="fixed top-0 left-0 right-0 z-[100] py-8 transition-all duration-500">
+        <div className="container mx-auto px-12 max-w-7xl flex items-center justify-between">
+          <Link href="/" className="group flex items-center gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-white flex items-center justify-center group-hover:scale-110 transition-all duration-700 shadow-2xl shadow-white/10 border border-white/20">
+              <Shield className="w-6 h-6 text-slate-900" />
+            </div>
+            <div className="flex flex-col">
+              <h1 className="text-xl font-black text-white tracking-tighter uppercase leading-none">KALVEX</h1>
+              <div className="flex items-center gap-2 mt-1">
+                <div className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-pulse" />
+                <span className="text-[10px] font-black text-blue-400 tracking-[0.3em] uppercase leading-none">Institutional Node</span>
+              </div>
+            </div>
+          </Link>
+
+          <Link 
+            href="/" 
+            className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/5 backdrop-blur-3xl border border-white/10 text-white text-[11px] font-black uppercase tracking-widest hover:bg-white hover:text-slate-900 transition-all duration-700 group shadow-2xl"
+          >
+            <ChevronRight className="w-4 h-4 rotate-180 group-hover:-translate-x-2 transition-transform duration-500" />
+            Return to Home Portal
+          </Link>
+        </div>
+        <div className="absolute bottom-0 left-12 right-12 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+      </header>
+    );
+  }
 
   return (
     <header
