@@ -137,9 +137,9 @@ export default function StudentRegisterPage() {
                 </div>
                 <div className="flex items-start mt-4">
                   <input type="checkbox" id="terms" required className="mt-1 mr-2" />
-                  <label htmlFor="terms" className="text-xs text-text-secondary">
-                    I agree to the <a href="/terms" className="text-accent-primary hover:underline">Terms of Service</a> and <a href="/privacy" className="text-accent-primary hover:underline">Privacy Policy</a>
-                  </label>
+                    <label htmlFor="terms" className="text-xs text-text-secondary leading-relaxed">
+                      I agree to the <Link href="/terms-of-service" className="text-accent-primary hover:underline">Terms of Service</Link> and <Link href="/privacy-policy" className="text-accent-primary hover:underline">Privacy Policy</Link>
+                    </label>
                 </div>
               </div>
             )}

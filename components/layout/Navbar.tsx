@@ -91,7 +91,7 @@ export function Navbar() {
   }, [session]);
 
   // Minimal Navbar for Auth Pages (Moved down to follow Rules of Hooks)
-  if (mounted && (pathname?.startsWith("/login") || pathname?.startsWith("/register"))) {
+  if (mounted && (pathname?.startsWith("/login") || pathname?.startsWith("/register") || pathname?.startsWith("/forgot-password"))) {
     return (
       <header className="fixed top-0 left-0 right-0 z-[100] py-8 transition-all duration-500">
         <div className="container mx-auto px-12 max-w-7xl flex items-center justify-between">
@@ -99,13 +99,13 @@ export function Navbar() {
             <img 
               src="/kalvex-logo.png" 
               alt="KALVEX" 
-              className="h-10 md:h-12 w-auto object-contain transition-all duration-700 group-hover:scale-105 mix-blend-multiply"
+              className="h-10 md:h-12 w-auto object-contain transition-all duration-700 group-hover:scale-105"
             />
           </Link>
 
           <Link 
             href="/" 
-            className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white/5 backdrop-blur-3xl border border-white/10 text-white text-[11px] font-black uppercase tracking-widest hover:bg-white hover:text-slate-900 transition-all duration-700 group shadow-2xl"
+            className="flex items-center gap-3 px-8 py-4 rounded-2xl bg-white border border-slate-100 text-slate-900 text-[11px] font-black uppercase tracking-widest hover:bg-slate-900 hover:text-white transition-all duration-700 group shadow-2xl shadow-slate-900/5"
           >
             <ChevronRight className="w-4 h-4 rotate-180 group-hover:-translate-x-2 transition-transform duration-500" />
             Return to Home Portal

@@ -26,7 +26,7 @@ const staggerContainer = {
 
 const PRODUCTS = [
   // Development Boards
-  { id: "1", name: "Raspberry Pi 5 8GB RAM", sku: "KVX-SBC-005", price: 8500, mrp: 9200, category: "Development Boards", stock: 15, rating: 4.8, image: "https://images.unsplash.com/photo-1601814933824-fd0b574dd592?auto=format&fit=crop&q=80&w=600" },
+  { id: "1", name: "Raspberry Pi 5 8GB RAM", sku: "KVX-SBC-005", price: 8500, mrp: 9200, category: "Development Boards", stock: 15, rating: 4.8, image: "/products/pi5.png" },
   { id: "2", name: "Arduino Uno R4 WiFi", sku: "KVX-SBC-004", price: 2450, mrp: 2800, category: "Development Boards", stock: 120, rating: 4.9, image: "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?auto=format&fit=crop&q=80&w=600" },
   { id: "3", name: "ESP32-S3 DevKitC-1", sku: "KVX-MOD-033", price: 550, mrp: 750, category: "Development Boards", stock: 45, rating: 4.7, image: "https://images.unsplash.com/photo-1620283085439-39620a1e21c4?auto=format&fit=crop&q=80&w=600" },
   { id: "4", name: "Jetson Orin Nano Developer Kit", sku: "KVX-SBC-009", price: 45000, mrp: 48000, category: "Development Boards", stock: 5, rating: 5.0, image: "https://images.unsplash.com/photo-1555664424-778a1e5e1b48?auto=format&fit=crop&q=80&w=600" },

@@ -148,7 +148,7 @@ export default function ClientRegisterPage() {
                   <div className="flex items-start gap-3 p-4 bg-blue-50/50 border border-blue-100 rounded-2xl">
                     <input type="checkbox" id="terms" required className="mt-1 w-4 h-4 accent-blue-600" />
                     <label htmlFor="terms" className="text-[11px] font-bold text-slate-500 leading-relaxed">
-                      I authorize KALVEX to process institutional data according to the <Link href="/terms" className="text-blue-600 underline">Nexus Terms</Link> and <Link href="/privacy" className="text-blue-600 underline">Privacy Framework</Link>.
+                      I authorize KALVEX to process institutional data according to the <Link href="/terms-of-service" className="text-blue-600 underline">Nexus Terms</Link> and <Link href="/privacy-policy" className="text-blue-600 underline">Privacy Framework</Link>.
                     </label>
                   </div>
                 </div>
