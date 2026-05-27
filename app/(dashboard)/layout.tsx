@@ -14,16 +14,16 @@ import { signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const NAV = [
-  { label: "Command Center", href: "/dashboard",              icon: LayoutDashboard },
-  { label: "Commissions",    href: "/dashboard/orders",       icon: ShoppingBag },
-  { label: "Active Missions",href: "/dashboard/projects",     icon: FileText },
-  { label: "Secure Channel", href: "/dashboard/messages",     icon: MessageSquare },
-  { label: "Asset Vault",    href: "/dashboard/wallet",       icon: Wallet },
-  { label: "Assessments",    href: "/dashboard/reviews",      icon: Star },
-  { label: "Identity Node",  href: "/dashboard/profile",      icon: User },
-  { label: "Alliance Hub",   href: "/dashboard/affiliate",    icon: Share2 },
-  { label: "Parameters",     href: "/dashboard/settings",     icon: Settings },
-  { label: "Support Intel",  href: "/dashboard/help",         icon: HelpCircle },
+  { label: "Dashboard",       href: "/dashboard",              icon: LayoutDashboard },
+  { label: "My Orders",       href: "/dashboard/orders",       icon: ShoppingBag },
+  { label: "My Projects",     href: "/dashboard/projects",     icon: FileText },
+  { label: "Messages",        href: "/dashboard/messages",     icon: MessageSquare },
+  { label: "My Wallet",       href: "/dashboard/wallet",       icon: Wallet },
+  { label: "My Reviews",      href: "/dashboard/reviews",      icon: Star },
+  { label: "My Profile",      href: "/dashboard/profile",      icon: User },
+  { label: "Affiliate Program",href: "/dashboard/affiliate",    icon: Share2 },
+  { label: "Settings",        href: "/dashboard/settings",     icon: Settings },
+  { label: "Help & Support",  href: "/dashboard/help",         icon: HelpCircle },
 ];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -57,7 +57,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </p>
             <div className="flex items-center gap-1.5 mt-1.5">
               <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Active Session</span>
+              <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Online</span>
             </div>
           </div>
         </div>
@@ -101,14 +101,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="p-4 border-t border-slate-50 space-y-2">
         <div className="flex items-center gap-4 px-5 py-3 rounded-2xl bg-blue-600/5 border border-blue-600/10">
           <Sparkles className="w-4 h-4 text-blue-600 shrink-0" />
-          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-600">AI Counsel: Active</span>
+          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-600">AI Assistant: Active</span>
         </div>
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
           className="flex items-center gap-4 px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all duration-500 w-full group"
         >
           <LogOut className="w-4 h-4 group-hover:scale-110 transition-transform" />
-          Deauthorize
+          Sign Out
         </button>
       </div>
     </div>
