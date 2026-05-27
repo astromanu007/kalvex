@@ -15,7 +15,7 @@ import { ICON_MAP } from "@/lib/icons";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.16, 1, 0.3, 1] as const } }
 };
 
 const staggerContainer = {
@@ -36,7 +36,7 @@ export default function ServicesPage() {
   useEffect(() => {
     async function load() {
       const res = await getServices();
-      let dbServices = res.success && res.services ? res.services : [];
+      let dbServices: any[] = res.success && res.services ? res.services : [];
       const hasBlackBook = dbServices.some((s: any) => s.slug === "black-book-printing");
       if (!hasBlackBook) {
         dbServices = [

@@ -982,13 +982,13 @@ export default function PatentDrafterPage() {
                         boxShadow: `0 0 0 2.5px ${pkg.accentColor}, 0 14px 40px -8px ${pkg.accentColor}50`
                       }}
                     >
-                      <CardInner pkg={pkg} isSelected={isSelected} setSelectedPackages={setSelectedPackages} />
+                      <CardInner pkg={pkg} isSelected={isSelected} />
                     </div>
                   ) : (
                     /* Unselected: spinning rainbow border */
                     <div className="card-anim-border-wrap">
                       <div className="card-anim-border-inner">
-                        <CardInner pkg={pkg} isSelected={isSelected} setSelectedPackages={setSelectedPackages} />
+                        <CardInner pkg={pkg} isSelected={isSelected} />
                       </div>
                     </div>
                   )}
@@ -1680,7 +1680,7 @@ export default function PatentDrafterPage() {
                           <td className="border border-black p-1 w-[75pt] align-top">Full name and address of the applicant/s</td>
                           <td className="border border-black p-1.5">
                             {dApplicants.map((a, i) => (
-                              <div key={a.id} className="mb-0.5">{i + 1}. {a.name}{a.address ? `, ${a.address}` : ""}</div>
+                              <div key={a.id} className="mb-0.5">{i + 1}. {a.name}{(a as any).address ? `, ${(a as any).address}` : ""}</div>
                             ))}
                           </td>
                         </tr>

@@ -7,7 +7,7 @@ import { Search, Filter, Clock, CheckCircle, AlertCircle, TrendingUp, Download, 
 import { getOrders } from "@/app/actions/orders";
 
 
-const STATUS_CONFIG: Record<string, { color: string; icon: React.ElementType }> = {
+const STATUS_CONFIG: Record<string, { color: string; icon: any }> = {
   "In Progress":  { color: "text-accent-warning bg-accent-warning/10 border-accent-warning/20", icon: Clock },
   "Delivered":    { color: "text-accent-success bg-accent-success/10 border-accent-success/20", icon: CheckCircle },
   "Under Review": { color: "text-accent-primary bg-accent-primary/10 border-accent-primary/20", icon: TrendingUp },

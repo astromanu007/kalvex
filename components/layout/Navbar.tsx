@@ -29,7 +29,7 @@ export function Navbar() {
   const [searchQuery, setSearchQuery] = useState("");
   const [unreadCount, setUnreadCount] = useState(0);
   const [cartCount, setCartCount] = useState(0);
-  const [notifications, setNotifications] = useState<Array<{ id: string; title: string; message: string; isRead: boolean; createdAt: string }>>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
   const { data: session } = useSession({ required: false }) || { data: null };
   const router = useRouter();
 
@@ -82,7 +82,7 @@ export function Navbar() {
     if (session?.user) {
       getNotifications().then(res => {
         if (res.notifications) {
-          setNotifications(res.notifications as typeof notifications);
+          setNotifications(res.notifications);
           setUnreadCount(res.notifications.filter((n: { isRead: boolean }) => !n.isRead).length);
         }
       });
@@ -501,7 +501,7 @@ export function Navbar() {
                           }`} />
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-black text-slate-900 truncate">{notif.title}</p>
-                          <p className="text-xs font-bold text-slate-400 mt-0.5 leading-relaxed line-clamp-2">{notif.message}</p>
+                          <p className="text-xs font-bold text-slate-400 mt-0.5 leading-relaxed line-clamp-2">{notif.body || notif.message}</p>
                           <p className="text-[10px] font-black text-slate-300 mt-2 uppercase tracking-widest">
                             {new Date(notif.createdAt).toLocaleDateString()}
                           </p>

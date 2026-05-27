@@ -58,7 +58,7 @@ function Grid() {
 
   return (
     <group rotation={[-Math.PI / 2.5, 0, 0]} position={[0, -2, -5]}>
-      <gridHelper args={[20, 20, "#2563eb", "#e2e8f0"]} opacity={0.2} transparent />
+      <gridHelper {...({ args: [20, 20, "#2563eb", "#e2e8f0"], opacity: 0.2, transparent: true } as any)} />
     </group>
   );
 }

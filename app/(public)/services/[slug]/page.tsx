@@ -62,7 +62,20 @@ export default function ServiceDetailPage() {
     deliverables: ["Technical Report", "Source Code", "Presentation", "CAD Models", "Plagiarism Report"]
   };
 
-  const [printingData, setPrintingData] = useState({
+  const [printingData, setPrintingData] = useState<{
+    paperType: string;
+    pageCount: number | "";
+    copies: number;
+    shippingZone: string;
+    projectTitle: string;
+    recipientName: string;
+    phone: string;
+    address: string;
+    city: string;
+    pincode: string;
+    expectedDelivery: string;
+    expectedDeliveryCustom: string;
+  }>({
     paperType: "black_book", // "black_book" | "bond_paper"
     pageCount: 30,
     copies: 1,
@@ -272,7 +285,7 @@ export default function ServiceDetailPage() {
   const containerVariants = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
-  };
+  } as const;
 
   return (
     <div className="min-h-screen pt-32 pb-24 bg-slate-50 transition-colors duration-300">
@@ -361,7 +374,7 @@ export default function ServiceDetailPage() {
                   <div className="h-[1px] bg-slate-100 my-1" />
                   <div className="flex justify-between items-center text-[8px] text-slate-400">
                     <span>Base Rate</span>
-                    <span>₹{getRate(printingData.pageCount, printingData.paperType as any)} / copy</span>
+                    <span>₹{getRate(typeof printingData.pageCount === "number" ? printingData.pageCount : 21, printingData.paperType as any)} / copy</span>
                   </div>
                 </div>
 
@@ -563,7 +576,7 @@ export default function ServiceDetailPage() {
                               <input 
                                 type="number" 
                                 placeholder="e.g. 45"
-                                value={printingData.pageCount === "" ? "" : printingData.pageCount} 
+                                value={(printingData.pageCount as any) === "" ? "" : printingData.pageCount} 
                                 onChange={(e) => {
                                   const valStr = e.target.value;
                                   if (valStr === "") {
@@ -574,19 +587,19 @@ export default function ServiceDetailPage() {
                                   setPrintingData({...printingData, pageCount: val});
                                 }} 
                                 className={`w-full bg-white border-2 rounded-2xl px-8 py-5 text-slate-900 font-black focus:ring-8 outline-none transition-all h-[66px] ${
-                                  printingData.pageCount !== "" && (printingData.pageCount < 21 || printingData.pageCount > 120)
+                                  (printingData.pageCount as any) !== "" && typeof printingData.pageCount === "number" && (printingData.pageCount < 21 || printingData.pageCount > 120)
                                     ? "border-rose-400 focus:border-rose-500 ring-rose-500/10"
                                     : "border-indigo-100/80 focus:border-indigo-500 ring-indigo-600/5"
                                 }`} 
                                 required 
                               />
                             </div>
-                            {printingData.pageCount !== "" && (printingData.pageCount as any) < 21 && (
+                            {printingData.pageCount !== "" && typeof printingData.pageCount === "number" && printingData.pageCount < 21 && (
                               <div className="mt-3 bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-black uppercase tracking-widest px-5 py-3.5 rounded-2xl flex items-center gap-2.5 shadow-sm shadow-rose-100/50">
                                 ⚠️ Below 21 pages is not available. Please enter 21 to 120 pages.
                               </div>
                             )}
-                            {printingData.pageCount !== "" && (printingData.pageCount as any) > 120 && (
+                            {printingData.pageCount !== "" && typeof printingData.pageCount === "number" && printingData.pageCount > 120 && (
                               <div className="mt-3 bg-rose-50 border border-rose-200 text-rose-700 text-[10px] font-black uppercase tracking-widest px-5 py-3.5 rounded-2xl flex items-center gap-2.5 shadow-sm shadow-rose-100/50">
                                 ⚠️ Maximum page count is 120. Please enter 21 to 120 pages.
                               </div>
@@ -620,7 +633,7 @@ export default function ServiceDetailPage() {
                             </div>
                             <div className="max-h-[250px] overflow-y-auto divide-y divide-slate-100/80 font-sans text-xs text-slate-700 custom-scrollbar">
                               {PRINTING_RATES.map((r) => {
-                                const isActive = printingData.pageCount >= r.min && printingData.pageCount <= r.max;
+                                const isActive = typeof printingData.pageCount === "number" && printingData.pageCount >= r.min && printingData.pageCount <= r.max;
                                 return (
                                   <div
                                     key={r.range}

@@ -13,7 +13,7 @@ import Link from "next/link";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } }
 };
 
 const SUPPORT_CHANNELS = [
@@ -128,7 +128,7 @@ export default function SupportPage() {
                         initial={{ height: 0, opacity: 0 }}
                         animate={{ height: "auto", opacity: 1 }}
                         exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                        transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] as const }}
                         className="px-10 pb-10"
                       >
                         <p className="text-slate-500 font-bold leading-relaxed border-t border-slate-200/50 pt-8">

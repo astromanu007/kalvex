@@ -127,7 +127,7 @@ function CosmosBackground() {
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] as const } }
 };
 
 const staggerContainer = {
@@ -230,7 +230,7 @@ export default function AboutPage() {
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] as const }}
               className="lg:col-span-6 relative flex justify-end"
             >
               <div className="relative p-4 max-w-lg w-full">
@@ -424,7 +424,7 @@ export default function AboutPage() {
                 <motion.div
                   whileHover={{
                     y: -15,
-                    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] }
+                    transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const }
                   }}
                   className="relative z-20 flex flex-col"
                 >

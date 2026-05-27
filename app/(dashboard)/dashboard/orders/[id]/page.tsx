@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { getOrders } from "@/app/actions/orders";
 import { uploadFile } from "@/app/actions/storage";
 
-const STATUS_MAP: Record<string, { color: string; icon: React.ElementType, desc: string }> = {
+const STATUS_MAP: Record<string, { color: string; icon: any, desc: string }> = {
   "PENDING_PAYMENT": { color: "text-accent-warning bg-accent-warning/10", icon: AlertCircle, desc: "Awaiting your payment to begin." },
   "RESEARCH_STARTED": { color: "text-accent-primary bg-accent-primary/10", icon: Clock, desc: "Expert is actively working on this order." },
   "DELIVERED": { color: "text-accent-success bg-accent-success/10", icon: CheckCircle, desc: "Draft delivered for your review." },

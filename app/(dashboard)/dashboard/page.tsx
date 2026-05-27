@@ -10,7 +10,7 @@ import {
 import { Button } from "@/components/ui/button";
 
 import { getOrders } from "@/app/actions/orders";
-const STATUS_MAP: Record<string, { color: string; icon: React.ElementType }> = {
+const STATUS_MAP: Record<string, { color: string; icon: any }> = {
   "In Progress": { color: "text-accent-warning bg-accent-warning/10", icon: Clock },
   "Delivered":   { color: "text-accent-success bg-accent-success/10", icon: CheckCircle },
   "Under Review":{ color: "text-accent-primary bg-accent-primary/10", icon: TrendingUp },

@@ -178,20 +178,28 @@ export async function seedInitialData() {
       await prisma.service.upsert({
         where: { slug: s.slug },
         update: {},
-        create: { ...s, isActive: true }
+        create: { ...s }
       });
     }
 
     console.log("Seeding Projects...");
     for (const p of PROJECTS) {
+      const slug = p.title.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, "");
       await prisma.project.upsert({
-        where: { sku: p.sku },
+        where: { slug },
         update: {},
         create: {
-          ...p,
-          slug: p.title.toLowerCase().replace(/ /g, "-").replace(/[^\w-]+/g, ""),
-          images: [p.image],
-          description: `${p.title} - A high-quality engineering project.`,
+          title: p.title,
+          slug,
+          branch: p.category || "General",
+          year: 4,
+          type: "Major",
+          techStack: p.tech,
+          abstract: `${p.title} - A high-quality engineering project.`,
+          price: p.price,
+          mrp: p.mrp,
+          thumbnail: p.image,
+          deliverables: ["Source Code", "Project Report", "Presentation Slides"],
           isActive: true
         }
       });
