@@ -34,13 +34,13 @@ export default function AdminStorePage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Decommission this inventory unit? This will remove it from the global marketplace.")) {
+    if (confirm("Are you sure you want to delete this product? This will remove it from the store.")) {
       const res = await deleteProduct(id);
       if (res.success) {
-        toast.success("Inventory unit decommissioned");
+        toast.success("Product deleted successfully");
         fetchProducts();
       } else {
-        toast.error("Failed to decommission unit");
+        toast.error("Failed to delete product");
       }
     }
   };
@@ -58,43 +58,43 @@ export default function AdminStorePage() {
     
     const res = await upsertProduct(data);
     if (res.success) {
-      toast.success("Inventory registry updated");
+      toast.success("Store inventory updated");
       fetchProducts();
     } else {
-      toast.error("Failed to update registry");
+      toast.error("Failed to update product");
       throw new Error(res.error);
     }
   };
 
   const columns = [
-    { key: "name", label: "Node Identifier" },
-    { key: "category", label: "Classification" },
-    { key: "sku", label: "Serial Index" },
+    { key: "name", label: "Product Name" },
+    { key: "category", label: "Category" },
+    { key: "sku", label: "SKU" },
     { 
       key: "price", 
-      label: "Valuation", 
+      label: "Price", 
       render: (val: number) => <span className="font-heading font-black text-slate-900 text-lg">₹{val.toLocaleString()}</span> 
     },
-    { key: "stock", label: "Availability" },
+    { key: "stock", label: "Stock Level" },
     { 
       key: "isActive", 
-      label: "Node Status",
+      label: "Status",
       render: (val: boolean) => (
         <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${
           val ? "bg-emerald-50 text-emerald-600 border-emerald-100" : "bg-rose-50 text-rose-600 border-rose-100"
         }`}>
-          {val ? "Operational" : "Offline"}
+          {val ? "Active" : "Inactive"}
         </span>
       )
     },
   ];
 
   const fields = [
-    { key: "name", label: "Hardware Node Name", type: "text", placeholder: "e.g. Raspberry Pi 5 - 8GB" },
-    { key: "sku", label: "Institutional SKU", type: "text", placeholder: "KVX-SBC-005" },
+    { key: "name", label: "Product Name", type: "text", placeholder: "e.g. Raspberry Pi 5 - 8GB" },
+    { key: "sku", label: "SKU / Code", type: "text", placeholder: "KVX-SBC-005" },
     { 
       key: "category", 
-      label: "Component Domain", 
+      label: "Product Category", 
       type: "select", 
       options: [
         { label: "SBCs & Controllers", value: "Development Boards" },
@@ -106,20 +106,20 @@ export default function AdminStorePage() {
         { label: "Tools & Equipment", value: "Hardware & Tools" },
       ]
     },
-    { key: "price", label: "Market Valuation (INR)", type: "number" },
-    { key: "mrp", label: "List Valuation (MRP)", type: "number" },
-    { key: "stock", label: "Inventory Density", type: "number" },
-    { key: "description", label: "Technical Narrative", type: "textarea" },
-    { key: "specs", label: "Technical Matrix (JSON Format)", type: "textarea", placeholder: '{"Processor": "Broadcom BCM2712", "RAM": "8GB LPDDR4X"}' },
-    { key: "images", label: "Visual Asset Vectors (URLs)", type: "array" },
-    { key: "isActive", label: "Operational Registry Status", type: "select", options: [{ label: "Deploy to Market", value: true }, { label: "Hold Offline", value: false }] },
+    { key: "price", label: "Price (INR)", type: "number" },
+    { key: "mrp", label: "MRP Valuation", type: "number" },
+    { key: "stock", label: "Stock Quantity", type: "number" },
+    { key: "description", label: "Product Description", type: "textarea" },
+    { key: "specs", label: "Technical Specifications (JSON Format)", type: "textarea", placeholder: '{"Processor": "Broadcom BCM2712", "RAM": "8GB LPDDR4X"}' },
+    { key: "images", label: "Product Image URLs", type: "array" },
+    { key: "isActive", label: "Product Status", type: "select", options: [{ label: "Active / Publish", value: true }, { label: "Inactive / Keep Draft", value: false }] },
   ];
 
   return (
     <>
       <EntityDashboard
-        title="Inventory Control Matrix"
-        subtitle="Manage hardware nodes and electronic component distribution across the global store."
+        title="Store Inventory"
+        subtitle="Manage lab hardware kits, microcontrollers, and electronic components."
         entities={products}
         columns={columns as any}
         onAdd={handleAdd}
@@ -128,7 +128,7 @@ export default function AdminStorePage() {
         loading={loading}
       />
       <EntityForm
-        title={selectedProduct ? "Calibrate Hardware Node" : "Initialize Hardware Node"}
+        title={selectedProduct ? "Edit Product Details" : "Add New Product"}
         fields={fields as any}
         initialData={selectedProduct ? { ...selectedProduct, specs: JSON.stringify(selectedProduct.specs, null, 2) } : null}
         onSave={handleSave}

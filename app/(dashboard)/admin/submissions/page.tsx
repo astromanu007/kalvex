@@ -42,16 +42,16 @@ export default function AdminSubmissionsPage() {
     const nextStatus = currentStatus === "UNREAD" ? "READ" : "ARCHIVED";
     const res = await updateSubmissionStatus(id, nextStatus);
     if (res.success) {
-      toast.success("Log status updated");
+      toast.success("Inquiry status updated");
       fetchData();
     }
   };
 
   const handleDelete = async (id: string, type: "contact" | "newsletter") => {
-    if (confirm("Delete this record from the permanent registry?")) {
+    if (confirm("Are you sure you want to delete this record?")) {
       const res = await deleteSubmission(id);
       if (res.success) {
-        toast.success("Record deleted");
+        toast.success("Record deleted successfully");
         fetchData();
       }
     }
@@ -76,15 +76,15 @@ export default function AdminSubmissionsPage() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Intelligence Feed</h1>
-          <p className="text-slate-500 font-medium text-sm">Manage institutional inquiries and strategic newsletter leads.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Submissions & Inquiries</h1>
+          <p className="text-slate-500 font-medium text-sm">View and manage contact form inquiries and newsletter subscriptions.</p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="rounded-xl px-6 h-12 border-slate-200 font-bold text-xs uppercase tracking-widest">
             <Download className="w-4 h-4 mr-2" /> Export Data
           </Button>
           <Button onClick={fetchData} className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 h-12 font-bold text-xs uppercase tracking-widest shadow-xl shadow-blue-600/20">
-            Refresh Feed
+            Refresh Inquiries
           </Button>
         </div>
       </div>
@@ -109,7 +109,7 @@ export default function AdminSubmissionsPage() {
         <div className="relative max-w-sm w-full">
           <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
           <Input 
-            placeholder="Search transmission logs..." 
+            placeholder="Search submissions..." 
             className="pl-12 h-14 rounded-2xl border-slate-100 bg-white focus:ring-blue-600/20"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
@@ -128,8 +128,8 @@ export default function AdminSubmissionsPage() {
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-slate-50 bg-slate-50/30">
-                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Transmission Info</th>
-                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Classification</th>
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Submitter Details</th>
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Category</th>
                 <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Timestamp</th>
                 <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Status</th>
                 <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Actions</th>
@@ -140,7 +140,7 @@ export default function AdminSubmissionsPage() {
                 <tr>
                   <td colSpan={5} className="px-8 py-32 text-center">
                     <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Synchronizing Matrix...</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading Inquiries...</p>
                   </td>
                 </tr>
               ) : activeTab === "contact" ? (
@@ -231,8 +231,8 @@ export default function AdminSubmissionsPage() {
               <AlertCircle className="w-12 h-12" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-xl font-black text-slate-900">End of Logs Reached</h3>
-              <p className="text-slate-400 font-medium max-w-xs">No active transmissions detected in the current sector.</p>
+              <h3 className="text-xl font-black text-slate-900">No Submissions Found</h3>
+              <p className="text-slate-400 font-medium max-w-xs">There are no new submissions to display.</p>
             </div>
           </div>
         )}

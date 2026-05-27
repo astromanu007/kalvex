@@ -32,7 +32,7 @@ const ROLES = [
     id: "writer",
     label: "Scholar",
     icon: PenTool,
-    desc: "Join our network of academic and patent writers. Earn per research commission.",
+    desc: "Join our network of academic and patent writers. Earn per research project.",
     accent: "blue"
   },
   {

@@ -36,10 +36,10 @@ export default function AdminUsersPage() {
     const currentIndex = roles.indexOf(currentRole);
     const nextRole = roles[(currentIndex + 1) % roles.length];
     
-    if (confirm(`Elevate user clearance to ${nextRole}?`)) {
+    if (confirm(`Change user role to ${nextRole}?`)) {
       const res = await updateUserRole(userId, nextRole);
       if (res.success) {
-        toast.success(`Clearance updated to ${nextRole}`);
+        toast.success(`User role updated to ${nextRole}`);
         fetchUsers();
       }
     }
@@ -61,15 +61,15 @@ export default function AdminUsersPage() {
       {/* Header Section */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">Identity Registry</h1>
-          <p className="text-slate-500 font-medium text-sm">Oversee institutional identities and clearance levels across the ecosystem.</p>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight">User Directory</h1>
+          <p className="text-slate-500 font-medium text-sm">Manage user accounts, roles, and platform permissions.</p>
         </div>
         <div className="flex items-center gap-3">
           <Button variant="outline" className="rounded-xl px-6 h-12 border-slate-200 font-bold text-xs uppercase tracking-widest">
-            <Download className="w-4 h-4 mr-2" /> Export Audit
+            <Download className="w-4 h-4 mr-2" /> Export Users
           </Button>
           <Button onClick={fetchUsers} className="bg-slate-900 hover:bg-slate-800 text-white rounded-xl px-6 h-12 font-bold text-xs uppercase tracking-widest shadow-xl shadow-slate-900/20">
-            Refresh Matrix
+            Refresh Table
           </Button>
         </div>
       </div>
@@ -77,10 +77,10 @@ export default function AdminUsersPage() {
       {/* Stats Quick Look */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
         {[
-          { label: "Total Identities", value: users.length, icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
-          { label: "Admin Nodes", value: users.filter(u => u.role === 'ADMIN').length, icon: Shield, color: "text-purple-600", bg: "bg-purple-50" },
-          { label: "Expert Nodes", value: users.filter(u => u.role === 'EXPERT').length, icon: Star, color: "text-amber-600", bg: "bg-amber-50" },
-          { label: "New Entries", value: users.filter(u => new Date(u.createdAt) > new Date(Date.now() - 86400000)).length, icon: Clock, color: "text-emerald-600", bg: "bg-emerald-50" },
+          { label: "Total Users", value: users.length, icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
+          { label: "Admin Accounts", value: users.filter(u => u.role === 'ADMIN').length, icon: Shield, color: "text-purple-600", bg: "bg-purple-50" },
+          { label: "Expert Accounts", value: users.filter(u => u.role === 'EXPERT').length, icon: Star, color: "text-amber-600", bg: "bg-amber-50" },
+          { label: "New Registrations", value: users.filter(u => new Date(u.createdAt) > new Date(Date.now() - 86400000)).length, icon: Clock, color: "text-emerald-600", bg: "bg-emerald-50" },
         ].map((stat, i) => (
           <div key={i} className="bg-white p-6 rounded-3xl border border-slate-100 shadow-sm space-y-4">
             <div className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center`}>
@@ -98,7 +98,7 @@ export default function AdminUsersPage() {
       <div className="relative max-w-xl">
         <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
         <Input 
-          placeholder="Search by name, email, or institutional ID..." 
+          placeholder="Search by name, email, or user ID..." 
           className="pl-12 h-16 rounded-2xl border-slate-100 bg-white focus:ring-slate-900/10 text-lg font-medium"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -116,10 +116,10 @@ export default function AdminUsersPage() {
           <table className="w-full text-left">
             <thead>
               <tr className="border-b border-slate-50 bg-slate-50/30">
-                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Institutional Identity</th>
-                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Clearance Level</th>
-                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Deployment Date</th>
-                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">ID Vector</th>
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">User Details</th>
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Role</th>
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">Registration Date</th>
+                <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest">User ID</th>
                 <th className="px-8 py-6 text-[10px] font-black text-slate-400 uppercase tracking-widest text-right">Actions</th>
               </tr>
             </thead>
@@ -128,7 +128,7 @@ export default function AdminUsersPage() {
                 <tr>
                   <td colSpan={5} className="px-8 py-32 text-center">
                     <Loader2 className="w-12 h-12 text-slate-900 animate-spin mx-auto mb-4" />
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Scanning Identity Matrix...</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Loading user directory...</p>
                   </td>
                 </tr>
               ) : filteredUsers.map((user) => (
@@ -139,7 +139,7 @@ export default function AdminUsersPage() {
                         {(user.name || "U").charAt(0)}
                       </div>
                       <div>
-                        <p className="font-bold text-slate-900">{user.name || "Anonymous Node"}</p>
+                        <p className="font-bold text-slate-900">{user.name || "Anonymous User"}</p>
                         <p className="text-xs text-slate-400 font-medium">{user.email}</p>
                       </div>
                     </div>
@@ -182,8 +182,8 @@ export default function AdminUsersPage() {
               <Users className="w-12 h-12" />
             </div>
             <div className="space-y-2">
-              <h3 className="text-xl font-black text-slate-900">No Identities Found</h3>
-              <p className="text-slate-400 font-medium max-w-xs">The search parameters returned zero matching vectors in the registry.</p>
+              <h3 className="text-xl font-black text-slate-900">No Users Found</h3>
+              <p className="text-slate-400 font-medium max-w-xs">No users matched your search criteria.</p>
             </div>
           </div>
         )}

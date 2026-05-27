@@ -24,7 +24,7 @@ export default function SettingsPage() {
     <div className="space-y-8 max-w-3xl">
       <div>
         <h1 className="font-heading font-bold text-2xl md:text-3xl text-slate-900">Settings</h1>
-        <p className="text-slate-400 text-sm mt-1">Manage your platform parameters, security policies, and integrations</p>
+        <p className="text-slate-400 text-sm mt-1">Manage your account preferences, security settings, and defaults</p>
       </div>
 
       <form onSubmit={handleSave} className="space-y-6">
@@ -36,7 +36,7 @@ export default function SettingsPage() {
             </div>
             <div>
               <h3 className="font-heading font-black text-sm text-slate-900 uppercase tracking-wider">Account Settings</h3>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Configure your fundamental account attributes</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Configure your basic account preferences</p>
             </div>
           </div>
 
@@ -68,15 +68,15 @@ export default function SettingsPage() {
             </div>
             <div>
               <h3 className="font-heading font-black text-sm text-slate-900 uppercase tracking-wider">Security & Access</h3>
-              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Toggle account encryption and security layers</p>
+              <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">Manage your account security and privacy preferences</p>
             </div>
           </div>
 
           <div className="space-y-4">
             {[
-              { label: "Shield Encryption for Deliverables", sub: "Double encrypt file download corridors in production" },
+              { label: "Secure File Downloads", sub: "Enforce secure download pathways for deliverable files" },
               { label: "Sign-in Notification Alerts", sub: "Receive email alerts on every new login session" },
-              { label: "Anonymous Profile Masking", sub: "Substitute actual name with encrypted Masked IDs in public boards" }
+              { label: "Profile ID Masking", sub: "Show your Masked ID (e.g. KV-0000) instead of your full name on public lists" }
             ].map((pref, i) => (
               <div key={i} className="flex items-center justify-between gap-4 py-3 border-b border-slate-50 last:border-0">
                 <div>

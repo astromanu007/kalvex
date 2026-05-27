@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
+import { signOut } from "next-auth/react";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -30,7 +31,7 @@ export function AdminSidebar() {
         </div>
         <div>
           <h2 className="font-heading font-black text-xl text-slate-900 tracking-tighter">KALVEX</h2>
-          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-600">Admin Command</p>
+          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-600">Admin Panel</p>
         </div>
       </div>
 
@@ -63,9 +64,12 @@ export function AdminSidebar() {
       </nav>
 
       <div className="pt-8 border-t border-slate-50">
-        <button className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-red-50 hover:text-red-600 transition-all group">
+        <button 
+          onClick={() => signOut({ callbackUrl: "/" })}
+          className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-red-50 hover:text-red-600 transition-all group"
+        >
           <LogOut className="w-5 h-5 group-hover:-translate-x-1 transition-transform" />
-          <span className="text-[11px] font-black uppercase tracking-widest">Terminate Session</span>
+          <span className="text-[11px] font-black uppercase tracking-widest">Sign Out</span>
         </button>
       </div>
     </aside>

@@ -34,13 +34,13 @@ export default function AdminProjectsPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Decommission this project blueprint? This will remove it from the public repository.")) {
+    if (confirm("Are you sure you want to delete this project? This will remove it from the public directory.")) {
       const res = await deleteProject(id);
       if (res.success) {
-        toast.success("Project blueprint decommissioned");
+        toast.success("Project deleted successfully");
         fetchProjects();
       } else {
-        toast.error("Failed to decommission blueprint");
+        toast.error("Failed to delete project");
       }
     }
   };
@@ -48,42 +48,42 @@ export default function AdminProjectsPage() {
   const handleSave = async (data: any) => {
     const res = await upsertProject(data);
     if (res.success) {
-      toast.success("Blueprint registry updated");
+      toast.success("Project list updated");
       fetchProjects();
     } else {
-      toast.error("Failed to update registry");
+      toast.error("Failed to update projects");
       throw new Error(res.error);
     }
   };
 
   const columns = [
-    { key: "title", label: "Mission Identifier" },
-    { key: "type", label: "Classification" },
-    { key: "branch", label: "Domain" },
+    { key: "title", label: "Project Title" },
+    { key: "type", label: "Category" },
+    { key: "branch", label: "Department / Branch" },
     { 
       key: "price", 
-      label: "Valuation", 
+      label: "Price", 
       render: (val: number) => <span className="font-heading font-black text-slate-900 text-lg">₹{val.toLocaleString()}</span> 
     },
-    { key: "purchases", label: "Deployment Count" },
+    { key: "purchases", label: "Sales Count" },
     { 
       key: "isActive", 
-      label: "Registry Status",
+      label: "Status",
       render: (val: boolean) => (
         <span className={`px-3 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border ${
           val ? "bg-blue-50 text-blue-600 border-blue-100" : "bg-rose-50 text-rose-600 border-rose-100"
         }`}>
-          {val ? "Operational" : "Archived"}
+          {val ? "Active" : "Archived"}
         </span>
       )
     },
   ];
 
   const fields = [
-    { key: "title", label: "Project Mission Title", type: "text", placeholder: "e.g. AI-Enhanced Autonomous Drone" },
+    { key: "title", label: "Project Title", type: "text", placeholder: "e.g. AI-Enhanced Autonomous Drone" },
     { 
       key: "type", 
-      label: "Classification Node", 
+      label: "Project Category", 
       type: "select", 
       options: [
         { label: "Mini Project", value: "MINI" },
@@ -91,24 +91,24 @@ export default function AdminProjectsPage() {
         { label: "Final Year Thesis", value: "FINAL_YEAR" },
       ]
     },
-    { key: "branch", label: "Engineering Vector", type: "text", placeholder: "CSE / ECE / MECH / AI" },
-    { key: "year", label: "Academic Cycle", type: "number" },
-    { key: "price", label: "Acquisition Cost (INR)", type: "number" },
-    { key: "mrp", label: "Market Valuation (MRP)", type: "number" },
-    { key: "abstract", label: "Mission Abstract", type: "textarea" },
-    { key: "techStack", label: "Technology Stack Matrix", type: "array" },
-    { key: "deliverables", label: "Mission Deliverables", type: "array" },
-    { key: "thumbnail", label: "Visual Preview Vector (URL)", type: "text" },
-    { key: "demoVideoUrl", label: "Operational Demo Link", type: "text" },
-    { key: "downloadUrl", label: "Source Code Payload Link", type: "text" },
-    { key: "isActive", label: "Operational Registry Status", type: "select", options: [{ label: "Deploy to Repository", value: true }, { label: "Hold Archived", value: false }] },
+    { key: "branch", label: "Engineering Branch", type: "text", placeholder: "CSE / ECE / MECH / AI" },
+    { key: "year", label: "Academic Year", type: "number" },
+    { key: "price", label: "Price (INR)", type: "number" },
+    { key: "mrp", label: "MRP Valuation", type: "number" },
+    { key: "abstract", label: "Project Abstract / Summary", type: "textarea" },
+    { key: "techStack", label: "Technology Stack", type: "array" },
+    { key: "deliverables", label: "Project Deliverables", type: "array" },
+    { key: "thumbnail", label: "Thumbnail Image URL", type: "text" },
+    { key: "demoVideoUrl", label: "Demo Video Link", type: "text" },
+    { key: "downloadUrl", label: "Source Code Link", type: "text" },
+    { key: "isActive", label: "Project Status", type: "select", options: [{ label: "Active / Published", value: true }, { label: "Archived / Draft", value: false }] },
   ];
 
   return (
     <>
       <EntityDashboard
-        title="Project Blueprint Matrix"
-        subtitle="Manage technical blueprints and academic engineering missions within the KALVEX ecosystem."
+        title="Project Catalog"
+        subtitle="Manage student engineering projects and source code listings."
         entities={projects}
         columns={columns as any}
         onAdd={handleAdd}
@@ -117,7 +117,7 @@ export default function AdminProjectsPage() {
         loading={loading}
       />
       <EntityForm
-        title={selectedProject ? "Calibrate Mission Blueprint" : "Initialize Mission Blueprint"}
+        title={selectedProject ? "Edit Project Details" : "Create New Project"}
         fields={fields as any}
         initialData={selectedProject}
         onSave={handleSave}

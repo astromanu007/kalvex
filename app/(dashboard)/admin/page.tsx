@@ -78,16 +78,16 @@ export default function AdminDashboard() {
       <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="flex justify-between items-end">
         <div className="space-y-4">
           <div className="inline-flex items-center gap-3 bg-slate-900 text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-slate-900/20">
-            <Activity className="w-3.5 h-3.5 text-blue-400" /> System Pulse: Operational
+            <Activity className="w-3.5 h-3.5 text-blue-400" /> System Status: Online
           </div>
-          <h1 className="font-heading font-black text-5xl text-slate-900 tracking-tighter leading-none">Command <span className="text-blue-600">Overview</span></h1>
-          <p className="text-sm text-slate-400 font-bold max-w-xl">Real-time governance and institutional performance metrics for the KALVEX ecosystem.</p>
+          <h1 className="font-heading font-black text-5xl text-slate-900 tracking-tighter leading-none">Admin <span className="text-blue-600">Dashboard</span></h1>
+          <p className="text-sm text-slate-400 font-bold max-w-xl">Real-time statistics, user directory, and order management for the Kalvex platform.</p>
         </div>
         
         <div className="hidden lg:flex items-center gap-6">
           <div className="text-right">
-            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-300">Last Sync</p>
-            <p className="text-[11px] font-black text-slate-900">May 03, 2026 - 07:36 AM</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-300">Last Updated</p>
+            <p className="text-[11px] font-black text-slate-900">May 27, 2026 - 07:36 PM</p>
           </div>
           <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center shadow-xl shadow-slate-900/5">
             <Globe className="w-5 h-5 text-blue-600 animate-pulse" />
@@ -156,10 +156,10 @@ export default function AdminDashboard() {
         {/* Table Header */}
         <div className="p-10 border-b border-slate-50 flex flex-col md:flex-row justify-between gap-8 items-start md:items-center relative z-10">
           <div className="space-y-2">
-            <h2 className="font-heading font-black text-2xl text-slate-900 tracking-tight">Active Commisions</h2>
+            <h2 className="font-heading font-black text-2xl text-slate-900 tracking-tight">All Orders</h2>
             <div className="flex items-center gap-2">
               <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">{filteredOrders.length} Verified Records Found</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">{filteredOrders.length} Orders Found</p>
             </div>
           </div>
           <div className="relative w-full md:w-96 group">
@@ -168,7 +168,7 @@ export default function AdminDashboard() {
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search registry..."
+              placeholder="Search orders..."
               className="w-full bg-white border border-slate-100 rounded-2xl pl-14 pr-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-900 focus:outline-none focus:border-blue-600 transition-all placeholder:text-slate-300 relative z-10 shadow-sm"
             />
           </div>
@@ -178,7 +178,7 @@ export default function AdminDashboard() {
           <table className="w-full text-left border-collapse">
             <thead>
               <tr className="bg-slate-50/50 border-b border-slate-100">
-                {["Order Identifier", "Institutional Node", "Vector", "Valuation", "Authority Status", "Control Protocol"].map(h => (
+                {["Order ID", "User Details", "Service Type", "Amount", "Status", "Actions"].map(h => (
                   <th key={h} className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">{h}</th>
                 ))}
               </tr>
@@ -192,7 +192,7 @@ export default function AdminDashboard() {
                         <div className="w-16 h-16 rounded-3xl border-4 border-blue-600/10 border-t-blue-600 animate-spin" />
                         <Shield className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-blue-600" />
                       </div>
-                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300 animate-pulse">Decrypting Authority Matrix...</p>
+                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300 animate-pulse">Loading Orders...</p>
                     </div>
                   </td>
                 </tr>
@@ -201,7 +201,7 @@ export default function AdminDashboard() {
                   <td colSpan={6} className="px-10 py-32 text-center">
                     <div className="flex flex-col items-center gap-6 opacity-30">
                       <Search className="w-16 h-16 text-slate-300" />
-                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300">No Registry Matches.</p>
+                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300">No Orders Found.</p>
                     </div>
                   </td>
                 </tr>

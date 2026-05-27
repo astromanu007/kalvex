@@ -51,7 +51,7 @@ export default function SeedPage() {
         >
           {loading ? "Seeding Database..." : (
             <span className="flex items-center gap-3">
-              <Sparkles className="w-4 h-4" /> Start Initialization Protocol
+              <Sparkles className="w-4 h-4" /> Load Initial Data
             </span>
           )}
         </Button>

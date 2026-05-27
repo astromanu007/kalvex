@@ -45,7 +45,7 @@ export function EntityDashboard({
       <div className="flex justify-between items-end">
         <div className="space-y-3">
           <div className="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-1.5 rounded-xl text-[9px] font-black uppercase tracking-[0.3em]">
-            <Sparkles className="w-3.5 h-3.5 text-blue-400" /> System Registry
+            <Sparkles className="w-3.5 h-3.5 text-blue-400" /> System Dashboard
           </div>
           <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tighter">{title}</h1>
           <p className="text-sm text-slate-400 font-bold">{subtitle}</p>
@@ -55,7 +55,7 @@ export function EntityDashboard({
           className="bg-blue-600 hover:bg-blue-500 text-white rounded-[1.25rem] px-8 py-7 h-auto flex items-center gap-3 transition-all duration-500 group shadow-2xl shadow-blue-600/20 hover:scale-105 hover:-translate-y-1"
         >
           <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform duration-500" />
-          <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white">Initialize New Node</span>
+          <span className="text-[11px] font-black uppercase tracking-[0.2em] text-white">Add New Item</span>
         </Button>
       </div>
 
@@ -77,7 +77,7 @@ export function EntityDashboard({
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-blue-600 animate-pulse" />
               <div className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">
-                {filteredEntities.length} Total Nodes
+                {filteredEntities.length} Total Records
               </div>
             </div>
             <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl hover:bg-slate-100 transition-colors">
@@ -93,7 +93,7 @@ export function EntityDashboard({
                 {columns.map(col => (
                   <th key={col.key} className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">{col.label}</th>
                 ))}
-                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 text-right">Protocol</th>
+                <th className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
@@ -105,7 +105,7 @@ export function EntityDashboard({
                         <div className="w-16 h-16 rounded-3xl border-4 border-blue-600/10 border-t-blue-600 animate-spin" />
                         <Loader2 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-blue-600" />
                       </div>
-                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300">Synchronizing Data Matrix...</p>
+                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300">Synchronizing Database...</p>
                     </div>
                   </td>
                 </tr>
@@ -114,7 +114,7 @@ export function EntityDashboard({
                   <td colSpan={columns.length + 1} className="px-10 py-32 text-center">
                     <div className="flex flex-col items-center gap-6 opacity-30">
                       <Search className="w-16 h-16 text-slate-300" />
-                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300">Registry Empty</p>
+                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300">No Records Found</p>
                     </div>
                   </td>
                 </tr>

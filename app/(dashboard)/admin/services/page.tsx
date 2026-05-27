@@ -34,13 +34,13 @@ export default function AdminServicesPage() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm("Terminate this service protocol? This action is irreversible.")) {
+    if (confirm("Are you sure you want to delete this service? This action is irreversible.")) {
       const res = await deleteService(id);
       if (res.success) {
-        toast.success("Service protocol terminated");
+        toast.success("Service deleted successfully");
         fetchServices();
       } else {
-        toast.error("Failed to terminate protocol");
+        toast.error("Failed to delete service");
       }
     }
   };
@@ -48,34 +48,34 @@ export default function AdminServicesPage() {
   const handleSave = async (data: any) => {
     const res = await upsertService(data);
     if (res.success) {
-      toast.success("Protocol parameters updated");
+      toast.success("Service updated successfully");
       fetchServices();
     } else {
-      toast.error("Failed to save protocol");
+      toast.error("Failed to save service");
       throw new Error(res.error);
     }
   };
 
   const columns = [
-    { key: "title", label: "Service Protocol" },
-    { key: "category", label: "Classification" },
-    { key: "icon", label: "Vector Icon" },
+    { key: "title", label: "Service Name" },
+    { key: "category", label: "Category" },
+    { key: "icon", label: "Icon Name" },
     { 
       key: "deliverables", 
-      label: "Node Outputs", 
+      label: "Deliverables", 
       render: (val: string[]) => (
         <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">
-          {val?.length || 0} Parameters
+          {val?.length || 0} Deliverables
         </span>
       )
     },
   ];
 
   const fields = [
-    { key: "title", label: "Service Protocol Name", type: "text", placeholder: "e.g. Design Patent Drafting" },
+    { key: "title", label: "Service Name", type: "text", placeholder: "e.g. Design Patent Drafting" },
     { 
       key: "category", 
-      label: "Classification Domain", 
+      label: "Service Category", 
       type: "select", 
       options: [
         { label: "IPR & Legal", value: "IPR" },
@@ -84,19 +84,19 @@ export default function AdminServicesPage() {
         { label: "Design & UX", value: "Design" },
       ]
     },
-    { key: "description", label: "Detailed Protocol Specifications", type: "textarea" },
-    { key: "deliverables", label: "Service Deliverables (Vectors)", type: "array" },
-    { key: "icon", label: "Lucide Vector Key", type: "text", placeholder: "Shield, FileText, etc." },
-    { key: "color", label: "Primary Accent Class", type: "text", placeholder: "text-blue-600" },
-    { key: "bg", label: "Secondary Accent Class", type: "text", placeholder: "bg-blue-600/10" },
-    { key: "glow", label: "Photonic Shadow Class", type: "text", placeholder: "group-hover:shadow-blue-600/20" },
+    { key: "description", label: "Service Description", type: "textarea" },
+    { key: "deliverables", label: "Service Deliverables", type: "array" },
+    { key: "icon", label: "Lucide Icon Key", type: "text", placeholder: "Shield, FileText, etc." },
+    { key: "color", label: "Icon Color CSS Class", type: "text", placeholder: "text-blue-600" },
+    { key: "bg", label: "Background CSS Class", type: "text", placeholder: "bg-blue-600/10" },
+    { key: "glow", label: "Hover Shadow CSS Class", type: "text", placeholder: "group-hover:shadow-blue-600/20" },
   ];
 
   return (
     <>
       <EntityDashboard
-        title="Service Control Matrix"
-        subtitle="Calibrate professional service protocols and expert deployment nodes."
+        title="Services Management"
+        subtitle="Manage professional platform services, pricing, and details."
         entities={services}
         columns={columns as any}
         onAdd={handleAdd}
@@ -105,7 +105,7 @@ export default function AdminServicesPage() {
         loading={loading}
       />
       <EntityForm
-        title={selectedService ? "Calibrate Protocol Node" : "Initialize Service Node"}
+        title={selectedService ? "Edit Service Details" : "Create New Service"}
         fields={fields as any}
         initialData={selectedService}
         onSave={handleSave}
