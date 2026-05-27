@@ -27,6 +27,12 @@ export async function middleware(request: NextRequest) {
     if (role === 'ADMIN') {
       return NextResponse.redirect(new URL('/admin', request.url))
     }
+    if (role === 'WRITER' || role === 'DEVELOPER') {
+      return NextResponse.redirect(new URL('/expert', request.url))
+    }
+    if (role === 'AFFILIATE') {
+      return NextResponse.redirect(new URL('/dashboard/affiliate', request.url))
+    }
     
     if (role !== 'USER' && role !== 'STUDENT') {
       // For other roles, redirect if a specific dashboard exists, otherwise keep at /dashboard
@@ -35,16 +41,18 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (pathname.startsWith('/writer')) {
-    if (!session || session.user.role !== 'WRITER') {
+  if (pathname.startsWith('/expert')) {
+    if (!session || (session.user.role !== 'WRITER' && session.user.role !== 'DEVELOPER')) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
   }
 
+  if (pathname.startsWith('/writer')) {
+    return NextResponse.redirect(new URL('/expert', request.url))
+  }
+
   if (pathname.startsWith('/developer')) {
-    if (!session || session.user.role !== 'DEVELOPER') {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+    return NextResponse.redirect(new URL('/expert', request.url))
   }
 
   if (pathname.startsWith('/admin')) {
@@ -60,9 +68,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (pathname.startsWith('/affiliate')) {
-    if (!session || session.user.role !== 'AFFILIATE') {
-      return NextResponse.redirect(new URL('/login', request.url))
-    }
+    return NextResponse.redirect(new URL('/dashboard/affiliate', request.url))
   }
 
   // Contact Scanner - Block messages or requests containing contact info

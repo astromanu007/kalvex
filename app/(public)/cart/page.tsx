@@ -214,7 +214,7 @@ export default function CartPage() {
                   </Link>
 
                   <div className="text-[9px] text-slate-300 text-center font-black uppercase tracking-widest leading-relaxed">
-                    By finalizing, you acknowledge the <Link href="/terms" className="text-slate-400 hover:text-blue-600 transition-colors">Institutional Protocol</Link> and <Link href="/privacy" className="text-slate-400 hover:text-blue-600 transition-colors">Secure Data Policy</Link>.
+                    By finalizing, you acknowledge the <Link href="/terms-of-service" className="text-slate-400 hover:text-blue-600 transition-colors">Institutional Protocol</Link> and <Link href="/privacy-policy" className="text-slate-400 hover:text-blue-600 transition-colors">Secure Data Policy</Link>.
                   </div>
                 </div>
               </motion.div>
