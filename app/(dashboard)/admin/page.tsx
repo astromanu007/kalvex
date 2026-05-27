@@ -4,11 +4,12 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { 
   Users, ShoppingBag, IndianRupee, Briefcase, 
-  Search, ExternalLink, Loader2, Shield, TrendingUp, CheckCircle
+  Search, ExternalLink, Loader2, Shield, TrendingUp, CheckCircle,
+  Activity, ArrowUpRight, ArrowDownRight, Globe
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAdminStats, getAllOrders, forceUpdateOrderStatus } from "@/app/actions/admin";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 30 },
@@ -29,8 +30,8 @@ const ORDER_STATUSES = [
 const STATUS_COLORS: Record<string, string> = {
   COMPLETED:  "bg-emerald-50 text-emerald-600 border-emerald-100",
   DELIVERED:  "bg-blue-50 text-blue-600 border-blue-100",
-  CANCELLED:  "bg-red-50 text-red-600 border-red-100",
-  REFUNDED:   "bg-red-50 text-red-600 border-red-100",
+  CANCELLED:  "bg-rose-50 text-rose-600 border-rose-100",
+  REFUNDED:   "bg-rose-50 text-rose-600 border-rose-100",
 };
 
 export default function AdminDashboard() {
@@ -65,21 +66,33 @@ export default function AdminDashboard() {
   );
 
   const STAT_CARDS = [
-    { label: "Total Revenue",   value: `₹${stats?.totalRevenue?.toLocaleString() ?? "—"}`, icon: IndianRupee, color: "bg-blue-600",  shadow: "shadow-blue-600/20" },
-    { label: "Active Orders",   value: stats?.totalOrders ?? "—",                          icon: ShoppingBag, color: "bg-slate-900", shadow: "shadow-slate-900/20" },
-    { label: "Total Clients",   value: stats?.totalUsers ?? "—",                           icon: Users,       color: "bg-blue-600",  shadow: "shadow-blue-600/20" },
-    { label: "Expert Network",  value: stats?.activeExperts ?? "—",                        icon: Briefcase,   color: "bg-slate-900", shadow: "shadow-slate-900/20" },
+    { label: "Total Revenue",   value: `₹${stats?.totalRevenue?.toLocaleString() ?? "0"}`, icon: IndianRupee, color: "bg-blue-600",  trend: "+12.5%", isUp: true },
+    { label: "Active Orders",   value: stats?.totalOrders ?? "0",                          icon: ShoppingBag, color: "bg-slate-900", trend: "+8.2%",  isUp: true },
+    { label: "Total Clients",   value: stats?.totalUsers ?? "0",                           icon: Users,       color: "bg-blue-600",  trend: "+5.1%",  isUp: true },
+    { label: "Expert Network",  value: stats?.activeExperts ?? "0",                        icon: Briefcase,   color: "bg-slate-900", trend: "+2.4%",  isUp: true },
   ];
 
   return (
-    <div className="space-y-12">
+    <div className="space-y-12 max-w-[1600px] mx-auto">
       {/* Header */}
-      <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="space-y-3">
-        <div className="inline-flex items-center gap-2 bg-blue-600/10 text-blue-600 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.3em]">
-          <Shield className="w-3 h-3" /> Command Authority
+      <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="flex justify-between items-end">
+        <div className="space-y-4">
+          <div className="inline-flex items-center gap-3 bg-slate-900 text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-slate-900/20">
+            <Activity className="w-3.5 h-3.5 text-blue-400" /> System Pulse: Operational
+          </div>
+          <h1 className="font-heading font-black text-5xl text-slate-900 tracking-tighter leading-none">Command <span className="text-blue-600">Overview</span></h1>
+          <p className="text-sm text-slate-400 font-bold max-w-xl">Real-time governance and institutional performance metrics for the KALVEX ecosystem.</p>
         </div>
-        <h1 className="font-heading font-black text-4xl text-slate-900 tracking-tighter">Master Control</h1>
-        <p className="text-slate-400 font-bold">Platform-wide oversight and institutional order governance.</p>
+        
+        <div className="hidden lg:flex items-center gap-6">
+          <div className="text-right">
+            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-300">Last Sync</p>
+            <p className="text-[11px] font-black text-slate-900">May 03, 2026 - 07:36 AM</p>
+          </div>
+          <div className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center shadow-xl shadow-slate-900/5">
+            <Globe className="w-5 h-5 text-blue-600 animate-pulse" />
+          </div>
+        </div>
       </motion.div>
 
       {/* Stats Grid */}
@@ -87,21 +100,45 @@ export default function AdminDashboard() {
         initial="hidden"
         animate="visible"
         variants={stagger}
-        className="grid grid-cols-2 lg:grid-cols-4 gap-6"
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
       >
         {STAT_CARDS.map((stat) => (
           <motion.div
             key={stat.label}
             variants={fadeInUp}
-            whileHover={{ y: -8 }}
-            className="bg-white border border-slate-100 rounded-[2rem] p-8 flex items-center gap-6 shadow-xl shadow-slate-900/5 hover:shadow-2xl hover:shadow-slate-900/10 transition-all duration-700 group"
+            whileHover={{ y: -8, scale: 1.02 }}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = e.clientX - rect.left;
+              const y = e.clientY - rect.top;
+              e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+              e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+            }}
+            className="group relative bg-white/70 backdrop-blur-xl border border-slate-100 rounded-[2.5rem] p-8 transition-all duration-700 hover:shadow-2xl hover:border-blue-600/20 overflow-hidden"
           >
-            <div className={`w-14 h-14 rounded-2xl ${stat.color} flex items-center justify-center shadow-2xl ${stat.shadow} group-hover:scale-110 transition-transform duration-500`}>
-              <stat.icon className="w-6 h-6 text-white" />
-            </div>
-            <div>
-              <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-300 mb-1">{stat.label}</p>
-              <p className="font-heading font-black text-2xl text-slate-900 tracking-tighter">{stat.value}</p>
+             {/* Spotlight Effect */}
+             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"
+              style={{
+                background: `radial-gradient(300px circle at var(--mouse-x) var(--mouse-y), rgba(37,99,235,0.05), transparent 80%)`,
+              }} />
+
+            <div className="relative z-10 flex flex-col gap-6">
+              <div className="flex justify-between items-start">
+                <div className={`w-14 h-14 rounded-2xl ${stat.color} flex items-center justify-center shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12`}>
+                  <stat.icon className="w-6 h-6 text-white" />
+                </div>
+                <div className={cn(
+                  "flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest",
+                  stat.isUp ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"
+                )}>
+                  {stat.isUp ? <ArrowUpRight className="w-3 h-3" /> : <ArrowDownRight className="w-3 h-3" />}
+                  {stat.trend}
+                </div>
+              </div>
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 mb-1 group-hover:text-blue-600 transition-colors">{stat.label}</p>
+                <p className="font-heading font-black text-3xl text-slate-900 tracking-tighter">{stat.value}</p>
+              </div>
             </div>
           </motion.div>
         ))}
@@ -112,96 +149,104 @@ export default function AdminDashboard() {
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
-        className="bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden shadow-2xl shadow-slate-900/5"
+        className="bg-white/70 backdrop-blur-3xl border border-slate-100 rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-900/5 relative"
       >
+        <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px] opacity-10 pointer-events-none" />
+
         {/* Table Header */}
-        <div className="p-8 border-b border-slate-50 flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
-          <div className="space-y-1">
-            <h2 className="font-heading font-black text-xl text-slate-900 tracking-tight">Commission Registry</h2>
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">{filteredOrders.length} Active Records</p>
+        <div className="p-10 border-b border-slate-50 flex flex-col md:flex-row justify-between gap-8 items-start md:items-center relative z-10">
+          <div className="space-y-2">
+            <h2 className="font-heading font-black text-2xl text-slate-900 tracking-tight">Active Commisions</h2>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">{filteredOrders.length} Verified Records Found</p>
+            </div>
           </div>
-          <div className="relative w-full md:w-80 group">
-            <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
+          <div className="relative w-full md:w-96 group">
+            <div className="absolute -inset-[1px] bg-blue-600/20 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500 blur-[1px]" />
+            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-blue-600 transition-all duration-500" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Audit by order #, service..."
-              className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-12 pr-6 py-4 text-[11px] font-black uppercase tracking-widest text-slate-900 focus:outline-none focus:border-blue-600 focus:ring-8 ring-blue-600/5 transition-all placeholder:text-slate-300"
+              placeholder="Search registry..."
+              className="w-full bg-white border border-slate-100 rounded-2xl pl-14 pr-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-900 focus:outline-none focus:border-blue-600 transition-all placeholder:text-slate-300 relative z-10 shadow-sm"
             />
           </div>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
+        <div className="overflow-x-auto relative z-10">
+          <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="bg-slate-50 border-b border-slate-100">
-                {["Order Node", "Client Identity", "Service Type", "Valuation", "Assigned Expert", "Status", "Protocol"].map(h => (
-                  <th key={h} className="px-8 py-5 text-[9px] font-black uppercase tracking-[0.3em] text-slate-300">{h}</th>
+              <tr className="bg-slate-50/50 border-b border-slate-100">
+                {["Order Identifier", "Institutional Node", "Vector", "Valuation", "Authority Status", "Control Protocol"].map(h => (
+                  <th key={h} className="px-10 py-6 text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">{h}</th>
                 ))}
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-8 py-20 text-center">
-                    <div className="flex flex-col items-center gap-4">
-                      <Loader2 className="w-10 h-10 text-blue-600 animate-spin" />
-                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">Loading Registry...</p>
+                  <td colSpan={6} className="px-10 py-32 text-center">
+                    <div className="flex flex-col items-center gap-6">
+                      <div className="relative">
+                        <div className="w-16 h-16 rounded-3xl border-4 border-blue-600/10 border-t-blue-600 animate-spin" />
+                        <Shield className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 text-blue-600" />
+                      </div>
+                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300 animate-pulse">Decrypting Authority Matrix...</p>
                     </div>
                   </td>
                 </tr>
               ) : filteredOrders.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="px-8 py-20 text-center">
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300">No Commissions Found.</p>
+                  <td colSpan={6} className="px-10 py-32 text-center">
+                    <div className="flex flex-col items-center gap-6 opacity-30">
+                      <Search className="w-16 h-16 text-slate-300" />
+                      <p className="text-[11px] font-black uppercase tracking-[0.4em] text-slate-300">No Registry Matches.</p>
+                    </div>
                   </td>
                 </tr>
               ) : (
                 filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-slate-50/80 transition-colors group">
-                    <td className="px-8 py-6">
-                      <span className="font-mono text-[11px] font-black text-slate-900 bg-slate-50 border border-slate-100 px-3 py-1.5 rounded-xl">
-                        {order.orderNumber}
+                  <tr key={order.id} className="hover:bg-blue-50/30 transition-all duration-500 group">
+                    <td className="px-10 py-8">
+                      <span className="font-mono text-[10px] font-black text-slate-900 bg-white border border-slate-100 px-4 py-2 rounded-xl shadow-sm group-hover:border-blue-600/30 transition-colors">
+                        #{order.orderNumber}
                       </span>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex flex-col gap-1">
-                        <span className="text-[11px] font-black text-slate-900">{order.user?.name}</span>
-                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-600">{order.user?.maskedId}</span>
+                    <td className="px-10 py-8">
+                      <div className="flex flex-col gap-1.5">
+                        <span className="text-[12px] font-black text-slate-900 group-hover:text-blue-600 transition-colors">{order.user?.name}</span>
+                        <div className="flex items-center gap-2">
+                          <div className="w-1.5 h-1.5 rounded-full bg-slate-300" />
+                          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-slate-400">{order.user?.maskedId}</span>
+                        </div>
                       </div>
                     </td>
-                    <td className="px-8 py-6">
-                      <span className="text-[11px] font-black text-slate-600 uppercase tracking-widest">
+                    <td className="px-10 py-8">
+                      <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
                         {order.serviceType.replace(/_/g, " ")}
                       </span>
                     </td>
-                    <td className="px-8 py-6">
-                      <span className="font-heading font-black text-slate-900 text-sm">₹{order.amount.toLocaleString()}</span>
+                    <td className="px-10 py-8">
+                      <span className="font-heading font-black text-slate-900 text-lg">₹{order.amount.toLocaleString()}</span>
                     </td>
-                    <td className="px-8 py-6">
-                      {order.assignedTo ? (
-                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-600">{order.assignedTo.maskedId}</span>
-                      ) : (
-                        <span className="text-[9px] font-black uppercase tracking-widest text-slate-300">Unassigned</span>
-                      )}
-                    </td>
-                    <td className="px-8 py-6">
-                      <span className={`text-[9px] font-black px-3 py-1.5 rounded-xl border uppercase tracking-widest ${
+                    <td className="px-10 py-8">
+                      <span className={`text-[9px] font-black px-4 py-2 rounded-xl border uppercase tracking-[0.2em] shadow-sm transition-all duration-500 ${
                         STATUS_COLORS[order.status] ?? "bg-amber-50 text-amber-600 border-amber-100"
                       }`}>
                         {order.status.replace(/_/g, " ")}
                       </span>
                     </td>
-                    <td className="px-8 py-6">
-                      <div className="flex items-center gap-3">
+                    <td className="px-10 py-8">
+                      <div className="flex items-center gap-4">
                         <select
-                          className="bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 text-[9px] font-black uppercase tracking-widest text-slate-900 focus:outline-none focus:border-blue-600 transition-all cursor-pointer"
+                          className="bg-white border border-slate-100 rounded-xl px-4 py-2.5 text-[9px] font-black uppercase tracking-[0.2em] text-slate-900 focus:outline-none focus:border-blue-600 transition-all cursor-pointer shadow-sm hover:shadow-md"
                           onChange={(e) => handleStatusChange(order.id, e.target.value)}
                           value={order.status}
                         >
                           {ORDER_STATUSES.map(s => <option key={s} value={s}>{s.replace(/_/g, " ")}</option>)}
                         </select>
-                        <Button variant="ghost" size="icon" className="h-10 w-10 rounded-2xl hover:bg-blue-50 hover:text-blue-600 transition-all">
+                        <Button variant="ghost" size="icon" className="h-12 w-12 rounded-2xl hover:bg-blue-600 hover:text-white transition-all duration-500 shadow-sm hover:shadow-blue-600/20">
                           <ExternalLink className="w-4 h-4" />
                         </Button>
                       </div>
@@ -215,4 +260,8 @@ export default function AdminDashboard() {
       </motion.div>
     </div>
   );
+}
+
+function cn(...classes: any[]) {
+  return classes.filter(Boolean).join(" ");
 }

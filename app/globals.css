@@ -81,6 +81,7 @@
 @theme inline {
   --animate-marquee: marquee 60s linear infinite;
   --animate-marquee2: marquee2 60s linear infinite;
+  --animate-shine: shine 2s infinite;
 
   @keyframes marquee {
     0% { transform: translateX(0%); }
@@ -89,6 +90,10 @@
   @keyframes marquee2 {
     0% { transform: translateX(100%); }
     100% { transform: translateX(0%); }
+  }
+  @keyframes shine {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
   }
 }
 

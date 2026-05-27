@@ -22,9 +22,16 @@ export async function middleware(request: NextRequest) {
     if (!session) {
       return NextResponse.redirect(new URL('/login', request.url))
     }
-    if (session.user.role !== 'USER' && session.user.role !== 'STUDENT') {
-      // Different roles have different dashboards
-      return NextResponse.redirect(new URL(`/${session.user.role.toLowerCase()}/dashboard`, request.url))
+    
+    const role = session.user.role
+    if (role === 'ADMIN') {
+      return NextResponse.redirect(new URL('/admin', request.url))
+    }
+    
+    if (role !== 'USER' && role !== 'STUDENT') {
+      // For other roles, redirect if a specific dashboard exists, otherwise keep at /dashboard
+      // For now, we'll just handle ADMIN specifically as it's a known path
+      return NextResponse.next()
     }
   }
 

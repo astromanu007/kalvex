@@ -112,8 +112,8 @@ export default function ElectronicsStore() {
   const filteredProducts = useMemo(() => {
     let result = PRODUCTS.filter(p => {
       const matchesCategory = selectedCategory === "All Products" || p.category === selectedCategory;
-      const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                           p.sku.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.sku.toLowerCase().includes(searchQuery.toLowerCase());
       const matchesMinPrice = minPrice === "" || p.price >= parseInt(minPrice);
       const matchesMaxPrice = maxPrice === "" || p.price <= parseInt(maxPrice);
       const matchesStock = !inStockOnly || p.stock > 0;
@@ -150,11 +150,59 @@ export default function ElectronicsStore() {
   };
 
   return (
-    <div className="min-h-screen pt-40 pb-32 bg-slate-50 transition-colors duration-500">
+    <div className="min-h-screen pt-[105px] pb-32 bg-slate-50 transition-colors duration-500">
+      {/* Diwali Special Marquee - Elite Dynamic Reactive Bar (Slim Version) */}
+      <motion.div
+        onMouseMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+          e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+        }}
+        className="group/marquee w-full bg-gradient-to-r from-orange-600 via-amber-500 to-orange-600 border-b border-orange-400/30 overflow-hidden py-1.5 shadow-md relative z-30 cursor-pointer transition-all duration-500 mb-10"
+      >
+        {/* Cursor Spotlight Effect */}
+        <div className="absolute inset-0 opacity-0 group-hover/marquee:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"
+          style={{
+            background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.25), transparent 40%)`,
+          }} />
+
+        <motion.div
+          animate={{ x: [0, -1000] }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "linear",
+          }}
+          className="flex whitespace-nowrap gap-12 items-center relative z-0"
+        >
+          {[1, 2, 3, 4, 5].map((i) => (
+            <div key={i} className="flex items-center gap-12 group-hover/marquee:[animation-play-state:paused]">
+              <span className="text-white text-[13px] font-black uppercase tracking-[0.2em] flex items-center gap-3">
+                <span className="text-lg animate-bounce">🪔</span> DIWALI SPECIAL: 10% OFF ON ALL ELECTRONIC COMPONENTS
+                <motion.span
+                  whileHover={{ scale: 1.1, rotate: [0, -2, 2, 0] }}
+                  className="bg-white/20 px-3 py-1 rounded-lg border border-white/30 ml-2 backdrop-blur-md"
+                >
+                  CODE: DIWALI10
+                </motion.span>
+                <span className="text-lg animate-bounce">🪔</span>
+              </span>
+              <div className="w-1.5 h-1.5 rounded-full bg-white/40 shadow-[0_0_8px_rgba(255,255,255,0.8)]" />
+              <span className="text-white/80 text-[13px] font-bold uppercase tracking-[0.15em]">
+                Limited Time Offer • Institutional Standard Components • Premium Quality
+              </span>
+              <div className="w-1.5 h-1.5 rounded-full bg-white/40" />
+            </div>
+          ))}
+        </motion.div>
+      </motion.div>
+
       <div className="container mx-auto px-4 max-w-7xl">
-        
+
         {/* Header */}
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
@@ -171,12 +219,12 @@ export default function ElectronicsStore() {
               High-quality electronics, sensors, and development boards for your engineering projects and prototypes.
             </p>
           </div>
-          
+
           <div className="w-full xl:w-[500px] relative group">
             <div className="absolute inset-0 bg-blue-600/5 rounded-2xl blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
-            <input 
-              type="text" 
-              placeholder="Search components, modules, or brands..." 
+            <input
+              type="text"
+              placeholder="Search components, modules, or brands..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               className="w-full bg-white border border-slate-200 rounded-2xl pl-14 pr-32 py-5 text-slate-900 font-medium text-sm focus:ring-4 ring-blue-600/10 focus:border-blue-600 outline-none transition-all placeholder:text-slate-400 shadow-lg shadow-slate-900/5 relative z-10"
@@ -189,9 +237,9 @@ export default function ElectronicsStore() {
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-16 items-start">
-          
+
           {/* Sidebar Filters */}
-          <motion.aside 
+          <motion.aside
             initial="hidden"
             animate="visible"
             variants={fadeInUp}
@@ -202,7 +250,7 @@ export default function ElectronicsStore() {
                 <h3 className="font-bold text-sm uppercase tracking-wider text-slate-800 flex items-center">
                   <Filter className="w-4 h-4 mr-2 text-blue-600" /> Filters
                 </h3>
-                <button 
+                <button
                   onClick={clearFilters}
                   className="text-xs font-semibold text-blue-600 hover:text-blue-800 transition-colors"
                 >
@@ -218,10 +266,10 @@ export default function ElectronicsStore() {
                   {CATEGORIES.map((cat, i) => (
                     <label key={i} className="flex items-center text-sm font-medium text-slate-600 cursor-pointer hover:text-blue-600 transition-colors group">
                       <div className="relative w-4 h-4 mr-3 shrink-0">
-                        <input 
-                          type="radio" 
-                          name="category" 
-                          className="peer absolute inset-0 opacity-0 cursor-pointer" 
+                        <input
+                          type="radio"
+                          name="category"
+                          className="peer absolute inset-0 opacity-0 cursor-pointer"
                           checked={selectedCategory === cat}
                           onChange={() => setSelectedCategory(cat)}
                         />
@@ -241,22 +289,22 @@ export default function ElectronicsStore() {
                 <div className="flex items-center gap-4">
                   <div className="relative flex-1">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300">₹</span>
-                    <input 
-                      type="number" 
-                      placeholder="Min" 
+                    <input
+                      type="number"
+                      placeholder="Min"
                       value={minPrice}
                       onChange={(e) => setMinPrice(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-8 pr-4 py-3 text-[11px] font-black outline-none focus:border-blue-600 transition-all" 
+                      className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-8 pr-4 py-3 text-[11px] font-black outline-none focus:border-blue-600 transition-all"
                     />
                   </div>
                   <div className="relative flex-1">
                     <span className="absolute left-4 top-1/2 -translate-y-1/2 text-[10px] font-black text-slate-300">₹</span>
-                    <input 
-                      type="number" 
-                      placeholder="Max" 
+                    <input
+                      type="number"
+                      placeholder="Max"
                       value={maxPrice}
                       onChange={(e) => setMaxPrice(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-8 pr-4 py-3 text-[11px] font-black outline-none focus:border-blue-600 transition-all" 
+                      className="w-full bg-slate-50 border border-slate-100 rounded-xl pl-8 pr-4 py-3 text-[11px] font-black outline-none focus:border-blue-600 transition-all"
                     />
                   </div>
                 </div>
@@ -264,10 +312,10 @@ export default function ElectronicsStore() {
 
               <div className="pt-6 border-t border-slate-100">
                 <label className="flex items-center text-sm font-medium text-slate-600 cursor-pointer hover:text-emerald-600 transition-colors group">
-                   <div className="relative w-4 h-4 mr-3 shrink-0">
-                    <input 
-                      type="checkbox" 
-                      className="peer absolute inset-0 opacity-0 cursor-pointer" 
+                  <div className="relative w-4 h-4 mr-3 shrink-0">
+                    <input
+                      type="checkbox"
+                      className="peer absolute inset-0 opacity-0 cursor-pointer"
                       checked={inStockOnly}
                       onChange={(e) => setInStockOnly(e.target.checked)}
                     />
@@ -288,7 +336,7 @@ export default function ElectronicsStore() {
               </p>
               <div className="flex items-center gap-3">
                 <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Sort By:</span>
-                <select 
+                <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
                   className="bg-slate-50 border border-slate-200 rounded-lg px-4 py-2 text-sm font-semibold text-slate-700 outline-none cursor-pointer appearance-none pr-8 relative bg-[url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIGZpbGw9Im5vbmUiIHZpZXdCb3g9IjAgMCAyNCAyNCIgc3Ryb2tlPSIjOTQ0NzhmIiBzdHJva2Utd2lkdGg9IjIiPjxwYXRoIGQ9Ik02IDlsNiA2IDYtNiIvPjwvc3ZnPg==')] bg-no-repeat bg-[center_right_0.75rem] bg-[length:1rem]"
@@ -301,7 +349,7 @@ export default function ElectronicsStore() {
               </div>
             </div>
 
-            <motion.div 
+            <motion.div
               variants={staggerContainer}
               initial="hidden"
               animate="visible"
@@ -310,10 +358,10 @@ export default function ElectronicsStore() {
               <AnimatePresence mode="popLayout">
                 {filteredProducts.map((p) => {
                   const discount = Math.round(((p.mrp - p.price) / p.mrp) * 100);
-                  
+
                   return (
-                    <motion.div 
-                      key={p.id} 
+                    <motion.div
+                      key={p.id}
                       layout
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
@@ -329,7 +377,7 @@ export default function ElectronicsStore() {
                             {p.category}
                           </span>
                         </div>
-                        
+
                         <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                           <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 hover:shadow-md transition-all border border-slate-200">
                             <Heart className="w-5 h-5" />
@@ -337,8 +385,8 @@ export default function ElectronicsStore() {
                         </div>
 
                         <div className="w-full h-full flex items-center justify-center bg-white">
-                          <img 
-                            src={p.image} 
+                          <img
+                            src={p.image}
                             alt={p.name}
                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           />
@@ -353,7 +401,7 @@ export default function ElectronicsStore() {
                             <h3 className="font-bold text-slate-900 text-lg leading-snug group-hover:text-blue-600 transition-colors line-clamp-2">{p.name}</h3>
                           </Link>
                         </div>
-                        
+
                         <div className="flex items-center gap-2 mb-6">
                           <div className="flex gap-1">
                             {[1, 2, 3, 4, 5].map(s => (
@@ -390,8 +438,8 @@ export default function ElectronicsStore() {
                                 </div>
                               )}
                             </div>
-                            
-                            <Button 
+
+                            <Button
                               onClick={() => handleAddToCart(p)}
                               disabled={p.stock === 0}
                               className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm flex items-center gap-2 ${p.stock > 0 ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-slate-100 text-slate-400"}`}
@@ -412,9 +460,9 @@ export default function ElectronicsStore() {
                   </div>
                   <h3 className="text-2xl font-bold text-slate-900">No products found</h3>
                   <p className="text-slate-500">Try adjusting your filters or search query to find what you're looking for.</p>
-                  <Button 
+                  <Button
                     onClick={clearFilters}
-                    variant="outline" 
+                    variant="outline"
                     className="mt-4 rounded-xl border-blue-200 text-blue-600 hover:bg-blue-50"
                   >
                     Clear All Filters

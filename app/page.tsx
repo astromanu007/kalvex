@@ -201,78 +201,59 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* SECTION 2 - INSTITUTES MARQUEE */}
-      <section className="py-20 bg-white border-y border-slate-50 overflow-hidden">
-        <div className="container mx-auto px-4 mb-12 max-w-7xl">
-          <div className="flex items-center gap-4">
-            <div className="h-px flex-1 bg-slate-100" />
-            <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Trusted by Innovators from Premier Institutes</p>
-            <div className="h-px flex-1 bg-slate-100" />
+      {/* SECTION 1.5 - TRENDING SERVICES MARQUEE (RESTORED) */}
+      <div className="bg-slate-900 py-6 overflow-hidden border-y border-white/5 relative z-20 shadow-2xl">
+        <div className="flex items-center">
+          <div className="flex-shrink-0 bg-blue-600 text-white px-8 py-2 z-30 flex items-center gap-3 shadow-xl">
+             <Zap className="w-4 h-4 fill-current animate-pulse" />
+             <span className="text-[10px] font-black uppercase tracking-[0.3em] whitespace-nowrap">Trending Services</span>
+          </div>
+          <div className="relative flex overflow-x-hidden group">
+            <div className="animate-marquee whitespace-nowrap flex items-center space-x-16 px-8">
+              {[
+                { name: "PhD Thesis Guidance", link: "/services/phd-thesis" },
+                { name: "Patent Drafting (Utility)", link: "/services/utility-patent" },
+                { name: "Research Publication (IEEE)", link: "/services/research-paper" },
+                { name: "Design Patent IPR", link: "/services/design-patent" },
+                { name: "Custom Project Kits", link: "/projects" },
+                { name: "Arduino & RPi Kits", link: "/electronics" },
+                { name: "Final Year Reports", link: "/services/final-year-report" },
+              ].map((s, i) => (
+                <Link 
+                  key={i} 
+                  href={s.link} 
+                  className="text-white/60 hover:text-blue-400 font-black text-[11px] uppercase tracking-[0.2em] transition-all duration-300 hover:scale-110 flex items-center gap-3 group/link"
+                >
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full group-hover/link:animate-ping" />
+                  {s.name}
+                </Link>
+              ))}
+            </div>
+            <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-16 px-8">
+              {[
+                { name: "PhD Thesis Guidance", link: "/services/phd-thesis" },
+                { name: "Patent Drafting (Utility)", link: "/services/utility-patent" },
+                { name: "Research Publication (IEEE)", link: "/services/research-paper" },
+                { name: "Design Patent IPR", link: "/services/design-patent" },
+                { name: "Custom Project Kits", link: "/projects" },
+                { name: "Arduino & RPi Kits", link: "/electronics" },
+                { name: "Final Year Reports", link: "/services/final-year-report" },
+              ].map((s, i) => (
+                <Link 
+                  key={`dup-${i}`} 
+                  href={s.link} 
+                  className="text-white/60 hover:text-blue-400 font-black text-[11px] uppercase tracking-[0.2em] transition-all duration-300 hover:scale-110 flex items-center gap-3 group/link"
+                >
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full group-hover/link:animate-ping" />
+                  {s.name}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
-        <div className="relative flex overflow-x-hidden group">
-          <div className="animate-marquee whitespace-nowrap flex items-center space-x-24 px-12">
-            {[
-              { name: "IIT Bombay", logo: "https://www.iitb.ac.in/sites/default/files/iitb_logo.png", color: "from-blue-600 to-blue-400" },
-              { name: "IIT Delhi", logo: "https://home.iitd.ac.in/images/logo.png", color: "from-orange-600 to-orange-400" },
-              { name: "IIT Madras", logo: "https://www.iitm.ac.in/sites/default/files/iitm-logo_0.png", color: "from-red-600 to-red-400" },
-              { name: "IIT Kanpur", logo: "https://www.iitk.ac.in/new/images/iitk-logo.png", color: "from-blue-700 to-blue-500" },
-              { name: "IIT Kharagpur", logo: "https://www.iitkgp.ac.in/assets/images/logo.png", color: "from-slate-800 to-slate-600" },
-              { name: "IIT Roorkee", logo: "https://www.iitr.ac.in/theme/iitr/images/logo.png", color: "from-blue-900 to-blue-700" },
-              { name: "IIT Guwahati", logo: "https://www.iitg.ac.in/images/iitg_logo.png", color: "from-purple-600 to-purple-400" },
-            ].map((iit, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.1, rotate: 5, y: -5 }}
-                className="flex items-center gap-6 px-12 py-6 bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-2xl shadow-slate-900/5 group transition-all duration-500"
-              >
-                <div className="w-14 h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center">
-                  <img 
-                    src={iit.logo} 
-                    alt={iit.name} 
-                    className="max-w-full max-h-full object-contain"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?domain=${iit.logo.split('/')[2]}&sz=128`;
-                    }}
-                  />
-                </div>
-                <span className={`text-xl font-black tracking-tighter bg-gradient-to-r ${iit.color} bg-clip-text text-transparent`}>{iit.name}</span>
-              </motion.div>
-            ))}
-          </div>
-          <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-24 px-12">
-            {[
-              { name: "IIT Bombay", logo: "https://www.iitb.ac.in/sites/default/files/iitb_logo.png", color: "from-blue-600 to-blue-400" },
-              { name: "IIT Delhi", logo: "https://home.iitd.ac.in/images/logo.png", color: "from-orange-600 to-orange-400" },
-              { name: "IIT Madras", logo: "https://www.iitm.ac.in/sites/default/files/iitm-logo_0.png", color: "from-red-600 to-red-400" },
-              { name: "IIT Kanpur", logo: "https://www.iitk.ac.in/new/images/iitk-logo.png", color: "from-blue-700 to-blue-500" },
-              { name: "IIT Kharagpur", logo: "https://www.iitkgp.ac.in/assets/images/logo.png", color: "from-slate-800 to-slate-600" },
-              { name: "IIT Roorkee", logo: "https://www.iitr.ac.in/theme/iitr/images/logo.png", color: "from-blue-900 to-blue-700" },
-              { name: "IIT Guwahati", logo: "https://www.iitg.ac.in/images/iitg_logo.png", color: "from-purple-600 to-purple-400" },
-            ].map((iit, i) => (
-              <motion.div
-                key={`dup-${i}`}
-                whileHover={{ scale: 1.1, rotate: 5, y: -5 }}
-                className="flex items-center gap-6 px-12 py-6 bg-white/80 backdrop-blur-sm rounded-3xl border border-slate-100 shadow-2xl shadow-slate-900/5 group transition-all duration-500"
-              >
-                <div className="w-14 h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(37,99,235,0.3)] transition-all flex items-center justify-center">
-                  <img 
-                    src={iit.logo} 
-                    alt={iit.name} 
-                    className="max-w-full max-h-full object-contain"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = `https://www.google.com/s2/favicons?domain=${iit.logo.split('/')[2]}&sz=128`;
-                    }}
-                  />
-                </div>
-                <span className={`text-xl font-black tracking-tighter bg-gradient-to-r ${iit.color} bg-clip-text text-transparent`}>{iit.name}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+      </div>
 
-      {/* SECTION 3 - SERVICES: THE ECOSYSTEM */}
+      {/* SECTION 2 - SERVICES: THE ECOSYSTEM */}
       <motion.section
         initial="hidden"
         whileInView="visible"
@@ -318,8 +299,92 @@ export default function Home() {
               </motion.div>
             ))}
           </div>
+
+          {/* More Services Button */}
+          <motion.div variants={fadeInUp} className="flex justify-center mt-16">
+            <Link href="/services" className="group/btn-more">
+              <div className="relative overflow-hidden bg-white rounded-[2rem] h-16 px-10 flex items-center justify-center transition-all duration-500 hover:scale-105 hover:shadow-[0_15px_40px_-10px_rgba(37,99,235,0.15)] cursor-pointer border border-slate-200">
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-600 to-blue-500 translate-y-full group-hover/btn-more:translate-y-0 transition-transform duration-500 ease-[0.16,1,0.3,1]" />
+                <span className="relative z-10 flex items-center text-slate-900 font-black text-[11px] uppercase tracking-[0.2em] group-hover/btn-more:text-white transition-colors duration-500">
+                  More Services
+                  <ArrowRight className="ml-3 w-4.5 h-4.5 group-hover/btn-more:translate-x-1.5 transition-transform duration-300" />
+                </span>
+              </div>
+            </Link>
+          </motion.div>
         </div>
       </motion.section>
+
+      {/* SECTION 2.5 - COLLABORATORS MARQUEE (REPOSITIONED) */}
+      <section className="py-20 bg-white border-y border-slate-50 overflow-hidden">
+        <div className="container mx-auto px-4 mb-12 max-w-7xl">
+          <div className="flex items-center gap-4">
+            <div className="h-px flex-1 bg-slate-100" />
+            <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Trusted by Innovators from Global Leaders</p>
+            <div className="h-px flex-1 bg-slate-100" />
+          </div>
+        </div>
+        <div className="relative flex overflow-x-hidden group">
+          <div className="animate-marquee whitespace-nowrap flex items-center space-x-24 px-12">
+            {[
+              { name: "IIT Bombay", type: "institute", color: "from-blue-600 to-blue-400" },
+              { name: "IIT Delhi", type: "institute", color: "from-orange-600 to-orange-400" },
+              { name: "IIT Madras", type: "institute", color: "from-red-600 to-red-400" },
+              { name: "IIT Kanpur", type: "institute", color: "from-blue-700 to-blue-500" },
+              { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png", type: "company", color: "from-blue-500 via-red-500 to-yellow-500" },
+              { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageMedia/RE1Mu3b?ver=5c31", type: "company", color: "from-blue-600 to-blue-400" },
+              { name: "NVIDIA", logo: "https://upload.wikimedia.org/wikipedia/sco/thumb/2/21/Nvidia_logo.svg/1200px-Nvidia_logo.svg.png", type: "company", color: "from-emerald-600 to-emerald-400" },
+              { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", type: "company", color: "from-orange-500 to-orange-300" },
+            ].map((collab, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ scale: 1.1, rotate: 2, y: -5 }}
+                className="flex items-center gap-6 px-12 py-6 bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-900/5 group transition-all duration-500"
+              >
+                {collab.type === "company" && collab.logo && (
+                  <div className="w-14 h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center">
+                    <img 
+                      src={collab.logo} 
+                      alt={collab.name} 
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                )}
+                <span className={`text-xl font-black tracking-tighter bg-gradient-to-r ${collab.color} bg-clip-text text-transparent`}>{collab.name}</span>
+              </motion.div>
+            ))}
+          </div>
+          <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-24 px-12">
+            {[
+              { name: "IIT Bombay", type: "institute", color: "from-blue-600 to-blue-400" },
+              { name: "IIT Delhi", type: "institute", color: "from-orange-600 to-orange-400" },
+              { name: "IIT Madras", type: "institute", color: "from-red-600 to-red-400" },
+              { name: "IIT Kanpur", type: "institute", color: "from-blue-700 to-blue-500" },
+              { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png", type: "company", color: "from-blue-500 via-red-500 to-yellow-500" },
+              { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageMedia/RE1Mu3b?ver=5c31", type: "company", color: "from-blue-600 to-blue-400" },
+              { name: "NVIDIA", logo: "https://upload.wikimedia.org/wikipedia/sco/thumb/2/21/Nvidia_logo.svg/1200px-Nvidia_logo.svg.png", type: "company", color: "from-emerald-600 to-emerald-400" },
+              { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", type: "company", color: "from-orange-500 to-orange-300" },
+            ].map((collab, i) => (
+              <motion.div
+                key={`dup-${i}`}
+                whileHover={{ scale: 1.1, rotate: 2, y: -5 }}
+                className="flex items-center gap-6 px-12 py-6 bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-900/5 group transition-all duration-500"
+              >
+                {collab.type === "company" && collab.logo && (
+                  <div className="w-14 h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center">
+                    <img 
+                      src={collab.logo} 
+                      alt={collab.name} 
+                      className="max-w-full max-h-full object-contain"
+                    />
+                  </div>
+                )}
+                <span className={`text-xl font-black tracking-tighter bg-gradient-to-r ${collab.color} bg-clip-text text-transparent`}>{collab.name}</span>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* SECTION 4 - AI LABS: REVOLUTIONARY IP */}
       <motion.section

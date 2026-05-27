@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { 
-  Search, Filter, ShoppingBag, Download, 
+import {
+  Search, Filter, ShoppingBag, Download,
   Cpu, Code, GraduationCap, ChevronRight,
   Star, Clock, ShieldCheck, Sparkles, Zap,
   Fingerprint, Shield, Building2, ArrowUpRight
@@ -193,7 +193,7 @@ export default function ProjectShopPage() {
     alert(`${project.title} added to cart!`);
   };
 
-  const filteredProjects = PROJECTS.filter(p => 
+  const filteredProjects = PROJECTS.filter(p =>
     (selectedCategory === "All" || p.category === selectedCategory) &&
     (p.title.toLowerCase().includes(search.toLowerCase()) || p.tech.some(t => t.toLowerCase().includes(search.toLowerCase())))
   );
@@ -223,8 +223,8 @@ export default function ProjectShopPage() {
                 left: `${Math.random() * 100}%`,
                 width: `${20 + Math.random() * 40}px`,
                 height: `${20 + Math.random() * 40}px`,
-                background: i % 2 === 0 
-                  ? "linear-gradient(135deg, rgba(37,99,235,0.06) 0%, rgba(37,99,235,0.02) 100%)" 
+                background: i % 2 === 0
+                  ? "linear-gradient(135deg, rgba(37,99,235,0.06) 0%, rgba(37,99,235,0.02) 100%)"
                   : "linear-gradient(135deg, rgba(15,23,42,0.06) 0%, rgba(15,23,42,0.02) 100%)",
                 borderRadius: i % 3 === 0 ? "20%" : i % 3 === 1 ? "50%" : "0%",
                 border: "1px solid rgba(255,255,255,0.1)",
@@ -237,7 +237,7 @@ export default function ProjectShopPage() {
 
       <div className="container mx-auto px-4 max-w-[1800px]">
         {/* Header: Project Marketplace */}
-        <motion.div 
+        <motion.div
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
@@ -252,65 +252,132 @@ export default function ProjectShopPage() {
         </motion.div>
 
         <div className="flex flex-col lg:flex-row gap-12">
-          
+
           {/* Filters Sidebar */}
-          <motion.div 
+          <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeInUp}
-            className="lg:w-72 shrink-0"
+            className="lg:w-80 shrink-0"
           >
             <div className="sticky top-32 space-y-8">
-              {/* Search */}
+              {/* Search: The Pulse Interface */}
               <div className="relative group">
-                <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
-                <input 
-                  type="text"
-                  placeholder="Search projects..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full bg-white border border-slate-100 rounded-2xl pl-14 pr-6 py-4 text-[10px] font-black outline-none focus:ring-4 ring-blue-600/5 transition-all shadow-lg shadow-slate-900/5"
-                />
-              </div>
+                <div className="absolute -inset-[1px] bg-blue-600/20 rounded-3xl opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 group-focus-within:bg-blue-600/40 transition-all duration-500 blur-[2px]" />
 
-              {/* Categories */}
-              <div className="bg-white border border-slate-100 rounded-[2rem] p-6 shadow-lg shadow-slate-900/5 space-y-6">
-                <div className="flex items-center gap-3 mb-2">
-                  <Filter className="w-3 h-3 text-blue-600" />
-                  <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-900">Project Category</p>
-                </div>
-                <div className="space-y-2">
-                  {CATEGORIES.map(cat => (
-                    <button
-                      key={cat}
-                      onClick={() => setSelectedCategory(cat)}
-                      className={`w-full flex items-center justify-between px-5 py-3.5 rounded-xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${
-                        selectedCategory === cat 
-                        ? "bg-slate-900 text-white shadow-md" 
-                        : "text-slate-400 hover:bg-slate-50 hover:text-blue-600"
-                      }`}
-                    >
-                      {cat}
-                      {selectedCategory === cat && <div className="w-1 h-1 rounded-full bg-blue-500 animate-pulse" />}
-                    </button>
-                  ))}
+                <div className="relative bg-white/90 backdrop-blur-2xl border border-slate-100 rounded-3xl p-1 shadow-2xl shadow-slate-900/5 group-hover:border-blue-500/50 group-focus-within:border-blue-600 transition-all duration-500">
+                  <div className="relative flex items-center">
+                    <Search className="absolute left-6 w-4 h-4 text-slate-300 group-focus-within:text-blue-600 group-focus-within:scale-110 transition-all duration-500" />
+                    <input
+                      type="text"
+                      placeholder="Search projects..."
+                      value={search}
+                      onChange={(e) => setSearch(e.target.value)}
+                      className="w-full bg-transparent pl-14 pr-6 py-5 text-[11px] font-black uppercase tracking-widest outline-none text-slate-900 placeholder:text-slate-300 transition-all"
+                    />
+                    <div className="absolute right-4 px-3 py-1 bg-slate-50 rounded-lg border border-slate-100 text-[8px] font-black text-slate-300 uppercase tracking-tighter">
+                      ⌘ K
+                    </div>
+                  </div>
                 </div>
               </div>
 
-              {/* Quick Status Trust */}
-              <div className="bg-slate-900 rounded-[2rem] p-6 text-white space-y-4 shadow-2xl shadow-slate-900/20">
-                <div className="flex items-center gap-3">
-                  <Zap className="w-4 h-4 text-blue-400" />
-                  <p className="text-[9px] font-black uppercase tracking-widest leading-none">Total Projects: {PROJECTS.length}</p>
+
+              {/* Categories: The Neural Grid */}
+              <div className="bg-white/40 backdrop-blur-md border border-white rounded-[2.5rem] p-4 shadow-2xl shadow-slate-900/5 relative overflow-hidden group/sidebar">
+                <div className="absolute inset-0 bg-gradient-to-b from-indigo-50/50 to-transparent opacity-0 group-hover/sidebar:opacity-100 transition-opacity duration-1000" />
+
+                <div className="relative p-4">
+                  <div className="flex items-center gap-3 mb-8 px-2">
+                    <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-600/20">
+                      <Filter className="w-4 h-4 text-white" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-900">Expertise</p>
+                      <p className="text-[8px] font-bold text-indigo-600/60 uppercase tracking-widest">Filter by Domain</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3">
+                    {[
+                      { name: "All", color: "blue", icon: Sparkles },
+                      { name: "Internet of Things", color: "emerald", icon: Cpu },
+                      { name: "Cybersecurity", color: "red", icon: Shield },
+                      { name: "Robotics", color: "purple", icon: Cpu },
+                      { name: "Electrical", color: "amber", icon: Zap },
+                      { name: "Machine Learning", color: "indigo", icon: Fingerprint },
+                    ].map((cat) => {
+                      const isActive = selectedCategory === cat.name;
+                      const Icon = cat.icon;
+
+                      return (
+                        <motion.button
+                          key={cat.name}
+                          onClick={() => setSelectedCategory(cat.name)}
+                          whileHover={{ scale: 1.02, x: 8 }}
+                          whileTap={{ scale: 0.98 }}
+                          className={`w-full group/item relative flex items-center gap-4 px-5 py-4 rounded-2xl transition-all duration-500 ${isActive
+                            ? `bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-2xl shadow-blue-600/20`
+                            : "hover:bg-white text-slate-400 hover:text-slate-900 hover:shadow-xl hover:shadow-slate-900/5"
+                            }`}
+                        >
+                          <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all duration-500 ${isActive
+                            ? `bg-white/20 backdrop-blur-md text-white`
+                            : `bg-slate-50 text-slate-300 group-hover/item:bg-${cat.color}-50 group-hover/item:text-${cat.color}-500`
+                            }`}>
+                            <Icon className="w-4 h-4" />
+                          </div>
+
+                          <span className="text-[10px] font-black uppercase tracking-widest flex-grow text-left">
+                            {cat.name}
+                          </span>
+
+                          {isActive && (
+                            <motion.div
+                              layoutId="active-pill"
+                              className="w-1.5 h-1.5 rounded-full bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)] animate-pulse"
+                            />
+                          )}
+                        </motion.button>
+                      );
+                    })}
+                  </div>
                 </div>
-                <p className="text-[8px] opacity-60 leading-relaxed uppercase tracking-widest">High Quality Standards Applied.</p>
+              </div>
+
+              {/* Strategic Insights Trust */}
+              <div className="relative group/trust overflow-hidden rounded-[2.5rem]">
+                <div className="absolute inset-0 bg-slate-900 transition-transform duration-700 group-hover/trust:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-transparent" />
+                <div className="relative p-8 space-y-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/10 group-hover/trust:rotate-12 transition-transform">
+                      <Zap className="w-5 h-5 text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="text-white text-[10px] font-black uppercase tracking-[0.2em]">Total Assets</p>
+                      <p className="text-blue-400 text-2xl font-black tracking-tighter">{PROJECTS.length} Units</p>
+                    </div>
+                  </div>
+                  <div className="h-px bg-white/10 w-full" />
+                  <div className="space-y-3">
+                    <div className="flex items-center gap-3">
+                      <ShieldCheck className="w-3 h-3 text-emerald-400" />
+                      <p className="text-[8px] text-white/60 font-black uppercase tracking-widest leading-none">Security Verified</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                      <Clock className="w-3 h-3 text-amber-400" />
+                      <p className="text-[8px] text-white/60 font-black uppercase tracking-widest leading-none">Immediate Access</p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </motion.div>
 
           {/* High-Density Grid */}
           <div className="flex-1">
-            <motion.div 
+            <motion.div
               variants={staggerContainer}
               initial="hidden"
               animate="visible"
@@ -318,16 +385,16 @@ export default function ProjectShopPage() {
             >
               <AnimatePresence mode="popLayout">
                 {filteredProjects.map(project => (
-                  <motion.div 
-                    key={project.id} 
+                  <motion.div
+                    key={project.id}
                     layout
-                    variants={fadeInUp} 
+                    variants={fadeInUp}
                     whileHover={{ y: -8, scale: 1.02 }}
                     className="group relative bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden hover:border-blue-600/20 transition-all duration-500 hover:shadow-xl flex flex-col h-full"
                   >
                     <div className="relative aspect-[5/4] overflow-hidden bg-slate-50">
-                      <img 
-                        src={project.image} 
+                      <img
+                        src={project.image}
                         alt={project.title}
                         className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
                       />
@@ -356,7 +423,7 @@ export default function ProjectShopPage() {
                           <p className="text-[7px] text-slate-300 uppercase tracking-widest font-black">Price</p>
                           <span className="text-lg font-black text-slate-900">₹{project.price.toLocaleString()}</span>
                         </div>
-                        <Button 
+                        <Button
                           onClick={() => handleAddToCart(project)}
                           className="bg-slate-900 hover:bg-blue-600 text-white h-10 w-10 rounded-xl transition-all duration-300 group/btn"
                         >
@@ -371,36 +438,67 @@ export default function ProjectShopPage() {
           </div>
         </div>
 
-        {/* Strategic Trust Protocol */}
-        <motion.div 
+        {/* Strategic Trust Protocol: The Institutional Guard */}
+        <motion.div
           initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
-          className="mt-24 grid grid-cols-1 md:grid-cols-3 gap-6"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+          className="mt-32 grid grid-cols-1 md:grid-cols-3 gap-8"
         >
           {[
-            { icon: Download, title: "Instant Download", desc: "Immediate source code access." },
-            { icon: ShieldCheck, title: "Verified Quality", desc: "Exhaustive technical audit." },
-            { icon: GraduationCap, title: "Academic Excellence", desc: "IEEE Standardized documentation." }
+            {
+              icon: Download,
+              title: "Instant Download",
+              desc: "Immediate source code access.",
+              theme: "from-blue-600 to-indigo-600",
+              lightTheme: "bg-blue-50/50",
+              iconColor: "text-blue-600",
+              hoverColor: "group-hover:text-blue-600"
+            },
+            {
+              icon: ShieldCheck,
+              title: "Verified Quality",
+              desc: "Exhaustive technical audit.",
+              theme: "from-emerald-600 to-teal-600",
+              lightTheme: "bg-emerald-50/50",
+              iconColor: "text-emerald-600",
+              hoverColor: "group-hover:text-emerald-600"
+            },
+            {
+              icon: GraduationCap,
+              title: "Academic Excellence",
+              desc: "IEEE Standardized documentation.",
+              theme: "from-purple-600 to-indigo-600",
+              lightTheme: "bg-purple-50/50",
+              iconColor: "text-purple-600",
+              hoverColor: "group-hover:text-purple-600"
+            }
           ].map((item, i) => (
-            <div key={i} className="flex items-center gap-6 p-8 bg-white rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-md transition-all group">
-              <div className="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center group-hover:scale-110 transition-transform">
-                <item.icon className="w-6 h-6 text-blue-600" />
+            <motion.div
+              key={i}
+              variants={fadeInUp}
+              whileHover={{ y: -10, scale: 1.02 }}
+              className="group relative bg-white rounded-[3rem] p-10 border border-slate-100 shadow-xl shadow-slate-900/5 transition-all duration-500 overflow-hidden"
+            >
+              <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${item.theme} opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+              <div className="flex flex-col gap-6 relative">
+                <div className={`w-16 h-16 rounded-2xl ${item.lightTheme} flex items-center justify-center group-hover:rotate-12 transition-transform duration-500 shadow-sm`}>
+                  <item.icon className={`w-8 h-8 ${item.iconColor}`} />
+                </div>
+                <div>
+                  <h4 className={`font-black text-slate-900 text-[13px] md:text-[15px] uppercase tracking-[0.2em] mb-3 transition-colors duration-500 ${item.hoverColor}`}>
+                    {item.title}
+                  </h4>
+                  <p className="text-[11px] md:text-[12px] text-slate-400 font-bold uppercase tracking-widest leading-loose transition-colors duration-500 group-hover:text-slate-600">
+                    {item.desc}
+                  </p>
+                </div>
               </div>
-              <div>
-                <h4 className="font-black text-slate-900 text-[9px] uppercase tracking-widest mb-1">{item.title}</h4>
-                <p className="text-[8px] text-slate-400 font-bold uppercase tracking-widest">{item.desc}</p>
-              </div>
-            </div>
+            </motion.div>
           ))}
         </motion.div>
-        
-        <div className="mt-20 text-center">
-          <div className="inline-flex items-center gap-3 bg-slate-900/5 px-8 py-4 rounded-full border border-slate-100 group">
-            <Shield className="w-4 h-4 text-slate-400 group-hover:text-blue-600 transition-colors" />
-            <span className="text-[8px] font-black uppercase tracking-[0.3em] text-slate-400">Secure & Encrypted Platform</span>
-          </div>
-        </div>
+
       </div>
     </div>
   );

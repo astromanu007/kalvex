@@ -75,8 +75,23 @@ export function Footer() {
         </div>
       </div>
 
+      {/* Top Boundary Pulse (Ultra Visibility - Emerald) */}
+      <div className="relative h-[3px] w-full overflow-hidden">
+        <div className="absolute inset-0 bg-slate-200" />
+        <motion.div 
+          animate={{ x: ["-100%", "200%"] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-600 to-transparent w-full opacity-100 shadow-[0_0_25px_rgba(5,150,105,0.9)]"
+        />
+        <motion.div 
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 bg-emerald-500/40 blur-xl h-[6px] -top-[1.5px]"
+        />
+      </div>
+
       {/* Section 1: Distinct Pre-Footer CTA */}
-      <div className="relative z-10 border-t border-b border-slate-200/60 bg-white/40 backdrop-blur-sm py-24 mb-0">
+      <div className="relative z-10 border-b border-slate-200/60 bg-white/40 backdrop-blur-sm py-12 mb-0">
         <div className="container mx-auto px-6 md:px-12 max-w-7xl">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
             <div className="lg:col-span-7 space-y-8">
@@ -114,10 +129,24 @@ export function Footer() {
                   </button>
                 </div>
               </form>
-              <p className="mt-6 text-[11px] font-medium text-slate-400 text-center lg:text-left flex items-center gap-2 opacity-70">
-                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                Join 5,000+ industry professionals receiving our weekly technical briefing.
-              </p>
+              <div className="mt-8 relative group/line max-w-fit mx-auto lg:mx-0">
+                {/* Running Pulse Glow Sweep */}
+                <motion.div 
+                  animate={{ x: ["-100%", "400%"] }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 bg-gradient-to-r from-transparent via-emerald-400/10 to-transparent w-32 h-full z-0 pointer-events-none"
+                />
+                
+                <p className="relative z-10 text-[11px] font-black uppercase tracking-widest text-slate-400 flex items-center gap-3">
+                  <span className="relative flex h-2 w-2">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+                  </span>
+                  <span className="opacity-80 group-hover/line:opacity-100 transition-opacity duration-500">
+                    Join 5,000+ industry professionals receiving our weekly technical briefing.
+                  </span>
+                </p>
+              </div>
             </div>
           </div>
         </div>
@@ -152,12 +181,27 @@ export function Footer() {
         )}
       </AnimatePresence>
 
+      {/* Animated Boundary Pulse (Ultra Visibility - Blue) */}
+      <div className="relative h-[3px] w-full overflow-hidden">
+        <div className="absolute inset-0 bg-slate-200" />
+        <motion.div 
+          animate={{ x: ["200%", "-100%"] }}
+          transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 bg-gradient-to-r from-transparent via-blue-600 to-transparent w-full opacity-100 shadow-[0_0_25px_rgba(37,99,235,0.9)]"
+        />
+        <motion.div 
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute inset-0 bg-blue-500/40 blur-xl h-[6px] -top-[1.5px]"
+        />
+      </div>
+
       {/* Section 2: Main Footer Navigation */}
-      <div className="bg-slate-50/80 border-t border-slate-200/60 transition-all duration-1000 hover:bg-white group/lower relative overflow-hidden">
+      <div className="bg-slate-50/80 transition-all duration-1000 hover:bg-white group/lower relative overflow-hidden">
         {/* Subtle Background Glow on Section Hover */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-50/30 to-transparent opacity-0 group-hover/lower:opacity-100 transition-opacity duration-1000" />
         
-        <div className="container mx-auto px-6 md:px-12 max-w-7xl py-24 relative z-10">
+        <div className="container mx-auto px-6 md:px-12 max-w-7xl py-12 relative z-10">
           {/* Links Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 lg:gap-12 mb-20">
             
@@ -198,8 +242,14 @@ export function Footer() {
             {/* Column 2: Ecosystem */}
             <div className="space-y-8">
               <div className="relative inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-blue-50/50 border border-blue-100/50 overflow-hidden group/header cursor-default">
+                {/* Border Pulse Effect */}
+                <motion.div 
+                  animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.02, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+                  className="absolute inset-0 border-2 border-blue-400/30 rounded-2xl pointer-events-none shadow-[0_0_15px_rgba(59,130,246,0.2)]"
+                />
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-100/0 via-blue-100/30 to-blue-100/0 -translate-x-full group-hover/header:translate-x-full transition-transform duration-1000" />
-                <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
                 <span className="text-[12px] font-bold text-blue-900 uppercase tracking-wider">Services</span>
               </div>
               <ul className="space-y-3">
@@ -227,8 +277,14 @@ export function Footer() {
             {/* Column 3: Resources */}
             <div className="space-y-8">
               <div className="relative inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-emerald-50/50 border border-emerald-100/50 overflow-hidden group/header cursor-default">
+                {/* Border Pulse Effect */}
+                <motion.div 
+                  animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.02, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+                  className="absolute inset-0 border-2 border-emerald-400/30 rounded-2xl pointer-events-none shadow-[0_0_15px_rgba(16,185,129,0.2)]"
+                />
                 <div className="absolute inset-0 bg-gradient-to-r from-emerald-100/0 via-emerald-100/30 to-emerald-100/0 -translate-x-full group-hover/header:translate-x-full transition-transform duration-1000" />
-                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]" />
                 <span className="text-[12px] font-bold text-emerald-900 uppercase tracking-wider">Resources</span>
               </div>
               <ul className="space-y-3">
@@ -257,6 +313,12 @@ export function Footer() {
             {/* Column 4: Command HQ */}
             <div className="space-y-8">
               <div className="relative inline-flex items-center gap-3 px-5 py-2.5 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden group/header cursor-default">
+                {/* Border Pulse Effect */}
+                <motion.div 
+                  animate={{ opacity: [0.3, 0.6, 0.3], scale: [1, 1.02, 1] }}
+                  transition={{ duration: 3, repeat: Infinity, ease: "easeInOut", delay: 1 }}
+                  className="absolute inset-0 border-2 border-slate-400/30 rounded-2xl pointer-events-none shadow-[0_0_15px_rgba(71,85,105,0.1)]"
+                />
                 <div className="absolute inset-0 bg-gradient-to-r from-slate-200/0 via-slate-200/30 to-slate-200/0 -translate-x-full group-hover/header:translate-x-full transition-transform duration-1000" />
                 <div className="w-2 h-2 rounded-full bg-slate-900" />
                 <span className="text-[12px] font-bold text-slate-900 uppercase tracking-wider">Headquarters</span>

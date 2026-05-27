@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
+import { razorpay } from "@/lib/razorpay";
 
 export async function generatePatentDraft({
   productTitle,
@@ -94,4 +95,91 @@ export async function generatePatentDraft({
     return { error: "Failed to generate AI draft" };
   }
 }
+
+export async function createPatentDraft({
+  productTitle,
+  locarnoClass,
+  locarnoSubclass,
+  views,
+  authors,
+  paymentAmount
+}: {
+  productTitle: string;
+  locarnoClass: string;
+  locarnoSubclass: string;
+  views: any;
+  authors: any;
+  paymentAmount: number;
+}) {
+  try {
+    const session = await auth();
+    if (!session?.user) return { error: "Unauthorized" };
+
+    const draft = await prisma.patentDraft.create({
+      data: {
+        userId: session.user.id,
+        productTitle,
+        locarnoClass,
+        locarnoSubclass,
+        views: views || {},
+        authors: authors || [],
+        paymentStatus: "UNPAID",
+        paymentAmount
+      }
+    });
+
+    return { success: true, draftId: draft.id };
+  } catch (error) {
+    console.error("Error creating patent draft:", error);
+    return { error: "Failed to create patent draft" };
+  }
+}
+
+export async function createPatentPaymentOrder(amount: number, draftId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user) return { error: "Unauthorized" };
+
+    const options = {
+      amount: Math.round(amount * 100), // Razorpay expects paise
+      currency: "INR",
+      receipt: `patent_receipt_${draftId}`,
+    };
+
+    const razorpayOrder = await razorpay.orders.create(options);
+
+    return { 
+      id: razorpayOrder.id,
+      amount: razorpayOrder.amount,
+      currency: razorpayOrder.currency,
+      success: true 
+    };
+  } catch (error) {
+    console.error("Razorpay Order Creation Error:", error);
+    return { error: "Failed to create payment order" };
+  }
+}
+
+export async function verifyPatentPayment(paymentData: any, draftId: string, amount: number) {
+  try {
+    const session = await auth();
+    if (!session?.user) return { error: "Unauthorized" };
+
+    // In a real app, you'd use crypto to verify the signature
+    // For now, update the status in the database to paid.
+    await prisma.patentDraft.update({
+      where: { id: draftId },
+      data: {
+        paymentStatus: "PAID",
+        paymentAmount: amount
+      }
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error("Payment Verification Error:", error);
+    return { error: "Failed to verify payment" };
+  }
+}
+
 

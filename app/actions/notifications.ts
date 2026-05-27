@@ -35,7 +35,7 @@ export async function createNotification({
       const user = await prisma.user.findUnique({ where: { id: userId } });
       if (user?.email) {
         await resend.emails.send({
-          from: 'Kalvex Labs <notifications@kalvex.com>',
+          from: 'Kalvex Labs <onboarding@resend.dev>',
           to: user.email,
           subject: title,
           html: `<p>${body}</p>${link ? `<a href="${process.env.NEXTAUTH_URL}${link}">View Details</a>` : ""}`

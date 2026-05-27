@@ -17,6 +17,8 @@ export default function ClientRegisterPage() {
     password: "", confirmPassword: ""
   });
 
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+
   const handleNext = () => setStep((s) => Math.min(s + 1, 4));
   const handlePrev = () => setStep((s) => Math.max(s - 1, 1));
 
@@ -26,20 +28,34 @@ export default function ClientRegisterPage() {
       handleNext();
       return;
     }
+    
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
+    const { registerClient } = await import("@/app/actions/auth");
+    const res = await registerClient(formData);
+    
+    setLoading(false);
+    if (res.error) {
+      alert(res.error);
+    } else {
       setStep(4);
-    }, 1500);
+    }
   };
 
-  const handleOTPVerify = (e: React.FormEvent) => {
+  const handleOTPVerify = async (e: React.FormEvent) => {
     e.preventDefault();
+    const otpString = otp.join("");
+    if (otpString.length < 6) return alert("Please enter the full 6-digit token");
+
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      router.push("/dashboard");
-    }, 1500);
+    const { verifyOTP } = await import("@/app/actions/auth");
+    const res = await verifyOTP(formData.email, otpString);
+    
+    setLoading(false);
+    if (res.error) {
+      alert(res.error);
+    } else {
+      router.push("/login?verified=true");
+    }
   };
 
   return (
@@ -189,8 +205,23 @@ export default function ClientRegisterPage() {
                 </div>
                 
                 <div className="flex justify-center gap-3">
-                  {[1, 2, 3, 4, 5, 6].map((i) => (
-                    <input key={i} type="text" maxLength={1} className="w-12 h-16 text-center text-2xl font-black bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 outline-none transition-all text-slate-900" />
+                  {otp.map((digit, i) => (
+                    <input 
+                      key={i} 
+                      type="text" 
+                      maxLength={1} 
+                      value={digit}
+                      onChange={(e) => {
+                        const newOtp = [...otp];
+                        newOtp[i] = e.target.value;
+                        setOtp(newOtp);
+                        // Auto focus next
+                        if (e.target.value && e.target.nextSibling) {
+                          (e.target.nextSibling as HTMLInputElement).focus();
+                        }
+                      }}
+                      className="w-12 h-16 text-center text-2xl font-black bg-slate-50 border border-slate-100 rounded-2xl focus:bg-white focus:border-blue-600 focus:ring-4 focus:ring-blue-600/10 outline-none transition-all text-slate-900" 
+                    />
                   ))}
                 </div>
                 

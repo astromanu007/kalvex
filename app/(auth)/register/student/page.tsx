@@ -16,6 +16,8 @@ export default function StudentRegisterPage() {
     password: "", confirmPassword: "", referralCode: ""
   });
 
+  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+
   const handleNext = () => setStep((s) => Math.min(s + 1, 4));
   const handlePrev = () => setStep((s) => Math.max(s - 1, 1));
 
@@ -26,23 +28,34 @@ export default function StudentRegisterPage() {
       return;
     }
     
-    // Step 3 -> 4: Submit to API and show OTP verification
+    // Actual Registration Call
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
+    const { registerStudent } = await import("@/app/actions/auth");
+    const res = await registerStudent(formData);
+    
+    setLoading(false);
+    if (res.error) {
+      alert(res.error);
+    } else {
       setStep(4);
-    }, 1500);
+    }
   };
 
-  const handleOTPVerify = (e: React.FormEvent) => {
+  const handleOTPVerify = async (e: React.FormEvent) => {
     e.preventDefault();
+    const otpString = otp.join("");
+    if (otpString.length < 6) return alert("Please enter the full 6-digit code");
+
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      setLoading(false);
-      router.push("/dashboard");
-    }, 1500);
+    const { verifyOTP } = await import("@/app/actions/auth");
+    const res = await verifyOTP(formData.email, otpString);
+    
+    setLoading(false);
+    if (res.error) {
+      alert(res.error);
+    } else {
+      router.push("/login?verified=true");
+    }
   };
 
   return (
@@ -171,8 +184,23 @@ export default function StudentRegisterPage() {
               <p className="text-sm text-text-secondary mb-6">We&apos;ve sent a 6-digit OTP to {formData.email}</p>
               
               <div className="flex justify-center gap-2 mb-6">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <input key={i} type="text" maxLength={1} className="w-12 h-14 text-center text-xl font-bold bg-bg-input border border-border rounded-lg focus:outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary" />
+                {otp.map((digit, i) => (
+                  <input 
+                    key={i} 
+                    type="text" 
+                    maxLength={1} 
+                    value={digit}
+                    onChange={(e) => {
+                      const newOtp = [...otp];
+                      newOtp[i] = e.target.value;
+                      setOtp(newOtp);
+                      // Auto focus next
+                      if (e.target.value && e.target.nextSibling) {
+                        (e.target.nextSibling as HTMLInputElement).focus();
+                      }
+                    }}
+                    className="w-12 h-14 text-center text-xl font-bold bg-bg-input border border-border rounded-lg focus:outline-none focus:border-accent-primary focus:ring-1 focus:ring-accent-primary" 
+                  />
                 ))}
               </div>
               

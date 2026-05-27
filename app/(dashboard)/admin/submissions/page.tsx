@@ -5,11 +5,14 @@ import { motion } from "framer-motion";
 import { 
   Mail, Users, MessageSquare, Search, 
   Filter, Download, Trash2, CheckCircle, 
-  Clock, AlertCircle, ChevronRight, ArrowUpRight 
+  Clock, AlertCircle, ChevronRight, ArrowUpRight,
+  Loader2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
+import { getSubmissions, getNewsletterSubscribers, updateSubmissionStatus, deleteSubmission } from "@/app/actions/admin";
+import { toast } from "sonner";
 
 export default function AdminSubmissionsPage() {
   const [activeTab, setActiveTab] = useState<"contact" | "newsletter">("contact");
@@ -18,17 +21,55 @@ export default function AdminSubmissionsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
 
+  const fetchData = async () => {
+    setIsLoading(true);
+    try {
+      const [subRes, newsRes] = await Promise.all([getSubmissions(), getNewsletterSubscribers()]);
+      if (subRes.success) setContactSubmissions(subRes.submissions || []);
+      if (newsRes.success) setNewsletterSubscribers(newsRes.subscribers || []);
+    } catch (error) {
+      console.error("Fetch error:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    // In a real app, you would use the 'getAdminStats' or a new action here.
-    // For now, we'll simulate the fetch or use a temporary local fetch if we had the API.
-    // Since I'm the AI, I'll recommend creating a fetching action next.
-    setIsLoading(false);
+    fetchData();
   }, []);
+
+  const handleStatusChange = async (id: string, currentStatus: string) => {
+    const nextStatus = currentStatus === "UNREAD" ? "READ" : "ARCHIVED";
+    const res = await updateSubmissionStatus(id, nextStatus);
+    if (res.success) {
+      toast.success("Log status updated");
+      fetchData();
+    }
+  };
+
+  const handleDelete = async (id: string, type: "contact" | "newsletter") => {
+    if (confirm("Delete this record from the permanent registry?")) {
+      const res = await deleteSubmission(id);
+      if (res.success) {
+        toast.success("Record deleted");
+        fetchData();
+      }
+    }
+  };
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.5 } }
   };
+
+  const filteredContacts = contactSubmissions.filter(s => 
+    (s.fullName || "").toLowerCase().includes(searchTerm.toLowerCase()) || 
+    (s.email || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const filteredNews = newsletterSubscribers.filter(s => 
+    (s.email || "").toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   return (
     <div className="space-y-10 pb-20">
@@ -42,7 +83,7 @@ export default function AdminSubmissionsPage() {
           <Button variant="outline" className="rounded-xl px-6 h-12 border-slate-200 font-bold text-xs uppercase tracking-widest">
             <Download className="w-4 h-4 mr-2" /> Export Data
           </Button>
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 h-12 font-bold text-xs uppercase tracking-widest shadow-xl shadow-blue-600/20">
+          <Button onClick={fetchData} className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-6 h-12 font-bold text-xs uppercase tracking-widest shadow-xl shadow-blue-600/20">
             Refresh Feed
           </Button>
         </div>
@@ -95,44 +136,47 @@ export default function AdminSubmissionsPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-50">
-              {activeTab === "contact" ? (
-                // Sample Data for Visualization - In real app, map over state
-                [
-                  { id: 1, name: "Dr. Sameer K.", email: "sameer.k@iitb.ac.in", type: "Academic Partnership", date: new Date(), status: "PENDING" },
-                  { id: 2, name: "Rajesh Malhotra", email: "rajesh@techcorp.in", type: "Patent Drafting", date: new Date(Date.now() - 86400000), status: "REVIEWED" },
-                ].map((item) => (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={5} className="px-8 py-32 text-center">
+                    <Loader2 className="w-12 h-12 text-blue-600 animate-spin mx-auto mb-4" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-400">Synchronizing Matrix...</p>
+                  </td>
+                </tr>
+              ) : activeTab === "contact" ? (
+                filteredContacts.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-4">
                         <div className="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-black">
-                          {item.name.charAt(0)}
+                          {(item.fullName || "U").charAt(0)}
                         </div>
                         <div>
-                          <p className="font-bold text-slate-900">{item.name}</p>
+                          <p className="font-bold text-slate-900">{item.fullName}</p>
                           <p className="text-xs text-slate-400 font-medium">{item.email}</p>
                         </div>
                       </div>
                     </td>
                     <td className="px-8 py-6">
                       <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-slate-100 text-slate-600 text-[10px] font-black uppercase tracking-widest">
-                        {item.type}
+                        {item.inquiryType}
                       </span>
                     </td>
                     <td className="px-8 py-6 text-sm text-slate-500 font-medium">
-                      {format(item.date, "MMM dd, yyyy • HH:mm")}
+                      {item.createdAt ? format(new Date(item.createdAt), "MMM dd, yyyy • HH:mm") : "N/A"}
                     </td>
                     <td className="px-8 py-6">
-                      <span className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest ${item.status === 'PENDING' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'}`}>
-                        {item.status === 'PENDING' ? <Clock className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
+                      <button 
+                        onClick={() => handleStatusChange(item.id, item.status)}
+                        className={`inline-flex items-center gap-2 px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${item.status === 'UNREAD' ? 'bg-amber-50 text-amber-600 hover:bg-amber-100' : 'bg-emerald-50 text-emerald-600 hover:bg-emerald-100'}`}
+                      >
+                        {item.status === 'UNREAD' ? <Clock className="w-3 h-3" /> : <CheckCircle className="w-3 h-3" />}
                         {item.status}
-                      </span>
+                      </button>
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-3 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-blue-600 hover:border-blue-100 transition-all shadow-sm">
-                          <ArrowUpRight className="w-4 h-4" />
-                        </button>
-                        <button className="p-3 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-100 transition-all shadow-sm">
+                        <button onClick={() => handleDelete(item.id, "contact")} className="p-3 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-100 transition-all shadow-sm">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -140,10 +184,7 @@ export default function AdminSubmissionsPage() {
                   </tr>
                 ))
               ) : (
-                [
-                  { id: 1, email: "newsletter_lead@gmail.com", date: new Date(), source: "Footer CTA" },
-                  { id: 2, email: "industry_pro@outlook.com", date: new Date(Date.now() - 3600000), source: "Homepage" },
-                ].map((item) => (
+                filteredNews.map((item) => (
                   <tr key={item.id} className="hover:bg-slate-50/50 transition-colors group">
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-4">
@@ -158,20 +199,20 @@ export default function AdminSubmissionsPage() {
                     </td>
                     <td className="px-8 py-6">
                       <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-emerald-50 text-emerald-600 text-[10px] font-black uppercase tracking-widest">
-                        {item.source}
+                        NEWSLETTER
                       </span>
                     </td>
                     <td className="px-8 py-6 text-sm text-slate-500 font-medium">
-                      {format(item.date, "MMM dd, yyyy • HH:mm")}
+                      {item.createdAt ? format(new Date(item.createdAt), "MMM dd, yyyy • HH:mm") : "N/A"}
                     </td>
                     <td className="px-8 py-6">
                       <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-lg bg-blue-50 text-blue-600 text-[10px] font-black uppercase tracking-widest">
-                        <CheckCircle className="w-3 h-3" /> ACTIVE
+                        <CheckCircle className="w-3 h-3" /> {item.isActive ? "ACTIVE" : "UNSUBSCRIBED"}
                       </span>
                     </td>
                     <td className="px-8 py-6">
                       <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                        <button className="p-3 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-100 transition-all shadow-sm">
+                        <button onClick={() => handleDelete(item.id, "newsletter")} className="p-3 rounded-xl bg-white border border-slate-100 text-slate-400 hover:text-red-600 hover:border-red-100 transition-all shadow-sm">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
@@ -184,7 +225,7 @@ export default function AdminSubmissionsPage() {
         </div>
 
         {/* Empty State / Loading */}
-        {!isLoading && (activeTab === "contact" ? contactSubmissions.length : newsletterSubscribers.length) === 0 && (
+        {!isLoading && (activeTab === "contact" ? filteredContacts.length : filteredNews.length) === 0 && (
           <div className="py-32 flex flex-col items-center justify-center text-center space-y-6">
             <div className="w-24 h-24 rounded-[2rem] bg-slate-50 flex items-center justify-center text-slate-200">
               <AlertCircle className="w-12 h-12" />

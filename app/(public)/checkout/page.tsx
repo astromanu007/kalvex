@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, CreditCard, Smartphone, Building2, CheckCircle, Loader2, Sparkles, MapPin, ArrowRight, Shield } from "lucide-react";
-import { getOrders, updateOrderStatus } from "@/app/actions/orders";
+import { getOrders, updateOrderStatus, createOrder } from "@/app/actions/orders";
 import { createPaymentOrder, verifyPayment } from "@/app/actions/payments";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -67,11 +67,45 @@ function CheckoutContent() {
   const ORDER_TOTAL = order ? order.amount : 14399;
 
   const handlePayment = async () => {
-    if (!order) return;
     setProcessing(true);
+    let activeOrder = order;
 
     try {
-      const paymentOrder = await createPaymentOrder(order.amount, order.id);
+      if (!activeOrder) {
+        // Construct the detailed order description with both sourced components and shipping destination
+        const requirementsText = `ITEMS PURCHASED:
+- Raspberry Pi 5 4GB Core Unit x 2
+- HC-SR04 Ultrasonic Sensor x 1
+- 0.96" OLED Display Module x 3
+
+SHIPPING DESTINATION DETAILS:
+Name: ${address.name || "N/A"}
+Phone: ${address.phone || "N/A"}
+Address: ${address.address || "N/A"}, ${address.city || "N/A"}, ${address.state || "N/A"}
+Pincode: ${address.pincode || "N/A"}
+Landmark: ${address.landmark || "N/A"}`;
+
+        const createRes = await createOrder({
+          serviceType: "CUSTOM_PROJECT", // Using CUSTOM_PROJECT for components store orders
+          requirements: requirementsText,
+          amount: ORDER_TOTAL,
+        });
+
+        if (createRes.error || !createRes.orderId) {
+          alert(createRes.error || "Failed to register your procurement request.");
+          setProcessing(false);
+          return;
+        }
+
+        activeOrder = {
+          id: createRes.orderId,
+          orderNumber: createRes.orderNumber,
+          amount: ORDER_TOTAL,
+          serviceType: "CUSTOM_PROJECT"
+        };
+      }
+
+      const paymentOrder = await createPaymentOrder(activeOrder.amount, activeOrder.id);
       if (!paymentOrder.success) {
         alert("Failed to initiate payment. Please try again.");
         setProcessing(false);
@@ -79,17 +113,17 @@ function CheckoutContent() {
       }
 
       const options = {
-        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || "rzp_test_SjepBzGtOTKoTN",
         amount: paymentOrder.amount,
         currency: paymentOrder.currency,
         name: "KALVEX LABS",
-        description: `Order ${order.orderNumber} - ${order.serviceType}`,
+        description: `Order ${activeOrder.orderNumber} - ${activeOrder.serviceType}`,
         image: "/logo.png",
         order_id: paymentOrder.id,
         handler: async function (response: any) {
-          const verifyRes = await verifyPayment(response, order.id);
+          const verifyRes = await verifyPayment(response, activeOrder.id);
           if (verifyRes.success) {
-            await updateOrderStatus(order.id, "RESEARCH_STARTED");
+            await updateOrderStatus(activeOrder.id, "PAYMENT_CONFIRMED", "Payment successfully verified via Razorpay.");
             setDone(true);
           } else {
             alert("Payment verification failed.");
@@ -99,9 +133,14 @@ function CheckoutContent() {
         theme: {
           color: "#2563EB",
         },
+        modal: {
+          ondismiss: function () {
+            setProcessing(false);
+          }
+        }
       };
 
-      const rzp = new window.Razorpay(options);
+      const rzp = new (window as any).Razorpay(options);
       rzp.on('payment.failed', function (response: any){
         alert(response.error.description);
         setProcessing(false);
@@ -109,6 +148,7 @@ function CheckoutContent() {
       rzp.open();
     } catch (error) {
       console.error("Payment error:", error);
+      alert("Failed to initiate payment gateway.");
       setProcessing(false);
     }
   };

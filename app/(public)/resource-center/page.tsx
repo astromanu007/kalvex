@@ -68,6 +68,13 @@ const RESOURCES = [
 ];
 
 export default function ResourceCenterPage() {
+  const [searchQuery, setSearchQuery] = React.useState("");
+
+  const filteredResources = RESOURCES.filter(res => 
+    res.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    res.desc.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className="min-h-screen bg-white pt-40 pb-32 overflow-hidden relative">
       {/* Immersive Background */}
@@ -94,25 +101,33 @@ export default function ResourceCenterPage() {
             Access the institutional intelligence required to accelerate your research, protect your IP, and develop the future.
           </p>
 
-          {/* Search Bar */}
+          {/* Search Bar: The Global Intelligence Interface */}
           <div className="max-w-2xl mx-auto pt-8 relative group">
-            <Search className="absolute left-8 top-1/2 -translate-y-1/2 w-6 h-6 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
-            <input 
-              placeholder="Search the entire resource ecosystem..."
-              className="w-full bg-white h-20 pl-20 pr-8 rounded-[2rem] outline-none border border-slate-100 shadow-2xl shadow-slate-900/5 focus:border-blue-600/20 transition-all font-bold text-sm"
-            />
+            <div className="relative bg-white/95 backdrop-blur-xl h-20 rounded-2xl border-2 border-slate-200 shadow-2xl shadow-slate-900/10 flex items-center transition-all duration-500 group-hover:border-blue-600 group-focus-within:border-blue-600 overflow-hidden">
+              <Search className="absolute left-8 w-5 h-5 text-slate-400 group-focus-within:text-blue-600 transition-all duration-500" />
+              <input 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search the entire resource ecosystem..."
+                className="w-full bg-transparent h-full pl-16 pr-8 outline-none font-semibold text-slate-900 placeholder:text-slate-400 text-sm tracking-tight"
+              />
+              <div className="absolute right-6 px-3 py-1.5 bg-slate-50 rounded-lg border border-slate-200 text-[8px] font-black text-slate-500 uppercase tracking-widest hidden md:block">
+                Global Index
+              </div>
+            </div>
           </div>
         </motion.div>
 
         {/* Resources Grid: 3D Interaction */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {RESOURCES.map((res, i) => (
+          {filteredResources.map((res, i) => (
             <Link key={i} href={res.link}>
               <motion.div 
+                layout
                 initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.9 }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
                 whileHover={{ 
                   y: -20, 
                   rotateY: i % 3 === 0 ? 5 : (i % 3 === 2 ? -5 : 0),
@@ -203,22 +218,26 @@ export default function ResourceCenterPage() {
           </div>
         </motion.div>
 
-        {/* Global Authority Footer */}
-        <div className="mt-32 grid md:grid-cols-3 gap-12 border-t border-slate-100 pt-20">
+        {/* Global Authority Footer: High-Fidelity Reactive Section */}
+        <div className="mt-32 grid md:grid-cols-3 gap-12 border-t border-slate-100 pt-24">
           {[
-            { icon: Globe, label: "Global Standards", val: "ISO 9001:2015" },
-            { icon: ShieldCheck, label: "Data Integrity", val: "GDPR Compliant" },
-            { icon: Share2, label: "Open Access", val: "Knowledge First" }
+            { icon: Globe, label: "Global Standards", val: "ISO 9001:2015", color: "text-blue-600", bg: "bg-blue-50/50", border: "hover:border-blue-200" },
+            { icon: ShieldCheck, label: "Data Integrity", val: "GDPR Compliant", color: "text-emerald-600", bg: "bg-emerald-50/50", border: "hover:border-emerald-200" },
+            { icon: Share2, label: "Open Access", val: "Knowledge First", color: "text-purple-600", bg: "bg-purple-50/50", border: "hover:border-purple-200" }
           ].map((item, i) => (
-            <div key={i} className="flex items-center gap-6">
-              <div className="w-16 h-16 rounded-[1.5rem] bg-slate-50 flex items-center justify-center text-slate-900">
-                <item.icon className="w-7 h-7" />
+            <motion.div 
+              key={i}
+              whileHover={{ y: -10 }}
+              className={`group flex items-center gap-6 p-6 rounded-[2rem] border border-transparent transition-all duration-500 hover:bg-white hover:shadow-2xl hover:shadow-slate-900/5 ${item.border}`}
+            >
+              <div className={`w-20 h-20 rounded-[1.5rem] ${item.bg} flex items-center justify-center transition-all duration-500 group-hover:scale-110 group-hover:rotate-6`}>
+                <item.icon className={`w-8 h-8 ${item.color}`} />
               </div>
-              <div>
-                <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest">{item.label}</p>
-                <p className="text-lg font-black text-slate-900 tracking-tight">{item.val}</p>
+              <div className="space-y-1">
+                <p className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{item.label}</p>
+                <p className={`text-xl font-black text-slate-900 tracking-tight transition-colors duration-500 group-hover:${item.color}`}>{item.val}</p>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
       </div>

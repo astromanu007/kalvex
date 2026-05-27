@@ -6,6 +6,7 @@ import { MessageSquare, X, Send, Sparkles, Minus, Maximize2 } from "lucide-react
 import { Button } from "./button";
 import { askChatbot } from "@/app/actions/chatbot";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown from 'react-markdown';
 
 export function Chatbot() {
   const pathname = usePathname();
@@ -51,7 +52,6 @@ export function Chatbot() {
     setLoading(false);
   };
 
-  // Hide chatbot on login and register pages (Client-side only)
   if (mounted && (pathname?.startsWith("/login") || pathname?.startsWith("/register"))) {
     return null;
   }
@@ -83,7 +83,6 @@ export function Chatbot() {
             transition={{ type: "spring", damping: 20, stiffness: 100 }}
             className="absolute bottom-0 right-0 w-[400px] sm:w-[440px] h-[640px] bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_32px_128px_-16px_rgba(15,23,42,0.15)] flex flex-col overflow-hidden"
           >
-            {/* Header */}
             <div className="bg-slate-900 p-8 flex items-center justify-between relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-transparent opacity-40" />
               <div className="flex items-center gap-4 relative z-10">
@@ -104,7 +103,6 @@ export function Chatbot() {
               </div>
             </div>
 
-            {/* Messages */}
             <div className="flex-1 overflow-y-auto p-8 space-y-8 bg-slate-50/50">
               {messages.map((m, i) => (
                 <motion.div 
@@ -120,7 +118,14 @@ export function Chatbot() {
                         : "bg-white border border-slate-100 text-slate-600 rounded-tl-none"
                     }`}
                   >
-                    {m.content}
+                    {m.role === "assistant" ? (
+                      <div className="prose prose-sm prose-slate max-w-none text-inherit font-medium leading-relaxed
+                        prose-p:my-0 prose-headings:my-1 prose-strong:text-blue-600 prose-strong:font-black">
+                        <ReactMarkdown>{m.content}</ReactMarkdown>
+                      </div>
+                    ) : (
+                      m.content
+                    )}
                   </div>
                 </motion.div>
               ))}
@@ -138,7 +143,6 @@ export function Chatbot() {
               <div ref={messagesEndRef} />
             </div>
 
-            {/* Input */}
             <div className="p-8 bg-white border-t border-slate-50">
               <form
                 onSubmit={(e) => {
