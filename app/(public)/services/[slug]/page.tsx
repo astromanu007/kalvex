@@ -141,13 +141,21 @@ export default function ServiceDetailPage() {
 
     try {
       // 1. Create the order in the Database
-      let serviceTypeRaw = "FINAL_YEAR_REPORT";
-      const req = `SERVICE: Black Book & Bond Printing\nProject Cover Title: ${printingData.projectTitle}\nPaper Type: ${printingData.paperType === "black_book" ? "Regular Paper (All Pages Colour)" : "Bond Paper (All Pages Colour)"}\nPage Count: ${printingData.pageCount}\nCopies: ${printingData.copies}\nUploaded PDF: ${pdfFileName || "Not uploaded"}\n\nSHIPPING DETAILS (MAHARASHTRA ONLY):\nRecipient Name: ${printingData.recipientName}\nContact Number: ${printingData.phone}\nDistrict: ${printingData.shippingZone}\nVillage / Locality / City: ${printingData.city}\nAddress: ${printingData.address}\nPincode: ${printingData.pincode}\nExpected Delivery Target: ${printingData.expectedDelivery === "Custom" ? printingData.expectedDeliveryCustom : printingData.expectedDelivery}`;
+      let serviceTypeRaw = slug.toUpperCase().replace(/-/g, "_");
+      
+      let req = "";
+      if (slug === "black-book-printing") {
+        serviceTypeRaw = "FINAL_YEAR_REPORT";
+        req = `SERVICE: Black Book & Bond Printing\nProject Cover Title: ${printingData.projectTitle}\nPaper Type: ${printingData.paperType === "black_book" ? "Regular Paper (All Pages Colour)" : "Bond Paper (All Pages Colour)"}\nPage Count: ${printingData.pageCount}\nCopies: ${printingData.copies}\nUploaded PDF: ${pdfFileName || "Not uploaded"}\n\nSHIPPING DETAILS (MAHARASHTRA ONLY):\nRecipient Name: ${printingData.recipientName}\nContact Number: ${printingData.phone}\nDistrict: ${printingData.shippingZone}\nVillage / Locality / City: ${printingData.city}\nAddress: ${printingData.address}\nPincode: ${printingData.pincode}\nExpected Delivery Target: ${printingData.expectedDelivery === "Custom" ? printingData.expectedDeliveryCustom : printingData.expectedDelivery}`;
+      } else {
+        req = `Topic: ${formData.topic}\nWords/Pages: ${formData.wordCount}\nDeliverables: ${formData.deliverables.join(", ")}\nGuidelines: ${formData.guidelines}`;
+      }
       
       const orderRes = await createOrder({
         serviceType: serviceTypeRaw as any,
         requirements: req,
         amount: calculatedPrice,
+        deadline: formData.deadline ? new Date(formData.deadline) : undefined,
       });
 
       if (!orderRes.success || !orderRes.orderId) {
@@ -182,7 +190,7 @@ export default function ServiceDetailPage() {
         amount: payRes.amount,
         currency: payRes.currency,
         name: "KALVEX LABS",
-        description: "Premium Black Book Printing",
+        description: serviceDetails.title,
         order_id: payRes.id,
         handler: async function (response: any) {
           setPaying(true);
@@ -195,9 +203,9 @@ export default function ServiceDetailPage() {
           setPaying(false);
         },
         prefill: {
-          name: printingData.recipientName,
+          name: slug === "black-book-printing" ? printingData.recipientName : (session.user.name || "Customer"),
           email: session.user.email || "customer@example.com",
-          contact: printingData.phone,
+          contact: slug === "black-book-printing" ? printingData.phone : "",
         },
         theme: {
           color: "#4f46e5",
@@ -1103,29 +1111,199 @@ export default function ServiceDetailPage() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
-                        className="space-y-12 text-center"
+                        className="space-y-12"
                       >
-                        <div className="w-32 h-32 bg-blue-50 text-blue-600 rounded-[3rem] flex items-center justify-center mx-auto shadow-2xl shadow-blue-600/10 border border-blue-100 relative">
-                          <FileText className="w-12 h-12" />
-                          <div className="absolute inset-0 rounded-[3rem] border-4 border-blue-600 animate-ping opacity-10" />
-                        </div>
-                        <div className="space-y-4">
-                          <h3 className="font-heading font-black text-4xl text-slate-900 tracking-tight">Almost <span className="text-blue-600">Done!</span></h3>
-                          <p className="text-slate-400 text-lg font-bold max-w-lg mx-auto leading-relaxed">Our experts will review your request and get back to you shortly.</p>
-                        </div>
-                        <div className="flex items-start gap-6 bg-slate-900 border border-slate-800 p-8 rounded-[3rem] text-left max-w-2xl mx-auto shadow-2xl">
-                          <ShieldCheck className="w-8 h-8 text-blue-500 shrink-0" />
-                          <p className="text-[11px] text-slate-400 font-black uppercase tracking-[0.15em] leading-loose">
-                            Your information is secure and confidential. We never share your data. All communication stays within the secure KALVEX platform.
-                          </p>
-                        </div>
+                        {!paymentSuccess ? (
+                          <div className="space-y-10">
+                            {/* Receipt Summary Card */}
+                            <div className="bg-gradient-to-br from-indigo-50/50 via-white to-purple-50/50 border-2 border-indigo-100 rounded-[3rem] p-10 shadow-xl text-slate-800">
+                              <h3 className="font-heading font-black text-2xl text-slate-900 uppercase tracking-tight mb-6 pb-4 border-b border-indigo-100/60 flex items-center justify-between">
+                                <span>📋 Order Configuration Receipt</span>
+                                <span className="text-xs text-indigo-650 bg-indigo-50 border border-indigo-100/50 px-4 py-1.5 rounded-full font-black">Verified Service</span>
+                              </h3>
+                              
+                              <div className="grid md:grid-cols-2 gap-8 text-xs font-bold text-slate-500 uppercase tracking-wider">
+                                <div className="space-y-3.5">
+                                  <div className="flex justify-between border-b border-slate-150 pb-2">
+                                    <span>Service Title</span>
+                                    <span className="text-slate-800 font-black text-right max-w-[200px] line-clamp-1">{serviceDetails.title}</span>
+                                  </div>
+                                  <div className="flex justify-between border-b border-slate-150 pb-2">
+                                    <span>Project Topic</span>
+                                    <span className="text-indigo-600 font-black text-right max-w-[200px] line-clamp-1">{formData.topic}</span>
+                                  </div>
+                                  <div className="flex justify-between border-b border-slate-150 pb-2">
+                                    <span>Deadline Target</span>
+                                    <span className="text-slate-800 font-black">{formData.deadline}</span>
+                                  </div>
+                                  <div className="flex justify-between border-b border-slate-150 pb-2">
+                                    <span>Scope / Volume</span>
+                                    <span className="text-slate-800 font-black">{formData.wordCount}</span>
+                                  </div>
+                                </div>
+                                <div className="space-y-3.5">
+                                  <div className="flex flex-col gap-2">
+                                    <span>Selected Deliverables:</span>
+                                    <div className="flex flex-wrap gap-2 pt-1">
+                                      {formData.deliverables.map((d) => (
+                                        <span key={d} className="bg-indigo-50 border border-indigo-100 text-indigo-700 text-[8px] font-black uppercase px-2.5 py-1 rounded-lg">
+                                          ✓ {d}
+                                        </span>
+                                      ))}
+                                    </div>
+                                  </div>
+                                  <div className="flex flex-col gap-2 pt-2">
+                                    <span>Guidelines:</span>
+                                    <span className="text-slate-800 font-bold lowercase normal-case text-[10px] leading-relaxed line-clamp-2 bg-slate-50 border border-slate-100 p-3.5 rounded-xl">
+                                      {formData.guidelines || "No additional guidelines provided."}
+                                    </span>
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div className="mt-10 p-6 bg-white border-2 border-indigo-50/80 rounded-2xl flex justify-between items-center shadow-sm">
+                                <div>
+                                  <span className="text-xs font-black uppercase tracking-[0.2em] block text-indigo-700">Total Amount Due</span>
+                                  <span className="text-[8px] text-slate-400 uppercase tracking-widest font-bold">Standard package rate</span>
+                                </div>
+                                <span className="text-4xl font-black text-indigo-650">₹{calculatedPrice.toLocaleString()}</span>
+                              </div>
+                            </div>
+
+                            {/* Proceed to Pay CTA */}
+                            <div className="text-center space-y-6">
+                              <p className="text-[10px] text-slate-400 font-black uppercase tracking-widest flex items-center justify-center gap-2">
+                                <ShieldCheck className="w-4 h-4 text-emerald-500" /> SECURE 256-BIT ENCRYPTED RAZORPAY TRANSACTION
+                              </p>
+                              <div className="flex gap-4">
+                                <button
+                                  type="button"
+                                  onClick={() => setStep(2)}
+                                  className="flex-1 h-18 border-2 border-slate-200 hover:bg-slate-50 text-slate-405 hover:text-slate-900 font-black text-xs uppercase tracking-widest rounded-[1.5rem] transition-all bg-white"
+                                >
+                                  Configure
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={handleRazorpayPayment}
+                                  disabled={paying}
+                                  className="flex-[2] h-18 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-sm uppercase tracking-[0.25em] rounded-[1.5rem] shadow-xl shadow-indigo-600/15 hover:shadow-indigo-600/30 transition-all duration-300 flex items-center justify-center gap-3"
+                                >
+                                  {paying ? (
+                                    <>
+                                      <Loader2 className="w-6 h-6 animate-spin" /> Tunneling...
+                                    </>
+                                  ) : (
+                                    <>
+                                      💳 Pay Securely (₹{calculatedPrice.toLocaleString()})
+                                    </>
+                                  )}
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        ) : (
+                          /* Successful Payment Tracking Progress Screen */
+                          <div className="space-y-12 py-6 text-center">
+                            {/* Animated Success Badge */}
+                            <div className="w-28 h-28 bg-emerald-50 border-2 border-emerald-250 text-emerald-605 rounded-[2.5rem] flex items-center justify-center mx-auto shadow-xl relative overflow-hidden group">
+                              <Check className="w-12 h-12 text-emerald-600" />
+                              <div className="absolute inset-0 rounded-[2.5rem] border-4 border-emerald-500 animate-ping opacity-15" />
+                            </div>
+
+                            <div className="space-y-3">
+                              <h3 className="font-heading font-black text-4xl text-slate-900 tracking-tight uppercase">
+                                Payment <span className="text-emerald-600 font-black">Successful!</span>
+                              </h3>
+                              <p className="text-slate-400 text-xs font-black uppercase tracking-widest">
+                                Order ID: <span className="text-slate-800">{createdOrderNumber}</span>
+                              </p>
+                              <p className="text-slate-500 text-sm font-semibold max-w-md mx-auto leading-relaxed">
+                                Thank you for your order! Your request has been queued in the Kalvex Expert Dashboard.
+                              </p>
+                            </div>
+
+                            {/* Best-in-Class Interactive Tracking Progress Bar for Research/Projects */}
+                            <div className="max-w-xl mx-auto bg-slate-50/80 backdrop-blur-md border border-slate-200/60 rounded-[3rem] p-8 md:p-10 shadow-inner relative overflow-hidden">
+                              <div className="absolute top-0 right-0 w-24 h-24 rounded-full bg-indigo-500/5 blur-[50px] pointer-events-none" />
+                              
+                              <p className="text-[10px] text-indigo-700 bg-indigo-50 border border-indigo-100 px-4 py-1.5 rounded-full inline-block font-black uppercase tracking-widest mb-10">
+                                🎯 Real-time Project Tracker
+                              </p>
+                              
+                              <div className="relative">
+                                {/* Tracking Line Background */}
+                                <div className="absolute top-5 left-8 right-8 h-1 bg-slate-200 rounded-full -z-10" />
+                                {/* Active progress fill */}
+                                <div className="absolute top-5 left-8 w-[66%] h-1 bg-emerald-500 rounded-full -z-10 transition-all duration-1000 animate-pulse" />
+                                
+                                <div className="grid grid-cols-4 gap-2">
+                                  {[
+                                    { step: 1, label: "Paid", emoji: "💳", active: true, done: true },
+                                    { step: 2, label: "Confirmed", emoji: "🎯", active: true, done: true },
+                                    { step: 3, label: "Working", emoji: "✍️", active: true, done: false, pulse: true },
+                                    { step: 4, label: "Delivery", emoji: "📁", active: false, done: false }
+                                  ].map((track) => (
+                                    <div key={track.step} className="flex flex-col items-center">
+                                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center text-lg border-2 shadow-sm transition-all duration-500 ${
+                                        track.done 
+                                          ? "bg-emerald-500 border-emerald-500 text-white shadow-emerald-500/10 scale-105"
+                                          : track.pulse
+                                            ? "bg-indigo-600 border-indigo-600 text-white scale-110 shadow-lg shadow-indigo-650/20 animate-bounce"
+                                            : "bg-white border-slate-200 text-slate-400"
+                                      }`}>
+                                        {track.done ? "✓" : track.emoji}
+                                      </div>
+                                      <span className={`text-[8px] font-black uppercase tracking-wider mt-3 ${
+                                        track.done 
+                                          ? "text-emerald-600 font-extrabold" 
+                                          : track.pulse 
+                                            ? "text-indigo-600 font-extrabold"
+                                            : "text-slate-400"
+                                      }`}>
+                                        {track.label}
+                                      </span>
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            </div>
+
+                            <div className="flex flex-col sm:flex-row justify-center gap-4 max-w-md mx-auto pt-4">
+                              <Link 
+                                href="/dashboard/orders" 
+                                className="inline-flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white text-[10px] font-black uppercase tracking-widest h-14 px-8 rounded-xl transition-all shadow-md flex-1"
+                              >
+                                📂 Orders Dashboard
+                              </Link>
+                              <button 
+                                type="button"
+                                onClick={() => {
+                                  // Reset back to Step 1 for a new configuration
+                                  setStep(1);
+                                  setPaymentSuccess(false);
+                                  setFormData({
+                                    topic: "",
+                                    wordCount: "",
+                                    deadline: "",
+                                    guidelines: "",
+                                    deliverables: []
+                                  });
+                                }} 
+                                className="inline-flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-500 text-[10px] font-black uppercase tracking-widest h-14 px-8 rounded-xl transition-all bg-white flex-1"
+                              >
+                                🔄 Book Another
+                              </button>
+                            </div>
+                          </div>
+                        )}
                       </motion.div>
                     )}
                   </>
                 )}
               </AnimatePresence>
 
-              {!(slug === "black-book-printing" && step === 3) && (
+              {step < 3 && (
                 <div className="flex flex-col sm:flex-row gap-6 pt-12">
                   {step > 1 && (
                     <Button type="button" variant="outline" onClick={() => setStep(step - 1)} className="border-slate-100 text-slate-400 h-16 px-12 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:text-slate-900 hover:bg-slate-50 transition-all duration-500">
