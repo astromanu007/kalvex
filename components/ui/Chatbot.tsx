@@ -57,7 +57,7 @@ export function Chatbot() {
   }
 
   return (
-    <div className="fixed bottom-8 right-8 z-[9999]">
+    <div className="fixed bottom-4 right-4 sm:bottom-8 sm:right-8 z-[9999] flex flex-col items-end">
       <AnimatePresence>
         {!isOpen && (
           <motion.button
@@ -65,11 +65,11 @@ export function Chatbot() {
             animate={{ scale: 1, rotate: 0 }}
             exit={{ scale: 0, rotate: 45 }}
             onClick={() => setIsOpen(true)}
-            className="w-16 h-16 rounded-3xl bg-slate-900 text-white shadow-2xl shadow-slate-900/40 flex items-center justify-center hover:bg-blue-600 transition-all duration-500 hover:scale-110 active:scale-95 group relative overflow-hidden"
+            className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl sm:rounded-3xl bg-slate-900 text-white shadow-2xl shadow-slate-900/40 flex items-center justify-center hover:bg-blue-600 transition-all duration-500 hover:scale-110 active:scale-95 group relative overflow-hidden"
           >
             <div className="absolute inset-0 bg-gradient-to-tr from-blue-600/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-            <MessageSquare className="w-7 h-7 relative z-10" />
-            <div className="absolute -top-1 -right-1 w-4 h-4 bg-blue-600 rounded-full border-4 border-slate-50 animate-pulse" />
+            <MessageSquare className="w-6 h-6 sm:w-7 sm:h-7 relative z-10" />
+            <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-blue-600 rounded-full border-4 border-slate-50 animate-pulse" />
           </motion.button>
         )}
       </AnimatePresence>
@@ -81,38 +81,38 @@ export function Chatbot() {
             animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
             exit={{ opacity: 0, y: 100, scale: 0.9, filter: "blur(10px)" }}
             transition={{ type: "spring", damping: 20, stiffness: 100 }}
-            className="absolute bottom-0 right-0 w-[400px] sm:w-[440px] h-[640px] bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_32px_128px_-16px_rgba(15,23,42,0.15)] flex flex-col overflow-hidden"
+            className="w-[calc(100vw-2rem)] sm:w-[440px] h-[75vh] sm:h-[640px] bg-white border border-slate-100 rounded-[2rem] sm:rounded-[2.5rem] shadow-[0_32px_128px_-16px_rgba(15,23,42,0.15)] flex flex-col overflow-hidden"
           >
-            <div className="bg-slate-900 p-8 flex items-center justify-between relative overflow-hidden">
+            <div className="bg-slate-900 p-5 sm:p-8 flex items-center justify-between relative overflow-hidden">
               <div className="absolute inset-0 bg-gradient-to-br from-blue-600/20 to-transparent opacity-40" />
-              <div className="flex items-center gap-4 relative z-10">
-                <div className="w-12 h-12 rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-xl border border-white/10 group">
-                  <Sparkles className="w-6 h-6 text-blue-400 animate-pulse" />
+              <div className="flex items-center gap-3 sm:gap-4 relative z-10">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-white/10 flex items-center justify-center backdrop-blur-xl border border-white/10 group">
+                  <Sparkles className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400 animate-pulse" />
                 </div>
                 <div>
-                  <h3 className="text-white font-heading font-black text-sm uppercase tracking-widest">KALVEX Intelligence</h3>
+                  <h3 className="text-white font-heading font-black text-xs sm:text-sm uppercase tracking-widest">KALVEX Intelligence</h3>
                   <div className="flex items-center gap-2 mt-1">
-                    <div className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
-                    <span className="text-white/40 text-[10px] font-black uppercase tracking-widest">Active Link</span>
+                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]" />
+                    <span className="text-white/40 text-[9px] font-black uppercase tracking-widest">Active Link</span>
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2 relative z-10">
-                <button className="p-2 text-white/40 hover:text-white transition-colors"><Minus className="w-4 h-4" /></button>
-                <button onClick={() => setIsOpen(false)} className="p-2 text-white/40 hover:text-red-400 transition-colors bg-white/5 rounded-xl"><X className="w-5 h-5" /></button>
+              <div className="flex items-center gap-1 sm:gap-2 relative z-10">
+                <button className="p-2 text-white/40 hover:text-white transition-colors"><Minus className="w-3.5 h-3.5 sm:w-4 sm:h-4" /></button>
+                <button onClick={() => setIsOpen(false)} className="p-2 text-white/40 hover:text-red-400 transition-colors bg-white/5 rounded-lg sm:rounded-xl"><X className="w-4.5 h-4.5 sm:w-5 sm:h-5" /></button>
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 space-y-8 bg-slate-50/50">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-8 space-y-4 sm:space-y-8 bg-slate-50/50">
               {messages.map((m, i) => (
                 <motion.div 
-                  initial={{ opacity: 0, x: m.role === "user" ? 20 : -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  key={i} 
-                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                   initial={{ opacity: 0, x: m.role === "user" ? 20 : -20 }}
+                   animate={{ opacity: 1, x: 0 }}
+                   key={i} 
+                   className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
                 >
                   <div
-                    className={`max-w-[85%] p-5 rounded-[2rem] text-[13px] font-medium leading-relaxed shadow-sm ${
+                    className={`max-w-[90%] sm:max-w-[85%] p-4 sm:p-5 rounded-[1.5rem] sm:rounded-[2rem] text-xs sm:text-[13px] font-medium leading-relaxed shadow-sm ${
                       m.role === "user"
                         ? "bg-slate-900 text-white rounded-tr-none shadow-xl shadow-slate-900/10"
                         : "bg-white border border-slate-100 text-slate-600 rounded-tl-none"
@@ -131,7 +131,7 @@ export function Chatbot() {
               ))}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-white border border-slate-100 p-5 rounded-[2rem] rounded-tl-none flex items-center gap-3 shadow-sm">
+                  <div className="bg-white border border-slate-100 p-4 sm:p-5 rounded-[1.5rem] sm:rounded-[2rem] rounded-tl-none flex items-center gap-3 shadow-sm">
                     <div className="flex gap-1.5">
                       <span className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.3s]" />
                       <span className="w-2 h-2 bg-blue-600 rounded-full animate-bounce [animation-delay:-0.15s]" />
@@ -143,34 +143,34 @@ export function Chatbot() {
               <div ref={messagesEndRef} />
             </div>
 
-            <div className="p-8 bg-white border-t border-slate-50">
+            <div className="p-4 sm:p-8 bg-white border-t border-slate-50">
               <form
                 onSubmit={(e) => {
                   e.preventDefault();
                   handleSend();
                 }}
-                className="flex gap-4 items-center"
+                className="flex gap-3 sm:gap-4 items-center"
               >
                 <div className="flex-1 relative">
                   <input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     placeholder="Inquire with AI..."
-                    className="w-full bg-slate-50 border border-slate-100 rounded-2xl pl-6 pr-12 py-4 text-sm font-bold text-slate-900 focus:ring-8 ring-blue-600/5 focus:border-blue-600 outline-none transition-all placeholder:text-slate-300"
+                    className="w-full bg-slate-50 border border-slate-100 rounded-xl sm:rounded-2xl pl-4 sm:pl-6 pr-10 sm:pr-12 py-3 sm:py-4 text-xs sm:text-sm font-bold text-slate-900 focus:ring-8 ring-blue-600/5 focus:border-blue-600 outline-none transition-all placeholder:text-slate-300"
                   />
-                  <div className="absolute right-4 top-1/2 -translate-y-1/2">
-                    <Maximize2 className="w-4 h-4 text-slate-200" />
+                  <div className="absolute right-3 sm:right-4 top-1/2 -translate-y-1/2">
+                    <Maximize2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-slate-200" />
                   </div>
                 </div>
                 <button 
                   type="submit" 
                   disabled={!input.trim() || loading} 
-                  className="w-14 h-14 rounded-2xl bg-slate-900 hover:bg-blue-600 text-white flex items-center justify-center transition-all duration-500 shadow-xl shadow-slate-900/20 disabled:opacity-50 group"
+                  className="w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl bg-slate-900 hover:bg-blue-600 text-white flex items-center justify-center transition-all duration-500 shadow-xl shadow-slate-900/20 disabled:opacity-50 group shrink-0"
                 >
-                  <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <Send className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                 </button>
               </form>
-              <p className="text-[10px] text-center text-slate-300 font-black uppercase tracking-widest mt-6">Powered by KALVEX High-Performance LLM Architecture</p>
+              <p className="text-[8px] sm:text-[10px] text-center text-slate-300 font-black uppercase tracking-widest mt-4 sm:mt-6">Powered by KALVEX High-Performance LLM Architecture</p>
             </div>
           </motion.div>
         )}

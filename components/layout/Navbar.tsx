@@ -263,13 +263,50 @@ export function Navbar() {
           </AnimatePresence>
         </div>
 
-        {/* MOBILE TOGGLE */}
-        <div className="flex items-center lg:hidden z-[110]">
+        {/* MOBILE ACTIONS */}
+        <div className="flex items-center gap-2 sm:gap-3 lg:hidden z-[110]">
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-600 transition-all active:scale-95"
+          >
+            <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+          </button>
+
+          <button
+            onClick={() => {
+              if (session) {
+                setNotificationOpen(prev => !prev);
+              } else {
+                router.push("/login");
+              }
+            }}
+            className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-600 relative transition-all active:scale-95"
+          >
+            <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+            {unreadCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[0.875rem] h-3.5 px-1 bg-blue-600 text-white text-[7px] font-black rounded-full flex items-center justify-center">
+                {unreadCount > 99 ? "99+" : unreadCount}
+              </span>
+            )}
+          </button>
+
+          <Link
+            href="/cart"
+            className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-600 relative transition-all active:scale-95"
+          >
+            <ShoppingCart className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
+            {cartCount > 0 && (
+              <span className="absolute -top-1 -right-1 min-w-[0.875rem] h-3.5 px-1 bg-blue-600 text-white text-[7px] font-black rounded-full flex items-center justify-center">
+                {cartCount > 99 ? "99+" : cartCount}
+              </span>
+            )}
+          </Link>
+
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="w-12 h-12 bg-slate-900 text-white rounded-xl flex items-center justify-center shadow-lg transition-all active:scale-95"
+            className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center shadow-lg transition-all active:scale-95"
           >
-            {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            {mobileMenuOpen ? <X className="w-4 h-4 sm:w-4.5 sm:h-4.5" /> : <Menu className="w-4 h-4 sm:w-4.5 sm:h-4.5" />}
           </button>
         </div>
       </div>
@@ -286,8 +323,8 @@ export function Navbar() {
             {/* Background Texture */}
             <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:40px_40px] opacity-10" />
             
-            <div className="flex flex-col h-full pt-32 px-10 pb-10 relative z-10">
-              <nav className="flex flex-col space-y-3 mb-10">
+            <div className="flex flex-col h-full pt-28 sm:pt-32 px-6 sm:px-10 pb-8 sm:pb-10 relative z-10 overflow-y-auto">
+              <nav className="flex flex-col space-y-2 sm:space-y-3 mb-8 sm:mb-10">
                 {NAV_LINKS.map((link, i) => {
                   const isActive = pathname === link.href;
                   return (
@@ -299,7 +336,7 @@ export function Navbar() {
                     >
                       <Link
                         href={link.href}
-                        className={`text-[32px] font-black tracking-tight transition-colors ${
+                        className={`text-2xl sm:text-[32px] font-black tracking-tight transition-colors ${
                           isActive ? "text-blue-600" : "text-slate-900"
                         }`}
                         onClick={() => setMobileMenuOpen(false)}
@@ -310,18 +347,41 @@ export function Navbar() {
                   );
                 })}
               </nav>
-              <div className="mt-auto space-y-8">
+              <div className="mt-auto space-y-4 sm:space-y-8">
+                {session && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="grid grid-cols-2 gap-3 mb-2"
+                  >
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-slate-50 border border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-700 hover:text-blue-600 transition-colors shadow-sm"
+                    >
+                      <LayoutDashboard className="w-3.5 h-3.5 text-blue-500" /> Dashboard
+                    </Link>
+                    <Link
+                      href="/dashboard/profile"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center justify-center gap-2 py-3.5 rounded-xl bg-slate-50 border border-slate-100 text-[10px] font-black uppercase tracking-widest text-slate-700 hover:text-blue-600 transition-colors shadow-sm"
+                    >
+                      <Settings className="w-3.5 h-3.5 text-slate-500" /> Settings
+                    </Link>
+                  </motion.div>
+                )}
+
                 {session ? (
                   <button
-                    onClick={() => signOut()}
-                    className="w-full bg-slate-900 text-white py-5 rounded-[1.2rem] font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 shadow-2xl shadow-slate-900/20"
+                    onClick={() => { signOut(); setMobileMenuOpen(false); }}
+                    className="w-full bg-slate-900 text-white py-4 sm:py-5 rounded-[1.2rem] font-black text-xs sm:text-sm uppercase tracking-widest flex items-center justify-center gap-3 shadow-2xl shadow-slate-900/20"
                   >
                     Sign Out <LogOut className="w-4 h-4" />
                   </button>
                 ) : (
                   <Link
                     href="/login"
-                    className="w-full bg-[#0F172A] text-white py-5 rounded-[1.2rem] font-black text-sm flex items-center justify-center gap-2 shadow-2xl shadow-slate-900/10"
+                    className="w-full bg-[#0F172A] text-white py-4 sm:py-5 rounded-[1.2rem] font-black text-xs sm:text-sm flex items-center justify-center gap-2 shadow-2xl shadow-slate-900/10"
                     onClick={() => setMobileMenuOpen(false)}
                   >
                     Sign In <ChevronRight className="w-4 h-4" />

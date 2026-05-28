@@ -124,67 +124,67 @@ export default function Home() {
           <div className="absolute bottom-[15%] right-[25%] w-16 h-1 bg-gradient-to-r from-blue-500/20 to-transparent rotate-[30deg]" />
         </div>
 
-        <div className="container mx-auto px-4 z-10 pt-20 max-w-7xl">
-          <div className="grid lg:grid-cols-12 gap-20 items-center">
+        <div className="container mx-auto px-4 z-10 pt-10 sm:pt-20 max-w-7xl">
+          <div className="grid lg:grid-cols-12 gap-10 lg:gap-20 items-center">
             <div className="lg:col-span-7 space-y-12">
               <motion.div variants={fadeInUp} className="space-y-6">
                 <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
                   <Sparkles className="w-4 h-4" /> Your Academic & Engineering Partner
                 </div>
-                <h1 className="font-heading font-black text-6xl md:text-8xl leading-[0.9] text-slate-900 tracking-tighter">
+                <h1 className="font-heading font-black text-4xl sm:text-6xl md:text-8xl leading-[0.9] text-slate-900 tracking-tighter">
                   Build. Publish.<br />
                   <span className="text-blue-600">Patent.</span> <br />
                   Succeed.
                 </h1>
-                <p className="text-2xl text-slate-400 max-w-2xl leading-relaxed font-bold">
+                <p className="text-lg sm:text-2xl text-slate-400 max-w-2xl leading-relaxed font-bold">
                   The ultimate platform for engineering students and researchers. Get help with your thesis, buy high-quality electronics, and register your patents effortlessly.
                 </p>
               </motion.div>
 
               <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row items-center gap-6">
                 <Link href="/services" className="w-full sm:w-auto group/btn-main">
-                  <div className="relative overflow-hidden bg-slate-950 rounded-[2.5rem] h-20 px-12 flex items-center justify-center transition-all duration-700 hover:scale-105 hover:shadow-[0_20px_60px_-15px_rgba(37,99,235,0.4)] cursor-pointer border border-white/5">
+                  <div className="relative overflow-hidden bg-slate-950 rounded-[1.5rem] sm:rounded-[2.5rem] h-16 sm:h-20 px-8 sm:px-12 flex items-center justify-center transition-all duration-700 hover:scale-105 hover:shadow-[0_20px_60px_-15px_rgba(37,99,235,0.4)] cursor-pointer border border-white/5">
                     <div className="absolute inset-0 bg-gradient-to-r from-blue-700 to-blue-500 translate-y-full group-hover/btn-main:translate-y-0 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
-                    <span className="relative z-10 flex items-center text-white font-black text-[12px] uppercase tracking-[0.25em]">
+                    <span className="relative z-10 flex items-center text-white font-black text-[11px] sm:text-[12px] uppercase tracking-[0.25em]">
                       Explore Services 
-                      <ArrowRight className="ml-4 w-5 h-5 group-hover/btn-main:translate-x-2 transition-transform duration-500" />
+                      <ArrowRight className="ml-3 sm:ml-4 w-4.5 h-4.5 sm:w-5 sm:h-5 group-hover/btn-main:translate-x-2 transition-transform duration-500" />
                     </span>
                   </div>
                 </Link>
                 <Link href="/electronics" className="w-full sm:w-auto group/btn-sec">
-                  <div className="relative overflow-hidden bg-white rounded-[2.5rem] h-20 px-12 flex items-center justify-center transition-all duration-500 hover:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.05)] cursor-pointer border border-slate-100 group-hover/btn-sec:border-blue-200">
+                  <div className="relative overflow-hidden bg-white rounded-[1.5rem] sm:rounded-[2.5rem] h-16 sm:h-20 px-8 sm:px-12 flex items-center justify-center transition-all duration-500 hover:shadow-[0_15px_40px_-10px_rgba(0,0,0,0.05)] cursor-pointer border border-slate-100 group-hover/btn-sec:border-blue-200">
                     <div className="absolute inset-0 bg-blue-50/50 translate-x-full group-hover/btn-sec:translate-x-0 transition-transform duration-700 ease-[0.16,1,0.3,1]" />
-                    <span className="relative z-10 text-slate-900 font-black text-[12px] uppercase tracking-[0.25em] group-hover/btn-sec:text-blue-600 transition-colors duration-500">
+                    <span className="relative z-10 text-slate-900 font-black text-[11px] sm:text-[12px] uppercase tracking-[0.25em] group-hover/btn-sec:text-blue-600 transition-colors duration-500">
                       Shop Electronics
                     </span>
                   </div>
                 </Link>
               </motion.div>
 
-              <motion.div variants={fadeInUp} className="pt-8 flex flex-wrap items-center gap-12">
+              <motion.div variants={fadeInUp} className="pt-8 grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-6 sm:gap-12">
                 <div className="space-y-2">
-                  <div className="text-4xl font-black text-slate-900 tracking-tighter">10K+</div>
-                  <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Happy Students</div>
+                  <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tighter">10K+</div>
+                  <div className="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-widest">Happy Students</div>
+                </div>
+                <div className="w-px h-12 bg-slate-100 hidden sm:block" />
+                <div className="space-y-2">
+                  <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tighter">500+</div>
+                  <div className="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-widest">Projects Delivered</div>
                 </div>
                 <div className="w-px h-12 bg-slate-100 hidden md:block" />
-                <div className="space-y-2">
-                  <div className="text-4xl font-black text-slate-900 tracking-tighter">500+</div>
-                  <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Projects Delivered</div>
-                </div>
-                <div className="w-px h-12 bg-slate-100 hidden md:block" />
-                <div className="space-y-2">
-                  <div className="text-4xl font-black text-slate-900 tracking-tighter">120+</div>
-                  <div className="text-[10px] text-slate-400 font-black uppercase tracking-widest">Patents Secured</div>
+                <div className="space-y-2 col-span-2 sm:col-span-1">
+                  <div className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tighter">120+</div>
+                  <div className="text-[9px] sm:text-[10px] text-slate-400 font-black uppercase tracking-widest">Patents Secured</div>
                 </div>
               </motion.div>
             </div>
 
             <motion.div
               variants={fadeInUp}
-              className="lg:col-span-5 relative group"
+              className="lg:col-span-5 relative group px-4 sm:px-0 mt-12 lg:mt-0"
             >
-              <div className="absolute -inset-10 bg-blue-600/5 rounded-[5rem] rotate-3 blur-3xl group-hover:rotate-6 transition-transform duration-1000" />
-              <div className="relative rounded-[5rem] overflow-hidden border-[12px] border-white shadow-[0_64px_128px_-24px_rgba(0,0,0,0.15)] bg-slate-100 transition-all duration-700 group-hover:-translate-y-4">
+              <div className="absolute -inset-4 sm:-inset-10 bg-blue-600/5 rounded-[2rem] sm:rounded-[5rem] rotate-3 blur-3xl group-hover:rotate-6 transition-transform duration-1000" />
+              <div className="relative rounded-[2rem] sm:rounded-[5rem] overflow-hidden border-8 sm:border-[12px] border-white shadow-[0_64px_128px_-24px_rgba(0,0,0,0.15)] bg-slate-100 transition-all duration-700 group-hover:-translate-y-4">
                 <img
                   src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&q=80&w=1200"
                   alt="Students building projects"
@@ -192,9 +192,9 @@ export default function Home() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
               </div>
-              <div className="absolute -bottom-12 -left-12 w-40 h-40 bg-white rounded-[3rem] p-6 shadow-2xl flex flex-col justify-center items-center text-center border border-slate-50 transition-all duration-700 group-hover:scale-110">
-                <Award className="w-10 h-10 text-blue-600 mb-2" />
-                <p className="text-[9px] font-black text-slate-900 uppercase tracking-widest">Top Rated Platform</p>
+              <div className="absolute -bottom-6 -left-2 sm:-bottom-12 sm:-left-12 w-28 h-28 sm:w-40 sm:h-40 bg-white rounded-[2rem] sm:rounded-[3rem] p-3 sm:p-6 shadow-2xl flex flex-col justify-center items-center text-center border border-slate-50 transition-all duration-700 group-hover:scale-110">
+                <Award className="w-8 h-8 sm:w-10 sm:h-10 text-blue-600 mb-1.5 sm:mb-2" />
+                <p className="text-[8px] sm:text-[9px] font-black text-slate-900 uppercase tracking-widest leading-tight">Top Rated Platform</p>
               </div>
             </motion.div>
           </div>
@@ -202,13 +202,13 @@ export default function Home() {
       </motion.section>
 
       {/* SECTION 1.5 - TRENDING SERVICES MARQUEE (RESTORED) */}
-      <div className="bg-slate-900 py-6 overflow-hidden border-y border-white/5 relative z-20 shadow-2xl">
-        <div className="flex items-center">
-          <div className="flex-shrink-0 bg-blue-600 text-white px-8 py-2 z-30 flex items-center gap-3 shadow-xl">
+      <div className="bg-slate-900 overflow-hidden border-y border-white/5 relative z-20 shadow-2xl">
+        <div className="flex flex-col md:flex-row md:items-center">
+          <div className="flex-shrink-0 bg-blue-600 text-white px-6 py-3 md:px-8 md:py-4 z-30 flex items-center justify-center gap-3 shadow-xl w-full md:w-auto">
              <Zap className="w-4 h-4 fill-current animate-pulse" />
              <span className="text-[10px] font-black uppercase tracking-[0.3em] whitespace-nowrap">Trending Services</span>
           </div>
-          <div className="relative flex overflow-x-hidden group">
+          <div className="relative flex overflow-x-hidden group py-4 md:py-6">
             <div className="animate-marquee whitespace-nowrap flex items-center space-x-16 px-8">
               {[
                 { name: "PhD Thesis Guidance", link: "/services/phd-thesis" },
@@ -259,18 +259,18 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="py-32 bg-slate-50"
+        className="py-16 sm:py-32 bg-slate-50"
       >
         <div className="container mx-auto px-4 max-w-7xl">
-          <motion.div variants={fadeInUp} className="text-center mb-24 space-y-6">
+          <motion.div variants={fadeInUp} className="text-center mb-12 sm:mb-24 space-y-4 sm:space-y-6">
             <div className="inline-flex items-center gap-3 text-blue-600 font-black text-[10px] uppercase tracking-widest">
               <Building2 className="w-4 h-4" /> Our Services
             </div>
-            <h2 className="font-heading font-black text-5xl md:text-7xl text-slate-900 tracking-tighter">How We <span className="text-blue-600">Help You</span></h2>
-            <p className="text-slate-400 text-xl font-bold max-w-3xl mx-auto">Helping India&apos;s brightest students build amazing projects and get their work published.</p>
+            <h2 className="font-heading font-black text-3xl sm:text-5xl md:text-7xl text-slate-900 tracking-tighter">How We <span className="text-blue-600">Help You</span></h2>
+            <p className="text-slate-400 text-base sm:text-xl font-bold max-w-3xl mx-auto">Helping India&apos;s brightest students build amazing projects and get their work published.</p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-12">
             {[
               { slug: "phd-thesis", icon: BookOpen, title: "PhD Thesis Help", desc: "Complete support for your PhD thesis, from writing to formatting.", color: "text-blue-500", groupHoverBg: "group-hover:bg-blue-500" },
               { slug: "research-paper", icon: FileText, title: "Research Papers", desc: "Get your research published in top journals like IEEE and Springer.", color: "text-purple-500", groupHoverBg: "group-hover:bg-purple-500" },
@@ -283,17 +283,17 @@ export default function Home() {
                 key={i}
                 variants={fadeInUp}
                 whileHover={{ y: -15 }}
-                className="group p-12 rounded-[3.5rem] bg-white border border-slate-100 hover:shadow-[0_48px_96px_-24px_rgba(0,0,0,0.1)] transition-all duration-700 flex flex-col relative overflow-hidden"
+                className="group p-6 sm:p-12 rounded-[2rem] sm:rounded-[3.5rem] bg-white border border-slate-100 hover:shadow-[0_48px_96px_-24px_rgba(0,0,0,0.1)] transition-all duration-700 flex flex-col relative overflow-hidden"
               >
-                <div className="absolute top-0 right-0 w-32 h-32 bg-slate-50 rounded-bl-[4rem] translate-x-16 -translate-y-16 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-700" />
-                <div className={`w-16 h-16 rounded-2xl bg-slate-50 flex items-center justify-center mb-10 group-hover:text-white transition-all duration-500 border border-slate-100 shadow-sm ${service.color} ${service.groupHoverBg} group-hover:border-transparent`}>
-                  <service.icon className="w-8 h-8" />
+                <div className="absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 bg-slate-50 rounded-bl-[3rem] sm:rounded-bl-[4rem] translate-x-12 -translate-y-12 sm:translate-x-16 sm:-translate-y-16 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-700" />
+                <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-xl sm:rounded-2xl bg-slate-50 flex items-center justify-center mb-6 sm:mb-10 group-hover:text-white transition-all duration-500 border border-slate-100 shadow-sm ${service.color} ${service.groupHoverBg} group-hover:border-transparent`}>
+                  <service.icon className="w-6 h-6 sm:w-8 sm:h-8" />
                 </div>
-                <h3 className={`font-heading font-black text-2xl mb-6 text-slate-900 tracking-tight transition-colors duration-500 group-hover:${service.color}`}>{service.title}</h3>
-                <p className="text-slate-400 text-[13px] font-bold uppercase tracking-widest leading-loose mb-10 flex-grow">{service.desc}</p>
+                <h3 className={`font-heading font-black text-xl sm:text-2xl mb-4 sm:mb-6 text-slate-900 tracking-tight transition-colors duration-500 group-hover:${service.color}`}>{service.title}</h3>
+                <p className="text-slate-400 text-[11px] sm:text-[13px] font-bold uppercase tracking-widest leading-loose mb-6 sm:mb-10 flex-grow">{service.desc}</p>
                 <Link href={`/services/${service.slug}`}>
-                  <Button variant="ghost" className={`p-0 h-auto hover:bg-transparent font-black text-[10px] uppercase tracking-[0.2em] flex items-center gap-3 group/btn ${service.color}`}>
-                    Learn More <ChevronRight className="w-4 h-4 group-hover/btn:translate-x-2 transition-transform" />
+                  <Button variant="ghost" className={`p-0 h-auto hover:bg-transparent font-black text-[9px] sm:text-[10px] uppercase tracking-[0.2em] flex items-center gap-2 sm:gap-3 group/btn ${service.color}`}>
+                    Learn More <ChevronRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover/btn:translate-x-2 transition-transform" />
                   </Button>
                 </Link>
               </motion.div>
@@ -316,11 +316,11 @@ export default function Home() {
       </motion.section>
 
       {/* SECTION 2.5 - COLLABORATORS MARQUEE (REPOSITIONED) */}
-      <section className="py-20 bg-white border-y border-slate-50 overflow-hidden">
-        <div className="container mx-auto px-4 mb-12 max-w-7xl">
+      <section className="py-10 sm:py-20 bg-white border-y border-slate-50 overflow-hidden">
+        <div className="container mx-auto px-4 mb-6 sm:mb-12 max-w-7xl">
           <div className="flex items-center gap-4">
             <div className="h-px flex-1 bg-slate-100" />
-            <p className="text-center text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Trusted by Innovators from Global Leaders</p>
+            <p className="text-center text-[8px] sm:text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] px-2">Trusted by Innovators from Global Leaders</p>
             <div className="h-px flex-1 bg-slate-100" />
           </div>
         </div>
@@ -339,10 +339,10 @@ export default function Home() {
               <motion.div
                 key={i}
                 whileHover={{ scale: 1.1, rotate: 2, y: -5 }}
-                className="flex items-center gap-6 px-12 py-6 bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-900/5 group transition-all duration-500"
+                className="flex items-center gap-4 sm:gap-6 px-6 py-3 sm:px-12 sm:py-6 bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-xl shadow-slate-900/5 group transition-all duration-500"
               >
                 {collab.type === "company" && collab.logo && (
-                  <div className="w-14 h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center">
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center">
                     <img 
                       src={collab.logo} 
                       alt={collab.name} 
@@ -350,7 +350,7 @@ export default function Home() {
                     />
                   </div>
                 )}
-                <span className={`text-xl font-black tracking-tighter bg-gradient-to-r ${collab.color} bg-clip-text text-transparent`}>{collab.name}</span>
+                <span className={`text-base sm:text-xl font-black tracking-tighter bg-gradient-to-r ${collab.color} bg-clip-text text-transparent`}>{collab.name}</span>
               </motion.div>
             ))}
           </div>
@@ -368,10 +368,10 @@ export default function Home() {
               <motion.div
                 key={`dup-${i}`}
                 whileHover={{ scale: 1.1, rotate: 2, y: -5 }}
-                className="flex items-center gap-6 px-12 py-6 bg-white rounded-3xl border border-slate-100 shadow-xl shadow-slate-900/5 group transition-all duration-500"
+                className="flex items-center gap-4 sm:gap-6 px-6 py-3 sm:px-12 sm:py-6 bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-xl shadow-slate-900/5 group transition-all duration-500"
               >
                 {collab.type === "company" && collab.logo && (
-                  <div className="w-14 h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center">
+                  <div className="w-10 h-10 sm:w-14 sm:h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center">
                     <img 
                       src={collab.logo} 
                       alt={collab.name} 
@@ -379,7 +379,7 @@ export default function Home() {
                     />
                   </div>
                 )}
-                <span className={`text-xl font-black tracking-tighter bg-gradient-to-r ${collab.color} bg-clip-text text-transparent`}>{collab.name}</span>
+                <span className={`text-base sm:text-xl font-black tracking-tighter bg-gradient-to-r ${collab.color} bg-clip-text text-transparent`}>{collab.name}</span>
               </motion.div>
             ))}
           </div>
@@ -392,42 +392,42 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeInUp}
-        className="py-32 bg-slate-900 relative overflow-hidden"
+        className="py-16 sm:py-32 bg-slate-900 relative overflow-hidden"
       >
         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80rem] h-[80rem] bg-blue-600/10 blur-[160px] rounded-full pointer-events-none" />
 
         <div className="container mx-auto px-4 relative z-10 max-w-7xl">
-          <div className="grid lg:grid-cols-2 gap-24 items-center">
-            <div className="space-y-10">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+            <div className="space-y-6 sm:space-y-10">
               <div className="inline-flex items-center gap-3 bg-white/5 border border-white/10 text-blue-400 px-6 py-2 rounded-xl backdrop-blur-xl">
                 <Zap className="w-4 h-4 fill-current" />
                 <span className="text-[10px] font-black tracking-[0.3em] uppercase">AI Patent Drafter</span>
               </div>
-              <h2 className="font-heading font-black text-5xl md:text-7xl text-white leading-[0.95] tracking-tighter">
+              <h2 className="font-heading font-black text-3xl sm:text-5xl md:text-7xl text-white leading-[0.95] tracking-tighter">
                 Write Your Patents <br /><span className="text-blue-500">Automatically.</span>
               </h2>
-              <p className="text-slate-400 text-xl leading-relaxed font-bold max-w-xl">
+              <p className="text-slate-400 text-base sm:text-xl leading-relaxed font-bold max-w-xl">
                 Save time and money. Our AI tool helps you draft complete patent applications in minutes, formatted exactly how the government needs them.
               </p>
               <Link href="/patent-drafter">
-                <Button className="bg-blue-600 hover:bg-blue-700 text-white h-20 px-12 rounded-[2rem] shadow-2xl shadow-blue-600/30 transition-all duration-500 hover:scale-105 font-black text-[11px] uppercase tracking-widest">
-                  Try AI Drafter <Sparkles className="ml-4 w-5 h-5" />
+                <Button className="bg-blue-600 hover:bg-blue-700 text-white h-16 sm:h-20 px-8 sm:px-12 rounded-[1.5rem] sm:rounded-[2rem] shadow-2xl shadow-blue-600/30 transition-all duration-500 hover:scale-105 font-black text-[10px] sm:text-[11px] uppercase tracking-widest">
+                  Try AI Drafter <Sparkles className="ml-3 sm:ml-4 w-4.5 h-4.5 sm:w-5 sm:h-5" />
                 </Button>
               </Link>
             </div>
-            <div className="relative group">
-              <div className="absolute -inset-10 bg-blue-600/20 rounded-[5rem] rotate-3 blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-1000" />
-              <div className="relative rounded-[4rem] border-[2px] border-white/10 bg-white/5 backdrop-blur-md p-12 overflow-hidden group-hover:border-blue-500/50 transition-all duration-700">
-                <div className="aspect-video rounded-[2.5rem] bg-slate-950 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform duration-700">
+            <div className="relative group px-4 sm:px-0 mt-12 lg:mt-0">
+              <div className="absolute -inset-4 sm:-inset-10 bg-blue-600/20 rounded-[2rem] sm:rounded-[5rem] rotate-3 blur-3xl opacity-0 group-hover:opacity-100 transition-all duration-1000" />
+              <div className="relative rounded-[2rem] sm:rounded-[4rem] border-[2px] border-white/10 bg-white/5 backdrop-blur-md p-4 sm:p-12 overflow-hidden group-hover:border-blue-500/50 transition-all duration-700">
+                <div className="aspect-video rounded-[1.5rem] sm:rounded-[2.5rem] bg-slate-950 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform duration-700">
                   <img
                     src="https://images.unsplash.com/photo-1620712943543-bcc4688e7485?auto=format&fit=crop&q=80&w=1200"
                     className="w-full h-full object-cover transition-all duration-1000 opacity-80 mix-blend-screen"
                     alt="AI Drafter"
                   />
                   <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="w-24 h-24 rounded-full bg-blue-600 flex items-center justify-center shadow-2xl shadow-blue-600/40 cursor-pointer hover:scale-110 transition-transform">
-                      <Zap className="w-10 h-10 text-white" />
+                    <div className="w-16 h-16 sm:w-24 sm:h-24 rounded-full bg-blue-600 flex items-center justify-center shadow-2xl shadow-blue-600/40 cursor-pointer hover:scale-110 transition-transform">
+                      <Zap className="w-6 h-6 sm:w-10 sm:h-10 text-white" />
                     </div>
                   </div>
                 </div>
@@ -443,25 +443,25 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="py-32 bg-white"
+        className="py-16 sm:py-32 bg-white"
       >
         <div className="container mx-auto px-4 max-w-7xl">
-          <motion.div variants={fadeInUp} className="flex flex-col md:flex-row justify-between items-end mb-24 gap-12">
-            <div className="space-y-6">
+          <motion.div variants={fadeInUp} className="flex flex-col md:flex-row justify-between items-start md:items-end mb-12 sm:mb-24 gap-6 sm:gap-12">
+            <div className="space-y-4 sm:space-y-6">
               <div className="inline-flex items-center gap-3 text-emerald-600 font-black text-[10px] uppercase tracking-widest">
                 <Cpu className="w-4 h-4" /> Electronics Store
               </div>
-              <h2 className="font-heading font-black text-5xl md:text-7xl text-slate-900 tracking-tighter">Top Rated <span className="text-emerald-600">Components</span></h2>
-              <p className="text-slate-400 text-xl font-bold">Buy high-quality electronic components for your college projects and DIY builds.</p>
+              <h2 className="font-heading font-black text-3xl sm:text-5xl md:text-7xl text-slate-900 tracking-tighter">Top Rated <span className="text-emerald-600">Components</span></h2>
+              <p className="text-slate-400 text-base sm:text-xl font-bold">Buy high-quality electronic components for your college projects and DIY builds.</p>
             </div>
-            <Link href="/electronics">
-              <Button variant="outline" className="border-slate-200 text-slate-900 h-16 px-10 rounded-2xl bg-white shadow-xl shadow-slate-900/5 font-black text-[10px] uppercase tracking-widest hover:border-emerald-600 transition-all">
-                Shop Electronics <ArrowRight className="w-4 h-4 ml-4" />
+            <Link href="/electronics" className="w-full md:w-auto">
+              <Button variant="outline" className="border-slate-200 text-slate-900 h-14 sm:h-16 px-8 sm:px-10 rounded-xl sm:rounded-2xl bg-white shadow-xl shadow-slate-900/5 font-black text-[9px] sm:text-[10px] uppercase tracking-widest hover:border-emerald-600 transition-all w-full md:w-auto">
+                Shop Electronics <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 ml-3 sm:ml-4" />
               </Button>
             </Link>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-12">
             {[
               { name: "Arduino Uno R3", price: "₹699.00", img: "https://images.unsplash.com/photo-1608564697071-ddf911d81370?auto=format&fit=crop&q=80&w=400", color: "text-blue-600", bg: "bg-blue-50" },
               { name: "Raspberry Pi 4", price: "₹4,500.00", img: "https://images.unsplash.com/photo-1628126235206-5260b9ea6441?auto=format&fit=crop&q=80&w=400", color: "text-purple-600", bg: "bg-purple-50" },
@@ -472,20 +472,20 @@ export default function Home() {
                 key={i}
                 variants={fadeInUp}
                 whileHover={{ y: -15, scale: 1.02 }}
-                className={`bg-white rounded-[4rem] overflow-hidden border border-slate-100 group cursor-pointer hover:shadow-2xl transition-all duration-700`}
+                className={`bg-white rounded-[2rem] sm:rounded-[4rem] overflow-hidden border border-slate-100 group cursor-pointer hover:shadow-2xl transition-all duration-700`}
               >
-                <div className="aspect-square bg-slate-50 relative overflow-hidden group-hover:bg-white transition-colors p-8">
-                  <div className={`absolute top-6 left-6 ${item.bg} ${item.color} text-[9px] font-black tracking-[0.2em] px-4 py-1.5 rounded-xl z-10 uppercase shadow-sm border border-slate-100`}>
+                <div className="aspect-square bg-slate-50 relative overflow-hidden group-hover:bg-white transition-colors p-6 sm:p-8">
+                  <div className={`absolute top-4 left-4 sm:top-6 sm:left-6 ${item.bg} ${item.color} text-[8px] sm:text-[9px] font-black tracking-[0.2em] px-3 sm:px-4 py-1 sm:py-1.5 rounded-lg sm:rounded-xl z-10 uppercase shadow-sm border border-slate-100`}>
                     In Stock
                   </div>
                   <img src={item.img} alt={item.name} className="w-full h-full object-contain group-hover:scale-110 transition-transform duration-1000" />
                 </div>
-                <div className="p-10 space-y-6">
-                  <h3 className="font-black text-slate-900 text-xl leading-tight group-hover:text-emerald-600 transition-colors">{item.name}</h3>
-                  <div className="flex items-center justify-between border-y border-slate-50 py-4">
-                    <span className="font-black text-slate-900 text-2xl tracking-tighter">{item.price}</span>
+                <div className="p-6 sm:p-10 space-y-4 sm:space-y-6">
+                  <h3 className="font-black text-slate-900 text-lg sm:text-xl leading-tight group-hover:text-emerald-600 transition-colors">{item.name}</h3>
+                  <div className="flex items-center justify-between border-y border-slate-50 py-3 sm:py-4">
+                    <span className="font-black text-slate-900 text-xl sm:text-2xl tracking-tighter">{item.price}</span>
                   </div>
-                  <Button className={`w-full bg-slate-900 hover:bg-emerald-600 text-white rounded-2xl h-16 font-black text-[10px] uppercase tracking-widest transition-all duration-500 shadow-xl shadow-slate-900/10 group-hover:shadow-emerald-600/20`}>Add to Cart</Button>
+                  <Button className={`w-full bg-slate-900 hover:bg-emerald-600 text-white rounded-xl sm:rounded-2xl h-12 sm:h-16 font-black text-[9px] sm:text-[10px] uppercase tracking-widest transition-all duration-500 shadow-xl shadow-slate-900/10 group-hover:shadow-emerald-600/20`}>Add to Cart</Button>
                 </div>
               </motion.div>
             ))}
@@ -499,17 +499,17 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="py-32 bg-slate-50"
+        className="py-16 sm:py-32 bg-slate-50"
       >
         <div className="container mx-auto px-4 max-w-7xl">
-          <motion.div variants={fadeInUp} className="text-center mb-24 space-y-6">
+          <motion.div variants={fadeInUp} className="text-center mb-12 sm:mb-24 space-y-4 sm:space-y-6">
             <div className="inline-flex items-center gap-3 text-orange-600 font-black text-[10px] uppercase tracking-widest">
               <Star className="w-4 h-4 fill-current" /> Reviews
             </div>
-            <h2 className="font-heading font-black text-5xl md:text-7xl text-slate-900 tracking-tighter">What Students <span className="text-orange-600">Say</span></h2>
+            <h2 className="font-heading font-black text-3xl sm:text-5xl md:text-7xl text-slate-900 tracking-tighter">What Students <span className="text-orange-600">Say</span></h2>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-12">
             {[
               { name: "Aman S.", course: "B.Tech Computer Science", text: "Kalvex helped me finish my final year project and get my first IEEE paper published! Highly recommend their AI drafter too.", color: "text-orange-600", bg: "bg-orange-50" },
               { name: "Priya M.", course: "M.Tech Electronics", text: "The quality of their electronic components is amazing. Delivery was fast and everything worked perfectly out of the box.", color: "text-emerald-600", bg: "bg-emerald-50" },
@@ -518,22 +518,22 @@ export default function Home() {
               <motion.div
                 key={i}
                 variants={fadeInUp}
-                className="bg-white p-12 rounded-[4rem] border border-slate-100 shadow-xl shadow-slate-900/5 flex flex-col hover:shadow-2xl transition-all duration-700 group relative overflow-hidden"
+                className="bg-white p-6 sm:p-12 rounded-[2rem] sm:rounded-[4rem] border border-slate-100 shadow-xl shadow-slate-900/5 flex flex-col hover:shadow-2xl transition-all duration-700 group relative overflow-hidden"
               >
-                <div className={`absolute top-0 right-0 w-32 h-32 rounded-bl-[4rem] translate-x-16 -translate-y-16 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-700 opacity-50 ${review.bg}`} />
-                <div className={`flex gap-1 mb-8 ${review.color} relative z-10`}>
-                  {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-5 h-5 fill-current" />)}
+                <div className={`absolute top-0 right-0 w-24 h-24 sm:w-32 sm:h-32 rounded-bl-[2.5rem] sm:rounded-bl-[4rem] translate-x-12 -translate-y-12 sm:translate-x-16 sm:-translate-y-16 group-hover:translate-x-0 group-hover:translate-y-0 transition-all duration-700 opacity-50 ${review.bg}`} />
+                <div className={`flex gap-1 mb-6 sm:mb-8 ${review.color} relative z-10`}>
+                  {[1, 2, 3, 4, 5].map((s) => <Star key={s} className="w-4.5 h-4.5 sm:w-5 sm:h-5 fill-current" />)}
                 </div>
-                <p className="text-slate-600 text-lg font-bold italic leading-relaxed mb-10 flex-grow relative z-10">&quot;{review.text}&quot;</p>
-                <div className="flex items-center gap-6 pt-8 border-t border-slate-50 relative z-10">
-                  <div className={`w-14 h-14 rounded-2xl flex items-center justify-center font-black shadow-lg ${review.bg} ${review.color}`}>
+                <p className="text-slate-600 text-base sm:text-lg font-bold italic leading-relaxed mb-6 sm:mb-10 flex-grow relative z-10">&quot;{review.text}&quot;</p>
+                <div className="flex items-center gap-4 sm:gap-6 pt-6 sm:pt-8 border-t border-slate-50 relative z-10">
+                  <div className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center font-black shadow-lg ${review.bg} ${review.color} text-sm sm:text-base`}>
                     {review.name.charAt(0)}
                   </div>
                   <div>
-                    <h4 className="font-black text-slate-900 text-sm uppercase tracking-widest">{review.name}</h4>
-                    <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">{review.course}</p>
+                    <h4 className="font-black text-slate-900 text-xs sm:text-sm uppercase tracking-widest">{review.name}</h4>
+                    <p className="text-[8px] sm:text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5 sm:mt-1">{review.course}</p>
                   </div>
-                  <CheckCircle className={`ml-auto w-6 h-6 ${review.color}`} />
+                  <CheckCircle className={`ml-auto w-5 h-5 sm:w-6 sm:h-6 ${review.color}`} />
                 </div>
               </motion.div>
             ))}
@@ -547,41 +547,41 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={staggerContainer}
-        className="py-40 bg-slate-950 relative overflow-hidden"
+        className="py-16 sm:py-40 bg-slate-950 relative overflow-hidden"
       >
         <div className="absolute top-0 right-0 w-[80rem] h-[80rem] bg-blue-600/10 rounded-full blur-[160px] translate-x-1/2 -translate-y-1/2" />
         <div className="absolute bottom-0 left-0 w-[60rem] h-[60rem] bg-emerald-600/10 rounded-full blur-[140px] -translate-x-1/2 translate-y-1/2" />
         
         <div className="container mx-auto px-4 max-w-7xl relative z-10">
-          <div className="grid lg:grid-cols-12 gap-24 items-center">
-            <div className="lg:col-span-6 space-y-12">
-              <motion.div variants={fadeInUp} className="space-y-8">
+          <div className="grid lg:grid-cols-12 gap-12 lg:gap-24 items-center">
+            <div className="lg:col-span-6 space-y-8 sm:space-y-12">
+              <motion.div variants={fadeInUp} className="space-y-6 sm:space-y-8">
                 <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em]">
                   <Globe className="w-4 h-4" /> Global Impact
                 </div>
-                <h2 className="text-6xl md:text-8xl font-black font-heading text-white leading-[0.85] tracking-tighter">
+                <h2 className="text-4xl sm:text-6xl md:text-8xl font-black font-heading text-white leading-[0.85] tracking-tighter">
                   Lead the <br />
                   <span className="bg-gradient-to-r from-blue-400 via-emerald-400 to-indigo-400 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(59,130,246,0.3)] animate-gradient-x">Infra of Tomorrow.</span>
                 </h2>
-                <p className="text-xl text-slate-400 font-bold leading-relaxed max-w-xl">
+                <p className="text-base sm:text-xl text-slate-400 font-bold leading-relaxed max-w-xl">
                   We are not just a service provider; we are the foundation for the next decade of Indian engineering excellence. Join the movement that is redefining innovation.
                 </p>
               </motion.div>
 
-              <motion.div variants={fadeInUp} className="grid grid-cols-2 gap-8">
-                <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 group hover:border-blue-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.1)]">
-                  <div className="text-4xl font-black text-white mb-2 tracking-tighter bg-gradient-to-br from-white to-slate-500 bg-clip-text text-transparent group-hover:from-blue-400 group-hover:to-blue-600 transition-all">50k+</div>
-                  <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest">Active Patents</div>
+              <motion.div variants={fadeInUp} className="grid grid-cols-2 gap-4 sm:gap-8">
+                <div className="p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] bg-white/5 border border-white/10 group hover:border-blue-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(59,130,246,0.1)]">
+                  <div className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tighter bg-gradient-to-br from-white to-slate-500 bg-clip-text text-transparent group-hover:from-blue-400 group-hover:to-blue-600 transition-all">50k+</div>
+                  <div className="text-[8px] sm:text-[10px] text-slate-500 font-black uppercase tracking-widest">Active Patents</div>
                 </div>
-                <div className="p-8 rounded-[2.5rem] bg-white/5 border border-white/10 group hover:border-emerald-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.1)]">
-                  <div className="text-4xl font-black text-white mb-2 tracking-tighter bg-gradient-to-br from-white to-slate-500 bg-clip-text text-transparent group-hover:from-emerald-400 group-hover:to-emerald-600 transition-all">100+</div>
-                  <div className="text-[10px] text-slate-500 font-black uppercase tracking-widest">IIT Collaborations</div>
+                <div className="p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[2.5rem] bg-white/5 border border-white/10 group hover:border-emerald-500/50 transition-all duration-500 hover:shadow-[0_0_30px_rgba(16,185,129,0.1)]">
+                  <div className="text-3xl sm:text-4xl font-black text-white mb-2 tracking-tighter bg-gradient-to-br from-white to-slate-500 bg-clip-text text-transparent group-hover:from-emerald-400 group-hover:to-emerald-600 transition-all">100+</div>
+                  <div className="text-[8px] sm:text-[10px] text-slate-500 font-black uppercase tracking-widest">IIT Collaborations</div>
                 </div>
               </motion.div>
             </div>
 
-            <motion.div variants={fadeInUp} className="lg:col-span-6 relative">
-              <div className="relative rounded-[4rem] overflow-hidden border border-white/10 group shadow-2xl">
+            <motion.div variants={fadeInUp} className="lg:col-span-6 relative px-4 sm:px-0 mt-12 lg:mt-0">
+              <div className="relative rounded-[2rem] sm:rounded-[4rem] overflow-hidden border border-white/10 group shadow-2xl">
                 <img 
                   src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=1200" 
                   className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-1000 scale-110 group-hover:scale-100"
@@ -592,18 +592,18 @@ export default function Home() {
                   <motion.div 
                     whileHover={{ scale: 1.2, rotate: 180 }}
                     transition={{ type: "spring", stiffness: 260, damping: 20 }}
-                    className="w-32 h-32 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center animate-pulse cursor-pointer group-hover:bg-blue-600/20 group-hover:border-blue-500/50"
+                    className="w-20 h-20 sm:w-32 sm:h-32 rounded-full bg-white/10 backdrop-blur-xl border border-white/20 flex items-center justify-center animate-pulse cursor-pointer group-hover:bg-blue-600/20 group-hover:border-blue-500/50"
                   >
-                    <Zap className="w-12 h-12 text-blue-500 group-hover:text-blue-400" />
+                    <Zap className="w-8 h-8 sm:w-12 sm:h-12 text-blue-500 group-hover:text-blue-400" />
                   </motion.div>
                 </div>
               </div>
               <motion.div 
                 animate={{ y: [0, -20, 0] }}
                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                className="absolute -top-12 -right-12 bg-blue-600 p-8 rounded-[3rem] shadow-2xl shadow-blue-600/40 z-20 hover:scale-110 transition-transform cursor-pointer"
+                className="absolute -top-6 -right-2 sm:-top-12 sm:-right-12 bg-blue-600 p-4 sm:p-8 rounded-[1.5rem] sm:rounded-[3rem] shadow-2xl shadow-blue-600/40 z-20 hover:scale-110 transition-transform cursor-pointer"
               >
-                <Cpu className="w-12 h-12 text-white" />
+                <Cpu className="w-6 h-6 sm:w-12 sm:h-12 text-white" />
               </motion.div>
             </motion.div>
           </div>
@@ -616,32 +616,32 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeInUp}
-        className="py-40 bg-white"
+        className="py-16 sm:py-40 bg-white"
       >
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="bg-slate-900 rounded-[6rem] p-32 text-center text-white shadow-[0_64px_128px_-24px_rgba(15,23,42,0.4)] relative overflow-hidden group">
+          <div className="bg-slate-900 rounded-[2.5rem] sm:rounded-[4rem] lg:rounded-[6rem] p-8 py-16 sm:p-24 lg:p-32 text-center text-white shadow-[0_64px_128px_-24px_rgba(15,23,42,0.4)] relative overflow-hidden group">
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_2px,transparent_2px)] bg-[length:48px_48px] group-hover:scale-125 transition-transform duration-[2000ms]" />
             <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-blue-600/20 rounded-full blur-[160px] -translate-y-1/2 translate-x-1/2" />
 
-            <div className="relative z-10 space-y-16">
-              <div className="inline-flex items-center gap-3 bg-white/10 text-blue-400 px-8 py-3 rounded-2xl backdrop-blur-xl border border-white/10">
-                <Fingerprint className="w-5 h-5" />
-                <span className="text-[11px] font-black tracking-[0.4em] uppercase">Join Us Today</span>
+            <div className="relative z-10 space-y-8 sm:space-y-16">
+              <div className="inline-flex items-center gap-3 bg-white/10 text-blue-400 px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl sm:rounded-2xl backdrop-blur-xl border border-white/10">
+                <Fingerprint className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
+                <span className="text-[10px] sm:text-[11px] font-black tracking-[0.4em] uppercase">Join Us Today</span>
               </div>
-              <h2 className="font-heading font-black text-6xl md:text-8xl leading-[0.85] tracking-tighter">
+              <h2 className="font-heading font-black text-3xl sm:text-6xl md:text-8xl leading-[0.85] tracking-tighter">
                 Ready to Build <br /><span className="text-blue-500">Something Amazing?</span>
               </h2>
-              <p className="text-slate-400 text-2xl max-w-3xl mx-auto font-bold leading-relaxed">
+              <p className="text-slate-400 text-lg sm:text-2xl max-w-3xl mx-auto font-bold leading-relaxed">
                 Join thousands of top students who trust Kalvex for their projects, publications, and patents.
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-8 pt-8">
-                <Link href="/register">
-                  <Button className="bg-blue-600 hover:bg-blue-500 text-white h-24 px-16 text-xl rounded-[2.5rem] w-full sm:w-auto font-black shadow-2xl shadow-blue-600/30 transition-all duration-500 hover:scale-105 uppercase tracking-widest">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 pt-4 sm:pt-8">
+                <Link href="/register" className="w-full sm:w-auto">
+                  <Button className="bg-blue-600 hover:bg-blue-500 text-white h-16 sm:h-24 px-8 sm:px-16 text-base sm:text-xl rounded-xl sm:rounded-[2.5rem] w-full font-black shadow-2xl shadow-blue-600/30 transition-all duration-500 hover:scale-105 uppercase tracking-widest">
                     Create Free Account
                   </Button>
                 </Link>
-                <Link href="/contact">
-                  <Button variant="outline" className="border-white/10 text-white hover:bg-white/5 h-24 px-16 text-xl rounded-[2.5rem] w-full sm:w-auto bg-white/5 backdrop-blur-md font-black uppercase tracking-widest transition-all">
+                <Link href="/contact" className="w-full sm:w-auto">
+                  <Button variant="outline" className="border-white/10 text-white hover:bg-white/5 h-16 sm:h-24 px-8 sm:px-16 text-base sm:text-xl rounded-xl sm:rounded-[2.5rem] w-full bg-white/5 backdrop-blur-md font-black uppercase tracking-widest transition-all">
                     Contact Us
                   </Button>
                 </Link>

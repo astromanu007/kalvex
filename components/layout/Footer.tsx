@@ -98,17 +98,17 @@ export function Footer() {
               <div className="inline-flex items-center gap-3 px-6 py-2 rounded-2xl bg-white text-blue-600 text-[10px] font-black uppercase tracking-[0.3em] border border-blue-100 shadow-xl shadow-blue-600/5">
                 <Sparkles className="w-4 h-4" /> Our Mission
               </div>
-              <h2 className="text-5xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.95] font-heading">
+              <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter leading-[0.95] font-heading">
                 Building <br />
                 <span className="text-blue-600">The Future.</span>
               </h2>
-              <p className="text-slate-400 text-xl font-bold leading-relaxed max-w-xl">
+              <p className="text-slate-400 text-lg sm:text-xl font-bold leading-relaxed max-w-xl">
                 Join India&apos;s leading platform for engineering research and intellectual property.
               </p>
             </div>
             <div className="lg:col-span-5">
               <form onSubmit={handleSubscribe} className="relative max-w-2xl">
-                <div className="bg-white rounded-[1.25rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] p-1.5 flex flex-col sm:flex-row items-center gap-2 border border-slate-100/50">
+                <div className="bg-white rounded-[1.25rem] shadow-[0_10px_40px_-10px_rgba(0,0,0,0.08)] p-2 sm:p-1.5 flex flex-col sm:flex-row items-center gap-2 border border-slate-100/50">
                   <div className="flex-1 flex items-center px-5 gap-3 w-full">
                     <Mail className="w-5 h-5 text-slate-400" />
                     <input 
@@ -203,7 +203,7 @@ export function Footer() {
         
         <div className="container mx-auto px-6 md:px-12 max-w-7xl py-12 relative z-10">
           {/* Links Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 lg:gap-12 mb-20">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-16 lg:gap-12 mb-10 sm:mb-20">
             
             {/* Column 1: Identity */}
             <div className="space-y-10">
