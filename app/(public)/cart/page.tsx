@@ -88,6 +88,15 @@ export default function CartPage() {
     <div className="min-h-screen bg-[#f8fafc] pt-32 pb-20 font-sans">
       <div className="max-w-[1100px] mx-auto px-4 sm:px-6">
         
+        {/* Test Marquee Banner */}
+        <div className="mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500 via-indigo-500 to-blue-600 p-[2px] shadow-lg shadow-blue-500/10">
+          <div className="bg-[#0f172a] rounded-[14px] py-4 px-6">
+            <marquee className="text-xs font-black text-white tracking-[0.25em] uppercase">
+              ✨ TEST UPDATE VERIFICATION: Mark thank you so much for your order ✨ TEST UPDATE VERIFICATION: Mark thank you so much for your order ✨
+            </marquee>
+          </div>
+        </div>
+
         {/* Header */}
         <motion.div initial="hidden" animate="visible" variants={fadeUp} className="flex items-center gap-5 mb-12">
           <div className="w-14 h-14 rounded-[1rem] bg-white flex items-center justify-center shadow-sm border border-slate-100">
