@@ -1,6 +1,8 @@
-import { PrismaClient, ServiceType } from '@prisma/client';
+"use server";
 
-const prisma = new PrismaClient();
+import prisma from "@/lib/prisma";
+import { ServiceType, BookingStatus } from "@prisma/client";
+import { revalidatePath } from "next/cache";
 
 /**
  * Create a new booking record.
@@ -30,6 +32,7 @@ export async function createBooking({
       },
     });
     console.log('Booking created:', { bookingId: booking.id, userId });
+    revalidatePath("/admin/bookings");
     return { success: true, booking };
   } catch (error) {
     console.error('Failed to create booking:', error);
@@ -50,6 +53,27 @@ export async function assignBooking({
       where: { id: bookingId },
       data: { assignedToId },
     });
+    revalidatePath("/admin/bookings");
+    return { success: true, booking };
+  } catch (error) {
+    return { success: false, error: (error as Error).message };
+  }
+}
+
+/** Update the status of a booking */
+export async function updateBookingStatus({
+  bookingId,
+  status,
+}: {
+  bookingId: string;
+  status: BookingStatus;
+}) {
+  try {
+    const booking = await prisma.booking.update({
+      where: { id: bookingId },
+      data: { status },
+    });
+    revalidatePath("/admin/bookings");
     return { success: true, booking };
   } catch (error) {
     return { success: false, error: (error as Error).message };

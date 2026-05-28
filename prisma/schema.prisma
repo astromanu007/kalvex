@@ -504,6 +504,7 @@ model Booking {
   serviceId    String
   serviceType  ServiceType
   requirements String?
+  status       BookingStatus   @default(PENDING)
   assignedToId String?
   assignedTo   User?           @relation("DeveloperAssignments", fields: [assignedToId], references: [id])
   createdAt    DateTime        @default(now())

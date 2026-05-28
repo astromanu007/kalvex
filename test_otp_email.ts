@@ -1,4 +1,4 @@
-import { registerStudent } from "./app/actions/auth.ts";
+import { registerStudent } from "./app/actions/auth";
 
 (async () => {
   const result = await registerStudent({
