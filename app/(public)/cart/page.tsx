@@ -90,10 +90,15 @@ export default function CartPage() {
         
         {/* Test Marquee Banner */}
         <div className="mb-8 overflow-hidden rounded-2xl bg-gradient-to-r from-rose-500 via-indigo-500 to-blue-600 p-[2px] shadow-lg shadow-blue-500/10">
-          <div className="bg-[#0f172a] rounded-[14px] py-4 px-6">
-            <marquee className="text-xs font-black text-white tracking-[0.25em] uppercase">
-              ✨ TEST UPDATE VERIFICATION: Mark thank you so much for your order ✨ TEST UPDATE VERIFICATION: Mark thank you so much for your order ✨
-            </marquee>
+          <div className="bg-[#0f172a] rounded-[14px] py-4 px-6 relative flex overflow-x-hidden">
+            <div className="animate-marquee whitespace-nowrap flex items-center text-[10px] font-black text-white tracking-[0.2em] uppercase space-x-8">
+              <span>✨ TEST UPDATE VERIFICATION: Mark thank you so much for your order ✨ &nbsp;&nbsp;&nbsp;</span>
+              <span>✨ TEST UPDATE VERIFICATION: Mark thank you so much for your order ✨ &nbsp;&nbsp;&nbsp;</span>
+            </div>
+            <div className="absolute top-4 animate-marquee2 whitespace-nowrap flex items-center text-[10px] font-black text-white tracking-[0.2em] uppercase space-x-8">
+              <span>✨ TEST UPDATE VERIFICATION: Mark thank you so much for your order ✨ &nbsp;&nbsp;&nbsp;</span>
+              <span>✨ TEST UPDATE VERIFICATION: Mark thank you so much for your order ✨ &nbsp;&nbsp;&nbsp;</span>
+            </div>
           </div>
         </div>
 

@@ -1,5 +1,4 @@
-import { PrismaClient, BookingStatus, ServiceType } from '@prisma/client';
-import { logger } from '@/utils/logger'; // assume logger exists
+import { PrismaClient, ServiceType } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -27,33 +26,13 @@ export async function createBooking({
         userId,
         serviceId,
         serviceType,
-        status: BookingStatus.PENDING,
         requirements,
       },
     });
-    logger.info('Booking created', { bookingId: booking.id, userId });
+    console.log('Booking created:', { bookingId: booking.id, userId });
     return { success: true, booking };
   } catch (error) {
-    logger.error('Failed to create booking', { error });
-    return { success: false, error: (error as Error).message };
-  }
-}
-
-/** Update the status of an existing booking */
-export async function updateBookingStatus({
-  bookingId,
-  status,
-}: {
-  bookingId: string;
-  status: BookingStatus;
-}) {
-  try {
-    const booking = await prisma.booking.update({
-      where: { id: bookingId },
-      data: { status },
-    });
-    return { success: true, booking };
-  } catch (error) {
+    console.error('Failed to create booking:', error);
     return { success: false, error: (error as Error).message };
   }
 }
@@ -83,9 +62,9 @@ export async function getAllBookings() {
     const bookings = await prisma.booking.findMany({
       include: {
         user: { select: { id: true, name: true, email: true } },
-        assignedTo: { select: { id: true, name: true, email: true } }
+        assignedTo: { select: { id: true, name: true, email: true } },
       },
-      orderBy: { createdAt: 'desc' }
+      orderBy: { createdAt: 'desc' },
     });
     return { success: true, bookings };
   } catch (error) {
