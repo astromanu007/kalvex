@@ -94,6 +94,18 @@ export function Navbar() {
     };
   }, [session]);
 
+  // Body Scroll Locking Effect for mobile menu, search, or notification overlay
+  useEffect(() => {
+    if (mobileMenuOpen || searchOpen || notificationOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileMenuOpen, searchOpen, notificationOpen]);
+
   // Minimal Navbar for Auth Pages (Moved down to follow Rules of Hooks)
   if (mounted && (pathname?.startsWith("/login") || pathname?.startsWith("/register") || pathname?.startsWith("/forgot-password"))) {
     return (
@@ -122,48 +134,155 @@ export function Navbar() {
   const isHome = pathname === "/";
 
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 transition-all duration-700 ${mobileMenuOpen ? "z-[250]" : "z-[100]"
-        } ${isScrolled
-          ? "bg-white/90 backdrop-blur-xl border-b border-slate-100 py-3 shadow-sm"
-          : "bg-transparent py-6"
-        }`}
-    >
-      <div className="container mx-auto px-4 md:px-12 max-w-7xl flex items-center justify-between">
-        {/* LOGO: NEW BRAND IDENTITY */}
-        <Link href="/" className="relative z-[110] flex items-center group">
-          <img
-            src="/kalvex-logo.png"
-            alt="KALVEX"
-            className="h-9 md:h-11 w-auto object-contain transition-all duration-500 group-hover:scale-105"
-          />
-        </Link>
+    <>
+      <header
+        className={`fixed top-0 left-0 right-0 transition-all duration-700 ${mobileMenuOpen ? "z-[250]" : "z-[100]"
+          } ${isScrolled
+            ? "bg-white/90 backdrop-blur-xl border-b border-slate-100 py-3 shadow-sm"
+            : "bg-transparent py-6"
+          }`}
+      >
+        <div className="container mx-auto px-4 md:px-12 max-w-7xl flex items-center justify-between">
+          {/* LOGO: NEW BRAND IDENTITY */}
+          <Link href="/" className="relative z-[110] flex items-center group">
+            <img
+              src="/kalvex-logo.png"
+              alt="KALVEX"
+              className="h-9 md:h-11 w-auto object-contain transition-all duration-500 group-hover:scale-105"
+            />
+          </Link>
 
-        {/* DESKTOP NAV */}
-        <nav className="hidden lg:flex items-center space-x-8">
-          {NAV_LINKS.map((link) => (
-            <Link
-              key={link.name}
-              href={link.href}
-              className={`text-[12px] font-bold uppercase tracking-wider transition-colors relative group/nav ${pathname === link.href ? "text-blue-600" : "text-slate-500 hover:text-slate-900"
-                }`}
-            >
-              {link.name}
-              <span className={`absolute -bottom-1 left-0 h-0.5 bg-blue-600 transition-all duration-300 rounded-full ${pathname === link.href ? "w-full" : "w-0 group-hover/nav:w-full"
-                }`} />
-            </Link>
-          ))}
-        </nav>
+          {/* DESKTOP NAV */}
+          <nav className="hidden lg:flex items-center space-x-8">
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.name}
+                href={link.href}
+                className={`text-[12px] font-bold uppercase tracking-wider transition-colors relative group/nav ${pathname === link.href ? "text-blue-600" : "text-slate-500 hover:text-slate-900"
+                  }`}
+              >
+                {link.name}
+                <span className={`absolute -bottom-1 left-0 h-0.5 bg-blue-600 transition-all duration-300 rounded-full ${pathname === link.href ? "w-full" : "w-0 group-hover/nav:w-full"
+                  }`} />
+              </Link>
+            ))}
+          </nav>
 
-        {/* RIGHT ACTIONS: HIGH-STAKES INTERACTION */}
-        <div className="hidden lg:flex items-center space-x-8">
-          <div className="flex items-center gap-6 pr-6 border-r border-slate-100">
+          {/* RIGHT ACTIONS: HIGH-STAKES INTERACTION */}
+          <div className="hidden lg:flex items-center space-x-8">
+            <div className="flex items-center gap-6 pr-6 border-r border-slate-100">
+              <button
+                onClick={() => setSearchOpen(true)}
+                className="text-slate-400 hover:text-blue-600 transition-all duration-500 hover:scale-125 group relative"
+              >
+                <Search className="w-5 h-5" />
+                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[8px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest whitespace-nowrap">Search (Ctrl+K)</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  if (session) {
+                    setNotificationOpen(prev => !prev);
+                  } else {
+                    router.push("/login");
+                  }
+                }}
+                className="relative text-slate-400 hover:text-blue-600 transition-all duration-500 hover:scale-125"
+              >
+                <Bell className={`w-5 h-5 transition-all duration-300 ${unreadCount > 0 ? "text-slate-700" : ""}`} />
+                {/* Subtle pulse ring when notifications exist */}
+                {unreadCount > 0 && (
+                  <span className={`absolute inset-0 rounded-full animate-ping opacity-20 ${unreadCount >= 10 ? "bg-red-500" : unreadCount >= 4 ? "bg-orange-500" : "bg-blue-500"
+                    }`} />
+                )}
+                {unreadCount > 0 && (
+                  <span className={`absolute -top-2 -right-2 min-w-[1.25rem] h-5 px-1 text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-xl transition-all duration-300 ${unreadCount >= 10
+                      ? "bg-red-500 shadow-red-500/40 scale-110"
+                      : unreadCount >= 4
+                        ? "bg-orange-500 shadow-orange-500/40"
+                        : "bg-blue-600 shadow-blue-600/40"
+                    }`}>
+                    {unreadCount > 99 ? "99+" : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              <Link href="/cart" className="relative text-slate-400 hover:text-blue-600 transition-all duration-500 hover:scale-125">
+                <ShoppingCart className={`w-5 h-5 transition-all duration-300 ${cartCount > 0 ? "text-slate-700" : ""}`} />
+                {/* Pulse ring */}
+                {cartCount > 0 && (
+                  <span className={`absolute inset-0 rounded-full animate-ping opacity-20 ${cartCount >= 10 ? "bg-red-500" : cartCount >= 4 ? "bg-orange-500" : "bg-blue-500"
+                    }`} />
+                )}
+                {cartCount > 0 && (
+                  <span className={`absolute -top-2 -right-2 min-w-[1.25rem] h-5 px-1 text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-xl transition-all duration-300 ${cartCount >= 10
+                      ? "bg-red-500 shadow-red-500/40 scale-110"
+                      : cartCount >= 4
+                        ? "bg-orange-500 shadow-orange-500/40"
+                        : "bg-blue-600 shadow-blue-600/40"
+                    }`}>
+                    {cartCount > 99 ? "99+" : cartCount}
+                  </span>
+                )}
+              </Link>
+            </div>
+
+            <AnimatePresence mode="wait">
+              {session ? (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  className="relative group"
+                >
+                  <button className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-900 font-black overflow-hidden hover:bg-white hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.1)] transition-all duration-700 group/user">
+                    {session.user?.image ? (
+                      <img src={session.user.image} alt="User" className="w-full h-full object-cover grayscale group-hover/user:grayscale-0 transition-all duration-700" />
+                    ) : (
+                      <User className="w-6 h-6 text-slate-400 group-hover/user:text-blue-600 transition-colors" />
+                    )}
+                  </button>
+                  <div className="absolute right-0 top-full mt-6 w-72 bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_48px_96px_-24px_rgba(0,0,0,0.15)] opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-4 group-hover:translate-y-0 transition-all duration-700 flex flex-col py-6 px-3 z-[120]">
+                    <div className="px-6 py-4 mb-2 border-b border-slate-50">
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">User Account</p>
+                      <p className="text-sm font-black text-slate-900 mt-1 truncate">{session.user?.name || "Member"}</p>
+                    </div>
+                    <Link href="/dashboard" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
+                      <LayoutDashboard className="w-4 h-4" /> Dashboard <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                    </Link>
+                    <Link href="/dashboard/orders" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
+                      <ShoppingCart className="w-4 h-4" /> My Orders <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                    </Link>
+                    <Link href="/dashboard/profile" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
+                      <Settings className="w-4 h-4" /> Settings <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                    </Link>
+                    <div className="h-px bg-slate-50 my-4 mx-6" />
+                    <button onClick={() => signOut()} className="flex items-center gap-4 px-6 py-4 hover:bg-red-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-red-600 transition-all group/item">
+                      <LogOut className="w-4 h-4" /> Sign Out
+                    </button>
+                  </div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                >
+                  <Link href="/login">
+                    <Button className="bg-slate-900 hover:bg-blue-600 text-white rounded-xl px-8 h-12 font-bold shadow-lg transition-all duration-300 hover:-translate-y-0.5 text-sm flex items-center gap-2">
+                      Sign In <ChevronRight className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* MOBILE ACTIONS */}
+          <div className="flex items-center gap-2 sm:gap-3 lg:hidden z-[110]">
             <button
               onClick={() => setSearchOpen(true)}
-              className="text-slate-400 hover:text-blue-600 transition-all duration-500 hover:scale-125 group relative"
+              className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-600 transition-all active:scale-95"
             >
-              <Search className="w-5 h-5" />
-              <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 bg-slate-900 text-white text-[8px] font-black px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest whitespace-nowrap">Search (Ctrl+K)</span>
+              <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
             </button>
 
             <button
@@ -174,142 +293,37 @@ export function Navbar() {
                   router.push("/login");
                 }
               }}
-              className="relative text-slate-400 hover:text-blue-600 transition-all duration-500 hover:scale-125"
+              className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-600 relative transition-all active:scale-95"
             >
-              <Bell className={`w-5 h-5 transition-all duration-300 ${unreadCount > 0 ? "text-slate-700" : ""}`} />
-              {/* Subtle pulse ring when notifications exist */}
+              <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
               {unreadCount > 0 && (
-                <span className={`absolute inset-0 rounded-full animate-ping opacity-20 ${unreadCount >= 10 ? "bg-red-500" : unreadCount >= 4 ? "bg-orange-500" : "bg-blue-500"
-                  }`} />
-              )}
-              {unreadCount > 0 && (
-                <span className={`absolute -top-2 -right-2 min-w-[1.25rem] h-5 px-1 text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-xl transition-all duration-300 ${unreadCount >= 10
-                    ? "bg-red-500 shadow-red-500/40 scale-110"
-                    : unreadCount >= 4
-                      ? "bg-orange-500 shadow-orange-500/40"
-                      : "bg-blue-600 shadow-blue-600/40"
-                  }`}>
+                <span className="absolute -top-1 -right-1 min-w-[0.875rem] h-3.5 px-1 bg-blue-600 text-white text-[7px] font-black rounded-full flex items-center justify-center">
                   {unreadCount > 99 ? "99+" : unreadCount}
                 </span>
               )}
             </button>
 
-            <Link href="/cart" className="relative text-slate-400 hover:text-blue-600 transition-all duration-500 hover:scale-125">
-              <ShoppingCart className={`w-5 h-5 transition-all duration-300 ${cartCount > 0 ? "text-slate-700" : ""}`} />
-              {/* Pulse ring */}
+            <Link
+              href="/cart"
+              className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-600 relative transition-all active:scale-95"
+            >
+              <ShoppingCart className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
               {cartCount > 0 && (
-                <span className={`absolute inset-0 rounded-full animate-ping opacity-20 ${cartCount >= 10 ? "bg-red-500" : cartCount >= 4 ? "bg-orange-500" : "bg-blue-500"
-                  }`} />
-              )}
-              {cartCount > 0 && (
-                <span className={`absolute -top-2 -right-2 min-w-[1.25rem] h-5 px-1 text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-xl transition-all duration-300 ${cartCount >= 10
-                    ? "bg-red-500 shadow-red-500/40 scale-110"
-                    : cartCount >= 4
-                      ? "bg-orange-500 shadow-orange-500/40"
-                      : "bg-blue-600 shadow-blue-600/40"
-                  }`}>
+                <span className="absolute -top-1 -right-1 min-w-[0.875rem] h-3.5 px-1 bg-blue-600 text-white text-[7px] font-black rounded-full flex items-center justify-center">
                   {cartCount > 99 ? "99+" : cartCount}
                 </span>
               )}
             </Link>
+
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center shadow-lg transition-all active:scale-95"
+            >
+              {mobileMenuOpen ? <X className="w-4 h-4 sm:w-4.5 sm:h-4.5" /> : <Menu className="w-4 h-4 sm:w-4.5 sm:h-4.5" />}
+            </button>
           </div>
-
-          <AnimatePresence mode="wait">
-            {session ? (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                className="relative group"
-              >
-                <button className="w-14 h-14 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-900 font-black overflow-hidden hover:bg-white hover:shadow-[0_24px_48px_-12px_rgba(0,0,0,0.1)] transition-all duration-700 group/user">
-                  {session.user?.image ? (
-                    <img src={session.user.image} alt="User" className="w-full h-full object-cover grayscale group-hover/user:grayscale-0 transition-all duration-700" />
-                  ) : (
-                    <User className="w-6 h-6 text-slate-400 group-hover/user:text-blue-600 transition-colors" />
-                  )}
-                </button>
-                <div className="absolute right-0 top-full mt-6 w-72 bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_48px_96px_-24px_rgba(0,0,0,0.15)] opacity-0 invisible group-hover:opacity-100 group-hover:visible translate-y-4 group-hover:translate-y-0 transition-all duration-700 flex flex-col py-6 px-3 z-[120]">
-                  <div className="px-6 py-4 mb-2 border-b border-slate-50">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-300">User Account</p>
-                    <p className="text-sm font-black text-slate-900 mt-1 truncate">{session.user?.name || "Member"}</p>
-                  </div>
-                  <Link href="/dashboard" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
-                    <LayoutDashboard className="w-4 h-4" /> Dashboard <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                  </Link>
-                  <Link href="/dashboard/orders" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
-                    <ShoppingCart className="w-4 h-4" /> My Orders <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                  </Link>
-                  <Link href="/dashboard/profile" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
-                    <Settings className="w-4 h-4" /> Settings <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
-                  </Link>
-                  <div className="h-px bg-slate-50 my-4 mx-6" />
-                  <button onClick={() => signOut()} className="flex items-center gap-4 px-6 py-4 hover:bg-red-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-red-600 transition-all group/item">
-                    <LogOut className="w-4 h-4" /> Sign Out
-                  </button>
-                </div>
-              </motion.div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-              >
-                <Link href="/login">
-                  <Button className="bg-slate-900 hover:bg-blue-600 text-white rounded-xl px-8 h-12 font-bold shadow-lg transition-all duration-300 hover:-translate-y-0.5 text-sm flex items-center gap-2">
-                    Sign In <ChevronRight className="w-4 h-4" />
-                  </Button>
-                </Link>
-              </motion.div>
-            )}
-          </AnimatePresence>
         </div>
-
-        {/* MOBILE ACTIONS */}
-        <div className="flex items-center gap-2 sm:gap-3 lg:hidden z-[110]">
-          <button
-            onClick={() => setSearchOpen(true)}
-            className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-600 transition-all active:scale-95"
-          >
-            <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-          </button>
-
-          <button
-            onClick={() => {
-              if (session) {
-                setNotificationOpen(prev => !prev);
-              } else {
-                router.push("/login");
-              }
-            }}
-            className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-600 relative transition-all active:scale-95"
-          >
-            <Bell className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[0.875rem] h-3.5 px-1 bg-blue-600 text-white text-[7px] font-black rounded-full flex items-center justify-center">
-                {unreadCount > 99 ? "99+" : unreadCount}
-              </span>
-            )}
-          </button>
-
-          <Link
-            href="/cart"
-            className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-50 border border-slate-100 rounded-xl flex items-center justify-center text-slate-500 hover:text-blue-600 relative transition-all active:scale-95"
-          >
-            <ShoppingCart className="w-4 h-4 sm:w-4.5 sm:h-4.5" />
-            {cartCount > 0 && (
-              <span className="absolute -top-1 -right-1 min-w-[0.875rem] h-3.5 px-1 bg-blue-600 text-white text-[7px] font-black rounded-full flex items-center justify-center">
-                {cartCount > 99 ? "99+" : cartCount}
-              </span>
-            )}
-          </Link>
-
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="w-9 h-9 sm:w-10 sm:h-10 bg-slate-900 text-white rounded-xl flex items-center justify-center shadow-lg transition-all active:scale-95"
-          >
-            {mobileMenuOpen ? <X className="w-4 h-4 sm:w-4.5 sm:h-4.5" /> : <Menu className="w-4 h-4 sm:w-4.5 sm:h-4.5" />}
-          </button>
-        </div>
-      </div>
+      </header>
 
       {/* MOBILE DRAWER */}
       <AnimatePresence>
@@ -318,7 +332,7 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-white z-[200] lg:hidden flex flex-col"
+            className="fixed inset-0 bg-white z-[240] lg:hidden flex flex-col"
           >
             {/* Background Texture */}
             <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:40px_40px] opacity-10" />
@@ -403,6 +417,7 @@ export function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
       {/* GLOBAL SEARCH OVERLAY */}
       <AnimatePresence>
         {searchOpen && (
@@ -410,7 +425,7 @@ export function Navbar() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[200] bg-slate-900/60 backdrop-blur-xl flex items-start justify-center pt-32 px-4"
+            className="fixed inset-0 z-[300] bg-slate-900/60 backdrop-blur-xl flex items-start justify-center pt-32 px-4"
             onClick={() => setSearchOpen(false)}
           >
             <motion.div
@@ -511,7 +526,7 @@ export function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[150] bg-slate-900/20 backdrop-blur-sm"
+              className="fixed inset-0 z-[280] bg-slate-900/20 backdrop-blur-sm"
               onClick={() => setNotificationOpen(false)}
             />
             {/* Panel */}
@@ -520,7 +535,7 @@ export function Navbar() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -12, scale: 0.97 }}
               transition={{ type: "spring", damping: 25, stiffness: 300 }}
-              className="fixed top-24 right-4 md:right-12 z-[160] w-[22rem] bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_48px_96px_-24px_rgba(0,0,0,0.15)] overflow-hidden"
+              className="fixed top-24 right-4 md:right-12 z-[290] w-[22rem] bg-white border border-slate-100 rounded-[2.5rem] shadow-[0_48px_96px_-24px_rgba(0,0,0,0.15)] overflow-hidden"
             >
               {/* Header */}
               <div className="px-8 py-6 border-b border-slate-50 flex items-center justify-between">
@@ -593,6 +608,6 @@ export function Navbar() {
           </>
         )}
       </AnimatePresence>
-    </header>
+    </>
   );
 }
