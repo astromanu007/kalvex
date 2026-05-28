@@ -226,6 +226,15 @@ export default function ServiceDetailPage() {
     e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
   };
 
+  const handleTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const touch = e.touches[0];
+    const x = touch.clientX - rect.left;
+    const y = touch.clientY - rect.top;
+    e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+    e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+  };
+
   const [formData, setFormData] = useState({
     topic: "", 
     wordCount: "", 
@@ -296,8 +305,8 @@ export default function ServiceDetailPage() {
           </Link>
 
           {slug === "black-book-printing" ? (
-            <div onMouseMove={handleMouseMove} className="bg-gradient-to-br from-white via-indigo-50/30 to-purple-50/20 border-2 border-indigo-100 rounded-[3rem] p-12 md:p-20 mb-16 flex flex-col md:flex-row gap-16 items-center shadow-2xl shadow-indigo-100/10 relative overflow-hidden text-slate-800 group/card">
-              <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" style={{ background: "radial-gradient(600px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99,102,241,0.06), transparent 75%)" } as any} />
+            <div onMouseMove={handleMouseMove} onTouchMove={handleTouchMove} onTouchStart={handleTouchMove} className="bg-gradient-to-br from-white via-indigo-50/30 to-purple-50/20 border-2 border-indigo-100 rounded-[3rem] p-12 md:p-20 mb-16 flex flex-col md:flex-row gap-16 items-center shadow-2xl shadow-indigo-100/10 relative overflow-hidden text-slate-800 group/card">
+              <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 group-active/card:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" style={{ background: "radial-gradient(600px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99,102,241,0.06), transparent 75%)" } as any} />
               <div className="absolute top-0 right-0 w-[45rem] h-[45rem] bg-indigo-500/5 rounded-full -translate-y-1/2 translate-x-1/2 blur-[100px] -z-10 animate-pulse" />
               <div className="absolute -left-10 -bottom-10 w-40 h-40 bg-amber-500/5 rounded-full blur-[80px] -z-10" />
               
@@ -338,8 +347,8 @@ export default function ServiceDetailPage() {
                 </div>
               </div>
               
-              <div onMouseMove={handleMouseMove} className="w-full md:w-96 bg-gradient-to-br from-white via-indigo-50/20 to-purple-50/30 rounded-[3rem] p-10 text-center shrink-0 shadow-2xl shadow-indigo-100/40 relative z-10 border-2 border-indigo-200/80 overflow-hidden group/calc hover:scale-[1.02] transition-all duration-550">
-                <div className="absolute inset-0 opacity-0 group-hover/calc:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" style={{ background: "radial-gradient(300px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99,102,241,0.06), transparent 75%)" } as any} />
+              <div onMouseMove={handleMouseMove} onTouchMove={handleTouchMove} onTouchStart={handleTouchMove} className="w-full md:w-96 bg-gradient-to-br from-white via-indigo-50/20 to-purple-50/30 rounded-[3rem] p-10 text-center shrink-0 shadow-2xl shadow-indigo-100/40 relative z-10 border-2 border-indigo-200/80 overflow-hidden group/calc hover:scale-[1.02] transition-all duration-550">
+                <div className="absolute inset-0 opacity-0 group-hover/calc:opacity-100 group-active/calc:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" style={{ background: "radial-gradient(300px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99,102,241,0.06), transparent 75%)" } as any} />
                 
                 <p className="text-slate-400 text-[10px] font-black uppercase tracking-[0.2em] mb-4">Calculated Cost</p>
                 <div className="font-heading font-black text-6xl text-slate-900 mb-4 tracking-tighter flex items-start justify-center gap-1.5 transition-all duration-300 hover:scale-105">
@@ -433,8 +442,8 @@ export default function ServiceDetailPage() {
           )}
 
           {/* Multi-step Order Form */}
-          <div onMouseMove={handleMouseMove} className="bg-white border-2 border-indigo-100/60 rounded-[4rem] p-12 md:p-20 shadow-2xl shadow-slate-900/5 relative overflow-hidden group/card">
-            <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" style={{ background: "radial-gradient(800px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99,102,241,0.03), transparent 75%)" } as any} />
+          <div onMouseMove={handleMouseMove} onTouchMove={handleTouchMove} onTouchStart={handleTouchMove} className="bg-white border-2 border-indigo-100/60 rounded-[4rem] p-12 md:p-20 shadow-2xl shadow-slate-900/5 relative overflow-hidden group/card">
+            <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 group-active/card:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" style={{ background: "radial-gradient(800px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99,102,241,0.03), transparent 75%)" } as any} />
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-16 gap-12">
               <div>
                 <h2 className="font-heading font-black text-4xl text-slate-900 tracking-tight mb-2">Service <span className="text-indigo-600">Configuration</span></h2>
@@ -620,8 +629,8 @@ export default function ServiceDetailPage() {
                             </a>
                           </div>
                           
-                          <div onMouseMove={handleMouseMove} className="bg-white border-2 border-indigo-100 rounded-[2.5rem] overflow-hidden shadow-xl relative group/card">
-                            <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" style={{ background: "radial-gradient(400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99,102,241,0.06), transparent 75%)" } as any} />
+                          <div onMouseMove={handleMouseMove} onTouchMove={handleTouchMove} onTouchStart={handleTouchMove} className="bg-white border-2 border-indigo-100 rounded-[2.5rem] overflow-hidden shadow-xl relative group/card">
+                            <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 group-active/card:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" style={{ background: "radial-gradient(400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99,102,241,0.06), transparent 75%)" } as any} />
                             <div className="grid grid-cols-3 bg-gradient-to-r from-indigo-50 to-purple-50/80 p-5 border-b border-indigo-100 text-[10px] font-black text-indigo-950 uppercase tracking-[0.15em] text-center">
                               <div>Page Range</div>
                               <div className="flex items-center justify-center gap-1.5 text-indigo-700 font-extrabold">
@@ -672,8 +681,8 @@ export default function ServiceDetailPage() {
                         </div>
 
                         {/* Call & WhatsApp Helper Support Widget */}
-                        <div onMouseMove={handleMouseMove} className="bg-gradient-to-r from-emerald-50 to-teal-50/30 border-2 border-emerald-200 rounded-[2rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm relative overflow-hidden group/card">
-                          <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" style={{ background: "radial-gradient(400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(16,185,129,0.06), transparent 75%)" } as any} />
+                        <div onMouseMove={handleMouseMove} onTouchMove={handleTouchMove} onTouchStart={handleTouchMove} className="bg-gradient-to-r from-emerald-50 to-teal-50/30 border-2 border-emerald-200 rounded-[2rem] p-6 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-sm relative overflow-hidden group/card">
+                          <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 group-active/card:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" style={{ background: "radial-gradient(400px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(16,185,129,0.06), transparent 75%)" } as any} />
                           <div className="flex items-center gap-4">
                             <div className="w-12 h-12 rounded-xl bg-emerald-500 text-white flex items-center justify-center shadow-lg shadow-emerald-500/20 shrink-0">
                               <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
@@ -698,9 +707,11 @@ export default function ServiceDetailPage() {
                         {/* Cost Calculator Section */}
                         <div 
                           onMouseMove={handleMouseMove} 
+                          onTouchMove={handleTouchMove} 
+                          onTouchStart={handleTouchMove} 
                           className="p-10 rounded-[2.5rem] border-2 transition-all duration-500 shadow-xl relative overflow-hidden group/card bg-gradient-to-br from-white via-indigo-50/10 to-purple-50/20 border-indigo-200/80 hover:border-indigo-400 shadow-indigo-650/5"
                         >
-                          <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" 
+                          <div className="absolute inset-0 opacity-0 group-hover/card:opacity-100 group-active/card:opacity-100 transition-opacity duration-700 pointer-events-none -z-10" 
                             style={{ 
                               background: "radial-gradient(600px circle at var(--mouse-x, 0px) var(--mouse-y, 0px), rgba(99,102,241,0.06), transparent 75%)"
                             } as any} 

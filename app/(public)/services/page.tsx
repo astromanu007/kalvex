@@ -199,6 +199,22 @@ export default function ServicesPage() {
                       e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
                       e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
                     }}
+                    onTouchMove={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const touch = e.touches[0];
+                      const x = touch.clientX - rect.left;
+                      const y = touch.clientY - rect.top;
+                      e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+                      e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+                    }}
+                    onTouchStart={(e) => {
+                      const rect = e.currentTarget.getBoundingClientRect();
+                      const touch = e.touches[0];
+                      const x = touch.clientX - rect.left;
+                      const y = touch.clientY - rect.top;
+                      e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+                      e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+                    }}
                     style={{ "--hover-color": hexColor } as any}
                     className={`group relative p-[2px] rounded-[4rem] transition-all duration-700 flex flex-col overflow-hidden shadow-[0_32px_64px_-16px_rgba(0,0,0,0.08)] perspective-1000 group-hover:shadow-[0_0_50px_-10px_var(--hover-color)] bg-slate-50`}
                   >
@@ -210,7 +226,7 @@ export default function ServicesPage() {
                     {/* Content Shield: High-opacity backdrop to prevent bleed-through */}
                     <div className="relative h-full w-full bg-white/95 backdrop-blur-2xl rounded-[calc(4rem-2px)] p-12 flex flex-col z-10">
                       {/* Subdued Spotlight Effect */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-40 transition-opacity duration-500 z-0 pointer-events-none"
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-40 group-active:opacity-40 transition-opacity duration-500 z-0 pointer-events-none"
                         style={{
                           background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(37,99,235,0.03), transparent 70%)`,
                         }} />

@@ -160,10 +160,26 @@ export default function ElectronicsStore() {
           e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
           e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
         }}
+        onTouchMove={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const touch = e.touches[0];
+          const x = touch.clientX - rect.left;
+          const y = touch.clientY - rect.top;
+          e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+          e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+        }}
+        onTouchStart={(e) => {
+          const rect = e.currentTarget.getBoundingClientRect();
+          const touch = e.touches[0];
+          const x = touch.clientX - rect.left;
+          const y = touch.clientY - rect.top;
+          e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+          e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+        }}
         className="group/marquee w-full bg-gradient-to-r from-orange-600 via-amber-500 to-orange-600 border-b border-orange-400/30 overflow-hidden py-1.5 shadow-md relative z-30 cursor-pointer transition-all duration-500 mb-10"
       >
         {/* Cursor Spotlight Effect */}
-        <div className="absolute inset-0 opacity-0 group-hover/marquee:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"
+        <div className="absolute inset-0 opacity-0 group-hover/marquee:opacity-100 group-active/marquee:opacity-100 transition-opacity duration-500 z-10 pointer-events-none"
           style={{
             background: `radial-gradient(600px circle at var(--mouse-x) var(--mouse-y), rgba(255,255,255,0.25), transparent 40%)`,
           }} />
