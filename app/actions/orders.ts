@@ -62,11 +62,14 @@ export async function createOrder({
 
     const orderNumber = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
 
+    const user = await prisma.user.findUnique({ where: { id: session.user.id } });
+    if (!user) return { error: "User not found in DB" };
+
     const order = await prisma.order.create({
       data: {
         orderNumber,
-        userId: session.user.id,
-        maskedClientId: session.user.maskedId,
+        userId: user.id,
+        maskedClientId: user.maskedId,
         serviceType,
         requirements,
         amount,
