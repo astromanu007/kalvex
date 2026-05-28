@@ -35,14 +35,14 @@ export default function DeveloperRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen pt-40 pb-24 flex items-center justify-center bg-[#fafbfc] px-4 relative overflow-hidden">
+    <div className="min-h-screen pt-24 sm:pt-28 pb-20 sm:pb-24 flex items-center justify-center bg-[#fafbfc] px-4 relative overflow-hidden">
       {/* Subtle Background Effect */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-[0.2]">
         <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-100 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-slate-100 rounded-full blur-[120px]" />
       </div>
       
-      <div className="w-full max-w-xl bg-white p-12 rounded-[3rem] border border-slate-100 shadow-[0_64px_128px_-32px_rgba(0,0,0,0.08)] relative overflow-hidden z-10">
+      <div className="w-full max-w-xl bg-white p-6 sm:p-10 md:p-12 rounded-[2rem] sm:rounded-[3rem] border border-slate-100 shadow-[0_64px_128px_-32px_rgba(0,0,0,0.08)] relative overflow-hidden z-10">
         <div className="text-center mb-10">
           <div className="w-16 h-16 bg-blue-600 text-white rounded-2xl flex items-center justify-center mx-auto mb-6 shadow-2xl shadow-blue-600/20">
             <Code className="w-8 h-8" />

@@ -34,10 +34,10 @@ export default function PartnerRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen pt-40 pb-24 flex items-center justify-center bg-white px-4 relative overflow-hidden">
+    <div className="min-h-screen pt-24 sm:pt-28 pb-20 sm:pb-24 flex items-center justify-center bg-white px-4 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[50rem] h-[50rem] bg-emerald-50 rounded-full -z-10 blur-[120px] -translate-y-1/2 translate-x-1/3" />
       
-      <div className="w-full max-w-xl bg-white p-12 rounded-[3.5rem] border border-slate-100 shadow-2xl shadow-emerald-900/5 relative overflow-hidden">
+      <div className="w-full max-w-xl bg-white p-6 sm:p-10 md:p-12 rounded-[2rem] sm:rounded-[3.5rem] border border-slate-100 shadow-2xl shadow-emerald-900/5 relative overflow-hidden">
         <div className="text-center mb-10">
           <div className="w-16 h-16 bg-emerald-600 text-white rounded-[1.5rem] flex items-center justify-center mx-auto mb-6 shadow-xl shadow-emerald-600/20 rotate-3">
             <TrendingUp className="w-8 h-8" />

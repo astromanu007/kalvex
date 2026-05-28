@@ -53,7 +53,7 @@ const ROLES = [
 
 export default function RegisterHubPage() {
   return (
-    <div className="min-h-screen bg-slate-50 pt-40 pb-32 px-4 relative overflow-hidden">
+    <div className="min-h-screen bg-slate-50 pt-24 sm:pt-28 pb-20 sm:pb-32 px-4 relative overflow-hidden">
       <div className="absolute top-0 right-0 w-[50rem] h-[50rem] bg-blue-600/5 rounded-full -z-10 blur-[120px] -translate-y-1/2 translate-x-1/3" />
 
       <div className="max-w-4xl mx-auto">
@@ -62,15 +62,15 @@ export default function RegisterHubPage() {
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
-          className="text-center mb-20 space-y-6"
+          className="text-center mb-10 sm:mb-16 space-y-4 sm:space-y-6"
         >
-          <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
-            <Shield className="w-4 h-4" /> Account Setup
+          <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-4 py-1.5 sm:px-5 sm:py-2 rounded-xl text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
+            <Shield className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> Account Setup
           </div>
-          <h1 className="font-heading font-black text-6xl text-slate-900 tracking-tighter">
+          <h1 className="font-heading font-black text-3xl sm:text-6xl text-slate-900 tracking-tighter">
             Select Your <span className="text-blue-600">Role</span>
           </h1>
-          <p className="text-slate-400 font-bold text-xl max-w-xl mx-auto">
+          <p className="text-slate-400 font-bold text-base sm:text-xl max-w-xl mx-auto">
             Choose the account type that best describes you.
           </p>
         </motion.div>
@@ -80,27 +80,27 @@ export default function RegisterHubPage() {
           initial="hidden"
           animate="visible"
           variants={stagger}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8"
         >
           {ROLES.map((r) => (
             <motion.div key={r.id} variants={fadeInUp} whileHover={{ y: -12 }}>
               <Link href={`/register/${r.id}`} className="block group">
-                <div className="h-full p-10 rounded-[3rem] border-2 border-slate-100 bg-white hover:border-blue-600/30 hover:shadow-[0_48px_96px_-24px_rgba(0,0,0,0.1)] transition-all duration-700 flex flex-col relative overflow-hidden">
-                  <div className="absolute inset-0 bg-blue-600/3 opacity-0 group-hover:opacity-100 transition-opacity rounded-[3rem]" />
+                <div className="h-full p-6 sm:p-10 rounded-[2rem] sm:rounded-[3rem] border-2 border-slate-100 bg-white hover:border-blue-600/30 hover:shadow-[0_48px_96px_-24px_rgba(0,0,0,0.1)] transition-all duration-700 flex flex-col relative overflow-hidden">
+                  <div className="absolute inset-0 bg-blue-600/3 opacity-0 group-hover:opacity-100 transition-opacity rounded-[2rem] sm:rounded-[3rem]" />
 
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center mb-8 transition-all duration-700 group-hover:scale-110 group-hover:-rotate-6 shadow-xl ${
+                  <div className={`w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center mb-6 sm:mb-8 transition-all duration-700 group-hover:scale-110 group-hover:-rotate-6 shadow-xl ${
                     r.accent === "blue" ? "bg-blue-600 shadow-blue-600/20" : "bg-slate-900 shadow-slate-900/20"
                   }`}>
-                    <r.icon className="w-7 h-7 text-white" />
+                    <r.icon className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
                   </div>
 
-                  <div className="flex-grow space-y-4 mb-8">
-                    <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">{r.label}</h3>
-                    <p className="text-slate-400 text-[13px] font-bold leading-relaxed">{r.desc}</p>
+                  <div className="flex-grow space-y-3 sm:space-y-4 mb-6 sm:mb-8">
+                    <h3 className="font-heading font-black text-lg sm:text-xl text-slate-900 tracking-tight group-hover:text-blue-600 transition-colors">{r.label}</h3>
+                    <p className="text-slate-400 text-xs sm:text-[13px] font-bold leading-relaxed">{r.desc}</p>
                   </div>
 
-                  <div className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 group-hover:text-blue-600 transition-colors pt-6 border-t border-slate-50">
-                    Get Started <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                  <div className="flex items-center gap-3 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] text-slate-400 group-hover:text-blue-600 transition-colors pt-4 sm:pt-6 border-t border-slate-50">
+                    Get Started <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
               </Link>

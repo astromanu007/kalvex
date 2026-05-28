@@ -59,8 +59,8 @@ export default function StudentRegisterPage() {
   };
 
   return (
-    <div className="min-h-screen pt-32 pb-24 flex items-center justify-center bg-bg-primary px-4">
-      <div className="w-full max-w-lg bg-bg-card p-8 rounded-2xl border border-border shadow-card relative overflow-hidden">
+    <div className="min-h-screen pt-24 sm:pt-28 pb-20 sm:pb-24 flex items-center justify-center bg-bg-primary px-4">
+      <div className="w-full max-w-lg bg-bg-card p-5 sm:p-8 rounded-[1.5rem] sm:rounded-2xl border border-border shadow-card relative overflow-hidden">
         <div className="text-center mb-8">
           <h1 className="font-heading font-bold text-3xl mb-2">Student Registration</h1>
           <p className="text-text-secondary text-sm">Join Kalvex to access exclusive academic resources</p>

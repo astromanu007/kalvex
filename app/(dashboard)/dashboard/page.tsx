@@ -60,7 +60,7 @@ export default function DashboardHome() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Total Orders", value: loading ? "-" : orders.length.toString(), sub: "+0 this month", icon: ShoppingBag, color: "text-accent-primary", bg: "bg-accent-primary/10" },
           { label: "Active Projects", value: loading ? "-" : activeOrdersCount.toString(), sub: "In progress", icon: FileText, color: "text-accent-warning", bg: "bg-accent-warning/10" },
@@ -103,7 +103,7 @@ export default function DashboardHome() {
               const typeLabel = order.serviceType ?? "Service";
 
               return (
-                <div key={order.id} className="p-5 flex flex-col sm:flex-row sm:items-center gap-4 hover:bg-bg-surface/50 transition-colors">
+                <div key={order.id} className="p-5 flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 hover:bg-bg-surface/50 transition-colors">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">
                       <span className="text-[10px] font-mono text-text-muted bg-bg-surface px-2 py-0.5 rounded border border-border">{order.orderNumber}</span>
@@ -112,11 +112,13 @@ export default function DashboardHome() {
                     <p className="text-sm font-medium text-text-primary truncate">{title}</p>
                     <p className="text-xs text-text-muted mt-0.5">Placed {new Date(order.createdAt).toLocaleDateString()} · Specialist: <span className="font-mono text-accent-primary">{order.maskedAssigneeId ?? "—"}</span></p>
                   </div>
-                  <div className="flex items-center gap-4 flex-shrink-0">
-                    <p className="font-mono font-semibold text-text-primary">₹{order.amount?.toLocaleString()}</p>
-                    <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${st.color}`}>
-                      <st.icon className="w-3 h-3" /> {order.status}
-                    </span>
+                  <div className="flex items-center justify-between sm:justify-start gap-4 flex-shrink-0 w-full sm:w-auto pt-3 sm:pt-0 border-t border-dashed border-border sm:border-t-0 mt-2 sm:mt-0">
+                    <div className="flex items-center gap-3">
+                      <p className="font-mono font-semibold text-text-primary">₹{order.amount?.toLocaleString()}</p>
+                      <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-2.5 py-1 rounded-full ${st.color}`}>
+                        <st.icon className="w-3 h-3" /> {order.status}
+                      </span>
+                    </div>
                     <Link href={`/dashboard/orders/${order.id}`}>
                       <Button variant="ghost" size="sm" className="h-8 px-3 text-xs border border-border rounded-lg">View</Button>
                     </Link>

@@ -154,7 +154,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </AnimatePresence>
 
       {/* Main Content */}
-      <main className="flex-1 min-w-0 p-6 lg:p-10">
+      <main className="flex-1 min-w-0 p-4 sm:p-6 lg:p-10">
         {/* Mobile Header */}
         <div className="flex items-center gap-4 mb-8 lg:hidden">
           <button

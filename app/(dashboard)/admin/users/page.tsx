@@ -59,23 +59,23 @@ export default function AdminUsersPage() {
   return (
     <div className="space-y-10 pb-20">
       {/* Header Section */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-8 rounded-[2rem] border border-slate-100 shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 bg-white p-6 sm:p-8 rounded-[2rem] border border-slate-100 shadow-sm">
         <div className="space-y-1">
-          <h1 className="text-3xl font-black text-slate-900 tracking-tight">User Directory</h1>
-          <p className="text-slate-500 font-medium text-sm">Manage user accounts, roles, and platform permissions.</p>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">User Directory</h1>
+          <p className="text-slate-500 font-medium text-xs sm:text-sm">Manage user accounts, roles, and platform permissions.</p>
         </div>
-        <div className="flex items-center gap-3">
-          <Button variant="outline" className="rounded-xl px-6 h-12 border-slate-200 font-bold text-xs uppercase tracking-widest">
-            <Download className="w-4 h-4 mr-2" /> Export Users
+        <div className="flex items-center gap-3 w-full md:w-auto">
+          <Button variant="outline" className="rounded-xl px-4 sm:px-6 h-11 sm:h-12 border-slate-200 font-bold text-[10px] sm:text-xs uppercase tracking-widest flex-1 md:flex-initial">
+            <Download className="w-4 h-4 mr-2" /> Export
           </Button>
-          <Button onClick={fetchUsers} className="bg-slate-900 hover:bg-slate-800 text-white rounded-xl px-6 h-12 font-bold text-xs uppercase tracking-widest shadow-xl shadow-slate-900/20">
-            Refresh Table
+          <Button onClick={fetchUsers} className="bg-slate-900 hover:bg-slate-800 text-white rounded-xl px-4 sm:px-6 h-11 sm:h-12 font-bold text-[10px] sm:text-xs uppercase tracking-widest shadow-xl shadow-slate-900/20 flex-1 md:flex-initial">
+            Refresh
           </Button>
         </div>
       </div>
 
       {/* Stats Quick Look */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
           { label: "Total Users", value: users.length, icon: Users, color: "text-blue-600", bg: "bg-blue-50" },
           { label: "Admin Accounts", value: users.filter(u => u.role === 'ADMIN').length, icon: Shield, color: "text-purple-600", bg: "bg-purple-50" },
@@ -96,10 +96,10 @@ export default function AdminUsersPage() {
 
       {/* Search & Filter */}
       <div className="relative max-w-xl">
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
+        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
         <Input 
           placeholder="Search by name, email, or user ID..." 
-          className="pl-12 h-16 rounded-2xl border-slate-100 bg-white focus:ring-slate-900/10 text-lg font-medium"
+          className="pl-11 pr-4 h-14 sm:h-16 rounded-2xl border-slate-100 bg-white focus:ring-slate-900/10 text-sm sm:text-lg font-medium"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />

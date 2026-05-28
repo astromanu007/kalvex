@@ -62,7 +62,7 @@ export default function ExpertDashboard() {
       </div>
 
       {/* Stats Grid */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: "Active Tasks", value: loading ? "-" : activeTasks.length.toString(), sub: "In progress", icon: FileText, color: "text-accent-primary", bg: "bg-accent-primary/10" },
           { label: "Marketplace", value: loading ? "-" : marketplace.length.toString(), sub: "Available to pick", icon: TrendingUp, color: "text-accent-warning", bg: "bg-accent-warning/10" },
@@ -128,8 +128,8 @@ export default function ExpertDashboard() {
                           <p className="text-xs text-text-muted">Client: <span className="font-mono text-accent-primary">{order.maskedClientId}</span> &middot; Deadline: <span className="font-semibold text-text-primary">{order.deadline ? new Date(order.deadline).toLocaleDateString() : "TBD"}</span></p>
                         </div>
                         <div className="text-left sm:text-right">
-                          <p className="text-xs text-text-muted mb-0.5">Earning (85%)</p>
-                          <p className="font-mono font-bold text-accent-success text-lg">₹{Math.floor(order.amount * 0.85)}</p>
+                          <p className="text-[10px] text-text-muted mb-0.5">Earning (85%)</p>
+                          <p className="font-mono font-bold text-accent-success text-lg leading-none">₹{Math.floor(order.amount * 0.85)}</p>
                         </div>
                       </div>
 
@@ -140,18 +140,20 @@ export default function ExpertDashboard() {
                         <span className="text-[10px] font-mono">50%</span>
                       </div>
 
-                      <div className="flex flex-wrap gap-2">
-                        <Link href={`/dashboard/orders/${order.id}`}>
-                          <Button variant="outline" size="sm" className="h-8 text-xs border-border rounded-lg gap-1.5">
-                            <Eye className="w-3 h-3" /> View Details
-                          </Button>
-                        </Link>
-                        <Link href="/dashboard/messages">
-                          <Button variant="outline" size="sm" className="h-8 text-xs border-border rounded-lg gap-1.5">
-                            <MessageSquare className="w-3 h-3" /> Chat with Client
-                          </Button>
-                        </Link>
-                        <Button size="sm" className="h-8 text-xs bg-accent-primary text-white rounded-lg gap-1.5 ml-auto">
+                      <div className="flex flex-wrap sm:flex-nowrap gap-2 items-center justify-between pt-3 border-t border-dashed border-border sm:border-t-0 sm:pt-0">
+                        <div className="flex gap-2">
+                          <Link href={`/dashboard/orders/${order.id}`}>
+                            <Button variant="outline" size="sm" className="h-8 text-xs border-border rounded-lg gap-1.5">
+                              <Eye className="w-3 h-3" /> View Details
+                            </Button>
+                          </Link>
+                          <Link href="/dashboard/messages">
+                            <Button variant="outline" size="sm" className="h-8 text-xs border-border rounded-lg gap-1.5">
+                              <MessageSquare className="w-3 h-3" /> Chat
+                            </Button>
+                          </Link>
+                        </div>
+                        <Button size="sm" className="h-8 text-xs bg-accent-primary text-white rounded-lg gap-1.5 w-full sm:w-auto mt-2 sm:mt-0">
                           <Upload className="w-3 h-3" /> Submit Draft
                         </Button>
                       </div>
@@ -164,8 +166,8 @@ export default function ExpertDashboard() {
                 ) : (
                   marketplace.map((order) => (
                     <div key={order.id} className="p-6 hover:bg-bg-surface/50 transition-colors">
-                      <div className="flex flex-col sm:flex-row justify-between gap-4 mb-4">
-                        <div>
+                      <div className="flex flex-col sm:flex-row justify-between gap-4">
+                        <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="text-[10px] font-mono text-text-muted bg-bg-surface px-2 py-0.5 rounded border border-border">{order.orderNumber}</span>
                           </div>
@@ -173,10 +175,12 @@ export default function ExpertDashboard() {
                           <p className="text-xs text-text-muted line-clamp-1 max-w-md">{order.requirements}</p>
                           <p className="text-[10px] text-text-muted mt-2">Deadline: <span className="text-text-primary">{order.deadline ? new Date(order.deadline).toLocaleDateString() : "TBD"}</span></p>
                         </div>
-                        <div className="text-left sm:text-right">
-                          <p className="text-xs text-text-muted mb-0.5">Your Earning</p>
-                          <p className="font-mono font-bold text-accent-success text-lg">₹{Math.floor(order.amount * 0.85)}</p>
-                          <Button onClick={() => handleAccept(order.id)} size="sm" className="mt-2 bg-accent-primary text-white rounded-lg px-4">Accept Job</Button>
+                        <div className="flex items-center justify-between sm:justify-start sm:flex-col sm:items-end gap-3 pt-3 sm:pt-0 border-t border-dashed border-border sm:border-t-0 mt-3 sm:mt-0 w-full sm:w-auto">
+                          <div className="text-left sm:text-right">
+                            <p className="text-[10px] text-text-muted mb-0.5">Your Earning (85%)</p>
+                            <p className="font-mono font-bold text-accent-success text-lg leading-none">₹{Math.floor(order.amount * 0.85)}</p>
+                          </div>
+                          <Button onClick={() => handleAccept(order.id)} size="sm" className="bg-accent-primary text-white rounded-lg px-5 h-9 text-xs w-auto">Accept Job</Button>
                         </div>
                       </div>
                     </div>

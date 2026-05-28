@@ -140,19 +140,21 @@ export default function OrdersPage() {
                   </div>
 
                   {/* Right */}
-                  <div className="flex lg:flex-col items-center lg:items-end gap-3 flex-shrink-0">
-                    <p className="font-mono font-bold text-lg text-text-primary">₹{order.amount?.toLocaleString()}</p>
-                    <span className={`inline-flex items-center gap-1.5 text-xs font-medium px-3 py-1 rounded-full border ${st.color}`}>
-                      <st.icon className="w-3 h-3" /> {order.status}
-                    </span>
-                    <div className="flex items-center gap-2 mt-1">
+                  <div className="flex flex-row justify-between items-center lg:flex-col lg:items-end gap-3 flex-shrink-0 w-full lg:w-auto pt-3 lg:pt-0 border-t border-dashed border-border lg:border-t-0 mt-2 lg:mt-0">
+                    <div className="flex items-center lg:flex-col lg:items-end gap-2.5 sm:gap-3">
+                      <p className="font-mono font-bold text-base sm:text-lg text-text-primary">₹{order.amount?.toLocaleString()}</p>
+                      <span className={`inline-flex items-center gap-1.5 text-[10px] sm:text-xs font-medium px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full border ${st.color}`}>
+                        <st.icon className="w-3 h-3" /> {order.status}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
                       <Link href={`/dashboard/orders/${order.id}`}>
-                        <Button variant="outline" size="sm" className="h-8 px-3 text-xs rounded-lg border-border gap-1.5">
+                        <Button variant="outline" size="sm" className="h-8 px-2.5 sm:px-3 text-xs rounded-lg border-border gap-1.5">
                           <Eye className="w-3 h-3" /> View
                         </Button>
                       </Link>
                       {order.status === "DELIVERED" || order.status === "COMPLETED" ? (
-                        <Button size="sm" className="h-8 px-3 text-xs rounded-lg bg-accent-success/10 text-accent-success hover:bg-accent-success/20 gap-1.5">
+                        <Button size="sm" className="h-8 px-2.5 sm:px-3 text-xs rounded-lg bg-accent-success/10 text-accent-success hover:bg-accent-success/20 gap-1.5">
                           <Download className="w-3 h-3" /> Files
                         </Button>
                       ) : null}

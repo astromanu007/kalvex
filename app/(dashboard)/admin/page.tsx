@@ -75,12 +75,12 @@ export default function AdminDashboard() {
   return (
     <div className="space-y-12 max-w-[1600px] mx-auto">
       {/* Header */}
-      <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="flex justify-between items-end">
+      <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-6">
         <div className="space-y-4">
           <div className="inline-flex items-center gap-3 bg-slate-900 text-white px-4 py-2 rounded-xl text-[9px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-slate-900/20">
             <Activity className="w-3.5 h-3.5 text-blue-400" /> System Status: Online
           </div>
-          <h1 className="font-heading font-black text-5xl text-slate-900 tracking-tighter leading-none">Admin <span className="text-blue-600">Dashboard</span></h1>
+          <h1 className="font-heading font-black text-3xl sm:text-5xl text-slate-900 tracking-tighter leading-none">Admin <span className="text-blue-600">Dashboard</span></h1>
           <p className="text-sm text-slate-400 font-bold max-w-xl">Real-time statistics, user directory, and order management for the Kalvex platform.</p>
         </div>
         
@@ -154,7 +154,7 @@ export default function AdminDashboard() {
         <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px] opacity-10 pointer-events-none" />
 
         {/* Table Header */}
-        <div className="p-10 border-b border-slate-50 flex flex-col md:flex-row justify-between gap-8 items-start md:items-center relative z-10">
+        <div className="p-6 md:p-10 border-b border-slate-50 flex flex-col md:flex-row justify-between gap-6 md:gap-8 items-start md:items-center relative z-10">
           <div className="space-y-2">
             <h2 className="font-heading font-black text-2xl text-slate-900 tracking-tight">All Orders</h2>
             <div className="flex items-center gap-2">
@@ -164,12 +164,12 @@ export default function AdminDashboard() {
           </div>
           <div className="relative w-full md:w-96 group">
             <div className="absolute -inset-[1px] bg-blue-600/20 rounded-2xl opacity-0 group-focus-within:opacity-100 transition-all duration-500 blur-[1px]" />
-            <Search className="absolute left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-blue-600 transition-all duration-500" />
+            <Search className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-300 group-focus-within:text-blue-600 transition-all duration-500" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search orders..."
-              className="w-full bg-white border border-slate-100 rounded-2xl pl-14 pr-6 py-5 text-[11px] font-black uppercase tracking-widest text-slate-900 focus:outline-none focus:border-blue-600 transition-all placeholder:text-slate-300 relative z-10 shadow-sm"
+              className="w-full bg-white border border-slate-100 rounded-2xl pl-12 sm:pl-14 pr-4 sm:pr-6 py-4 sm:py-5 text-[10px] sm:text-[11px] font-black uppercase tracking-widest text-slate-900 focus:outline-none focus:border-blue-600 transition-all placeholder:text-slate-300 relative z-10 shadow-sm"
             />
           </div>
         </div>
