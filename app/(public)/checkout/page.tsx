@@ -7,6 +7,7 @@ import { useSession, signIn } from "next-auth/react";
 import { Button } from "@/components/ui/button";
 import { ShieldCheck, CreditCard, Smartphone, Building2, CheckCircle, Loader2, Sparkles, MapPin, ArrowRight, Shield, LogIn, Check } from "lucide-react";
 import { getOrders, updateOrderStatus, createOrder } from "@/app/actions/orders";
+import { createBooking } from "@/app/actions/bookings";
 import { createPaymentOrder, verifyPayment } from "@/app/actions/payments";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -162,6 +163,17 @@ Landmark: ${address.landmark || "N/A"}`;
           amount: orderTotal,
           serviceType: "CUSTOM_PROJECT"
         };
+        // Create booking entry for the order
+        try {
+          await createBooking({
+            userId: session?.user?.id ?? "",
+            serviceId: createRes.orderId,
+            serviceType: "CUSTOM_PROJECT",
+            requirements: requirementsText,
+          });
+        } catch (err) {
+          console.error("Failed to create booking:", err);
+        }
       }
 
       // Verify Razorpay client SDK is fully loaded

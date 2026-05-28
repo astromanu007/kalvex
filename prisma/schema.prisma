@@ -53,8 +53,10 @@ model User {
   orders            Order[]                @relation("UserOrders")
   patentDrafts      PatentDraft[]
   reviews           Review[]
-  sessions          UserSession[]
-  wishlist          WishlistItem[]
+  bookings      Booking[] @relation("UserBookings")
+  assignedBookings Booking[] @relation("DeveloperAssignments")
+  wishlistItems WishlistItem[]
+  sessions UserSession[]
 }
 
 model Order {
@@ -486,4 +488,26 @@ enum QuotationStatus {
 enum SubscriptionPlan {
   FREE
   PREMIUM
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  IN_PROGRESS
+  COMPLETED
+  CANCELLED
+}
+
+model Booking {
+  id           String          @id @default(cuid())
+  userId       String
+  serviceId    String
+  serviceType  ServiceType
+  requirements String?
+  assignedToId String?
+  assignedTo   User?           @relation("DeveloperAssignments", fields: [assignedToId], references: [id])
+  createdAt    DateTime        @default(now())
+  updatedAt    DateTime        @updatedAt
+
+  user         User            @relation("UserBookings", fields: [userId], references: [id])
 }

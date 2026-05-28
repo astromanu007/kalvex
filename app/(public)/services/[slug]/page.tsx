@@ -6,6 +6,7 @@ import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, ArrowRight, ShieldCheck, Clock, FileText, Loader2, Check } from "lucide-react";
 import { createOrder } from "@/app/actions/orders";
+import { createBooking } from "@/app/actions/bookings";
 import { createPaymentOrder, verifyPayment } from "@/app/actions/payments";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
@@ -167,6 +168,18 @@ export default function ServiceDetailPage() {
       setCreatedOrderId(orderRes.orderId);
       setCreatedOrderNumber(orderRes.orderNumber || "ORD-XXXXXX");
 
+      // Also create booking entry for this order
+      try {
+        await createBooking({
+          userId: session.user.id,
+          serviceId: orderRes.orderId,
+          serviceType: serviceTypeRaw as any,
+          requirements: req,
+        });
+      } catch (err) {
+        console.error("Booking creation failed:", err);
+      }
+
       // 2. Create the payment order on Razorpay server-side
       const payRes = await createPaymentOrder(calculatedPrice, orderRes.orderId);
 
@@ -290,6 +303,19 @@ export default function ServiceDetailPage() {
       amount: serviceDetails.basePrice,
       deadline: formData.deadline ? new Date(formData.deadline) : undefined,
     });
+
+    if (res.success && res.orderId) {
+      try {
+        await createBooking({
+          userId: session.user.id,
+          serviceId: res.orderId,
+          serviceType: serviceTypeRaw as any,
+          requirements: req,
+        });
+      } catch (err) {
+        console.error("Booking creation failed:", err);
+      }
+    }
 
     setLoading(false);
     if (res.success) {

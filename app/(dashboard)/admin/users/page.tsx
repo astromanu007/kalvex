@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input";
 import { format } from "date-fns";
 import { getUsers, updateUserRole, deleteUser } from "@/app/actions/admin";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
 
 const ROLES = ["USER", "STUDENT", "WRITER", "DEVELOPER", "ADMIN", "AFFILIATE"] as const;
 
@@ -26,6 +27,7 @@ const ROLE_STYLES: Record<string, string> = {
 };
 
 export default function AdminUsersPage() {
+  const { data: session } = useSession();
   const [users, setUsers] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -224,46 +226,51 @@ export default function AdminUsersPage() {
                               transition={{ duration: 0.15 }}
                               className="absolute right-0 top-12 z-50 w-64 bg-white rounded-2xl border border-slate-100 shadow-2xl shadow-slate-900/10 overflow-hidden"
                             >
-                              {/* User info header */}
+                                {/* User info header */}
                               <div className="px-4 py-3 bg-slate-50/60 border-b border-slate-100">
-                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Change Role</p>
+                                <p className="text-[9px] font-black uppercase tracking-widest text-slate-400">Actions</p>
                                 <p className="text-xs font-bold text-slate-900 mt-0.5 truncate">{user.name || user.email}</p>
                               </div>
 
-                              {/* Role options */}
-                              <div className="p-2 space-y-0.5">
-                                {ROLES.map((role) => (
-                                  <button
-                                    key={role}
-                                    onClick={() => handleRoleChange(user.id, role)}
-                                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
-                                      user.role === role
-                                        ? "bg-slate-900 text-white"
-                                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                                    }`}
-                                  >
-                                    <span className="flex items-center gap-2">
-                                      {role === "ADMIN" && <Shield className="w-3 h-3" />}
-                                      {(role === "WRITER" || role === "DEVELOPER") && <UserCog className="w-3 h-3" />}
-                                      {(role === "USER" || role === "STUDENT") && <Users className="w-3 h-3" />}
-                                      {role === "AFFILIATE" && <Star className="w-3 h-3" />}
-                                      {role}
-                                    </span>
-                                    {user.role === role && <Check className="w-3 h-3" />}
-                                  </button>
-                                ))}
-                              </div>
+                              {/* Role options (only for ADMIN) */}
+                              {(session?.user as any)?.role === "ADMIN" && (
+                                <div className="p-2 space-y-0.5">
+                                  <p className="text-[9px] font-black uppercase tracking-widest text-slate-400 px-3 py-1">Change Role</p>
+                                  {ROLES.map((role) => (
+                                    <button
+                                      key={role}
+                                      onClick={() => handleRoleChange(user.id, role)}
+                                      className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${
+                                        user.role === role
+                                          ? "bg-slate-900 text-white"
+                                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                                      }`}
+                                    >
+                                      <span className="flex items-center gap-2">
+                                        {role === "ADMIN" && <Shield className="w-3 h-3" />}
+                                        {(role === "WRITER" || role === "DEVELOPER") && <UserCog className="w-3 h-3" />}
+                                        {(role === "USER" || role === "STUDENT") && <Users className="w-3 h-3" />}
+                                        {role === "AFFILIATE" && <Star className="w-3 h-3" />}
+                                        {role}
+                                      </span>
+                                      {user.role === role && <Check className="w-3 h-3" />}
+                                    </button>
+                                  ))}
+                                </div>
+                              )}
 
-                              {/* Danger zone */}
-                              <div className="p-2 border-t border-slate-100">
-                                <button
-                                  onClick={() => handleDelete(user.id, user.name || user.email)}
-                                  className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-50 transition-all"
-                                >
-                                  <Trash2 className="w-3 h-3" />
-                                  Delete User
-                                </button>
-                              </div>
+                              {/* Danger zone (only for ADMIN) */}
+                              {(session?.user as any)?.role === "ADMIN" && (
+                                <div className="p-2 border-t border-slate-100">
+                                  <button
+                                    onClick={() => handleDelete(user.id, user.name || user.email)}
+                                    className="w-full flex items-center gap-2 px-3 py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest text-red-500 hover:bg-red-50 transition-all"
+                                  >
+                                    <Trash2 className="w-3 h-3" />
+                                    Delete User
+                                  </button>
+                                </div>
+                              )}
                             </motion.div>
                           )}
                         </AnimatePresence>

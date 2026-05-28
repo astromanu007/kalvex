@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, ShoppingBag, Briefcase,
   Settings, Users, Layers, Star, Image as ImageIcon,
-  ChevronRight, LogOut
+  ChevronRight, LogOut, X, CalendarDays
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -14,6 +14,7 @@ import { signOut } from "next-auth/react";
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Orders", href: "/admin/orders", icon: Star },
+  { label: "Bookings", href: "/admin/bookings", icon: CalendarDays },
   { label: "Store Items", href: "/admin/store", icon: ShoppingBag },
   { label: "Projects", href: "/admin/projects", icon: Briefcase },
   { label: "Services", href: "/admin/services", icon: Layers },
@@ -21,19 +22,26 @@ const NAV_ITEMS = [
   { label: "Users", href: "/admin/users", icon: Users },
 ];
 
-export function AdminSidebar() {
+export function AdminSidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
 
   return (
-    <aside className="w-80 h-screen sticky top-0 bg-white border-r border-slate-100 p-8 flex flex-col gap-12">
-      <div className="flex items-center gap-3">
-        <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-600/20">
-          <Settings className="w-5 h-5 text-white" />
+    <aside className="w-80 h-full max-h-screen overflow-y-auto sticky top-0 bg-white border-r border-slate-100 p-8 flex flex-col gap-12">
+      <div className="flex items-center justify-between gap-3">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 bg-blue-600 rounded-2xl flex items-center justify-center shadow-xl shadow-blue-600/20">
+            <Settings className="w-5 h-5 text-white" />
+          </div>
+          <div>
+            <h2 className="font-heading font-black text-xl text-slate-900 tracking-tighter">KALVEX</h2>
+            <p className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-600">Admin Panel</p>
+          </div>
         </div>
-        <div>
-          <h2 className="font-heading font-black text-xl text-slate-900 tracking-tighter">KALVEX</h2>
-          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-blue-600">Admin Panel</p>
-        </div>
+        {onClose && (
+          <button onClick={onClose} className="md:hidden p-2 text-slate-400 hover:text-slate-900 bg-slate-50 rounded-xl">
+            <X className="w-5 h-5" />
+          </button>
+        )}
       </div>
 
       <nav className="flex flex-col gap-2 flex-grow">
@@ -43,6 +51,7 @@ export function AdminSidebar() {
             <Link
               key={item.href}
               href={item.href}
+              onClick={onClose}
               className={cn(
                 "group flex items-center justify-between p-4 rounded-2xl transition-all duration-300",
                 isActive
