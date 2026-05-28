@@ -17,8 +17,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next()
   }
 
-  // Role-based route protection
-  if (pathname.startsWith('/dashboard') || pathname.startsWith('/cart') || pathname.startsWith('/checkout')) {
+  // Role-based route protection — /cart and /checkout are intentionally public
+  // (the checkout server action handles auth internally)
+  if (pathname.startsWith('/dashboard')) {
     if (!session) {
       return NextResponse.redirect(new URL('/login', request.url))
     }

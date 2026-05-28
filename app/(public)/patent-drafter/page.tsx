@@ -908,7 +908,7 @@ export default function PatentDrafterPage() {
           .pkg-card {
             transition: box-shadow 0.22s ease, transform 0.22s ease;
           }
-          .pkg-card:hover {
+          .pkg-card:hover, .pkg-card:active {
             transform: translateY(-2px);
             box-shadow: 0 8px 30px -6px rgba(0,0,0,0.12);
           }
@@ -937,7 +937,33 @@ export default function PatentDrafterPage() {
             border-radius: 18px;
             overflow: hidden;
           }
+          @keyframes marquee-scroll {
+            0%   { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .marquee-track {
+            display: flex;
+            white-space: nowrap;
+            animation: marquee-scroll 18s linear infinite;
+          }
+          .marquee-track:hover {
+            animation-play-state: paused;
+          }
         `}</style>
+
+        {/* Mobile marquee banner — visible only on screens smaller than lg */}
+        <div className="lg:hidden w-full fixed top-16 left-0 right-0 z-50 overflow-hidden bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 py-2 shadow-lg">
+          <div className="marquee-track">
+            {[...Array(4)].map((_, i) => (
+              <span key={i} className="text-white text-[10px] font-black uppercase tracking-widest px-8 flex items-center gap-3">
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 inline-block flex-shrink-0" />
+                🖥️ Best experienced on Laptop or Desktop &nbsp;&nbsp;•&nbsp;&nbsp;
+                <span className="w-1.5 h-1.5 rounded-full bg-white/60 inline-block flex-shrink-0" />
+                AI Patent Drafter — Recommended: Use on Laptop for Full Experience &nbsp;&nbsp;•&nbsp;&nbsp;
+              </span>
+            ))}
+          </div>
+        </div>
 
         {/* Background */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
@@ -946,7 +972,7 @@ export default function PatentDrafterPage() {
           <div className="absolute bottom-0 left-0 w-[360px] h-[360px] rounded-full bg-sky-100/60 blur-[100px]" />
         </div>
 
-        <div className="container mx-auto px-6 max-w-4xl relative z-10 py-20">
+        <div className="container mx-auto px-4 sm:px-6 max-w-4xl relative z-10 py-8 sm:py-16 lg:py-20 pt-20 lg:pt-20">
 
           {/* Header */}
           <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} className="text-center mb-12 space-y-3">
@@ -954,8 +980,8 @@ export default function PatentDrafterPage() {
               <span className="w-1.5 h-1.5 rounded-full bg-indigo-500 inline-block" />
               AI Patent Drafting Engine
             </div>
-            <h1 className="text-5xl md:text-[58px] font-black tracking-tight text-slate-900 leading-[1.05]">
-              What would you like<br />
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[58px] font-black tracking-tight text-slate-900 leading-[1.05]">
+              What would you like<br className="hidden sm:block" />{" "}
               <span className="shimmer-text">to draft today?</span>
             </h1>
             <p className="text-slate-400 text-[13px] font-normal max-w-sm mx-auto leading-relaxed pt-1">
@@ -964,7 +990,7 @@ export default function PatentDrafterPage() {
           </motion.div>
 
           {/* Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 mb-8">
             {PACKAGES.map((pkg, i) => {
               const isSelected = selectedPackages[pkg.id];
               return (

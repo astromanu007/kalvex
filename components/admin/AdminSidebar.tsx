@@ -13,10 +13,11 @@ import { signOut } from "next-auth/react";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
+  { label: "Orders", href: "/admin/orders", icon: Star },
   { label: "Store Items", href: "/admin/store", icon: ShoppingBag },
   { label: "Projects", href: "/admin/projects", icon: Briefcase },
   { label: "Services", href: "/admin/services", icon: Layers },
-  { label: "Submissions", href: "/admin/submissions", icon: Star },
+  { label: "Submissions", href: "/admin/submissions", icon: ImageIcon },
   { label: "Users", href: "/admin/users", icon: Users },
 ];
 

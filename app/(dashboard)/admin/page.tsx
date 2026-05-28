@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAdminStats, getAllOrders, forceUpdateOrderStatus } from "@/app/actions/admin";
+import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 const fadeInUp = {
@@ -262,6 +263,3 @@ export default function AdminDashboard() {
   );
 }
 
-function cn(...classes: any[]) {
-  return classes.filter(Boolean).join(" ");
-}
