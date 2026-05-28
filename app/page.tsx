@@ -314,6 +314,106 @@ export default function Home() {
           </motion.div>
         </div>
       </motion.section>
+      {/* SECTION 2.5 - OUR CORE PILLARS (MNC GRADE) */}
+      <motion.section
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={fadeInUp}
+        className="py-16 sm:py-24 bg-white border-y border-slate-50 relative overflow-hidden"
+      >
+        <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:30px_30px] opacity-10 pointer-events-none" />
+        
+        <div className="container mx-auto px-4 max-w-7xl relative z-10">
+          {/* Header */}
+          <div className="text-center mb-16 space-y-4">
+            <div className="inline-flex items-center gap-2.5 bg-blue-50 border border-blue-100 text-blue-600 px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
+              <Sparkles className="w-3.5 h-3.5" /> Our Foundation
+            </div>
+            <h2 className="font-heading font-black text-3xl sm:text-5xl text-slate-900 tracking-tighter">
+              The Three Core <span className="text-blue-600">Pillars</span>
+            </h2>
+            <p className="text-slate-400 font-bold text-sm sm:text-base max-w-xl mx-auto">
+              We build high-stakes proprietary technology models anchored by institutional precision and academic integrity.
+            </p>
+          </div>
+
+          {/* Pillars Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {[
+              {
+                title: "Institutional Integrity",
+                desc: "Every academic write-up and research project is verified through Turnitin. We guarantee absolute confidentiality and 100% plagiarism-free corporate deliverables.",
+                icon: ShieldCheck,
+                color: "from-blue-600 to-indigo-600 shadow-blue-600/10",
+                badge: "TURNITIN SECURED",
+                glow: "rgba(37,99,235,0.06)",
+              },
+              {
+                title: "Elite Scholarly Network",
+                desc: "Direct access to verified PhD scholars, expert patent writers, and industry consultants. Receive accurate, peer-reviewed engineering insights and reports.",
+                icon: BookOpen,
+                color: "from-slate-900 to-slate-800 shadow-slate-900/10",
+                badge: "VERIFIED PhD POOL",
+                glow: "rgba(15,23,42,0.06)",
+              },
+              {
+                title: "Advanced Prototyping",
+                desc: "From complex PCB fabrication to embedded firmware and high-value software stacks, our developers design production-grade models ready for licensing.",
+                icon: Cpu,
+                color: "from-emerald-600 to-teal-600 shadow-emerald-600/10",
+                badge: "PRODUCTION READY",
+                glow: "rgba(5,150,105,0.06)",
+              },
+            ].map((pillar, i) => (
+              <motion.div
+                key={i}
+                whileHover={{ y: -10, scale: 1.02 }}
+                onMouseMove={(e) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  const y = e.clientY - rect.top;
+                  e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+                  e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+                }}
+                onTouchMove={(e) => {
+                  const touch = e.touches[0];
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = touch.clientX - rect.left;
+                  const y = touch.clientY - rect.top;
+                  e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+                  e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+                }}
+                className="group relative bg-white border border-slate-100 rounded-[2.5rem] p-8 sm:p-10 shadow-[0_32px_64px_-16px_rgba(0,0,0,0.04)] transition-all duration-700 hover:shadow-2xl hover:border-blue-600/20 overflow-hidden"
+              >
+                {/* Spotlight effect */}
+                <div 
+                  className="absolute inset-0 opacity-0 group-hover:opacity-100 group-active:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(280px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), ${pillar.glow}, transparent 80%)`
+                  }}
+                />
+
+                <div className="relative z-10 space-y-6 flex flex-col h-full">
+                  <div className="flex justify-between items-start">
+                    <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${pillar.color} flex items-center justify-center shadow-lg transition-all duration-700 group-hover:scale-110 group-hover:-rotate-6`}>
+                      <pillar.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <span className="text-[8px] font-black uppercase tracking-[0.2em] bg-slate-50 border border-slate-100 text-slate-400 px-3 py-1 rounded-lg">
+                      {pillar.badge}
+                    </span>
+                  </div>
+                  
+                  <div className="space-y-3 flex-1">
+                    <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight transition-colors group-hover:text-blue-600">{pillar.title}</h3>
+                    <p className="text-slate-400 text-xs sm:text-[13px] font-bold leading-relaxed">{pillar.desc}</p>
+                  </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </motion.section>
 
 
 
