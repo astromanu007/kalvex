@@ -315,76 +315,7 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* SECTION 2.5 - COLLABORATORS MARQUEE (REPOSITIONED) */}
-      <section className="py-10 sm:py-20 bg-white border-y border-slate-50 overflow-hidden">
-        <div className="container mx-auto px-4 mb-6 sm:mb-12 max-w-7xl">
-          <div className="flex items-center gap-4">
-            <div className="h-px flex-1 bg-slate-100" />
-            <p className="text-center text-[8px] sm:text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] px-2">Trusted by Innovators from Global Leaders</p>
-            <div className="h-px flex-1 bg-slate-100" />
-          </div>
-        </div>
-        <div className="relative flex overflow-x-hidden group">
-          <div className="animate-marquee whitespace-nowrap flex items-center space-x-24 px-12">
-            {[
-              { name: "IIT Bombay", type: "institute", color: "from-blue-600 to-blue-400" },
-              { name: "IIT Delhi", type: "institute", color: "from-orange-600 to-orange-400" },
-              { name: "IIT Madras", type: "institute", color: "from-red-600 to-red-400" },
-              { name: "IIT Kanpur", type: "institute", color: "from-blue-700 to-blue-500" },
-              { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png", type: "company", color: "from-blue-500 via-red-500 to-yellow-500" },
-              { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageMedia/RE1Mu3b?ver=5c31", type: "company", color: "from-blue-600 to-blue-400" },
-              { name: "NVIDIA", logo: "https://upload.wikimedia.org/wikipedia/sco/thumb/2/21/Nvidia_logo.svg/1200px-Nvidia_logo.svg.png", type: "company", color: "from-emerald-600 to-emerald-400" },
-              { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", type: "company", color: "from-orange-500 to-orange-300" },
-            ].map((collab, i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.1, rotate: 2, y: -5 }}
-                className="flex items-center gap-4 sm:gap-6 px-6 py-3 sm:px-12 sm:py-6 bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-xl shadow-slate-900/5 group transition-all duration-500"
-              >
-                {collab.type === "company" && collab.logo && (
-                  <div className="w-10 h-10 sm:w-14 sm:h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center">
-                    <img 
-                      src={collab.logo} 
-                      alt={collab.name} 
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  </div>
-                )}
-                <span className={`text-base sm:text-xl font-black tracking-tighter bg-gradient-to-r ${collab.color} bg-clip-text text-transparent`}>{collab.name}</span>
-              </motion.div>
-            ))}
-          </div>
-          <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-24 px-12">
-            {[
-              { name: "IIT Bombay", type: "institute", color: "from-blue-600 to-blue-400" },
-              { name: "IIT Delhi", type: "institute", color: "from-orange-600 to-orange-400" },
-              { name: "IIT Madras", type: "institute", color: "from-red-600 to-red-400" },
-              { name: "IIT Kanpur", type: "institute", color: "from-blue-700 to-blue-500" },
-              { name: "Google", logo: "https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png", type: "company", color: "from-blue-500 via-red-500 to-yellow-500" },
-              { name: "Microsoft", logo: "https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageMedia/RE1Mu3b?ver=5c31", type: "company", color: "from-blue-600 to-blue-400" },
-              { name: "NVIDIA", logo: "https://upload.wikimedia.org/wikipedia/sco/thumb/2/21/Nvidia_logo.svg/1200px-Nvidia_logo.svg.png", type: "company", color: "from-emerald-600 to-emerald-400" },
-              { name: "Amazon", logo: "https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg", type: "company", color: "from-orange-500 to-orange-300" },
-            ].map((collab, i) => (
-              <motion.div
-                key={`dup-${i}`}
-                whileHover={{ scale: 1.1, rotate: 2, y: -5 }}
-                className="flex items-center gap-4 sm:gap-6 px-6 py-3 sm:px-12 sm:py-6 bg-white rounded-2xl sm:rounded-3xl border border-slate-100 shadow-xl shadow-slate-900/5 group transition-all duration-500"
-              >
-                {collab.type === "company" && collab.logo && (
-                  <div className="w-10 h-10 sm:w-14 sm:h-14 relative group-hover:drop-shadow-[0_0_15px_rgba(0,0,0,0.1)] transition-all flex items-center justify-center">
-                    <img 
-                      src={collab.logo} 
-                      alt={collab.name} 
-                      className="max-w-full max-h-full object-contain"
-                    />
-                  </div>
-                )}
-                <span className={`text-base sm:text-xl font-black tracking-tighter bg-gradient-to-r ${collab.color} bg-clip-text text-transparent`}>{collab.name}</span>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
+
 
       {/* SECTION 4 - AI LABS: REVOLUTIONARY IP */}
       <motion.section
