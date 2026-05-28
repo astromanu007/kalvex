@@ -2,19 +2,9 @@
 
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
-// Gmail SMTP transporter — sends to ANY email, no domain needed
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  host: "smtp.gmail.com",
-  port: 465,
-  secure: true,
-  auth: {
-    user: process.env.GMAIL_USER,
-    pass: process.env.GMAIL_APP_PASSWORD,
-  },
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 async function sendOTPEmail(to: string, name: string, otp: string, isClient = false) {
   const subject = isClient
@@ -56,8 +46,8 @@ async function sendOTPEmail(to: string, name: string, otp: string, isClient = fa
     `;
 
   try {
-    await transporter.sendMail({
-      from: `"Kalvex Labs" <${process.env.GMAIL_USER}>`,
+    await resend.emails.send({
+      from: `"Kalvex Labs" <${process.env.RESEND_FROM || "no-reply@kalvexlabs.com"}>`,
       to,
       subject,
       html,
