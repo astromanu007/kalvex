@@ -160,13 +160,31 @@ export async function createPatentPaymentOrder(amount: number, draftId: string) 
   }
 }
 
+import crypto from "crypto";
+
 export async function verifyPatentPayment(paymentData: any, draftId: string, amount: number) {
   try {
     const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
-    // In a real app, you'd use crypto to verify the signature
-    // For now, update the status in the database to paid.
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+    if (!secret) {
+      console.error("RAZORPAY_KEY_SECRET is missing from environment variables!");
+      return { error: "Payment verification configuration error" };
+    }
+
+    // Cryptographically verify Razorpay signature
+    const payload = paymentData.razorpay_order_id + "|" + paymentData.razorpay_payment_id;
+    const generatedSignature = crypto
+      .createHmac("sha256", secret)
+      .update(payload)
+      .digest("hex");
+
+    if (generatedSignature !== paymentData.razorpay_signature) {
+      console.error("Razorpay patent payment verification failed: signature mismatch.");
+      return { error: "Security validation failed. Signature mismatch." };
+    }
+
     await prisma.patentDraft.update({
       where: { id: draftId },
       data: {

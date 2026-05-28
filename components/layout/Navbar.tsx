@@ -94,6 +94,39 @@ export function Navbar() {
     };
   }, [session]);
 
+  // Load and sync cart items dynamically from localStorage
+  useEffect(() => {
+    const syncCartCount = () => {
+      try {
+        const stored = localStorage.getItem("kalvex_cart");
+        if (stored) {
+          const items = JSON.parse(stored);
+          if (Array.isArray(items)) {
+            const count = items.reduce((acc, item: any) => acc + (item.qty || 1), 0);
+            setCartCount(count);
+            return;
+          }
+        }
+        setCartCount(0);
+      } catch (err) {
+        console.error("Cart sync error:", err);
+        setCartCount(0);
+      }
+    };
+
+    // Sync initially
+    syncCartCount();
+
+    // Listen for changes
+    window.addEventListener("kalvex-cart-updated", syncCartCount);
+    window.addEventListener("storage", syncCartCount);
+
+    return () => {
+      window.removeEventListener("kalvex-cart-updated", syncCartCount);
+      window.removeEventListener("storage", syncCartCount);
+    };
+  }, []);
+
   // Body Scroll Locking Effect for mobile menu, search, or notification overlay
   useEffect(() => {
     if (mobileMenuOpen || searchOpen || notificationOpen) {

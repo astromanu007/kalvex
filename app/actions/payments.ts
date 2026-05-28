@@ -29,15 +29,32 @@ export async function createPaymentOrder(amount: number, orderId: string) {
   }
 }
 
+import crypto from "crypto";
+
 export async function verifyPayment(paymentData: any, orderId: string) {
   try {
     const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
-    // In a real app, you'd use crypto to verify the signature
-    // For now, we'll assume the client-side success is enough to move the status
-    // but we'll log it.
+    const secret = process.env.RAZORPAY_KEY_SECRET;
+    if (!secret) {
+      console.error("RAZORPAY_KEY_SECRET is missing from environment variables!");
+      return { error: "Payment verification configuration error" };
+    }
 
+    // Cryptographically verify Razorpay signature
+    const payload = paymentData.razorpay_order_id + "|" + paymentData.razorpay_payment_id;
+    const generatedSignature = crypto
+      .createHmac("sha256", secret)
+      .update(payload)
+      .digest("hex");
+
+    if (generatedSignature !== paymentData.razorpay_signature) {
+      console.error("Razorpay payment verification failed: signature mismatch.");
+      return { error: "Security validation failed. Signature mismatch." };
+    }
+
+    // Order status transitions to PAYMENT_CONFIRMED first, then to RESEARCH_STARTED for expert queue
     await prisma.order.update({
       where: { id: orderId },
       data: { status: "RESEARCH_STARTED" }
@@ -47,7 +64,7 @@ export async function verifyPayment(paymentData: any, orderId: string) {
       data: {
         orderId,
         status: "RESEARCH_STARTED",
-        note: `Payment verified via Razorpay. Ref: ${paymentData.razorpay_payment_id}`,
+        note: `Payment successfully verified via Razorpay. Ref: ${paymentData.razorpay_payment_id}`,
         changedBy: session.user.id
       }
     });

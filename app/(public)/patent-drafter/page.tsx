@@ -1122,7 +1122,7 @@ export default function PatentDrafterPage() {
           className="flex justify-center mb-16 no-print"
         >
           <div className="flex flex-col md:flex-row items-center gap-4 bg-white border border-slate-200 rounded-3xl p-3 shadow-xl shadow-slate-900/5">
-            <div className="inline-flex items-center gap-2">
+            <div className="flex flex-wrap justify-center items-center gap-2">
               {[
                 { id: "representation", label: "Representation Sheet", icon: Layout },
                 { id: "disclosure", label: "Design Disclosure Form", icon: FileImage },
@@ -1486,20 +1486,20 @@ export default function PatentDrafterPage() {
                             </button>
                           )}
                         </div>
-                        <div className="flex gap-2 pl-6">
+                        <div className="flex flex-col sm:flex-row gap-2 pl-6">
                           <input
                             value={a.email}
                             onChange={e => setDApplicants(p => p.map(x => x.id === a.id ? { ...x, email: e.target.value } : x))}
                             placeholder="Email Address"
                             type="email"
-                            className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-blue-500"
+                            className="flex-1 bg-slate-50 border border-slate-100 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-blue-500 w-full"
                           />
                           <input
                             value={a.mobile}
                             onChange={e => setDApplicants(p => p.map(x => x.id === a.id ? { ...x, mobile: e.target.value } : x))}
                             placeholder="Mobile No."
                             type="tel"
-                            className="flex-[0.7] bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-blue-500"
+                            className="flex-[0.7] bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-bold text-slate-800 outline-none focus:border-blue-500 w-full"
                           />
                         </div>
                       </Reorder.Item>
@@ -1619,7 +1619,7 @@ export default function PatentDrafterPage() {
                 {/* View Uploads */}
                 <div className="space-y-3">
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Design Views (7 required)</label>
-                  <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
                     {DISCLOSURE_VIEWS.map(v => (
                       <label key={v.id} className="cursor-pointer group/view">
                         <div className={`relative aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-1 transition-all ${dViews[v.id] ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:border-blue-400 bg-slate-50"}`}>
@@ -1664,12 +1664,12 @@ export default function PatentDrafterPage() {
                 )}
               </div>
 
-              <div className="overflow-y-auto max-h-[80vh] space-y-8 pr-1 pb-10">
-                <div className="relative group">
+              <div className="overflow-y-auto max-h-[80vh] space-y-8 pr-1 pb-10 w-full overflow-x-auto custom-scrollbar select-none">
+                <div className="relative group min-w-[550px] lg:min-w-0">
                   <div className="absolute -top-3 left-4 bg-slate-900 text-white text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full z-10 shadow-lg border border-slate-700">
                     Live Document Preview — Auto-flowing A4
                   </div>
-                  <div className="bg-white shadow-2xl border border-slate-200 w-full p-10 pt-12 font-serif text-[8.5px] leading-relaxed transition-all group-hover:shadow-blue-500/5">
+                  <div className="bg-white shadow-2xl border border-slate-200 w-full p-6 sm:p-10 pt-12 font-serif text-[8.5px] leading-relaxed transition-all group-hover:shadow-blue-500/5">
                     <p className="text-center font-bold underline text-[12px] mb-0.5 text-slate-900 uppercase tracking-wide">DESIGN REGISTRATION</p>
                     <p className="text-center text-[10px] mb-1 text-slate-900 uppercase">PRELIMINARY INFORMATION FORM</p>
                     <p className="text-center mb-8 text-[8.5px] text-slate-900 font-serif uppercase tracking-tight">(PLEASE TYPE OR PRINT LEGIBLY)</p>
@@ -1948,15 +1948,15 @@ export default function PatentDrafterPage() {
               </div>
 
               {/* Scrollable container for preview pages on screen */}
-              <div className="w-full max-w-[700px] space-y-8 no-print overflow-y-auto max-h-[75vh] pr-1 pb-10">
+              <div className="w-full max-w-[700px] space-y-8 no-print overflow-y-auto max-h-[75vh] pr-1 pb-10 overflow-x-auto custom-scrollbar select-none">
                 {getFERPages().map((page, pIdx, allPages) => (
-                  <div key={page.pageNum} className="relative group">
+                  <div key={page.pageNum} className="relative group min-w-[550px] lg:min-w-0">
                     <div className="absolute -top-3 left-4 bg-slate-900 text-white text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1 rounded-full z-10 shadow-lg border border-slate-700">
                       Page {page.pageNum} of {allPages.length}
                     </div>
                     
                     {/* Legal A4 emulation card */}
-                    <div className="bg-white shadow-2xl border border-slate-300 w-full p-8 md:p-10 font-serif text-[9.5px] leading-relaxed text-black relative aspect-[1/1.414] transition-all group-hover:shadow-blue-500/5 overflow-hidden flex flex-col justify-between">
+                    <div className="bg-white shadow-2xl border border-slate-300 w-full p-4 sm:p-8 md:p-10 font-serif text-[9.5px] leading-relaxed text-black relative aspect-[1/1.414] transition-all group-hover:shadow-blue-500/5 overflow-hidden flex flex-col justify-between">
                       
                       {/* Legal Correspondence Double-Border frame */}
                       <div className="absolute inset-4 border border-black pointer-events-none">

@@ -64,7 +64,30 @@ function CheckoutContent() {
     fetchOrder();
   }, [orderId]);
 
-  const ORDER_TOTAL = order ? order.amount : 14399;
+  const [orderTotal, setOrderTotal] = useState(14399);
+  const [cartItems, setCartItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (order) {
+      setOrderTotal(order.amount);
+    } else {
+      try {
+        const stored = localStorage.getItem("kalvex_cart");
+        if (stored) {
+          const items = JSON.parse(stored);
+          if (Array.isArray(items) && items.length > 0) {
+            setCartItems(items);
+            const subtotal = items.reduce((acc, item: any) => acc + (item.price || 0) * (item.qty || 1), 0);
+            const discount = subtotal > 5000 ? Math.round(subtotal * 0.1) : 0;
+            const shipping = subtotal > 5000 ? 0 : 150;
+            setOrderTotal(subtotal - discount + shipping);
+          }
+        }
+      } catch (err) {
+        console.error("Failed to calculate cart total:", err);
+      }
+    }
+  }, [order]);
 
   const handlePayment = async () => {
     setProcessing(true);
@@ -72,11 +95,25 @@ function CheckoutContent() {
 
     try {
       if (!activeOrder) {
+        // Load the actual cart items dynamically
+        let cartItemsText = "NO ITEMS FOUND";
+        try {
+          const stored = localStorage.getItem("kalvex_cart");
+          if (stored) {
+            const items = JSON.parse(stored);
+            if (Array.isArray(items) && items.length > 0) {
+              cartItemsText = items
+                .map((item: any) => `- ${item.name} (${item.sku}) x ${item.qty || 1} — ₹${((item.price || 0) * (item.qty || 1)).toLocaleString()}`)
+                .join("\n");
+            }
+          }
+        } catch (err) {
+          console.error("Failed to parse cart items:", err);
+        }
+
         // Construct the detailed order description with both sourced components and shipping destination
         const requirementsText = `ITEMS PURCHASED:
-- Raspberry Pi 5 4GB Core Unit x 2
-- HC-SR04 Ultrasonic Sensor x 1
-- 0.96" OLED Display Module x 3
+${cartItemsText}
 
 SHIPPING DESTINATION DETAILS:
 Name: ${address.name || "N/A"}
@@ -88,7 +125,7 @@ Landmark: ${address.landmark || "N/A"}`;
         const createRes = await createOrder({
           serviceType: "CUSTOM_PROJECT", // Using CUSTOM_PROJECT for components store orders
           requirements: requirementsText,
-          amount: ORDER_TOTAL,
+          amount: orderTotal,
         });
 
         if (createRes.error || !createRes.orderId) {
@@ -100,7 +137,7 @@ Landmark: ${address.landmark || "N/A"}`;
         activeOrder = {
           id: createRes.orderId,
           orderNumber: createRes.orderNumber,
-          amount: ORDER_TOTAL,
+          amount: orderTotal,
           serviceType: "CUSTOM_PROJECT"
         };
       }
@@ -124,6 +161,13 @@ Landmark: ${address.landmark || "N/A"}`;
           const verifyRes = await verifyPayment(response, activeOrder.id);
           if (verifyRes.success) {
             await updateOrderStatus(activeOrder.id, "PAYMENT_CONFIRMED", "Payment successfully verified via Razorpay.");
+            // Clear local storage cart
+            try {
+              localStorage.removeItem("kalvex_cart");
+              window.dispatchEvent(new Event("kalvex-cart-updated"));
+            } catch (err) {
+              console.error("Failed to clear cart:", err);
+            }
             setDone(true);
           } else {
             alert("Payment verification failed.");
@@ -368,23 +412,33 @@ Landmark: ${address.landmark || "N/A"}`;
                         </div>
                       </>
                     ) : (
-                      [
-                        { label: "Raspberry Pi 5 4GB Unit × 2", amount: "₹13,000" },
-                        { label: "Sensor Array - Standard Pack", amount: "₹399" },
-                        { label: "OLED Display Module × 3", amount: "₹750" },
-                        { label: "Shipping", amount: "Free" },
-                        { label: "KALVEX10 Research Grant", amount: "- ₹1,415", green: true },
-                      ].map((row) => (
-                        <div key={row.label} className="flex justify-between p-6 text-[10px] font-black uppercase tracking-widest">
-                          <span className="text-slate-400">{row.label}</span>
-                          <span className={row.green ? "text-emerald-500" : "text-slate-900"}>{row.amount}</span>
-                        </div>
-                      ))
+                      <>
+                        {cartItems.map((item) => (
+                          <div key={item.id} className="flex justify-between p-6 text-[10px] font-black uppercase tracking-widest">
+                            <span className="text-slate-400">{item.name} × {item.qty || 1}</span>
+                            <span className="text-slate-900">₹{((item.price || 0) * (item.qty || 1)).toLocaleString()}</span>
+                          </div>
+                        ))}
+                        {cartItems.length > 0 && cartItems.reduce((acc, item) => acc + (item.price || 0) * (item.qty || 1), 0) > 5000 && (
+                          <div className="flex justify-between p-6 text-[10px] font-black uppercase tracking-widest">
+                            <span className="text-blue-600 font-black uppercase tracking-widest text-[10px]">Research Grant Application</span>
+                            <span className="font-black text-blue-600">- ₹{(cartItems.reduce((acc, item) => acc + (item.price || 0) * (item.qty || 1), 0) * 0.1).toLocaleString()}</span>
+                          </div>
+                        )}
+                        {cartItems.length > 0 && (
+                          <div className="flex justify-between p-6 text-[10px] font-black uppercase tracking-widest">
+                            <span className="text-slate-400">Shipping</span>
+                            <span className={cartItems.reduce((acc, item) => acc + (item.price || 0) * (item.qty || 1), 0) > 5000 ? "text-emerald-500 font-black uppercase tracking-widest text-[10px]" : "text-slate-900"}>
+                              {cartItems.reduce((acc, item) => acc + (item.price || 0) * (item.qty || 1), 0) > 5000 ? "Free" : "₹150"}
+                            </span>
+                          </div>
+                        )}
+                      </>
                     )}
                     <div className="flex justify-between p-8 bg-slate-900 text-white items-end">
                       <div>
                         <span className="text-[9px] font-black uppercase tracking-[0.2em] opacity-40">Total Amount</span>
-                        <div className="text-4xl font-black tracking-tighter">₹{ORDER_TOTAL.toLocaleString()}</div>
+                        <div className="text-4xl font-black tracking-tighter">₹{orderTotal.toLocaleString()}</div>
                       </div>
                       <div className="text-[10px] font-black uppercase tracking-widest opacity-40 mb-1">Price in INR</div>
                     </div>
@@ -395,7 +449,7 @@ Landmark: ${address.landmark || "N/A"}`;
                     disabled={processing}
                     className="w-full bg-blue-600 hover:bg-blue-700 text-white h-20 rounded-[1.5rem] shadow-[0_24px_48px_-12px_rgba(37,99,235,0.3)] text-[12px] font-black uppercase tracking-[0.2em] transition-all duration-500 group"
                   >
-                    {processing ? <><Loader2 className="w-5 h-5 mr-4 animate-spin" /> Processing payment...</> : `Pay Now - ₹${ORDER_TOTAL.toLocaleString()}`}
+                    {processing ? <><Loader2 className="w-5 h-5 mr-4 animate-spin" /> Processing payment...</> : `Pay Now - ₹${orderTotal.toLocaleString()}`}
                   </Button>
                 </motion.div>
               )}
@@ -417,16 +471,16 @@ Landmark: ${address.landmark || "N/A"}`;
                     <span className="truncate max-w-[150px]">{order.serviceType?.replace(/_/g, " ")}</span>
                   </div>
                 ) : (
-                  ["RPi 5 Core Unit × 2", "Sensor Array × 1", "OLED Module × 3"].map((item) => (
-                    <div key={item} className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
-                      <span>{item}</span>
+                  cartItems.map((item) => (
+                    <div key={item.id} className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400">
+                      <span>{item.name} × {item.qty || 1}</span>
                     </div>
                   ))
                 )}
               </div>
               <div className="pt-8 border-t border-slate-50 flex justify-between items-center">
                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Total Amount</span>
-                <span className="text-2xl font-black text-slate-900 tracking-tighter">₹{ORDER_TOTAL.toLocaleString()}</span>
+                <span className="text-2xl font-black text-slate-900 tracking-tighter">₹{orderTotal.toLocaleString()}</span>
               </div>
             </div>
           </motion.div>

@@ -737,12 +737,12 @@ export default function ServiceDetailPage() {
                             <span className="text-xl font-black text-slate-700">₹100</span>
                           </div>
                           
-                          <div className="pt-6 px-8 pb-6 mt-6 rounded-[2rem] border-2 bg-indigo-50/70 border-indigo-150 flex justify-between items-center shadow-inner">
-                            <div>
+                          <div className="pt-6 px-6 sm:px-8 pb-6 mt-6 rounded-[2rem] border-2 bg-indigo-50/70 border-indigo-150 flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between shadow-inner">
+                            <div className="text-left">
                               <span className="text-xs font-black uppercase tracking-[0.2em] block text-indigo-700">Grand Total</span>
                               <span className="text-[9px] text-slate-500 uppercase tracking-widest font-black">Pan Maharashtra Tracked Delivery</span>
                             </div>
-                            <span className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 drop-shadow-[0_2px_15px_rgba(99,102,241,0.12)]">
+                            <span className="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 drop-shadow-[0_2px_15px_rgba(99,102,241,0.12)]">
                               ₹{calculatedPrice}
                             </span>
                           </div>

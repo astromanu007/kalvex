@@ -137,8 +137,46 @@ export default function ElectronicsStore() {
       router.push("/login");
       return;
     }
-    // Logic for adding to cart
-    alert(`${product.name} added to cart!`);
+    try {
+      const stored = localStorage.getItem("kalvex_cart");
+      let items: any[] = [];
+      if (stored) {
+        items = JSON.parse(stored);
+      }
+      if (!Array.isArray(items)) {
+        items = [];
+      }
+      const existing = items.find((item: any) => item.id === product.id);
+      if (existing) {
+        existing.qty = (existing.qty || 1) + 1;
+      } else {
+        items.push({
+          id: product.id,
+          name: product.name,
+          sku: product.sku,
+          price: product.price,
+          mrp: product.mrp,
+          category: product.category,
+          qty: 1,
+          image: product.image,
+        });
+      }
+      localStorage.setItem("kalvex_cart", JSON.stringify(items));
+      window.dispatchEvent(new Event("kalvex-cart-updated"));
+      
+      // MNC Style premium toast feedback
+      const toast = document.createElement("div");
+      toast.className = "fixed bottom-8 right-8 z-[500] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider";
+      toast.innerHTML = `<span class="text-emerald-500">✓</span> ${product.name} added to your procurement inventory`;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.className += " animate-out fade-out duration-300";
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    } catch (err) {
+      console.error("Failed to add to cart:", err);
+      alert("Failed to update cart inventory.");
+    }
   };
 
   const clearFilters = () => {

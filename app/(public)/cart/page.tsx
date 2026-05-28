@@ -1,8 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Shield, Truck, Sparkles, CreditCard } from "lucide-react";
+import { Trash2, Plus, Minus, ShoppingBag, ArrowRight, Tag, Shield, Truck, Sparkles, CreditCard, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -11,27 +11,58 @@ const fadeInUp = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: [0.16, 1, 0.3, 1] as const } }
 };
 
-const INITIAL_CART = [
-  { id: "c1", name: "Raspberry Pi 5 4GB RAM", sku: "KVX-SBC-005", price: 6500, qty: 2, category: "Development Boards" },
-  { id: "c2", name: "HC-SR04 Ultrasonic Sensor × Pack of 5", sku: "KVX-SEN-004", price: 399, qty: 1, category: "Sensors" },
-  { id: "c3", name: "0.96\" OLED Display I2C Module", sku: "KVX-DIS-096", price: 250, qty: 3, category: "Displays" },
-];
-
 export default function CartPage() {
-  const [cart, setCart] = useState(INITIAL_CART);
+  const [cart, setCart] = useState<any[]>([]);
   const [coupon, setCoupon] = useState("");
   const [couponApplied, setCouponApplied] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    try {
+      const stored = localStorage.getItem("kalvex_cart");
+      if (stored) {
+        const items = JSON.parse(stored);
+        if (Array.isArray(items)) {
+          setCart(items);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load cart:", err);
+    }
+  }, []);
 
   const updateQty = (id: string, delta: number) => {
-    setCart((c) => c.map((item) => item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item));
+    setCart((c) => {
+      const updated = c.map((item) => item.id === id ? { ...item, qty: Math.max(1, item.qty + delta) } : item);
+      localStorage.setItem("kalvex_cart", JSON.stringify(updated));
+      window.dispatchEvent(new Event("kalvex-cart-updated"));
+      return updated;
+    });
   };
 
-  const removeItem = (id: string) => setCart((c) => c.filter((item) => item.id !== id));
+  const removeItem = (id: string) => {
+    setCart((c) => {
+      const filtered = c.filter((item) => item.id !== id);
+      localStorage.setItem("kalvex_cart", JSON.stringify(filtered));
+      window.dispatchEvent(new Event("kalvex-cart-updated"));
+      return filtered;
+    });
+  };
 
-  const subtotal = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
+  const subtotal = cart.reduce((acc, item) => acc + item.price * (item.qty || 1), 0);
   const discount = couponApplied ? Math.round(subtotal * 0.1) : 0;
   const shipping = subtotal > 5000 ? 0 : 150;
   const total = subtotal - discount + shipping;
+
+  if (!isMounted) {
+    return (
+      <div className="min-h-screen pt-32 pb-24 bg-slate-50 flex flex-col justify-center items-center gap-4">
+        <Loader2 className="w-10 h-10 text-indigo-600 animate-spin" />
+        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">Restoring Inventory State...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pt-32 pb-24 bg-slate-50 transition-colors duration-300">
