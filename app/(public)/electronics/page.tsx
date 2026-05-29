@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useRef } from "react";
 import Link from "next/link";
-import { Search, Filter, Heart, ShoppingCart, Sparkles, Box, Cpu, Zap, Monitor, Settings, Battery, ChevronRight, Shield, ArrowRight, CheckCircle, ShoppingBag } from "lucide-react";
+import { Search, Filter, Heart, ShoppingCart, Sparkles, Box, Cpu, Zap, Monitor, Settings, Battery, ChevronRight, Shield, ArrowRight, CheckCircle, ShoppingBag, UploadCloud, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signIn } from "next-auth/react";
@@ -108,6 +108,74 @@ export default function ElectronicsStore() {
   const [maxPrice, setMaxPrice] = useState("");
   const [inStockOnly, setInStockOnly] = useState(false);
   const [sortBy, setSortBy] = useState("Relevance");
+  const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [wishlist, setWishlist] = useState<any[]>([]);
+
+  useEffect(() => {
+    const syncWishlist = () => {
+      try {
+        const saved = localStorage.getItem("kalvex_saved");
+        if (saved) {
+          const items = JSON.parse(saved);
+          if (Array.isArray(items)) {
+            setWishlist(items);
+          }
+        } else {
+          setWishlist([]);
+        }
+      } catch (err) {}
+    };
+
+    syncWishlist();
+    window.addEventListener("kalvex-wishlist-updated", syncWishlist);
+    window.addEventListener("storage", syncWishlist);
+
+    return () => {
+      window.removeEventListener("kalvex-wishlist-updated", syncWishlist);
+      window.removeEventListener("storage", syncWishlist);
+    };
+  }, []);
+
+  const toggleWishlist = (product: any, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const saved = localStorage.getItem("kalvex_saved");
+      let items = saved ? JSON.parse(saved) : [];
+      if (!Array.isArray(items)) items = [];
+
+      const exists = items.some((i: any) => i.id === product.id);
+      if (exists) {
+        items = items.filter((i: any) => i.id !== product.id);
+      } else {
+        items.push({
+          ...product,
+          qty: 1,
+        });
+      }
+
+      localStorage.setItem("kalvex_saved", JSON.stringify(items));
+      window.dispatchEvent(new Event("kalvex-wishlist-updated"));
+      
+      const toast = document.createElement("div");
+      toast.className = "fixed bottom-8 right-8 z-[500] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider";
+      toast.innerHTML = exists 
+        ? `<span class="text-slate-400">×</span> Removed from wishlist.` 
+        : `<span class="text-red-500">❤️</span> Added to wishlist.`;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.className += " animate-out fade-out duration-300";
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    } catch (err) {}
+  };
 
   const filteredProducts = useMemo(() => {
     let result = PRODUCTS.filter(p => {
@@ -131,6 +199,73 @@ export default function ElectronicsStore() {
 
     return result;
   }, [selectedCategory, searchQuery, minPrice, maxPrice, inStockOnly, sortBy]);
+
+  const handleBulkUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      const lines = text.split('\n');
+      
+      let itemsAdded = 0;
+      const stored = localStorage.getItem("kalvex_cart");
+      let cartItems: any[] = stored ? JSON.parse(stored) : [];
+      if (!Array.isArray(cartItems)) cartItems = [];
+
+      lines.forEach((line) => {
+        const [sku, qtyStr] = line.split(',').map(s => s.trim());
+        if (!sku) return;
+        
+        const qty = parseInt(qtyStr) || 1;
+        const product = PRODUCTS.find(p => p.sku.toUpperCase() === sku.toUpperCase());
+        
+        if (product) {
+          const existing = cartItems.find((item: any) => item.id === product.id);
+          if (existing) {
+            existing.qty = (existing.qty || 1) + qty;
+          } else {
+            cartItems.push({
+              id: product.id,
+              name: product.name,
+              sku: product.sku,
+              price: product.price,
+              mrp: product.mrp,
+              category: product.category,
+              qty: qty,
+              image: product.image,
+            });
+          }
+          itemsAdded++;
+        }
+      });
+
+      if (itemsAdded > 0) {
+        localStorage.setItem("kalvex_cart", JSON.stringify(cartItems));
+        window.dispatchEvent(new Event("kalvex-cart-updated"));
+        
+        const toast = document.createElement("div");
+        toast.className = "fixed bottom-8 right-8 z-[500] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider";
+        toast.innerHTML = `<span class="text-emerald-500">✓</span> Bulk Upload Success: ${itemsAdded} products added to cart.`;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+          toast.className += " animate-out fade-out duration-300";
+          setTimeout(() => toast.remove(), 300);
+        }, 3000);
+        setIsBulkUploadOpen(false);
+      } else {
+        alert("No valid products found in the CSV. Please ensure the format is SKU,Qty.");
+      }
+    };
+    reader.readAsText(file);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
 
   const handleAddToCart = (product: any) => {
     if (!session) {
@@ -288,7 +423,26 @@ export default function ElectronicsStore() {
               Search
             </Button>
           </div>
+
+          <Button 
+            onClick={() => setIsBulkUploadOpen(true)}
+            className="hidden xl:flex bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 border border-emerald-200 font-bold text-sm h-16 px-6 rounded-2xl items-center gap-3 shadow-sm transition-all"
+          >
+            <UploadCloud className="w-5 h-5" />
+            Bulk CSV Upload
+          </Button>
         </motion.div>
+
+        {/* Mobile Bulk Upload Button */}
+        <div className="xl:hidden w-full mb-10">
+          <Button 
+            onClick={() => setIsBulkUploadOpen(true)}
+            className="w-full bg-emerald-50 text-emerald-600 hover:bg-emerald-100 hover:text-emerald-700 border border-emerald-200 font-bold text-sm h-14 rounded-2xl flex items-center justify-center gap-3 shadow-sm transition-all"
+          >
+            <UploadCloud className="w-5 h-5" />
+            Bulk CSV Upload
+          </Button>
+        </div>
 
         <div className="flex flex-col lg:flex-row gap-16 items-start">
 
@@ -433,8 +587,13 @@ export default function ElectronicsStore() {
                         </div>
 
                         <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                          <button className="w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center text-slate-400 hover:text-red-500 hover:shadow-md transition-all border border-slate-200">
-                            <Heart className="w-5 h-5" />
+                          <button 
+                            onClick={(e) => toggleWishlist(p, e)}
+                            className={`w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:shadow-md transition-all border border-slate-200 ${
+                              wishlist.some(i => i.id === p.id) ? "text-red-500 bg-red-50" : "text-slate-400 hover:text-red-500"
+                            }`}
+                          >
+                            <Heart className={`w-5 h-5 ${wishlist.some(i => i.id === p.id) ? "fill-red-500" : ""}`} />
                           </button>
                         </div>
 
@@ -544,6 +703,70 @@ export default function ElectronicsStore() {
           </main>
         </div>
       </div>
+
+      {/* Bulk Upload Modal */}
+      <AnimatePresence>
+        {isBulkUploadOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              className="absolute inset-0 bg-slate-900/40 backdrop-blur-sm"
+              onClick={() => setIsBulkUploadOpen(false)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              className="bg-white rounded-[2.5rem] p-8 md:p-10 w-full max-w-lg shadow-2xl relative z-10"
+            >
+              <button 
+                onClick={() => setIsBulkUploadOpen(false)}
+                className="absolute top-6 right-6 w-10 h-10 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-full flex items-center justify-center transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <div className="w-16 h-16 bg-emerald-50 rounded-2xl flex items-center justify-center border border-emerald-100 mb-6">
+                <UploadCloud className="w-8 h-8 text-emerald-600" />
+              </div>
+
+              <h2 className="text-2xl font-black text-slate-900 mb-2">Bulk CSV Upload</h2>
+              <p className="text-sm font-medium text-slate-500 mb-8 leading-relaxed">
+                Save time by uploading your lab's procurement list directly. 
+                Upload a standard <code>.csv</code> file formatted with <strong className="text-slate-800">SKU, Quantity</strong> per row.
+              </p>
+
+              <div className="border-2 border-dashed border-slate-200 rounded-3xl p-10 text-center hover:border-emerald-500 hover:bg-emerald-50/50 transition-all cursor-pointer group" onClick={() => fileInputRef.current?.click()}>
+                <UploadCloud className="w-10 h-10 text-slate-300 group-hover:text-emerald-500 mx-auto mb-4 transition-colors" />
+                <p className="text-sm font-bold text-slate-600 group-hover:text-emerald-700">
+                  Click to browse or drag and drop your file here
+                </p>
+                <p className="text-xs font-semibold text-slate-400 mt-2">Maximum file size 5MB. CSV format only.</p>
+                <input 
+                  type="file" 
+                  accept=".csv" 
+                  ref={fileInputRef}
+                  onChange={handleBulkUpload}
+                  className="hidden" 
+                />
+              </div>
+
+              <div className="mt-8 bg-slate-50 p-5 rounded-2xl border border-slate-100">
+                <h4 className="text-xs font-bold text-slate-800 uppercase tracking-wider mb-2">Example Format:</h4>
+                <div className="font-mono text-xs text-slate-500 space-y-1">
+                  <p>KVX-SBC-005, 5</p>
+                  <p>KVX-MOD-015, 20</p>
+                  <p>KVX-SEN-022, 12</p>
+                </div>
+              </div>
+
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }

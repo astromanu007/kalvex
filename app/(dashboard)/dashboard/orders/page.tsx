@@ -8,11 +8,20 @@ import { getOrders } from "@/app/actions/orders";
 
 
 const STATUS_CONFIG: Record<string, { color: string; icon: any }> = {
-  "In Progress":  { color: "text-accent-warning bg-accent-warning/10 border-accent-warning/20", icon: Clock },
-  "Delivered":    { color: "text-accent-success bg-accent-success/10 border-accent-success/20", icon: CheckCircle },
-  "Under Review": { color: "text-accent-primary bg-accent-primary/10 border-accent-primary/20", icon: TrendingUp },
-  "Completed":    { color: "text-accent-success bg-accent-success/10 border-accent-success/20", icon: CheckCircle },
-  "Disputed":     { color: "text-accent-danger bg-accent-danger/10 border-accent-danger/20", icon: AlertCircle },
+  PENDING_PAYMENT:    { color: "text-amber-600 bg-amber-50 border-amber-200", icon: Clock },
+  PAYMENT_CONFIRMED:  { color: "text-blue-600 bg-blue-50 border-blue-200", icon: CheckCircle },
+  TOPIC_CONFIRMED:    { color: "text-indigo-600 bg-indigo-50 border-indigo-200", icon: CheckCircle },
+  RESEARCH_STARTED:   { color: "text-violet-600 bg-violet-50 border-violet-200", icon: TrendingUp },
+  DRAFT_IN_PROGRESS:  { color: "text-sky-600 bg-sky-50 border-sky-200", icon: Clock },
+  DRAFT_SUBMITTED:    { color: "text-cyan-600 bg-cyan-50 border-cyan-200", icon: CheckCircle },
+  UNDER_REVIEW:       { color: "text-orange-600 bg-orange-50 border-orange-200", icon: TrendingUp },
+  REVISION_REQUESTED: { color: "text-rose-600 bg-rose-50 border-rose-200", icon: AlertCircle },
+  REVISION_SUBMITTED: { color: "text-pink-600 bg-pink-50 border-pink-200", icon: CheckCircle },
+  FINAL_APPROVED:     { color: "text-teal-600 bg-teal-50 border-teal-200", icon: CheckCircle },
+  DELIVERED:          { color: "text-emerald-600 bg-emerald-50 border-emerald-200", icon: CheckCircle },
+  COMPLETED:          { color: "text-green-600 bg-green-50 border-green-200", icon: CheckCircle },
+  CANCELLED:          { color: "text-red-600 bg-red-50 border-red-200", icon: AlertCircle },
+  REFUNDED:           { color: "text-gray-600 bg-gray-50 border-gray-200", icon: AlertCircle },
 };
 
 const TYPE_COLOR: Record<string, string> = {

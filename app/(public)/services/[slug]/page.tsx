@@ -54,6 +54,24 @@ const getRate = (pages: number, type: "black_book" | "bond_paper") => {
   return type === "black_book" ? rate.blackBook : rate.bondPaper;
 };
 
+const mapSlugToServiceType = (slug: string) => {
+  const normalized = slug.toLowerCase();
+  if (normalized === "phd-thesis") return "PHD_THESIS";
+  if (normalized === "research-paper") return "RESEARCH_PAPER";
+  if (normalized === "final-year-report") return "FINAL_YEAR_REPORT";
+  if (normalized === "black-book-printing") return "FINAL_YEAR_REPORT";
+  if (normalized === "design-patent") return "DESIGN_PATENT_DRAFTING";
+  if (normalized === "utility-patent") return "UTILITY_PATENT_DRAFTING";
+  if (normalized === "copyright") return "COPYRIGHT_REGISTRATION";
+  if (normalized === "trademark") return "TRADEMARK_REGISTRATION";
+  if (normalized === "mini-project") return "MINI_PROJECT";
+  if (normalized === "major-project") return "MAJOR_PROJECT";
+  if (normalized === "lab-manual") return "LAB_MANUAL";
+  
+  // Dynamic or Admin added services fallback safely
+  return "CUSTOM_PROJECT";
+};
+
 export default function ServiceDetailPage() {
   const params = useParams();
   const slug = params.slug as string;
@@ -142,7 +160,7 @@ export default function ServiceDetailPage() {
 
     try {
       // 1. Create the order in the Database
-      let serviceTypeRaw = slug.toUpperCase().replace(/-/g, "_");
+      let serviceTypeRaw = mapSlugToServiceType(slug);
       
       let req = "";
       if (slug === "black-book-printing") {
@@ -287,7 +305,7 @@ export default function ServiceDetailPage() {
     }
 
     setLoading(true);
-    let serviceTypeRaw = slug.toUpperCase().replace(/-/g, "_");
+    let serviceTypeRaw = mapSlugToServiceType(slug);
     
     let req = "";
     if (slug === "black-book-printing") {

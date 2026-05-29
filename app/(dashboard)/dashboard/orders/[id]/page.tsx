@@ -12,12 +12,20 @@ import { getOrders } from "@/app/actions/orders";
 import { uploadFile } from "@/app/actions/storage";
 
 const STATUS_MAP: Record<string, { color: string; icon: any, desc: string }> = {
-  "PENDING_PAYMENT": { color: "text-accent-warning bg-accent-warning/10", icon: AlertCircle, desc: "Awaiting your payment to begin." },
-  "RESEARCH_STARTED": { color: "text-accent-primary bg-accent-primary/10", icon: Clock, desc: "Expert is actively working on this order." },
-  "DELIVERED": { color: "text-accent-success bg-accent-success/10", icon: CheckCircle, desc: "Draft delivered for your review." },
-  "COMPLETED": { color: "text-accent-success bg-accent-success/10", icon: CheckCircle, desc: "Order finalized and closed." },
-  "CANCELLED": { color: "text-text-muted bg-bg-surface", icon: AlertCircle, desc: "Order was cancelled." },
-  "REFUNDED": { color: "text-text-muted bg-bg-surface", icon: AlertCircle, desc: "Order was refunded." },
+  PENDING_PAYMENT:    { color: "text-amber-600 bg-amber-50", icon: AlertCircle, desc: "Awaiting your payment to begin." },
+  PAYMENT_CONFIRMED:  { color: "text-blue-600 bg-blue-50", icon: CheckCircle, desc: "Payment received, order is being assigned." },
+  TOPIC_CONFIRMED:    { color: "text-indigo-600 bg-indigo-50", icon: CheckCircle, desc: "Topic has been confirmed by the expert." },
+  RESEARCH_STARTED:   { color: "text-violet-600 bg-violet-50", icon: Clock, desc: "Expert is actively working on this order." },
+  DRAFT_IN_PROGRESS:  { color: "text-sky-600 bg-sky-50", icon: Clock, desc: "Initial draft is being written." },
+  DRAFT_SUBMITTED:    { color: "text-cyan-600 bg-cyan-50", icon: CheckCircle, desc: "Draft submitted for internal review." },
+  UNDER_REVIEW:       { color: "text-orange-600 bg-orange-50", icon: Clock, desc: "Undergoing quality and plagiarism checks." },
+  REVISION_REQUESTED: { color: "text-rose-600 bg-rose-50", icon: AlertCircle, desc: "Revision requested by you." },
+  REVISION_SUBMITTED: { color: "text-pink-600 bg-pink-50", icon: CheckCircle, desc: "Revised work submitted by expert." },
+  FINAL_APPROVED:     { color: "text-teal-600 bg-teal-50", icon: CheckCircle, desc: "Final version approved." },
+  DELIVERED:          { color: "text-emerald-600 bg-emerald-50", icon: CheckCircle, desc: "Draft delivered for your review." },
+  COMPLETED:          { color: "text-green-600 bg-green-50", icon: CheckCircle, desc: "Order finalized and closed." },
+  CANCELLED:          { color: "text-red-600 bg-red-50", icon: AlertCircle, desc: "Order was cancelled." },
+  REFUNDED:           { color: "text-gray-600 bg-gray-50", icon: AlertCircle, desc: "Order was refunded." },
 };
 
 export default function OrderDetailsPage() {

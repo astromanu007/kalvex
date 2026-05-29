@@ -3,7 +3,7 @@
 import { useRouter, usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, ShoppingCart, Menu, X, Bell, User, LogOut, LayoutDashboard, Settings, Sparkles, Shield, ChevronRight } from "lucide-react";
+import { Search, ShoppingCart, Menu, X, Bell, User, LogOut, LayoutDashboard, Settings, Sparkles, Shield, ChevronRight, Heart } from "lucide-react";
 import { useSession, signOut } from "next-auth/react";
 import { getNotifications } from "@/app/actions/notifications";
 import { Button } from "@/components/ui/button";
@@ -284,6 +284,9 @@ export function Navbar() {
                     </Link>
                     <Link href="/dashboard/orders" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
                       <ShoppingCart className="w-4 h-4" /> My Orders <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
+                    </Link>
+                    <Link href="/dashboard/wishlist" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
+                      <Heart className="w-4 h-4" /> Wishlist <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />
                     </Link>
                     <Link href="/dashboard/profile" className="flex items-center gap-4 px-6 py-4 hover:bg-slate-50 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-600 transition-all hover:text-blue-600 group/item">
                       <Settings className="w-4 h-4" /> Settings <ChevronRight className="w-3 h-3 ml-auto opacity-0 group-hover/item:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all" />

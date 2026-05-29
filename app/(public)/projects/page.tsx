@@ -5,7 +5,7 @@ import {
   Search, Filter, ShoppingBag, Download,
   Cpu, Code, GraduationCap, ChevronRight,
   Star, Clock, ShieldCheck, Sparkles, Zap,
-  Fingerprint, Shield, Building2, ArrowUpRight
+  Fingerprint, Shield, Building2, ArrowUpRight, Heart
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -179,6 +179,78 @@ export default function ProjectShopPage() {
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [search, setSearch] = useState("");
   const [mounted, setMounted] = useState(false);
+  const [wishlist, setWishlist] = useState<any[]>([]);
+
+  useEffect(() => {
+    const syncWishlist = () => {
+      try {
+        const saved = localStorage.getItem("kalvex_saved");
+        if (saved) {
+          const items = JSON.parse(saved);
+          if (Array.isArray(items)) {
+            setWishlist(items);
+          }
+        } else {
+          setWishlist([]);
+        }
+      } catch (err) {}
+    };
+
+    syncWishlist();
+    window.addEventListener("kalvex-wishlist-updated", syncWishlist);
+    window.addEventListener("storage", syncWishlist);
+
+    return () => {
+      window.removeEventListener("kalvex-wishlist-updated", syncWishlist);
+      window.removeEventListener("storage", syncWishlist);
+    };
+  }, []);
+
+  const toggleWishlist = (project: any, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const saved = localStorage.getItem("kalvex_saved");
+      let items = saved ? JSON.parse(saved) : [];
+      if (!Array.isArray(items)) items = [];
+
+      const exists = items.some((i: any) => i.id === project.id);
+      if (exists) {
+        items = items.filter((i: any) => i.id !== project.id);
+      } else {
+        items.push({
+          id: project.id,
+          name: project.title,
+          sku: project.sku,
+          price: project.price,
+          mrp: project.mrp,
+          category: project.category,
+          qty: 1,
+          image: project.image,
+        });
+      }
+
+      localStorage.setItem("kalvex_saved", JSON.stringify(items));
+      window.dispatchEvent(new Event("kalvex-wishlist-updated"));
+      
+      const toast = document.createElement("div");
+      toast.className = "fixed bottom-8 right-8 z-[500] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider";
+      toast.innerHTML = exists 
+        ? `<span class="text-slate-400">×</span> Removed from wishlist.` 
+        : `<span class="text-red-500">❤️</span> Added to wishlist.`;
+      document.body.appendChild(toast);
+      setTimeout(() => {
+        toast.className += " animate-out fade-out duration-300";
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    } catch (err) {}
+  };
 
   // Eliminate hydration mismatch by waiting for client mount
   useEffect(() => {
@@ -441,6 +513,16 @@ export default function ProjectShopPage() {
                         <span className="bg-white/90 backdrop-blur-md text-slate-900 text-[7px] font-black px-2.5 py-1 rounded-md border border-white/20 uppercase tracking-widest shadow-sm">
                           {project.type.split(' ')[0]}
                         </span>
+                      </div>
+                      <div className="absolute top-4 right-4 z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <button 
+                          onClick={(e) => toggleWishlist(project, e)}
+                          className={`w-10 h-10 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center hover:shadow-md transition-all border border-white/20 ${
+                            wishlist.some(i => i.id === project.id) ? "text-red-500 bg-red-50" : "text-slate-400 hover:text-red-500"
+                          }`}
+                        >
+                          <Heart className={`w-5 h-5 ${wishlist.some(i => i.id === project.id) ? "fill-red-500" : ""}`} />
+                        </button>
                       </div>
                     </div>
 
