@@ -14,6 +14,8 @@ import { createBooking } from "@/app/actions/bookings";
 import { createPaymentOrder, verifyPayment } from "@/app/actions/payments";
 import { motion, AnimatePresence } from "framer-motion";
 import { STATE_DISTRICT_MAP } from "@/app/utils/locations";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
 
 declare global {
   interface Window {
@@ -56,6 +58,7 @@ function CheckoutContent() {
   const [cardDetails, setCardDetails] = useState({ number: "", name: "", expiry: "", cvv: "" });
   const [isFlipped, setIsFlipped] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const { width, height } = useWindowSize();
 
   const loadRazorpayScript = () => {
     return new Promise((resolve) => {
@@ -160,8 +163,11 @@ Pincode: ${address.pincode}
 Landmark: ${address.landmark || "N/A"}
 Shipping Partner: ${shippingMode.toUpperCase()}`;
 
+        const isHardware = cartItems.some(i => i.category?.toLowerCase().includes("electronics") || i.category?.toLowerCase().includes("hardware") || i.category?.toLowerCase().includes("components") || i.sku?.startsWith("EL"));
+        const determineServiceType = isHardware ? "HARDWARE_COMPONENTS" : "CUSTOM_PROJECT";
+
         const createRes = await createOrder({
-          serviceType: "CUSTOM_PROJECT",
+          serviceType: determineServiceType,
           requirements: requirementsText,
           amount: orderTotal,
         });
@@ -176,14 +182,14 @@ Shipping Partner: ${shippingMode.toUpperCase()}`;
           id: createRes.orderId,
           orderNumber: createRes.orderNumber,
           amount: orderTotal,
-          serviceType: "CUSTOM_PROJECT"
+          serviceType: determineServiceType
         };
         
         try {
           await createBooking({
             userId: session?.user?.id ?? "",
             serviceId: createRes.orderId,
-            serviceType: "CUSTOM_PROJECT",
+            serviceType: determineServiceType,
             requirements: requirementsText,
           });
         } catch (err) {
@@ -210,7 +216,7 @@ Shipping Partner: ${shippingMode.toUpperCase()}`;
         amount: paymentOrder.amount,
         currency: paymentOrder.currency,
         name: "KALVEX LABS",
-        description: `Order ${activeOrder.orderNumber} - Component Procurement`,
+        description: `Order ${activeOrder.orderNumber} - ${activeOrder.serviceType?.replace(/_/g, " ")}`,
         image: "/logo.png",
         order_id: paymentOrder.id,
         handler: async function (response: any) {
@@ -225,7 +231,7 @@ Shipping Partner: ${shippingMode.toUpperCase()}`;
             setPaymentSuccess(true);
             setTimeout(() => {
               setDone(true);
-            }, 2000);
+            }, 5000);
           } else {
             alert("Payment verification failed.");
             setProcessing(false);
@@ -327,8 +333,21 @@ Shipping Partner: ${shippingMode.toUpperCase()}`;
 
   
   return (
-    <div className="min-h-screen pt-28 pb-24 bg-[#f8fafc] font-sans">
-      <div className="max-w-[1100px] mx-auto px-4 sm:px-6">
+    <div className="min-h-screen bg-slate-50 relative overflow-hidden font-sans">
+      {/* Celebration Confetti */}
+      {paymentSuccess && (
+        <Confetti 
+          width={width} 
+          height={height} 
+          recycle={false} 
+          numberOfPieces={500} 
+          gravity={0.3} 
+          tweenDuration={2000}
+        />
+      )}
+
+      {/* Decorative BG */}
+      <div className="max-w-[1100px] mx-auto px-4 sm:px-6 py-28">
         
         {/* Header */}
         <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="flex items-center gap-5 mb-14">

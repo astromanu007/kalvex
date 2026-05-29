@@ -5,7 +5,7 @@ import {
   Search, Filter, ShoppingBag, Download,
   Cpu, Code, GraduationCap, ChevronRight,
   Star, Clock, ShieldCheck, Sparkles, Zap,
-  Fingerprint, Shield, Building2, ArrowUpRight, Heart
+  Fingerprint, Shield, Building2, ArrowUpRight, Heart, X
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -180,6 +180,7 @@ export default function ProjectShopPage() {
   const [search, setSearch] = useState("");
   const [mounted, setMounted] = useState(false);
   const [wishlist, setWishlist] = useState<any[]>([]);
+  const [showCustomizeModal, setShowCustomizeModal] = useState(false);
 
   useEffect(() => {
     const syncWishlist = () => {
@@ -556,6 +557,26 @@ export default function ProjectShopPage() {
                 ))}
               </AnimatePresence>
             </motion.div>
+
+            {/* Custom Project CTA Button */}
+            <div className="mt-16 text-center pb-8 border-b border-slate-100 flex justify-center">
+              <button 
+                onClick={() => setShowCustomizeModal(true)}
+                className="group relative inline-flex items-center justify-center bg-white px-10 py-5 rounded-[2rem] border-2 border-slate-100 hover:border-transparent transition-all duration-300 shadow-xl hover:shadow-2xl overflow-hidden"
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-orange-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+                <div className="absolute inset-0 bg-gradient-to-r from-violet-600 via-fuchsia-600 to-orange-600 opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500 -z-10" />
+                <div className="absolute inset-[-2px] bg-gradient-to-r from-violet-600 via-fuchsia-600 to-orange-600 rounded-[2rem] opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-0" />
+                
+                <div className="relative z-10 flex items-center gap-3 bg-white px-8 py-3 rounded-full group-hover:bg-transparent transition-colors duration-300">
+                  <Sparkles className="w-5 h-5 text-fuchsia-500 group-hover:text-white transition-colors" />
+                  <span className="font-black text-sm uppercase tracking-widest text-slate-800 group-hover:text-white transition-colors">
+                    Can't find your project? Customize
+                  </span>
+                  <ArrowUpRight className="w-5 h-5 text-slate-400 group-hover:text-white transition-colors" />
+                </div>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -621,6 +642,65 @@ export default function ProjectShopPage() {
         </motion.div>
 
       </div>
+
+      <AnimatePresence>
+        {showCustomizeModal && (
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
+            onClick={() => setShowCustomizeModal(false)}
+          >
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="bg-white w-full max-w-xl rounded-[3rem] p-10 relative shadow-2xl border border-slate-100"
+              onClick={e => e.stopPropagation()}
+            >
+              <button 
+                onClick={() => setShowCustomizeModal(false)}
+                className="absolute top-6 right-6 w-10 h-10 bg-slate-50 text-slate-400 rounded-full flex items-center justify-center hover:bg-slate-100 hover:text-slate-900 transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+              
+              <div className="text-center mb-10">
+                <div className="w-16 h-16 bg-fuchsia-50 text-fuchsia-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                  <Sparkles className="w-8 h-8" />
+                </div>
+                <h3 className="font-heading font-black text-3xl text-slate-900 tracking-tight">Customize Your Project</h3>
+                <p className="text-slate-500 font-bold mt-3 max-w-sm mx-auto">Select the complexity level to get started with your custom requirement.</p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                <button 
+                  onClick={() => router.push("/services/major-project")}
+                  className="group relative bg-white border-2 border-slate-100 rounded-3xl p-6 text-left hover:border-indigo-600 transition-colors"
+                >
+                  <div className="w-12 h-12 bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <GraduationCap className="w-6 h-6" />
+                  </div>
+                  <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs mb-2">Major Project</h4>
+                  <p className="text-slate-400 text-[10px] font-bold leading-relaxed">Complex, end-to-end hardware/software systems suitable for final year submissions.</p>
+                </button>
+
+                <button 
+                  onClick={() => router.push("/services/mini-project")}
+                  className="group relative bg-white border-2 border-slate-100 rounded-3xl p-6 text-left hover:border-teal-600 transition-colors"
+                >
+                  <div className="w-12 h-12 bg-teal-50 text-teal-600 rounded-xl flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <Cpu className="w-6 h-6" />
+                  </div>
+                  <h4 className="font-black text-slate-900 uppercase tracking-widest text-xs mb-2">Mini Project</h4>
+                  <p className="text-slate-400 text-[10px] font-bold leading-relaxed">Simpler, focused implementations perfect for semester or internal projects.</p>
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useRef } from "react";
+import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
 import { Search, Filter, Heart, ShoppingCart, Sparkles, Box, Cpu, Zap, Monitor, Settings, Battery, ChevronRight, Shield, ArrowRight, CheckCircle, ShoppingBag, UploadCloud, X } from "lucide-react";
 import { Button } from "@/components/ui/button";

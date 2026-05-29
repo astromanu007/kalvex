@@ -8,22 +8,48 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Navbar } from "@/components/layout/Navbar";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { createOrder } from "@/app/actions/orders";
 
 export default function WritingWriteupsPage() {
+  const router = useRouter();
+  const { data: session } = useSession();
   const [pages, setPages] = useState(1);
   const [isUrgent, setIsUrgent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [file, setFile] = useState<File | null>(null);
 
   const baseRate = isUrgent ? 10 : 5;
   const totalPrice = pages * baseRate;
 
   const handleBooking = async () => {
+    if (!session?.user) {
+      alert("Please log in to book this service");
+      router.push("/auth/signin");
+      return;
+    }
+
     setIsSubmitting(true);
-    // Simulate booking process
-    await new Promise(r => setTimeout(r, 2000));
-    setIsSubmitting(false);
-    setIsSuccess(true);
+    
+    const requirements = `Professional Writeup Booking
+Pages: ${pages}
+Type: ${isUrgent ? "Urgent (24 Hours)" : "Standard (3-5 Days)"}`;
+
+    const res = await createOrder({
+      serviceType: "PROFESSIONAL_WRITEUP",
+      requirements,
+      amount: totalPrice,
+    });
+    
+    if (res.error || !res.orderId) {
+      alert(res.error || "Booking failed");
+      setIsSubmitting(false);
+      return;
+    }
+    
+    router.push(`/checkout?orderId=${res.orderId}`);
   };
 
   return (
@@ -135,6 +161,25 @@ export default function WritingWriteupsPage() {
                           <span className="text-[10px] font-black uppercase tracking-widest">Urgent</span>
                           <span className="text-xs font-bold">24 Hours</span>
                         </button>
+                      </div>
+
+                      <div className="space-y-3">
+                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">
+                          Upload Materials / Requirements (Optional)
+                        </label>
+                        <div className="relative border-2 border-dashed border-slate-200 rounded-2xl p-6 text-center hover:bg-slate-50 transition-colors">
+                          <input 
+                            type="file" 
+                            onChange={(e) => setFile(e.target.files?.[0] || null)}
+                            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          />
+                          <div className="flex flex-col items-center gap-2 text-slate-500">
+                            <FileText className="w-6 h-6 text-orange-400" />
+                            <span className="text-xs font-bold">
+                              {file ? file.name : "Drag & drop files or click to browse"}
+                            </span>
+                          </div>
+                        </div>
                       </div>
 
                       <div className="bg-slate-900 rounded-[2.5rem] p-8 text-white relative overflow-hidden group">

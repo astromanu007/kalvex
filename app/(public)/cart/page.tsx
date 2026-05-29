@@ -148,7 +148,7 @@ export default function CartPage() {
 
   // Sorting groups so Hardware & Components is usually first
   const groupOrder = ["Hardware & Components", "Projects & Complete Systems", "Services & Support"];
-  const sortedGroups = Object.entries(groupedCart).sort(([a], [b]) => {
+  const sortedGroups = (Object.entries(groupedCart) as [string, any[]][]).sort(([a], [b]) => {
     return groupOrder.indexOf(a) - groupOrder.indexOf(b);
   });
 

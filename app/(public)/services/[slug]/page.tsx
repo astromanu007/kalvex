@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, ArrowRight, ShieldCheck, Clock, FileText, Loader2, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, ShieldCheck, Clock, FileText, Loader2, Check, Cpu } from "lucide-react";
 import { createOrder } from "@/app/actions/orders";
 import { createBooking } from "@/app/actions/bookings";
 import { createPaymentOrder, verifyPayment } from "@/app/actions/payments";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession } from "next-auth/react";
+import Confetti from "react-confetti";
+import { useWindowSize } from "react-use";
 
 const SERVICES_DATA: Record<string, any> = {
   "phd-thesis": { desc: "End-to-end support and drafting for your doctoral research thesis to meet university standards.", price: 25000, delivery: "30-45 Days", fields: { topicLabel: "Thesis Topic / Domain", topicPlaceholder: "e.g. Machine Learning in Healthcare", scopeLabel: "Word Count / Chapters", scopePlaceholder: "e.g. 5 Chapters, 20k words" }, deliverables: ["Full Thesis", "Plagiarism Report", "PPT Presentation", "Source Code"] },
@@ -17,7 +19,7 @@ const SERVICES_DATA: Record<string, any> = {
   "final-year-report": { desc: "Professional project reports, technical manuals, and documentation for your final year.", price: 5000, delivery: "5-7 Days", fields: { topicLabel: "Project Topic", topicPlaceholder: "e.g. Smart IoT Home System", scopeLabel: "Page Count", scopePlaceholder: "e.g. 50-60 pages" }, deliverables: ["Project Report", "Plagiarism Report", "PPT Presentation", "Source Code"] },
   "design-patent": { desc: "Protect the unique visual look and feel of your invention with official registration.", price: 15000, delivery: "2-3 Months (Filing in 7 Days)", fields: { topicLabel: "Invention Name", topicPlaceholder: "e.g. Ergonomic Smart Mouse", scopeLabel: "Number of Views / Drawings", scopePlaceholder: "e.g. 7 views (Top, Bottom, etc.)" }, deliverables: ["Technical Drawings", "Application Forms", "Government Filing", "Status Tracking"] },
   "utility-patent": { desc: "Technical drafting and claims architecture for your functional engineering inventions.", price: 35000, delivery: "21-30 Days", fields: { topicLabel: "Invention Concept", topicPlaceholder: "e.g. Novel drone stabilization method", scopeLabel: "Number of Claims / Complexity", scopePlaceholder: "e.g. 10 claims, 3 diagrams" }, deliverables: ["Patent Draft", "Technical Diagrams", "Prior Art Search", "Government Filing"] },
-  "copyright": { desc: "Officially register your software code, technical manuals, or creative works.", price: 8000, delivery: "30-45 Days", fields: { topicLabel: "Work Title / Type", topicPlaceholder: "e.g. Mobile App Source Code", scopeLabel: "Size of Work", scopePlaceholder: "e.g. 10,000 lines of code" }, deliverables: ["Copyright Application", "Government Filing", "Digital Certificate", "Source Copy"] },
+  "copyright": { desc: "Officially register your software, logo, creative work, or source code with the Indian Copyright Office.", price: 8000, delivery: "30-45 Days (Filing in 3 Days)", fields: { topicLabel: "Title of Your Work", topicPlaceholder: "e.g. KalvexBot Mobile App", scopeLabel: "Description of Work", scopePlaceholder: "e.g. Android application with 12,000 lines of Java code" }, deliverables: ["Copyright Application (Form XIV)", "Government Filing", "Diary Number", "Digital Certificate", "Hard Copy Submission"] },
   "trademark": { desc: "Register your startup logo, brand name, or tagline across India securely.", price: 10000, delivery: "6-12 Months (Filing in 3 Days)", fields: { topicLabel: "Brand Name / Logo Description", topicPlaceholder: "e.g. 'KALVEX' Wordmark", scopeLabel: "Business Classes", scopePlaceholder: "e.g. Class 9 and 42" }, deliverables: ["Trademark Search", "Application Forms", "Government Filing", "Status Tracking"] },
   "mini-project": { desc: "Pre-built or custom mini-projects featuring high-quality source code and schematics.", price: 8000, delivery: "7-10 Days", fields: { topicLabel: "Project Concept", topicPlaceholder: "e.g. Bluetooth Home Automation", scopeLabel: "Hardware/Software Requirements", scopePlaceholder: "e.g. Arduino UNO, Android App" }, deliverables: ["Source Code", "Circuit Diagrams", "Project Report", "Working Demo Video"] },
   "major-project": { desc: "Complex final-year engineering projects for CS, Electronics, and Robotics students.", price: 25000, delivery: "21-30 Days", fields: { topicLabel: "Project Domain / Topic", topicPlaceholder: "e.g. AI Drone for Crop Monitoring", scopeLabel: "Key Technologies", scopePlaceholder: "e.g. Python, YOLOv8, Raspberry Pi" }, deliverables: ["Source Code", "Hardware Implementation", "Project Report", "Research Paper", "PPT Presentation"] },
@@ -110,9 +112,11 @@ export default function ServiceDetailPage() {
   });
 
   const [paymentSuccess, setPaymentSuccess] = useState(false);
+  const [paymentFailed, setPaymentFailed] = useState(false);
   const [paying, setPaying] = useState(false);
   const [createdOrderId, setCreatedOrderId] = useState<string>("");
   const [createdOrderNumber, setCreatedOrderNumber] = useState<string>("");
+  const { width, height } = useWindowSize();
 
   const deliverySurcharge = printingData.expectedDelivery === "Urgent (1 Day)" ? 150 : 0;
   const calculatedPrice = slug === "black-book-printing" 
@@ -166,6 +170,10 @@ export default function ServiceDetailPage() {
       if (slug === "black-book-printing") {
         serviceTypeRaw = "FINAL_YEAR_REPORT";
         req = `SERVICE: Black Book & Bond Printing\nProject Cover Title: ${printingData.projectTitle}\nPaper Type: ${printingData.paperType === "black_book" ? "Regular Paper (All Pages Colour)" : "Bond Paper (All Pages Colour)"}\nPage Count: ${printingData.pageCount}\nCopies: ${printingData.copies}\nUploaded PDF: ${pdfFileName || "Not uploaded"}\n\nSHIPPING DETAILS (MAHARASHTRA ONLY):\nRecipient Name: ${printingData.recipientName}\nContact Number: ${printingData.phone}\nDistrict: ${printingData.shippingZone}\nVillage / Locality / City: ${printingData.city}\nAddress: ${printingData.address}\nPincode: ${printingData.pincode}\nExpected Delivery Target: ${printingData.expectedDelivery === "Custom" ? printingData.expectedDeliveryCustom : printingData.expectedDelivery}`;
+      } else if (slug === "trademark") {
+        req = `Entity Type: ${formData.entityType}\nGoods/Services: ${formData.productsServices}\nHas KYC Documents: ${formData.hasDocuments ? "Yes" : "No"}\nApplicant Name: ${formData.recipientName}\nPhone: ${formData.phone}\nAddress: ${formData.address}, ${formData.city} - ${formData.pincode}\nTopic/Brand: ${formData.topic}`;
+      } else if (slug === "copyright") {
+        req = `Work Title: ${formData.topic}\nWork Type: ${formData.copyrightWorkType}\nDescription: ${formData.wordCount}\nPublication Status: ${formData.copyrightPublished}\nSole Creator: ${formData.copyrightSoleCreator}\nNeeds NOC: ${formData.copyrightNeedsNOC ? "Yes - " + formData.copyrightNocTypes.join(", ") : "No"}\nApplicant: ${formData.recipientName}\nPhone: ${formData.phone}\nAddress: ${formData.address}, ${formData.city} - ${formData.pincode}\nDeadline: ${formData.deadline}`;
       } else {
         req = `Topic: ${formData.topic}\nWords/Pages: ${formData.wordCount}\nDeliverables: ${formData.deliverables.join(", ")}\nGuidelines: ${formData.guidelines}`;
       }
@@ -228,15 +236,16 @@ export default function ServiceDetailPage() {
           const verifyRes = await verifyPayment(response, orderRes.orderId!);
           if (verifyRes.success) {
             setPaymentSuccess(true);
+            setPaymentFailed(false);
           } else {
-            alert(verifyRes.error || "Payment verification failed.");
+            setPaymentFailed(true);
           }
           setPaying(false);
         },
         prefill: {
-          name: slug === "black-book-printing" ? printingData.recipientName : (session.user.name || "Customer"),
+          name: slug === "black-book-printing" ? printingData.recipientName : (formData.recipientName || session.user.name || "Customer"),
           email: session.user.email || "customer@example.com",
-          contact: slug === "black-book-printing" ? printingData.phone : "",
+          contact: slug === "black-book-printing" ? printingData.phone : formData.phone || "",
         },
         theme: {
           color: "#4f46e5",
@@ -280,6 +289,24 @@ export default function ServiceDetailPage() {
     deadline: "",
     guidelines: "",
     deliverables: [] as string[],
+    hardwarePreference: "",
+    needPaper: "No",
+    basePaper: "",
+    address: "",
+    city: "",
+    pincode: "",
+    phone: "",
+    recipientName: "",
+    entityType: "Individual",
+    productsServices: "",
+    hasDocuments: false,
+    // Copyright-specific
+    copyrightWorkType: "",
+    copyrightPublished: "Unpublished",
+    copyrightSoleCreator: "Yes",
+    copyrightNeedsNOC: false,
+    copyrightNocTypes: [] as string[],
+    copyrightDocChecklist: false,
   });
 
   const toggleDeliverable = (item: string) => {
@@ -291,6 +318,32 @@ export default function ServiceDetailPage() {
     }));
   };
 
+  const canProceed = useMemo(() => {
+    if (slug === "black-book-printing") {
+      return isPageCountValid && printingData.projectTitle.trim() !== "";
+    }
+    if (step === 1) {
+      return formData.topic.trim() !== "" && formData.deadline.trim() !== "" && formData.wordCount.trim() !== "";
+    }
+    if (step === 2) {
+      if (slug === "trademark") {
+        return formData.productsServices.trim() !== "" && formData.hasDocuments;
+      }
+      if (slug === "copyright") {
+        return formData.copyrightWorkType.trim() !== "" && formData.copyrightDocChecklist;
+      }
+      return formData.deliverables.length > 0;
+    }
+    if (step === 3 && (slug === "major-project" || slug === "mini-project" || slug === "trademark" || slug === "copyright")) {
+      return formData.recipientName.trim() !== "" && 
+             formData.phone.trim() !== "" && 
+             formData.address.trim() !== "" && 
+             formData.city.trim() !== "" && 
+             formData.pincode.trim() !== "";
+    }
+    return true;
+  }, [step, slug, formData, printingData, isPageCountValid]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -299,7 +352,8 @@ export default function ServiceDetailPage() {
       return;
     }
 
-    if (step < 3) {
+    const maxStep = (slug === "major-project" || slug === "mini-project" || slug === "trademark" || slug === "copyright") ? 4 : 3;
+    if (step < maxStep) {
       setStep(step + 1);
       return;
     }
@@ -313,6 +367,10 @@ export default function ServiceDetailPage() {
       req = `SERVICE: Black Book & Bond Printing\nProject Cover Title: ${printingData.projectTitle}\nPaper Type: ${printingData.paperType === "black_book" ? "Regular Paper (All Pages Colour)" : "Bond Paper (All Pages Colour)"}\nPage Count: ${printingData.pageCount}\nCopies: ${printingData.copies}\nUploaded PDF: ${pdfFileName || "Not uploaded"}\n\nSHIPPING DETAILS (MAHARASHTRA ONLY):\nRecipient Name: ${printingData.recipientName}\nContact Number: ${printingData.phone}\nDistrict: ${printingData.shippingZone}\nVillage / Locality / City: ${printingData.city}\nAddress: ${printingData.address}\nPincode: ${printingData.pincode}`;
     } else {
       req = `Topic: ${formData.topic}\nWords/Pages: ${formData.wordCount}\nDeliverables: ${formData.deliverables.join(", ")}\nGuidelines: ${formData.guidelines}`;
+      if (slug === "major-project" || slug === "mini-project") {
+        req += `\nHardware Preferences: ${formData.hardwarePreference || "None"}\nNeed Research Paper: ${formData.needPaper}\nBase Paper/Synopsis: ${formData.basePaper || "None"}`;
+        req += `\n\nSHIPPING DETAILS:\nName: ${formData.recipientName}\nPhone: ${formData.phone}\nAddress: ${formData.address}\nCity: ${formData.city}\nPincode: ${formData.pincode}`;
+      }
     }
     
     const res = await createOrder({
@@ -349,8 +407,56 @@ export default function ServiceDetailPage() {
   } as const;
 
   return (
-    <div className="min-h-screen pt-32 pb-24 bg-slate-50 transition-colors duration-300">
-      <div className="container mx-auto px-4 max-w-6xl">
+    <div className="min-h-screen pt-32 pb-24 bg-slate-50 transition-colors duration-300 relative overflow-hidden">
+      {paymentSuccess && <Confetti width={width} height={height} numberOfPieces={600} recycle={false} gravity={0.15} colors={['#4f46e5', '#3b82f6', '#10b981', '#f59e0b', '#ec4899']} style={{ zIndex: 100 }} />}
+
+      {/* Payment Failure Modal */}
+      <AnimatePresence>
+        {paymentFailed && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            exit={{ opacity: 0 }} 
+            className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.95, y: 20 }} 
+              animate={{ scale: 1, y: 0 }} 
+              exit={{ scale: 0.95, y: 20 }}
+              className="bg-white rounded-[2.5rem] p-8 max-w-sm w-full shadow-2xl border-2 border-rose-100 text-center space-y-6"
+            >
+              <div className="w-20 h-20 bg-rose-50 border-2 border-rose-200 text-rose-600 rounded-[2rem] flex items-center justify-center mx-auto shadow-sm">
+                <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </div>
+              <div className="space-y-2">
+                <h3 className="font-heading font-black text-2xl text-slate-900">Payment Failed</h3>
+                <p className="text-xs font-bold text-slate-500 leading-relaxed">Your transaction could not be verified. Your money might have been deducted but the order wasn't confirmed. Please retry or contact support.</p>
+              </div>
+              <div className="flex gap-3 pt-4">
+                <button 
+                  onClick={() => setPaymentFailed(false)}
+                  className="flex-1 h-14 bg-slate-50 hover:bg-slate-100 text-slate-600 font-black text-xs uppercase tracking-widest rounded-2xl transition-all"
+                >
+                  Cancel
+                </button>
+                <button 
+                  onClick={() => {
+                    setPaymentFailed(false);
+                    handleRazorpayPayment();
+                  }}
+                  className="flex-1 h-14 bg-rose-600 hover:bg-rose-700 text-white shadow-xl shadow-rose-600/20 font-black text-xs uppercase tracking-widest rounded-2xl transition-all"
+                >
+                  Retry Pay
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <div className="container mx-auto px-4 max-w-6xl relative z-10">
         <motion.div initial="hidden" animate="visible" variants={containerVariants}>
           <Link href="/services" className="inline-flex items-center text-[10px] font-black text-slate-400 hover:text-blue-600 mb-12 transition-all uppercase tracking-[0.2em] group">
             <ArrowLeft className="w-4 h-4 mr-3 group-hover:-translate-x-1 transition-transform" /> Back to Services
@@ -504,7 +610,7 @@ export default function ServiceDetailPage() {
               
               {/* Progress Bar */}
               <div className="flex items-center gap-6 w-full md:w-80">
-                {[1, 2, 3].map((s) => (
+                {(slug === "major-project" || slug === "mini-project" || slug === "trademark" || slug === "copyright" ? [1, 2, 3, 4] : [1, 2, 3]).map((s) => (
                   <div key={s} className="flex-1 space-y-3">
                     <div className={`h-1.5 rounded-full transition-all duration-700 ${step >= s ? "bg-indigo-600 shadow-lg shadow-indigo-600/20" : "bg-slate-100"}`} />
                     <span className={`text-[10px] font-black uppercase tracking-widest block text-center ${step >= s ? "text-indigo-600" : "text-slate-300"}`}>
@@ -1144,12 +1250,272 @@ export default function ServiceDetailPage() {
                         </div>
                         <div className="space-y-3">
                           <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Additional Guidelines</label>
-                          <textarea rows={5} placeholder="Include any specific rules, formats, or preferences..." value={formData.guidelines} onChange={(e) => setFormData({...formData, guidelines: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[2rem] px-8 py-6 text-slate-900 font-black focus:ring-8 ring-blue-600/5 focus:border-blue-600 outline-none transition-all placeholder:text-slate-200 resize-none" />
+                          <textarea rows={4} placeholder="Include any specific rules, formats, or preferences..." value={formData.guidelines} onChange={(e) => setFormData({...formData, guidelines: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-[2rem] px-8 py-6 text-slate-900 font-black focus:ring-8 ring-blue-600/5 focus:border-blue-600 outline-none transition-all placeholder:text-slate-200 resize-none" />
+                        </div>
+
+                        {slug === "trademark" && (
+                          <div className="pt-8 border-t border-slate-100 space-y-8">
+                            <h4 className="text-xs font-black uppercase tracking-widest text-slate-900 flex items-center gap-3">
+                              <ShieldCheck className="w-5 h-5 text-indigo-500" /> Business Configuration
+                            </h4>
+                            
+                            <div className="space-y-4">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Entity Type</label>
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {["Individual", "Sole Proprietorship", "Partnership / LLP", "Private Limited"].map((type) => (
+                                  <button
+                                    key={type}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, entityType: type })}
+                                    className={`p-4 rounded-2xl border-2 transition-all font-bold text-xs ${formData.entityType === type ? "border-blue-600 bg-blue-50 text-blue-700" : "border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200"}`}
+                                  >
+                                    {type}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                            
+                            <div className="space-y-3">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Description of Goods / Services (Used to determine TM Class)</label>
+                              <textarea rows={4} placeholder="e.g., We sell readymade garments, specifically t-shirts and jeans for men..." value={formData.productsServices} onChange={(e) => setFormData({...formData, productsServices: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:ring-4 ring-blue-600/5 focus:border-blue-600 outline-none transition-all resize-none" required />
+                            </div>
+
+                            <div className="p-6 bg-amber-50 border-2 border-amber-200/50 rounded-2xl space-y-4 mt-6">
+                              <h4 className="font-black text-amber-900 text-sm">Required Document Checklist</h4>
+                              <p className="text-xs text-amber-700/80 font-bold leading-relaxed">Please ensure you have soft copies (PDF/JPEG) of your PAN Card, Aadhaar Card, Logo, and Business Proof (if applicable). Our legal team will securely collect these documents from you post-payment.</p>
+                              <label className="flex items-center gap-4 cursor-pointer mt-4 group w-max">
+                                <input type="checkbox" className="hidden" checked={formData.hasDocuments} onChange={(e) => setFormData({...formData, hasDocuments: e.target.checked})} />
+                                <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all border-2 ${formData.hasDocuments ? "bg-amber-500 border-amber-500 text-white" : "bg-white border-amber-200 text-transparent group-hover:border-amber-300"}`}>
+                                  <Check className="w-4 h-4" />
+                                </div>
+                                <span className="text-xs font-black text-amber-900">I confirm I have the required documents ready.</span>
+                              </label>
+                            </div>
+                          </div>
+                        )}
+
+                        {slug === "copyright" && (
+                          <div className="pt-8 border-t border-slate-100 space-y-10">
+                            <div className="flex items-center gap-3">
+                              <div className="w-10 h-10 rounded-xl bg-violet-50 border border-violet-100 flex items-center justify-center text-xl">©</div>
+                              <div>
+                                <h4 className="text-sm font-black text-slate-900">Copyright Configuration</h4>
+                                <p className="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-0.5">Powered by Indian Copyright Act, 1957</p>
+                              </div>
+                            </div>
+                            
+                            {/* Work Type Selector */}
+                            <div className="space-y-4">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Type of Work Being Protected <span className="text-rose-500">*</span></label>
+                              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                {[
+                                  { type: "Literary Work", emoji: "📚", desc: "Books, scripts, articles, databases" },
+                                  { type: "Software / Code", emoji: "💻", desc: "Source code, apps, programs" },
+                                  { type: "Artistic Work", emoji: "🎨", desc: "Logos, paintings, photographs" },
+                                  { type: "Musical Work", emoji: "🎵", desc: "Compositions, melodies, notations" },
+                                  { type: "Sound Recording", emoji: "🎙️", desc: "Audio tracks, podcasts" },
+                                  { type: "Cinematograph Film", emoji: "🎬", desc: "Videos, documentaries" },
+                                  { type: "Dramatic Work", emoji: "🎭", desc: "Plays, screenplays, choreography" },
+                                  { type: "Other", emoji: "📋", desc: "Other creative expression" },
+                                ].map(({ type, emoji, desc }) => (
+                                  <button
+                                    key={type}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, copyrightWorkType: type })}
+                                    className={`p-4 rounded-2xl border-2 transition-all text-left space-y-2 ${formData.copyrightWorkType === type ? "border-violet-600 bg-violet-50 shadow-lg shadow-violet-600/10" : "border-slate-100 bg-slate-50 hover:border-violet-200 hover:bg-violet-50/30"}`}
+                                  >
+                                    <span className="text-2xl">{emoji}</span>
+                                    <div className="font-black text-[10px] uppercase tracking-wide text-slate-800">{type}</div>
+                                    <div className="text-[8px] text-slate-400 font-bold leading-tight">{desc}</div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Publication Status */}
+                            <div className="space-y-4">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Publication Status <span className="text-rose-500">*</span></label>
+                              <div className="grid grid-cols-2 gap-4">
+                                {["Unpublished", "Already Published"].map((status) => (
+                                  <button
+                                    key={status}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, copyrightPublished: status })}
+                                    className={`p-5 rounded-2xl border-2 transition-all font-bold text-xs text-left ${formData.copyrightPublished === status ? "border-violet-600 bg-violet-50 text-violet-700" : "border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200"}`}
+                                  >
+                                    <span className="text-lg block mb-2">{status === "Unpublished" ? "🔒" : "🌐"}</span>
+                                    {status}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Sole Creator */}
+                            <div className="space-y-4">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Creator / Authorship</label>
+                              <div className="grid grid-cols-2 gap-4">
+                                {["Yes, sole creator", "Multiple creators / Company"].map((opt) => (
+                                  <button
+                                    key={opt}
+                                    type="button"
+                                    onClick={() => setFormData({ ...formData, copyrightSoleCreator: opt })}
+                                    className={`p-5 rounded-2xl border-2 transition-all font-bold text-xs text-left ${formData.copyrightSoleCreator === opt ? "border-violet-600 bg-violet-50 text-violet-700" : "border-slate-100 bg-slate-50 text-slate-400 hover:border-slate-200"}`}
+                                  >
+                                    <span className="text-lg block mb-2">{opt.includes("sole") ? "👤" : "👥"}</span>
+                                    {opt}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* NOC Requirements */}
+                            <div className="p-6 bg-blue-50/60 border-2 border-blue-100 rounded-2xl space-y-4">
+                              <h4 className="font-black text-blue-900 text-sm flex items-center gap-2">
+                                <span>📜</span> No Objection Certificates (NOC)
+                              </h4>
+                              <p className="text-[10px] text-blue-700/80 font-bold leading-relaxed">If any of the below situations apply, we'll need an NOC from that party. Select all that apply:</p>
+                              <div className="space-y-3">
+                                {[
+                                  { id: "Author NOC", label: "NOC from Author (applicant ≠ creator)" },
+                                  { id: "Publisher NOC", label: "NOC from Publisher (already published by a 3rd party)" },
+                                  { id: "Actor/Model NOC", label: "NOC from Actor / Model (face is prominently featured)" },
+                                ].map(({ id, label }) => (
+                                  <label key={id} className="flex items-center gap-4 cursor-pointer group">
+                                    <input type="checkbox" className="hidden" 
+                                      checked={formData.copyrightNocTypes.includes(id)}
+                                      onChange={(e) => {
+                                        const updated = e.target.checked
+                                          ? [...formData.copyrightNocTypes, id]
+                                          : formData.copyrightNocTypes.filter(n => n !== id);
+                                        setFormData({ ...formData, copyrightNocTypes: updated, copyrightNeedsNOC: updated.length > 0 });
+                                      }}
+                                    />
+                                    <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all border-2 ${formData.copyrightNocTypes.includes(id) ? "bg-blue-600 border-blue-600 text-white" : "bg-white border-blue-200 text-transparent group-hover:border-blue-300"}`}>
+                                      <Check className="w-4 h-4" />
+                                    </div>
+                                    <span className="text-xs font-bold text-blue-900">{label}</span>
+                                  </label>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Special Requirements Notice */}
+                            {formData.copyrightWorkType === "Software / Code" && (
+                              <div className="p-5 bg-amber-50 border-2 border-amber-200/60 rounded-2xl">
+                                <p className="text-xs font-black text-amber-900">💡 Software Special Requirement</p>
+                                <p className="text-[10px] text-amber-700 font-bold mt-1 leading-relaxed">You'll need to provide a PDF with the first 10 and last 10 pages of unredacted source code. Our team will guide you through this post-payment.</p>
+                              </div>
+                            )}
+                            {formData.copyrightWorkType === "Artistic Work" && (
+                              <div className="p-5 bg-amber-50 border-2 border-amber-200/60 rounded-2xl">
+                                <p className="text-xs font-black text-amber-900">💡 Logo / Label Special Requirement</p>
+                                <p className="text-[10px] text-amber-700 font-bold mt-1 leading-relaxed">If your design is used as a brand label on commercial products, a TM-C Search Certificate from the Trade Marks Registry will also be required.</p>
+                              </div>
+                            )}
+
+                            {/* Document Checklist */}
+                            <div className="p-6 bg-emerald-50 border-2 border-emerald-200/50 rounded-2xl space-y-4">
+                              <h4 className="font-black text-emerald-900 text-sm">Required Document Checklist</h4>
+                              <ul className="space-y-2 text-[10px] text-emerald-700 font-bold">
+                                <li>✓ Identity Proof — Aadhaar Card, PAN, or Passport</li>
+                                <li>✓ Author Details (if different from applicant)</li>
+                                <li>✓ Scanned Signature (digital copy)</li>
+                                <li>✓ Two copies of the work (printout/file)</li>
+                                {formData.copyrightSoleCreator !== "Yes, sole creator" && <li>✓ Power of Attorney / NOC (for company applicants)</li>}
+                              </ul>
+                              <label className="flex items-center gap-4 cursor-pointer mt-4 group w-max">
+                                <input type="checkbox" className="hidden" checked={formData.copyrightDocChecklist} onChange={(e) => setFormData({...formData, copyrightDocChecklist: e.target.checked})} />
+                                <div className={`w-6 h-6 rounded-lg flex items-center justify-center transition-all border-2 ${formData.copyrightDocChecklist ? "bg-emerald-500 border-emerald-500 text-white" : "bg-white border-emerald-200 text-transparent group-hover:border-emerald-300"}`}>
+                                  <Check className="w-4 h-4" />
+                                </div>
+                                <span className="text-xs font-black text-emerald-900">I confirm I have the required documents ready.</span>
+                              </label>
+                            </div>
+                          </div>
+                        )}
+
+                        {(slug === "major-project" || slug === "mini-project") && (
+                          <div className="pt-8 border-t border-slate-100 space-y-8">
+                            <h4 className="text-xs font-black uppercase tracking-widest text-slate-900 flex items-center gap-3">
+                              <Cpu className="w-5 h-5 text-indigo-500" /> Advanced Project Configuration
+                            </h4>
+                            <div className="grid md:grid-cols-2 gap-8">
+                              <div className="space-y-3">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Hardware Component Preferences</label>
+                                <input type="text" placeholder="e.g. ESP32 instead of Arduino, specific sensors..." value={formData.hardwarePreference} onChange={(e) => setFormData({...formData, hardwarePreference: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:ring-4 ring-indigo-600/5 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-300" />
+                              </div>
+                              <div className="space-y-3">
+                                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Do you need a Research Paper published?</label>
+                                <select value={formData.needPaper} onChange={(e) => setFormData({...formData, needPaper: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:ring-4 ring-indigo-600/5 focus:border-indigo-600 outline-none transition-all appearance-none cursor-pointer">
+                                  <option value="No">No, just the project</option>
+                                  <option value="Yes - IEEE Format">Yes - IEEE Format Paper</option>
+                                  <option value="Yes - Scopus Indexed">Yes - Scopus Indexed Publication</option>
+                                  <option value="Yes - Standard Conference">Yes - Standard Conference</option>
+                                </select>
+                              </div>
+                            </div>
+                            <div className="space-y-3">
+                              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Base Paper / Synopsis Details (Optional)</label>
+                              <textarea rows={2} placeholder="Paste link to base IEEE paper or summarize your synopsis..." value={formData.basePaper} onChange={(e) => setFormData({...formData, basePaper: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:ring-4 ring-indigo-600/5 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-300 resize-none" />
+                            </div>
+                          </div>
+                        )}
+                      </motion.div>
+                    )}
+
+                    {step === 3 && (slug === "major-project" || slug === "mini-project" || slug === "trademark" || slug === "copyright") && (
+                      <motion.div 
+                        key="step3-shipping"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        className="space-y-10"
+                      >
+                        <div className="flex items-center justify-between pb-6 border-b border-slate-100">
+                          <div>
+                            <h3 className="font-heading font-black text-2xl text-slate-900 tracking-tight">
+                              {(slug as string) === "trademark" || (slug as string) === "copyright" ? "Applicant Details" : "Shipping Details"}
+                            </h3>
+                            <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">
+                              {(slug as string) === "trademark" ? "Who is filing this trademark?" : (slug as string) === "copyright" ? "Who is registering this copyright?" : "Where should we deliver the hardware?"}
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-8">
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                              {(slug as string) === "trademark" || (slug as string) === "copyright" ? "Applicant / Authorized Signatory Name" : "Recipient Name"}
+                            </label>
+                            <input type="text" placeholder="John Doe" value={formData.recipientName} onChange={(e) => setFormData({...formData, recipientName: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:ring-4 ring-indigo-600/5 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-300" required />
+                          </div>
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Phone Number</label>
+                            <input type="tel" placeholder="+91 9876543210" value={formData.phone} onChange={(e) => setFormData({...formData, phone: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:ring-4 ring-indigo-600/5 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-300" required />
+                          </div>
+                        </div>
+
+                        <div className="space-y-3">
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">
+                            {(slug as string) === "trademark" || (slug as string) === "copyright" ? "Registered Address / Applicant Address" : "Complete Delivery Address"}
+                          </label>
+                          <textarea rows={3} placeholder="House No, Street, Landmark..." value={formData.address} onChange={(e) => setFormData({...formData, address: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:ring-4 ring-indigo-600/5 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-300 resize-none" required />
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-8">
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">City / District</label>
+                            <input type="text" placeholder="Mumbai" value={formData.city} onChange={(e) => setFormData({...formData, city: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:ring-4 ring-indigo-600/5 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-300" required />
+                          </div>
+                          <div className="space-y-3">
+                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">PIN Code</label>
+                            <input type="text" placeholder="400001" value={formData.pincode} onChange={(e) => setFormData({...formData, pincode: e.target.value})} className="w-full bg-slate-50 border border-slate-100 rounded-2xl px-6 py-4 text-slate-900 font-bold focus:ring-4 ring-indigo-600/5 focus:border-indigo-600 outline-none transition-all placeholder:text-slate-300" required />
+                          </div>
                         </div>
                       </motion.div>
                     )}
 
-                    {step === 3 && (
+                    {step === (slug === "major-project" || slug === "mini-project" || slug === "trademark" || slug === "copyright" ? 4 : 3) && (
                       <motion.div 
                         key="step3"
                         initial={{ opacity: 0, x: 20 }}
@@ -1331,9 +1697,25 @@ export default function ServiceDetailPage() {
                                     wordCount: "",
                                     deadline: "",
                                     guidelines: "",
-                                    deliverables: []
-                                  });
-                                }} 
+                                    deliverables: [],
+                                    hardwarePreference: "",
+                                    needPaper: "No",
+                                    basePaper: "",
+                                    address: "",
+                                    city: "",
+                                    pincode: "",
+                                    phone: "",
+                                    recipientName: "",
+                                    entityType: "Individual",
+                                    productsServices: "",
+                                    hasDocuments: false,
+                                    copyrightWorkType: "",
+                                    copyrightPublished: "Unpublished",
+                                    copyrightSoleCreator: "Yes",
+                                    copyrightNeedsNOC: false,
+                                    copyrightNocTypes: [],
+                                    copyrightDocChecklist: false,
+                                  }); }}
                                 className="inline-flex items-center justify-center gap-2 border border-slate-200 hover:bg-slate-50 text-slate-500 text-[10px] font-black uppercase tracking-widest h-14 px-8 rounded-xl transition-all bg-white flex-1"
                               >
                                 🔄 Book Another
@@ -1347,7 +1729,7 @@ export default function ServiceDetailPage() {
                 )}
               </AnimatePresence>
 
-              {step < 3 && (
+              {step < (slug === "major-project" || slug === "mini-project" || slug === "trademark" || slug === "copyright" ? 4 : 3) && (
                 <div className="flex flex-col sm:flex-row gap-6 pt-12">
                   {step > 1 && (
                     <Button type="button" variant="outline" onClick={() => setStep(step - 1)} className="border-slate-100 text-slate-400 h-16 px-12 rounded-[1.5rem] font-black text-[10px] uppercase tracking-widest hover:text-slate-900 hover:bg-slate-50 transition-all duration-500">
@@ -1356,20 +1738,20 @@ export default function ServiceDetailPage() {
                   )}
                   <Button 
                     type="submit" 
-                    disabled={loading || !isPageCountValid} 
+                    disabled={loading || !canProceed} 
                     className={`h-16 px-16 rounded-[1.5rem] font-black text-[11px] uppercase tracking-[0.2em] transition-all duration-500 shadow-2xl group ${
-                      !isPageCountValid
+                      !canProceed
                         ? "bg-rose-600/90 text-white cursor-not-allowed ml-auto border border-rose-200/50 shadow-rose-200/20"
-                        : step < 3 
+                        : step < (slug === "major-project" || slug === "mini-project" || slug === "trademark" ? 4 : 3) 
                           ? "bg-slate-900 hover:bg-indigo-600 text-white shadow-slate-900/20 ml-auto" 
                           : "bg-indigo-600 hover:bg-indigo-700 text-white shadow-indigo-600/30 w-full"
                     }`}
                   >
                     {loading ? (
                       <><Loader2 className="w-5 h-5 mr-4 animate-spin" /> Submitting...</>
-                    ) : !isPageCountValid ? (
-                      "⚠️ Enter Valid Page Count (21-120)"
-                    ) : step < 3 ? (
+                    ) : !canProceed ? (
+                      slug === "black-book-printing" && !isPageCountValid ? "⚠️ Enter Valid Page Count (21-120)" : "⚠️ Fill Required Fields"
+                    ) : step < (slug === "major-project" || slug === "mini-project" || slug === "trademark" ? 4 : 3) ? (
                       <>Next Step <ArrowRight className="ml-3 w-5 h-5 group-hover:translate-x-1 transition-transform" /></>
                     ) : (
                       "Submit Request"
