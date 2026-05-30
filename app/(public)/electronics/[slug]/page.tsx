@@ -5,7 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import { 
   Heart, ShoppingCart, ArrowLeft, Shield, Zap, Info, Check, 
-  MapPin, Truck, Star, Package, Eye, Sparkles, TrendingUp
+  MapPin, Truck, Star, Package, Eye, Sparkles, TrendingUp, Cpu, Award
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -175,7 +175,7 @@ export default function ProductDetailPage() {
       window.dispatchEvent(new Event("kalvex-cart-updated"));
       
       const toast = document.createElement("div");
-      toast.className = "fixed bottom-8 right-8 z-[500] bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider border border-white/20";
+      toast.className = "fixed bottom-8 right-8 z-[500] bg-gradient-to-r from-blue-650 via-indigo-650 to-pink-650 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider border border-white/20";
       toast.innerHTML = `<span class="bg-white/20 p-1.5 rounded-lg text-white">✓</span> ${qty}x ${product.name} added to procurement inventory`;
       document.body.appendChild(toast);
       setTimeout(() => {
@@ -270,7 +270,7 @@ export default function ProductDetailPage() {
         {/* Breadcrumb Back Navigation */}
         <div className="flex items-center justify-between mb-10">
           <Link href="/electronics">
-            <Button variant="ghost" className="flex items-center gap-2 hover:bg-white text-slate-600 hover:text-indigo-600 transition-all font-black text-[10px] uppercase tracking-widest rounded-2xl py-6 px-6 border border-slate-100/50 shadow-sm hover:shadow-md bg-white/40 backdrop-blur-md">
+            <Button variant="ghost" className="flex items-center gap-2 hover:bg-white text-slate-600 hover:text-indigo-650 transition-all font-black text-[10px] uppercase tracking-widest rounded-2xl py-6 px-6 border border-slate-100/50 shadow-sm hover:shadow-md bg-white/40 backdrop-blur-md">
               <ArrowLeft className="w-4 h-4 text-indigo-500 animate-pulse" /> Back to Store Catalog
             </Button>
           </Link>
@@ -546,15 +546,15 @@ export default function ProductDetailPage() {
 
             </div>
 
-            {/* Spec Matrix Drawer */}
+            {/* Simplified Tab Titles & Hyper-Premium Real layout drawer */}
             <div className="mt-20 pt-16 border-t border-slate-100 relative">
               
               <div className="flex border-b border-slate-100 gap-8 overflow-x-auto pb-4 scrollbar-none">
                 {[
-                  { id: "overview", label: "Product Architecture", icon: Info },
-                  { id: "specs", label: "Technical Specs", icon: Package },
-                  { id: "schematic", label: "Board Pinout CAD", icon: Zap },
-                  { id: "reviews", label: "Verified Reviews", icon: Star }
+                  { id: "overview", label: "Description", icon: Info },
+                  { id: "specs", label: "Specifications", icon: Package },
+                  { id: "schematic", label: "Pinout Diagram", icon: Zap },
+                  { id: "reviews", label: "Reviews", icon: Star }
                 ].map((tab) => {
                   const isActive = activeTab === tab.id;
                   const Icon = tab.icon;
@@ -563,16 +563,16 @@ export default function ProductDetailPage() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id as any)}
-                      className={`flex items-center gap-2 pb-2 text-[10px] font-black uppercase tracking-[0.2em] relative group whitespace-nowrap ${
-                        isActive ? "text-indigo-600" : "text-slate-400 hover:text-slate-950"
+                      className={`flex items-center gap-2 pb-2.5 text-[11px] font-black uppercase tracking-[0.2em] relative group whitespace-nowrap ${
+                        isActive ? "text-indigo-650 font-bold" : "text-slate-400 hover:text-slate-950"
                       }`}
                     >
-                      <Icon className="w-4 h-4 text-indigo-500" />
+                      <Icon className={`w-4 h-4 ${isActive ? "text-indigo-500" : "text-slate-300"}`} />
                       <span>{tab.label}</span>
                       {isActive && (
                         <motion.div
                           layoutId="active-spec-tab"
-                          className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-blue-600 to-pink-500 rounded-full"
+                          className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-blue-600 via-indigo-500 to-pink-500 rounded-full"
                         />
                       )}
                     </button>
@@ -580,31 +580,33 @@ export default function ProductDetailPage() {
                 })}
               </div>
 
-              {/* Drawer Content */}
+              {/* Drawer Content - Animated with slide transitions */}
               <div className="py-8 min-h-[300px]">
                 
                 <AnimatePresence mode="wait">
                   
-                  {/* Overview */}
+                  {/* Description tab */}
                   {activeTab === "overview" && (
                     <motion.div
                       key="overview"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
                       className="space-y-6 max-w-4xl"
                     >
-                      <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Institutional Architecture & Product Standards</h3>
+                      <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight flex items-center gap-2">
+                        <Award className="w-5 h-5 text-indigo-500" /> Procurement Specifications Overview
+                      </h3>
                       <p className="text-slate-500 font-medium text-sm leading-relaxed leading-loose">
-                        {product.name} is engineered to meet strict industrial thresholds and high-stakes laboratory research standard configurations. The board incorporates precision micro-traces built to precise tolerances to secure failure-free operation in sensitive academic experiments and professional engineering systems.
+                        {product.name} is engineered for robust industrial deployment and high-level laboratory experimentation. This board includes precision components built to strict tolerances to ensure absolute synchronization and failure-free duty cycles in critical prototypes.
                       </p>
-                      
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                         {[
-                          { title: "Institutional Safety Protocols", desc: "Equipped with high-fidelity reset fuses and complete reverse polarity protection modules to safeguard laboratory testing environments." },
-                          { title: "Premium Calibration Standards", desc: "Supplied directly by Kalvex premium certified industrial factories. Programmatically pre-tested for complete signal integrity." },
-                          { title: "Academic Document Docket", desc: "Accompanied by robust schematics and datasheet logs, ideal for citations inside BTech/MTech/PhD thesis write-ups." },
-                          { title: "Premium Core Construction", desc: "Constructed utilizing high-grade FR4 multi-layer fiberglass baseboards with gold-plated pads for long-term electrical reliability." }
+                          { title: "Institutional Safety Protocols", desc: "Equipped with on-board resettable fuses and reverse polarity protection networks to protect high-stakes laboratory testing." },
+                          { title: "Premium Brand Certification", desc: "Supplied directly by Kalvex premium certified factories. Every board is subjected to programmatic testing and validation prior to dispatch." },
+                          { title: "Academic Documentation Packet", desc: "Includes absolute schematic guides and digital datasheets. Ideal for engineering, PhD research references, and thesis submissions." },
+                          { title: "State-of-the-Art Component Selection", desc: "Constructed utilizing high-quality FR4 fiberglass baseboards with gold-plated pads for long-term electrical reliability." }
                         ].map((card, idx) => (
                           <div key={idx} className="bg-gradient-to-br from-slate-50/50 to-blue-50/20 p-6 rounded-2xl border border-slate-100 flex gap-4">
                             <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
@@ -620,16 +622,17 @@ export default function ProductDetailPage() {
                     </motion.div>
                   )}
 
-                  {/* Technical specs (removed warranty) */}
+                  {/* Specifications Tab */}
                   {activeTab === "specs" && (
                     <motion.div
                       key="specs"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
                       className="space-y-6"
                     >
-                      <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Procurement Specification Matrix</h3>
+                      <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Technical Specification Matrix</h3>
                       
                       <div className="border border-slate-100 rounded-3xl overflow-hidden max-w-2xl bg-white shadow-sm">
                         <table className="w-full text-left border-collapse">
@@ -638,7 +641,7 @@ export default function ProductDetailPage() {
                               { key: "SKU CODE", value: product.sku },
                               { key: "BRAND / DEVELOPER", value: product.brand || "Kalvex Certified" },
                               { key: "OPERATING VOLTAGE", value: product.voltage || "5V DC" },
-                              { key: "CURRENT CONSUMPTION", value: product.current || "500mA max" },
+                              { key: "CURRENT CONSUMPTION", value: product.current || "500mA maximum" },
                               { key: "PROCUREMENT CATEGORY", value: product.category },
                               { key: "RATING THRESHOLD", value: `${product.rating} / 5.0` },
                               { key: "SAFETY SYSTEM STATUS", value: "ACTIVE - Programmatically Verified" }
@@ -658,41 +661,44 @@ export default function ProductDetailPage() {
                     </motion.div>
                   )}
 
-                  {/* CAD Schematics */}
+                  {/* Pinout Diagram Tab */}
                   {activeTab === "schematic" && (
                     <motion.div
                       key="schematic"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
                       className="space-y-6"
                     >
                       <div className="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                          <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Board Pinout CAD</h3>
-                          <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mt-1">Vibrant Programmatic Vector Preview</p>
+                          <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Interactive Board Pinout Drawing</h3>
+                          <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mt-1">PROGRAMMATIC CAD PREVIEW SCHEMATIC</p>
                         </div>
-                        <Button className="bg-indigo-600 text-white font-black text-[9px] uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors shadow-md">
-                          Download Vector Package (SVG)
+                        <Button className="bg-indigo-650 text-white font-black text-[9px] uppercase tracking-widest px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-colors shadow-md">
+                          Download CAD Vector Package (SVG)
                         </Button>
                       </div>
 
-                      {/* CAD Screen */}
+                      {/* Premium SVG Block drawing representing schematic */}
                       <div className="bg-slate-950 border border-slate-900 rounded-[2.5rem] p-8 md:p-12 flex items-center justify-center relative overflow-hidden group/cad shadow-2xl">
                         <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px] opacity-40" />
                         
                         <div className="relative z-10 w-full max-w-md bg-slate-900 border border-indigo-500/20 rounded-2xl p-8 flex flex-col items-center gap-6 shadow-[0_0_50px_rgba(99,102,241,0.05)]">
+                          {/* Blueprint header */}
                           <div className="w-full flex justify-between text-[8px] font-mono text-indigo-400/80 border-b border-indigo-500/10 pb-4">
                             <span>Ref: CAD-2026-X8</span>
-                            <span>KALVEX LABS VECTOR LABS</span>
+                            <span>KALVEX LABS EMBEDDED ENGINE</span>
                           </div>
 
-                          <div className="w-40 h-40 rounded-xl bg-slate-950 border-2 border-dashed border-indigo-500/30 flex items-center justify-center flex-col gap-2 relative animate-pulse">
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-mono text-[7px] px-2 py-0.5 rounded uppercase tracking-wider shadow">
-                              Core MCU
+                          {/* Visual microcontroller outline */}
+                          <div className="w-40 h-40 rounded-xl bg-slate-950 border-2 border-dashed border-indigo-500/30 flex items-center justify-center flex-col gap-2 relative">
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-mono text-[7px] px-2 py-0.5 rounded uppercase tracking-wider">
+                              MCU Core
                             </div>
                             
-                            {/* Pin nodes */}
+                            {/* Pin lines */}
                             <div className="absolute inset-y-8 -left-3 flex flex-col justify-between">
                               {[1, 2, 3].map(i => <div key={i} className="w-3 h-0.5 bg-indigo-500/40" />)}
                             </div>
@@ -704,6 +710,7 @@ export default function ProductDetailPage() {
                             <span className="font-mono text-indigo-400 text-[8px]">{product.brand?.toUpperCase()}</span>
                           </div>
 
+                          {/* Peripheral connections */}
                           <div className="w-full grid grid-cols-3 gap-3 text-center">
                             <div className="bg-slate-950/80 border border-indigo-500/10 rounded p-2 text-[8px] font-mono text-indigo-400">
                               Power Bus<br/>5V / 3.3V
@@ -712,36 +719,37 @@ export default function ProductDetailPage() {
                               Logic Bus<br/>I2C / SPI
                             </div>
                             <div className="bg-slate-950/80 border border-indigo-500/10 rounded p-2 text-[8px] font-mono text-indigo-400">
-                              Safety Shield<br/>Programmatic
+                              Duty Safety<br/>Fuse Protected
                             </div>
                           </div>
 
                           <p className="text-center font-mono text-[8px] text-slate-500 mt-2">
-                            © 2026 KALVEX LABS PVT. LTD. ALL REGISTERED SCHEMATICS SECURED.
+                            © 2026 KALVEX LABS PVT. LTD. ALL SCHEMATICS PROTECTED.
                           </p>
                         </div>
                       </div>
                     </motion.div>
                   )}
 
-                  {/* Reviews */}
+                  {/* Verified Reviews Tab */}
                   {activeTab === "reviews" && (
                     <motion.div
                       key="reviews"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
                       className="space-y-6"
                     >
                       <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Verified Academic Reviews</h3>
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        
+                        {/* Rating Stats Card */}
                         <div className="bg-gradient-to-br from-slate-50 to-blue-50/10 border border-slate-100 rounded-3xl p-8 flex flex-col justify-center items-center text-center shadow-sm">
                           <span className="text-5xl font-black text-slate-900 tracking-tight">{product.rating}</span>
                           <div className="flex gap-1 text-yellow-400 fill-yellow-400 my-3">
                             {[1, 2, 3, 4, 5].map((s) => (
-                              <Star key={s} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                              <Star key={s} className="w-4 h-4 fill-yellow-400" />
                             ))}
                           </div>
                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -749,12 +757,13 @@ export default function ProductDetailPage() {
                           </span>
                         </div>
 
+                        {/* Review List cards */}
                         <div className="col-span-2 space-y-4">
                           {[
                             { name: "Prof. R. Deshmukh", title: "Principal Investigator, IoT Lab", rating: 5, body: "Exceptional build quality. We procured 15 of these boards for our advanced embedded sensory research project. Duty cycles are absolutely stable under high thermal variations.", inst: "IIT Bombay" },
                             { name: "Ananya Iyer", title: "M.Tech Scholar (Electronics)", rating: 4, body: "Programmatic initialization worked instantly out of the box with standard Arduino and ESP libraries. Highly recommended due to pre-soldered I2C backpack arrays.", inst: "COEP Pune" }
                           ].map((rev, idx) => (
-                            <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative hover:border-indigo-500/20 transition-all duration-300">
+                            <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative group/review hover:border-indigo-500/20 transition-all duration-300">
                               <div className="flex justify-between items-start mb-3">
                                 <div>
                                   <h4 className="font-black text-slate-900 text-xs uppercase tracking-wider">{rev.name}</h4>
@@ -766,7 +775,7 @@ export default function ProductDetailPage() {
                                   ))}
                                 </div>
                               </div>
-                              <p className="text-slate-500 text-xs font-semibold leading-relaxed italic">
+                              <p className="text-slate-500 text-xs font-semibold leading-relaxed leading-loose italic">
                                 "{rev.body}"
                               </p>
                             </div>

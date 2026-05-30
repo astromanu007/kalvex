@@ -497,7 +497,7 @@ export default function ProjectDetailPage() {
         {/* Navigation back button */}
         <div className="flex items-center justify-between mb-10">
           <Link href="/projects">
-            <Button variant="ghost" className="flex items-center gap-2 hover:bg-white text-slate-600 hover:text-indigo-600 transition-all font-black text-[10px] uppercase tracking-widest rounded-2xl py-6 px-6 border border-slate-100/50 shadow-sm hover:shadow-md bg-white/40 backdrop-blur-md">
+            <Button variant="ghost" className="flex items-center gap-2 hover:bg-white text-slate-600 hover:text-indigo-650 transition-all font-black text-[10px] uppercase tracking-widest rounded-2xl py-6 px-6 border border-slate-100/50 shadow-sm hover:shadow-md bg-white/40 backdrop-blur-md">
               <ArrowLeft className="w-4 h-4 text-indigo-500 animate-pulse" /> Back to Projects Marketplace
             </Button>
           </Link>
@@ -566,7 +566,7 @@ export default function ProjectDetailPage() {
                 </div>
               </div>
 
-              {/* Right Column: Customization selection and buy pathways */}
+              {/* Right Column: Customization selectors, real-time math, buy paths */}
               <div className="flex flex-col justify-between space-y-8">
                 
                 <div className="space-y-6">
@@ -598,7 +598,7 @@ export default function ProjectDetailPage() {
 
                   <div className="h-px bg-slate-100 w-full my-6" />
 
-                  {/* Add-ons Selector (Removed Warranty reference) */}
+                  {/* Add-ons Selector */}
                   <div className="space-y-3">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
                       Procurement Customizations & Tiers
@@ -771,15 +771,15 @@ export default function ProjectDetailPage() {
 
             </div>
 
-            {/* Spec Matrix tabs */}
+            {/* Spec Matrix tabs - Simplified headers & Properly animated */}
             <div className="mt-20 pt-16 border-t border-slate-100 relative">
               
               <div className="flex border-b border-slate-100 gap-8 overflow-x-auto pb-4 scrollbar-none">
                 {[
-                  { id: "overview", label: "Full Abstract", icon: Info },
-                  { id: "architecture", label: "System Design CAD", icon: Layers },
-                  { id: "code", label: "Source Code Preview", icon: Code },
-                  { id: "chapters", label: "IEEE Thesis Outline", icon: BookOpen }
+                  { id: "overview", label: "Description", icon: Info },
+                  { id: "architecture", label: "Architecture", icon: Layers },
+                  { id: "code", label: "Source Code", icon: Code },
+                  { id: "chapters", label: "Chapters", icon: BookOpen }
                 ].map((tab) => {
                   const isActive = activeTab === tab.id;
                   const Icon = tab.icon;
@@ -788,16 +788,16 @@ export default function ProjectDetailPage() {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id as any)}
-                      className={`flex items-center gap-2 pb-2 text-[10px] font-black uppercase tracking-[0.2em] relative group whitespace-nowrap ${
-                        isActive ? "text-indigo-600" : "text-slate-400 hover:text-slate-950"
+                      className={`flex items-center gap-2 pb-2.5 text-[11px] font-black uppercase tracking-[0.2em] relative group whitespace-nowrap ${
+                        isActive ? "text-indigo-650 font-bold" : "text-slate-400 hover:text-slate-950"
                       }`}
                     >
-                      <Icon className="w-4 h-4 text-indigo-500" />
+                      <Icon className={`w-4 h-4 ${isActive ? "text-indigo-500" : "text-slate-300"}`} />
                       <span>{tab.label}</span>
                       {isActive && (
                         <motion.div
                           layoutId="active-project-tab"
-                          className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-blue-600 to-pink-500 rounded-full"
+                          className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-blue-600 via-indigo-500 to-pink-500 rounded-full"
                         />
                       )}
                     </button>
@@ -805,17 +805,18 @@ export default function ProjectDetailPage() {
                 })}
               </div>
 
-              {/* Tab drawer (Removed all warranty references) */}
+              {/* Tab Content Panel Drawer */}
               <div className="py-8 min-h-[300px]">
                 <AnimatePresence mode="wait">
                   
-                  {/* Abstract Overview */}
+                  {/* Abstract Description */}
                   {activeTab === "overview" && (
                     <motion.div
                       key="overview"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
                       className="space-y-6 max-w-4xl"
                     >
                       <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Academic Abstract & Learning Targets</h3>
@@ -844,13 +845,14 @@ export default function ProjectDetailPage() {
                     </motion.div>
                   )}
 
-                  {/* System Architecture SVG drawing */}
+                  {/* System Architecture CAD */}
                   {activeTab === "architecture" && (
                     <motion.div
                       key="architecture"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
                       className="space-y-6"
                     >
                       <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Standard Block Diagram CAD</h3>
@@ -898,9 +900,10 @@ export default function ProjectDetailPage() {
                   {activeTab === "code" && (
                     <motion.div
                       key="code"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
                       className="space-y-6"
                     >
                       <div className="flex items-center justify-between flex-wrap gap-4">
@@ -910,7 +913,7 @@ export default function ProjectDetailPage() {
                         </div>
                         <Button 
                           onClick={handleCopyCode}
-                          className="bg-indigo-650 hover:bg-indigo-700 text-white font-black text-[9px] uppercase tracking-widest px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-md"
+                          className="bg-indigo-650 hover:bg-indigo-700 text-white font-black text-[9px] uppercase tracking-widest px-4 py-2.5 rounded-xl flex items-center gap-2 shadow-md animate-pulse"
                         >
                           {copiedCode ? (
                             <>
@@ -949,9 +952,10 @@ export default function ProjectDetailPage() {
                   {activeTab === "chapters" && (
                     <motion.div
                       key="chapters"
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
+                      initial={{ opacity: 0, x: 20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -20 }}
+                      transition={{ duration: 0.35, ease: "easeOut" }}
                       className="space-y-6"
                     >
                       <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">IEEE Black Book Document Index</h3>

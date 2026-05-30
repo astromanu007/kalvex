@@ -46,22 +46,40 @@ export default function AdminStorePage() {
   };
 
   const handleSave = async (data: any) => {
-    // Ensure specs is JSON
-    if (typeof data.specs === "string") {
-      try {
-        data.specs = JSON.parse(data.specs);
-      } catch (e) {
-        toast.error("Invalid JSON in Specifications field");
-        throw new Error("Invalid Specs JSON");
-      }
-    }
-    
+    // Stage custom array images from individual forms
+    data.images = [
+      data.imageMain || "",
+      data.imageInspection || "",
+      data.imageBlueprint || "",
+      data.imagePackage || ""
+    ].filter(Boolean);
+
+    // Save technical specs JSON
+    data.specs = {
+      voltage: data.voltage || "5V DC",
+      current: data.current || "500mA max",
+      cadRef: data.cadRef || data.sku || "",
+      pinoutPins: data.pinoutPins || "",
+      pinoutSafety: data.pinoutSafety || "ACTIVE - Programmatically Verified"
+    };
+
+    // Remove form specific keys to match Prisma models
+    delete data.imageMain;
+    delete data.imageInspection;
+    delete data.imageBlueprint;
+    delete data.imagePackage;
+    delete data.voltage;
+    delete data.current;
+    delete data.cadRef;
+    delete data.pinoutPins;
+    delete data.pinoutSafety;
+
     const res = await upsertProduct(data);
     if (res.success) {
       toast.success("Store inventory updated");
       fetchProducts();
     } else {
-      toast.error("Failed to update product");
+      toast.error("Failed to update product: " + res.error);
       throw new Error(res.error);
     }
   };
@@ -106,14 +124,47 @@ export default function AdminStorePage() {
         { label: "Tools & Equipment", value: "Hardware & Tools" },
       ]
     },
-    { key: "price", label: "Price (INR)", type: "number" },
-    { key: "mrp", label: "MRP Valuation", type: "number" },
-    { key: "stock", label: "Stock Quantity", type: "number" },
-    { key: "description", label: "Product Description", type: "textarea" },
-    { key: "specs", label: "Technical Specifications (JSON Format)", type: "textarea", placeholder: '{"Processor": "Broadcom BCM2712", "RAM": "8GB LPDDR4X"}' },
-    { key: "images", label: "Product Image URLs", type: "array" },
+    { key: "brand", label: "Manufacturer Brand", type: "text", placeholder: "e.g. Raspberry Pi Foundation" },
+    { key: "price", label: "Procurement Price (INR)", type: "number" },
+    { key: "mrp", label: "MRP Valuation (INR)", type: "number" },
+    { key: "stock", label: "Available Stock Reserve", type: "number" },
+    { key: "rating", label: "Visual Star Rating (1.0 to 5.0)", type: "number" },
+    { key: "description", label: "Detailed Product Description", type: "textarea" },
+    
+    // Custom Multi-Angle Image fields
+    { key: "imageMain", label: "Main Product Image URL (View 1)", type: "text", placeholder: "HTTPS link to image" },
+    { key: "imageInspection", label: "Board Inspection Image URL (View 2)", type: "text", placeholder: "HTTPS link to view 2" },
+    { key: "imageBlueprint", label: "CAD Blueprint Image URL (View 3)", type: "text", placeholder: "HTTPS link to view 3" },
+    { key: "imagePackage", label: "Procurement Package Image URL (View 4)", type: "text", placeholder: "HTTPS link to view 4" },
+    
+    // Custom electrical specs & pinouts
+    { key: "voltage", label: "Operating Voltage Specification", type: "text", placeholder: "e.g. 5V DC via USB-C" },
+    { key: "current", label: "Current Consumption Specification", type: "text", placeholder: "e.g. 5A recommended" },
+    { key: "cadRef", label: "CAD Vector Pinout Reference Code", type: "text", placeholder: "e.g. CAD-RPI5-X01" },
+    { key: "pinoutPins", label: "On-Board Pin names (Comma-separated)", type: "text", placeholder: "GPIO2, GPIO3, I2C, SPI, VCC, GND" },
+    { key: "pinoutSafety", label: "Safety System Protocals details", type: "text", placeholder: "e.g. ACTIVE - Dual Fuse Protected" },
+    
     { key: "isActive", label: "Product Status", type: "select", options: [{ label: "Active / Publish", value: true }, { label: "Inactive / Keep Draft", value: false }] },
   ];
+
+  // Map database entity model parameters to frontend individual fields
+  const getMappedInitialData = () => {
+    if (!selectedProduct) return null;
+    const specsObj = selectedProduct.specs && typeof selectedProduct.specs === "object" ? selectedProduct.specs : {};
+    
+    return {
+      ...selectedProduct,
+      imageMain: selectedProduct.images?.[0] || "",
+      imageInspection: selectedProduct.images?.[1] || "",
+      imageBlueprint: selectedProduct.images?.[2] || "",
+      imagePackage: selectedProduct.images?.[3] || "",
+      voltage: (specsObj as any).voltage || "",
+      current: (specsObj as any).current || "",
+      cadRef: (specsObj as any).cadRef || "",
+      pinoutPins: (specsObj as any).pinoutPins || "",
+      pinoutSafety: (specsObj as any).pinoutSafety || ""
+    };
+  };
 
   return (
     <>
@@ -130,7 +181,7 @@ export default function AdminStorePage() {
       <EntityForm
         title={selectedProduct ? "Edit Product Details" : "Add New Product"}
         fields={fields as any}
-        initialData={selectedProduct ? { ...selectedProduct, specs: JSON.stringify(selectedProduct.specs, null, 2) } : null}
+        initialData={getMappedInitialData()}
         onSave={handleSave}
         onClose={() => setIsFormOpen(false)}
         isOpen={isFormOpen}
