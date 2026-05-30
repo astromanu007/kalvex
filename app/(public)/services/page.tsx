@@ -40,10 +40,9 @@ export default function ServicesPage() {
   const [calcPlagiarism, setCalcPlagiarism] = useState(false);
   const [calcConsultation, setCalcConsultation] = useState(false);
   const [calcPrinting, setCalcPrinting] = useState(false);
-  const [calcComplexity, setCalcComplexity] = useState("Standard");
+  const [calcComplexity, setCalcComplexity] = useState("Foundation");
   const [calcReferences, setCalcReferences] = useState(35);
   const [calcRawDeliverables, setCalcRawDeliverables] = useState(false);
-  const [calcPeerReview, setCalcPeerReview] = useState(false);
   const [calcSupport, setCalcSupport] = useState(false);
 
   useEffect(() => {
@@ -185,32 +184,29 @@ export default function ServicesPage() {
               {["phd-thesis", "research-paper", "final-year-report", "major-project", "utility-patent"].includes(selectedService) && (
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-4 bg-white/60 border border-slate-100 p-6 rounded-3xl">
-                    <div className="flex justify-between items-center">
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Complexity Tier</label>
+                    <div className="flex justify-between items-center mb-3">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Academic Standard</label>
                       <span className="bg-blue-50 border border-blue-100 text-blue-700 px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-widest">{calcComplexity}</span>
                     </div>
-                    <div className="relative h-10 flex items-center">
-                      <div className="absolute left-0 right-0 h-2 bg-slate-100 rounded-full" />
-                      <div 
-                        className="absolute left-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full pointer-events-none transition-all duration-75" 
-                        style={{ width: `${calcComplexity === "Standard" ? 0 : calcComplexity === "Advanced" ? 50 : 100}%` }}
-                      />
-                      <input 
-                        type="range" 
-                        min="1" 
-                        max="3" 
-                        value={calcComplexity === "Standard" ? 1 : calcComplexity === "Advanced" ? 2 : 3} 
-                        onChange={(e) => {
-                          const val = parseInt(e.target.value);
-                          setCalcComplexity(val === 1 ? "Standard" : val === 2 ? "Advanced" : "Enterprise PhD");
-                        }} 
-                        className="absolute left-0 w-full h-8 appearance-none bg-transparent cursor-pointer focus:outline-none z-10"
-                      />
-                    </div>
-                    <div className="flex justify-between text-[7px] text-slate-400 uppercase tracking-widest font-black">
-                      <span>Standard</span>
-                      <span>Advanced (+25%)</span>
-                      <span>Enterprise (+50%)</span>
+                    <div className="grid grid-cols-3 gap-2">
+                      {["Foundation", "Academic", "Research-Grade"].map((tier) => (
+                        <button
+                          key={tier}
+                          onClick={() => setCalcComplexity(tier)}
+                          className={`py-2.5 px-2 rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all duration-300 border ${
+                            calcComplexity === tier
+                              ? "bg-blue-600 text-white border-blue-600 shadow-lg shadow-blue-600/20 scale-105"
+                              : "bg-white text-slate-500 border-slate-200 hover:border-blue-300 hover:text-blue-600 hover:bg-blue-50/50"
+                          }`}
+                        >
+                          {tier === "Foundation" ? "Foundation" : tier === "Academic" ? "Academic" : "Research"}
+                          {tier !== "Foundation" && (
+                            <span className={`block text-[7px] mt-0.5 ${calcComplexity === tier ? "text-blue-100" : "text-slate-400"}`}>
+                              {tier === "Academic" ? "+25%" : "+50%"}
+                            </span>
+                          )}
+                        </button>
+                      ))}
                     </div>
                   </div>
 
@@ -275,8 +271,8 @@ export default function ServicesPage() {
                   >
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcPlagiarism ? "bg-emerald-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>✓</div>
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Turnitin Plag Report</span>
-                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹1,500 add-on fee</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Turnitin + AI Plag Check</span>
+                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">₹160 (≤20p) · ₹220 (≤40p) · ₹260 (≤60p)</span>
                     </div>
                   </button>
                 )}
@@ -291,8 +287,8 @@ export default function ServicesPage() {
                   >
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcConsultation ? "bg-emerald-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>✓</div>
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Legal Consultation</span>
-                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹1,000 professional fee</span>
+                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Expert Consultation</span>
+                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹500 professional fee</span>
                     </div>
                   </button>
                 )}
@@ -308,23 +304,7 @@ export default function ServicesPage() {
                     <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcRawDeliverables ? "bg-indigo-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>📁</div>
                     <div>
                       <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Raw Source Deliverables</span>
-                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹4,000 codebase escrow</span>
-                    </div>
-                  </button>
-                )}
-
-                {["phd-thesis", "research-paper"].includes(selectedService) && (
-                  <button
-                    type="button"
-                    onClick={() => setCalcPeerReview(!calcPeerReview)}
-                    className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
-                      calcPeerReview ? "border-blue-600 bg-blue-50/40" : "border-slate-100 bg-white hover:border-slate-200"
-                    }`}
-                  >
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcPeerReview ? "bg-purple-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>🔬</div>
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Peer Review Simulation</span>
-                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹1,800 audit review</span>
+                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹2,000 codebase package</span>
                     </div>
                   </button>
                 )}
@@ -339,7 +319,7 @@ export default function ServicesPage() {
                   <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcSupport ? "bg-rose-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>📞</div>
                   <div>
                     <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Priority Support Desk</span>
-                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹2,500 dedicated desk</span>
+                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹500 dedicated desk</span>
                   </div>
                 </button>
               </div>
@@ -356,63 +336,66 @@ export default function ServicesPage() {
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-400 to-blue-600 font-black font-sans">
                   {(() => {
                     let total = 0;
+                    // Plagiarism cost helper (tiered by page count)
+                    const plagCost = calcPages <= 20 ? 160 : calcPages <= 40 ? 220 : 260;
+
                     if (selectedService === "phd-thesis") {
-                      let base = 25000;
-                      base += calcPages * 100;
-                      if (calcComplexity === "Advanced") base *= 1.25;
-                      else if (calcComplexity === "Enterprise PhD") base *= 1.50;
-                      base += calcReferences * 60;
-                      if (calcUrgent) base += 5000;
-                      if (calcPlagiarism) base += 1500;
+                      let base = 20000;
+                      base += calcPages * 150;       // ₹150/page (humanities baseline)
+                      if (calcComplexity === "Academic") base *= 1.15;
+                      else if (calcComplexity === "Research-Grade") base *= 1.20;
+                      base += calcReferences * 5;    // ₹5/source
+                      if (calcUrgent) base += 10000;
+                      if (calcPlagiarism) base += plagCost;
                       total = base;
                     } else if (selectedService === "research-paper") {
-                      let base = 12500;
-                      base += calcPages * 75;
-                      if (calcComplexity === "Advanced") base *= 1.25;
-                      else if (calcComplexity === "Enterprise PhD") base *= 1.40;
-                      base += calcReferences * 40;
+                      let base = 3000;
+                      base += calcPages * 500;       // ₹500/page
+                      if (calcComplexity === "Academic") base *= 1.15;
+                      else if (calcComplexity === "Research-Grade") base *= 1.20;
+                      // references are FREE for research paper
                       if (calcUrgent) base += 3000;
-                      if (calcPlagiarism) base += 1500;
+                      if (calcPlagiarism) base += plagCost;
                       total = base;
                     } else if (selectedService === "final-year-report") {
-                      let base = 5000;
-                      base += calcPages * 20;
-                      if (calcComplexity === "Advanced") base *= 1.20;
-                      else if (calcComplexity === "Enterprise PhD") base *= 1.35;
-                      if (calcUrgent) base += 1500;
-                      if (calcPlagiarism) base += 1500;
+                      // Tiered fixed price by page count
+                      let base = calcPages < 50 ? 1000 : calcPages <= 110 ? 2000 : 3000;
+                      if (calcComplexity === "Academic") base *= 1.15;
+                      else if (calcComplexity === "Research-Grade") base *= 1.20;
+                      if (calcUrgent) base += 300;
+                      if (calcPlagiarism) base += plagCost;
                       total = base;
                     } else if (selectedService === "professional-write-ups") {
-                      let rate = calcUrgent ? 10 : 5;
+                      // ₹5 text + ₹4 diagram = ₹9/page standard; ₹10 + ₹6 = ₹16/page urgent
+                      let rate = calcUrgent ? 16 : 9;
                       let base = calcPages * rate;
-                      if (calcComplexity === "Advanced") base *= 1.20;
-                      else if (calcComplexity === "Enterprise PhD") base *= 1.30;
+                      if (calcComplexity === "Academic") base *= 1.15;
+                      else if (calcComplexity === "Research-Grade") base *= 1.20;
                       total = base;
                     } else if (selectedService === "utility-patent") {
-                      let base = 30000;
-                      if (calcComplexity === "Advanced") base *= 1.20;
-                      else if (calcComplexity === "Enterprise PhD") base *= 1.40;
-                      if (calcConsultation) base += 1000;
-                      if (calcUrgent) base += 8000;
+                      let base = 35000;
+                      if (calcComplexity === "Academic") base *= 1.15;
+                      else if (calcComplexity === "Research-Grade") base *= 1.20;
+                      if (calcConsultation) base += 500;
+                      if (calcUrgent) base += 5000;
                       total = base;
                     } else if (selectedService === "design-patent") {
-                      let base = 15000;
-                      if (calcComplexity === "Advanced") base *= 1.20;
-                      else if (calcComplexity === "Enterprise PhD") base *= 1.35;
+                      let base = 1800;
+                      if (calcComplexity === "Academic") base *= 1.15;
+                      else if (calcComplexity === "Research-Grade") base *= 1.20;
                       total = base;
                     } else if (selectedService === "major-project") {
-                      let base = calcUrgent ? 29000 : 25000;
-                      if (calcComplexity === "Advanced") base *= 1.20;
-                      else if (calcComplexity === "Enterprise PhD") base *= 1.35;
+                      let base = calcUrgent ? 11000 : 8000;
+                      if (calcComplexity === "Academic") base *= 1.15;
+                      else if (calcComplexity === "Research-Grade") base *= 1.20;
                       total = base;
                     } else {
-                      total = 10000;
+                      total = 2100;
                     }
 
-                    // Add global add-ons
-                    if (calcRawDeliverables && ["phd-thesis", "research-paper", "major-project"].includes(selectedService)) total += 4000;
-                    if (calcPeerReview && ["phd-thesis", "research-paper"].includes(selectedService)) total += 1800;
-                    if (calcSupport) total += 2500;
+                    // Global add-ons
+                    if (calcRawDeliverables && ["phd-thesis", "research-paper", "major-project"].includes(selectedService)) total += 2000;
+                    if (calcSupport) total += 500;
 
                     return Math.round(total);
                   })().toLocaleString()}
@@ -434,9 +417,9 @@ export default function ServicesPage() {
                   </div>
                 )}
                 <div className="flex justify-between items-center">
-                  <span>Complexity Tier</span>
-                  <span className="text-white font-black">{calcComplexity}</span>
-                </div>
+                   <span>Academic Standard</span>
+                   <span className="text-white font-black">{calcComplexity}</span>
+                 </div>
                 {["phd-thesis", "research-paper"].includes(selectedService) && (
                   <div className="flex justify-between items-center">
                     <span>Bibliography Ref</span>
@@ -453,9 +436,17 @@ export default function ServicesPage() {
                 <div className="flex justify-between items-center text-slate-500 text-[8px]">
                   <span>Fulfillment Duration</span>
                   <span className="text-white">
-                    {selectedService === "phd-thesis" ? (calcUrgent ? "15-20 Days" : "30-45 Days") :
-                     selectedService === "research-paper" ? (calcUrgent ? "7-10 Days" : "14-21 Days") :
-                     selectedService === "utility-patent" ? "21-30 Days" : "5-7 Days"}
+                    {selectedService === "phd-thesis" ? (calcUrgent ? "15–20 Days" : "30–45 Days") :
+                     selectedService === "research-paper" ? (calcUrgent ? "2–5 Days" : "12–20 Days") :
+                     selectedService === "final-year-report" ? (calcUrgent ? "1–3 Days" : "5–7 Days") :
+                     selectedService === "major-project" ? (calcUrgent ? "10–15 Days" : "21–30 Days") :
+                     selectedService === "design-patent" ? (calcUrgent ? "1–2 Days" : "5–12 Days") :
+                     selectedService === "utility-patent" ? (calcUrgent ? "12–20 Days" : "21–30 Days") :
+                     selectedService === "copyright" ? "Govt. filing in 2 Days" :
+                     selectedService === "trademark" ? "Filing in 3 Days" :
+                     selectedService === "mini-project" ? (calcUrgent ? "1–3 Days" : "7–10 Days") :
+                     selectedService === "professional-write-ups" ? (calcUrgent ? "1–2 Days" : "7–12 Days") :
+                     "1–2 Days"}
                   </span>
                 </div>
               </div>

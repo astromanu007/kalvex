@@ -94,8 +94,13 @@ export function Navbar() {
     };
   }, [session]);
 
-  // Load and sync cart items dynamically from localStorage
+  // Load and sync cart items dynamically from localStorage — only when signed in
   useEffect(() => {
+    if (!session?.user) {
+      setCartCount(0);
+      return;
+    }
+
     const syncCartCount = () => {
       try {
         const stored = localStorage.getItem("kalvex_cart");
@@ -125,7 +130,7 @@ export function Navbar() {
       window.removeEventListener("kalvex-cart-updated", syncCartCount);
       window.removeEventListener("storage", syncCartCount);
     };
-  }, []);
+  }, [session]);
 
   // Body Scroll Locking Effect for mobile menu, search, or notification overlay
   useEffect(() => {
@@ -240,24 +245,26 @@ export function Navbar() {
                 )}
               </button>
 
-              <Link href="/cart" className="relative text-slate-400 hover:text-blue-600 transition-all duration-500 hover:scale-125">
-                <ShoppingCart className={`w-5 h-5 transition-all duration-300 ${cartCount > 0 ? "text-slate-700" : ""}`} />
-                {/* Pulse ring */}
-                {cartCount > 0 && (
-                  <span className={`absolute inset-0 rounded-full animate-ping opacity-20 ${cartCount >= 10 ? "bg-red-500" : cartCount >= 4 ? "bg-orange-500" : "bg-blue-500"
-                    }`} />
-                )}
-                {cartCount > 0 && (
-                  <span className={`absolute -top-2 -right-2 min-w-[1.25rem] h-5 px-1 text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-xl transition-all duration-300 ${cartCount >= 10
-                      ? "bg-red-500 shadow-red-500/40 scale-110"
-                      : cartCount >= 4
-                        ? "bg-orange-500 shadow-orange-500/40"
-                        : "bg-blue-600 shadow-blue-600/40"
-                    }`}>
-                    {cartCount > 99 ? "99+" : cartCount}
-                  </span>
-                )}
-              </Link>
+              {session?.user && (
+                <Link href="/cart" className="relative text-slate-400 hover:text-blue-600 transition-all duration-500 hover:scale-125">
+                  <ShoppingCart className={`w-5 h-5 transition-all duration-300 ${cartCount > 0 ? "text-slate-700" : ""}`} />
+                  {/* Pulse ring */}
+                  {cartCount > 0 && (
+                    <span className={`absolute inset-0 rounded-full animate-ping opacity-20 ${cartCount >= 10 ? "bg-red-500" : cartCount >= 4 ? "bg-orange-500" : "bg-blue-500"
+                      }`} />
+                  )}
+                  {cartCount > 0 && (
+                    <span className={`absolute -top-2 -right-2 min-w-[1.25rem] h-5 px-1 text-white text-[9px] font-black flex items-center justify-center rounded-full border-2 border-white shadow-xl transition-all duration-300 ${cartCount >= 10
+                        ? "bg-red-500 shadow-red-500/40 scale-110"
+                        : cartCount >= 4
+                          ? "bg-orange-500 shadow-orange-500/40"
+                          : "bg-blue-600 shadow-blue-600/40"
+                      }`}>
+                      {cartCount > 99 ? "99+" : cartCount}
+                    </span>
+                  )}
+                </Link>
+              )}
             </div>
 
             <AnimatePresence mode="wait">

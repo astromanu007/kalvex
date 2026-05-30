@@ -163,6 +163,38 @@ export default function CartPage() {
     );
   }
 
+  // Auth gate — show sign-in prompt if user is not logged in
+  if (!session) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center px-4">
+        <div className="text-center max-w-md">
+          <div className="w-24 h-24 rounded-full bg-white border border-slate-100 shadow-xl shadow-slate-200/60 flex items-center justify-center mx-auto mb-8">
+            <ShoppingCart className="w-10 h-10 text-slate-300" />
+          </div>
+          <h1 className="text-3xl font-black text-slate-900 tracking-tight mb-3">Sign In to View Your Cart</h1>
+          <p className="text-slate-500 text-sm font-medium mb-8 leading-relaxed">
+            Your cart is waiting for you. Sign in to see your saved items and complete your order.
+          </p>
+          <Link href="/login?callbackUrl=/cart">
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
+              className="bg-blue-600 hover:bg-blue-700 text-white px-10 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest transition-all shadow-xl shadow-blue-600/20 flex items-center gap-3 mx-auto"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              Sign In to Continue
+              <ArrowRight className="w-4 h-4" />
+            </motion.button>
+          </Link>
+          <p className="text-slate-400 text-xs font-medium mt-6">
+            Don&apos;t have an account?{" "}
+            <Link href="/register" className="text-blue-600 font-black hover:underline">Create one for free</Link>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 pt-32 pb-20 font-sans relative overflow-hidden">
       
