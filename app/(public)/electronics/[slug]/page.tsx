@@ -98,7 +98,7 @@ export default function ProductDetailPage() {
   // Image effects simulation
   const images = useMemo(() => {
     return [
-      { url: product.image, label: "Procurement Main" },
+      { url: product.image, label: "Main Product View" },
       { url: product.image, label: "Board Inspection", filterClass: "brightness-110 contrast-125 saturate-150" },
       { url: product.image, label: "Blueprint Layout", filterClass: "invert-[0.95] hue-rotate-180 brightness-[0.85] sepia-[0.1] saturate-[1.8]" },
       { url: product.image, label: "Laboratory Package", filterClass: "sepia-[0.15] contrast-[0.95] brightness-[1.02]" }
@@ -175,8 +175,8 @@ export default function ProductDetailPage() {
       window.dispatchEvent(new Event("kalvex-cart-updated"));
       
       const toast = document.createElement("div");
-      toast.className = "fixed bottom-8 right-8 z-[500] bg-gradient-to-r from-blue-650 via-indigo-650 to-pink-650 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider border border-white/20";
-      toast.innerHTML = `<span class="bg-white/20 p-1.5 rounded-lg text-white">✓</span> ${qty}x ${product.name} added to procurement inventory`;
+      toast.className = "fixed bottom-8 right-8 z-[500] bg-gradient-to-r from-blue-650 via-indigo-650 to-pink-655 text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider border border-white/20";
+      toast.innerHTML = `<span class="bg-white/20 p-1.5 rounded-lg text-white">✓</span> ${qty}x ${product.name} added to shopping cart`;
       document.body.appendChild(toast);
       setTimeout(() => {
         toast.className += " animate-out fade-out duration-300";
@@ -393,7 +393,7 @@ export default function ProductDetailPage() {
                       Special Rate Active
                     </div>
                     <div className="space-y-1">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Institutional Price</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Store Price</p>
                       <div className="flex items-baseline gap-3">
                         <span className="text-4xl font-black text-slate-900 tracking-tight">₹{product.price.toLocaleString()}</span>
                         <span className="text-sm font-semibold text-slate-400 line-through">₹{product.mrp.toLocaleString()}</span>
@@ -415,7 +415,7 @@ export default function ProductDetailPage() {
                 <div className="bg-slate-50/50 border border-slate-100 rounded-[2.2rem] p-6 space-y-4">
                   <div className="flex items-center gap-2">
                     <MapPin className="w-4 h-4 text-indigo-500 animate-bounce" />
-                    <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Verify Procurement Dispatch Speed</span>
+                    <span className="text-[10px] font-black text-slate-800 uppercase tracking-widest">Verify Dispatch Speed</span>
                   </div>
 
                   <form onSubmit={handlePincodeCheck} className="flex gap-3">
@@ -469,16 +469,16 @@ export default function ProductDetailPage() {
                   </AnimatePresence>
                 </div>
 
-                {/* Procurement quantities and button animations */}
+                {/* quantities and button animations */}
                 <div className="space-y-6 pt-4 border-t border-slate-100">
                   
                   <div className="flex items-center justify-between">
                     <div className="space-y-1">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Procurement Stock</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Available Stock</p>
                       {product.stock > 0 ? (
                         <span className="inline-flex items-center gap-1.5 text-xs font-black text-indigo-600 bg-indigo-50 border border-indigo-100/50 px-3 py-1 rounded-lg">
                           <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse" />
-                          RESERVE ALLOCATED ({product.stock} Units)
+                          IN AVAILABLE STOCK ({product.stock} Units)
                         </span>
                       ) : (
                         <span className="inline-flex items-center gap-1.5 text-xs font-black text-red-600 bg-red-50 px-3 py-1 rounded-lg">
@@ -516,7 +516,7 @@ export default function ProductDetailPage() {
                       disabled={product.stock === 0}
                       className="flex-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white font-black text-[11px] uppercase tracking-[0.2em] h-14 rounded-2xl shadow-xl shadow-indigo-600/10 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50 disabled:pointer-events-none"
                     >
-                      Instant Procurement
+                      Buy Now
                     </button>
 
                     <Button
@@ -546,7 +546,7 @@ export default function ProductDetailPage() {
 
             </div>
 
-            {/* Simplified Tab Titles & Hyper-Premium Real layout drawer */}
+            {/* Spec Matrix Drawer */}
             <div className="mt-20 pt-16 border-t border-slate-100 relative">
               
               <div className="flex border-b border-slate-100 gap-8 overflow-x-auto pb-4 scrollbar-none">
@@ -572,7 +572,7 @@ export default function ProductDetailPage() {
                       {isActive && (
                         <motion.div
                           layoutId="active-spec-tab"
-                          className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-blue-600 via-indigo-500 to-pink-500 rounded-full"
+                          className="absolute bottom-0 inset-x-0 h-0.5 bg-gradient-to-r from-blue-600 to-pink-500 rounded-full"
                         />
                       )}
                     </button>
@@ -580,12 +580,12 @@ export default function ProductDetailPage() {
                 })}
               </div>
 
-              {/* Drawer Content - Animated with slide transitions */}
+              {/* Drawer Content */}
               <div className="py-8 min-h-[300px]">
                 
                 <AnimatePresence mode="wait">
                   
-                  {/* Description tab */}
+                  {/* Overview */}
                   {activeTab === "overview" && (
                     <motion.div
                       key="overview"
@@ -596,17 +596,18 @@ export default function ProductDetailPage() {
                       className="space-y-6 max-w-4xl"
                     >
                       <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight flex items-center gap-2">
-                        <Award className="w-5 h-5 text-indigo-500" /> Procurement Specifications Overview
+                        <Award className="w-5 h-5 text-indigo-500" /> Specifications Overview
                       </h3>
                       <p className="text-slate-500 font-medium text-sm leading-relaxed leading-loose">
-                        {product.name} is engineered for robust industrial deployment and high-level laboratory experimentation. This board includes precision components built to strict tolerances to ensure absolute synchronization and failure-free duty cycles in critical prototypes.
+                        {product.name} is engineered to meet strict industrial thresholds and high-stakes laboratory research standard configurations. The board incorporates precision micro-traces built to precise tolerances to secure failure-free operation in sensitive academic experiments and professional engineering systems.
                       </p>
+                      
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4">
                         {[
-                          { title: "Institutional Safety Protocols", desc: "Equipped with on-board resettable fuses and reverse polarity protection networks to protect high-stakes laboratory testing." },
-                          { title: "Premium Brand Certification", desc: "Supplied directly by Kalvex premium certified factories. Every board is subjected to programmatic testing and validation prior to dispatch." },
-                          { title: "Academic Documentation Packet", desc: "Includes absolute schematic guides and digital datasheets. Ideal for engineering, PhD research references, and thesis submissions." },
-                          { title: "State-of-the-Art Component Selection", desc: "Constructed utilizing high-quality FR4 fiberglass baseboards with gold-plated pads for long-term electrical reliability." }
+                          { title: "Institutional Safety Protocols", desc: "Equipped with high-fidelity reset fuses and complete reverse polarity protection modules to safeguard laboratory testing environments." },
+                          { title: "Premium Calibration Standards", desc: "Supplied directly by Kalvex premium certified industrial factories. Programmatically pre-tested for complete signal integrity." },
+                          { title: "Academic Document Docket", desc: "Accompanied by robust schematics and datasheet logs, ideal for citations inside BTech/MTech/PhD thesis write-ups." },
+                          { title: "Premium Core Construction", desc: "Constructed utilizing high-grade FR4 multi-layer fiberglass baseboards with gold-plated pads for long-term electrical reliability." }
                         ].map((card, idx) => (
                           <div key={idx} className="bg-gradient-to-br from-slate-50/50 to-blue-50/20 p-6 rounded-2xl border border-slate-100 flex gap-4">
                             <div className="w-10 h-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 shadow-sm">
@@ -622,7 +623,7 @@ export default function ProductDetailPage() {
                     </motion.div>
                   )}
 
-                  {/* Specifications Tab */}
+                  {/* Technical specs */}
                   {activeTab === "specs" && (
                     <motion.div
                       key="specs"
@@ -641,8 +642,8 @@ export default function ProductDetailPage() {
                               { key: "SKU CODE", value: product.sku },
                               { key: "BRAND / DEVELOPER", value: product.brand || "Kalvex Certified" },
                               { key: "OPERATING VOLTAGE", value: product.voltage || "5V DC" },
-                              { key: "CURRENT CONSUMPTION", value: product.current || "500mA maximum" },
-                              { key: "PROCUREMENT CATEGORY", value: product.category },
+                              { key: "CURRENT CONSUMPTION", value: product.current || "500mA max" },
+                              { key: "PRODUCT CATEGORY", value: product.category },
                               { key: "RATING THRESHOLD", value: `${product.rating} / 5.0` },
                               { key: "SAFETY SYSTEM STATUS", value: "ACTIVE - Programmatically Verified" }
                             ].map((row, idx) => (
@@ -661,7 +662,7 @@ export default function ProductDetailPage() {
                     </motion.div>
                   )}
 
-                  {/* Pinout Diagram Tab */}
+                  {/* CAD Schematics */}
                   {activeTab === "schematic" && (
                     <motion.div
                       key="schematic"
@@ -673,32 +674,30 @@ export default function ProductDetailPage() {
                     >
                       <div className="flex items-center justify-between flex-wrap gap-4">
                         <div>
-                          <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Interactive Board Pinout Drawing</h3>
-                          <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mt-1">PROGRAMMATIC CAD PREVIEW SCHEMATIC</p>
+                          <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Board Pinout CAD</h3>
+                          <p className="text-slate-400 text-xs font-medium uppercase tracking-wider mt-1">Vibrant Programmatic Vector Preview</p>
                         </div>
-                        <Button className="bg-indigo-650 text-white font-black text-[9px] uppercase tracking-widest px-4 py-2.5 rounded-xl hover:bg-indigo-700 transition-colors shadow-md">
-                          Download CAD Vector Package (SVG)
+                        <Button className="bg-indigo-600 text-white font-black text-[9px] uppercase tracking-widest px-4 py-2 rounded-lg hover:bg-indigo-700 transition-colors shadow-md">
+                          Download Vector Package (SVG)
                         </Button>
                       </div>
 
-                      {/* Premium SVG Block drawing representing schematic */}
+                      {/* CAD Screen */}
                       <div className="bg-slate-950 border border-slate-900 rounded-[2.5rem] p-8 md:p-12 flex items-center justify-center relative overflow-hidden group/cad shadow-2xl">
                         <div className="absolute inset-0 bg-[radial-gradient(#1e293b_1px,transparent_1px)] [background-size:20px_20px] opacity-40" />
                         
                         <div className="relative z-10 w-full max-w-md bg-slate-900 border border-indigo-500/20 rounded-2xl p-8 flex flex-col items-center gap-6 shadow-[0_0_50px_rgba(99,102,241,0.05)]">
-                          {/* Blueprint header */}
                           <div className="w-full flex justify-between text-[8px] font-mono text-indigo-400/80 border-b border-indigo-500/10 pb-4">
                             <span>Ref: CAD-2026-X8</span>
-                            <span>KALVEX LABS EMBEDDED ENGINE</span>
+                            <span>KALVEX LABS VECTOR LABS</span>
                           </div>
 
-                          {/* Visual microcontroller outline */}
-                          <div className="w-40 h-40 rounded-xl bg-slate-950 border-2 border-dashed border-indigo-500/30 flex items-center justify-center flex-col gap-2 relative">
-                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-mono text-[7px] px-2 py-0.5 rounded uppercase tracking-wider">
-                              MCU Core
+                          <div className="w-40 h-40 rounded-xl bg-slate-950 border-2 border-dashed border-indigo-500/30 flex items-center justify-center flex-col gap-2 relative animate-pulse">
+                            <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-mono text-[7px] px-2 py-0.5 rounded uppercase tracking-wider shadow shadow-blue-550/20">
+                              Core MCU
                             </div>
                             
-                            {/* Pin lines */}
+                            {/* Pin nodes */}
                             <div className="absolute inset-y-8 -left-3 flex flex-col justify-between">
                               {[1, 2, 3].map(i => <div key={i} className="w-3 h-0.5 bg-indigo-500/40" />)}
                             </div>
@@ -710,7 +709,6 @@ export default function ProductDetailPage() {
                             <span className="font-mono text-indigo-400 text-[8px]">{product.brand?.toUpperCase()}</span>
                           </div>
 
-                          {/* Peripheral connections */}
                           <div className="w-full grid grid-cols-3 gap-3 text-center">
                             <div className="bg-slate-950/80 border border-indigo-500/10 rounded p-2 text-[8px] font-mono text-indigo-400">
                               Power Bus<br/>5V / 3.3V
@@ -719,19 +717,19 @@ export default function ProductDetailPage() {
                               Logic Bus<br/>I2C / SPI
                             </div>
                             <div className="bg-slate-950/80 border border-indigo-500/10 rounded p-2 text-[8px] font-mono text-indigo-400">
-                              Duty Safety<br/>Fuse Protected
+                              Safety Shield<br/>Programmatic
                             </div>
                           </div>
 
                           <p className="text-center font-mono text-[8px] text-slate-500 mt-2">
-                            © 2026 KALVEX LABS PVT. LTD. ALL SCHEMATICS PROTECTED.
+                            © 2026 KALVEX LABS PVT. LTD. ALL REGISTERED SCHEMATICS SECURED.
                           </p>
                         </div>
                       </div>
                     </motion.div>
                   )}
 
-                  {/* Verified Reviews Tab */}
+                  {/* Reviews */}
                   {activeTab === "reviews" && (
                     <motion.div
                       key="reviews"
@@ -744,12 +742,12 @@ export default function ProductDetailPage() {
                       <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight">Verified Academic Reviews</h3>
 
                       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {/* Rating Stats Card */}
+                        
                         <div className="bg-gradient-to-br from-slate-50 to-blue-50/10 border border-slate-100 rounded-3xl p-8 flex flex-col justify-center items-center text-center shadow-sm">
                           <span className="text-5xl font-black text-slate-900 tracking-tight">{product.rating}</span>
                           <div className="flex gap-1 text-yellow-400 fill-yellow-400 my-3">
                             {[1, 2, 3, 4, 5].map((s) => (
-                              <Star key={s} className="w-4 h-4 fill-yellow-400" />
+                              <Star key={s} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                             ))}
                           </div>
                           <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">
@@ -757,13 +755,12 @@ export default function ProductDetailPage() {
                           </span>
                         </div>
 
-                        {/* Review List cards */}
                         <div className="col-span-2 space-y-4">
                           {[
                             { name: "Prof. R. Deshmukh", title: "Principal Investigator, IoT Lab", rating: 5, body: "Exceptional build quality. We procured 15 of these boards for our advanced embedded sensory research project. Duty cycles are absolutely stable under high thermal variations.", inst: "IIT Bombay" },
                             { name: "Ananya Iyer", title: "M.Tech Scholar (Electronics)", rating: 4, body: "Programmatic initialization worked instantly out of the box with standard Arduino and ESP libraries. Highly recommended due to pre-soldered I2C backpack arrays.", inst: "COEP Pune" }
                           ].map((rev, idx) => (
-                            <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative group/review hover:border-indigo-500/20 transition-all duration-300">
+                            <div key={idx} className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm relative hover:border-indigo-500/20 transition-all duration-300">
                               <div className="flex justify-between items-start mb-3">
                                 <div>
                                   <h4 className="font-black text-slate-900 text-xs uppercase tracking-wider">{rev.name}</h4>
@@ -775,7 +772,7 @@ export default function ProductDetailPage() {
                                   ))}
                                 </div>
                               </div>
-                              <p className="text-slate-500 text-xs font-semibold leading-relaxed leading-loose italic">
+                              <p className="text-slate-500 text-xs font-semibold leading-relaxed italic">
                                 "{rev.body}"
                               </p>
                             </div>

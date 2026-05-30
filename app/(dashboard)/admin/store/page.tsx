@@ -125,7 +125,7 @@ export default function AdminStorePage() {
       ]
     },
     { key: "brand", label: "Manufacturer Brand", type: "text", placeholder: "e.g. Raspberry Pi Foundation" },
-    { key: "price", label: "Procurement Price (INR)", type: "number" },
+    { key: "price", label: "Price (INR)", type: "number" },
     { key: "mrp", label: "MRP Valuation (INR)", type: "number" },
     { key: "stock", label: "Available Stock Reserve", type: "number" },
     { key: "rating", label: "Visual Star Rating (1.0 to 5.0)", type: "number" },
@@ -135,7 +135,7 @@ export default function AdminStorePage() {
     { key: "imageMain", label: "Main Product Image URL (View 1)", type: "text", placeholder: "HTTPS link to image" },
     { key: "imageInspection", label: "Board Inspection Image URL (View 2)", type: "text", placeholder: "HTTPS link to view 2" },
     { key: "imageBlueprint", label: "CAD Blueprint Image URL (View 3)", type: "text", placeholder: "HTTPS link to view 3" },
-    { key: "imagePackage", label: "Procurement Package Image URL (View 4)", type: "text", placeholder: "HTTPS link to view 4" },
+    { key: "imagePackage", label: "Package Image URL (View 4)", type: "text", placeholder: "HTTPS link to view 4" },
     
     // Custom electrical specs & pinouts
     { key: "voltage", label: "Operating Voltage Specification", type: "text", placeholder: "e.g. 5V DC via USB-C" },

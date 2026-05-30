@@ -189,7 +189,7 @@ export default function CartPage() {
               Your <span className="text-blue-600">Inventory</span>
             </h1>
             <p className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-400 mt-1">
-              REVIEW YOUR PROCUREMENT REQUEST
+              REVIEW YOUR ORDER
             </p>
           </div>
         </motion.div>
@@ -210,7 +210,7 @@ export default function CartPage() {
                 </div>
                 <h2 className="font-black text-2xl text-slate-900 mb-3 tracking-tight">Inventory Empty</h2>
                 <p className="text-slate-400 text-sm font-medium mb-10 leading-relaxed">
-                  Your procurement request has no items.
+                  Your shopping cart has no items.
                 </p>
                 <Link href="/electronics">
                   <motion.button

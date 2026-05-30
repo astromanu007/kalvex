@@ -349,7 +349,7 @@ export default function ProjectDetailPage() {
     }, 900);
   };
 
-  // Add to Procurement Cart
+  // Add to Cart
   const handleAddToCart = () => {
     if (!session) {
       router.push("/login");
@@ -395,7 +395,7 @@ export default function ProjectDetailPage() {
 
       const toast = document.createElement("div");
       toast.className = "fixed bottom-8 right-8 z-[500] bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-650 text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/20 flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider";
-      toast.innerHTML = `<span class="bg-white/20 p-1.5 rounded-lg text-white">✓</span> Project ${project.title} added to procurement cart`;
+      toast.innerHTML = `<span class="bg-white/20 p-1.5 rounded-lg text-white">✓</span> Project ${project.title} added to cart`;
       document.body.appendChild(toast);
       setTimeout(() => {
         toast.className += " animate-out fade-out duration-300";
@@ -601,7 +601,7 @@ export default function ProjectDetailPage() {
                   {/* Add-ons Selector */}
                   <div className="space-y-3">
                     <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">
-                      Procurement Customizations & Tiers
+                      Project Customizations & Tiers
                     </p>
                     
                     <div className="grid gap-3">
@@ -663,7 +663,7 @@ export default function ProjectDetailPage() {
                   {/* Price Math Container */}
                   <div className="relative bg-gradient-to-r from-blue-50/50 via-indigo-50/20 to-pink-50/30 p-6 rounded-[2.2rem] border border-indigo-100/30 overflow-hidden mt-6">
                     <div className="space-y-1">
-                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Procurement Total</p>
+                      <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Cart Total</p>
                       <div className="flex items-baseline gap-3">
                         <span className="text-3xl font-black text-slate-900 tracking-tight">₹{finalPrice.toLocaleString()}</span>
                         <span className="text-sm font-bold text-slate-400 line-through">₹{finalMrp.toLocaleString()}</span>
@@ -743,7 +743,7 @@ export default function ProjectDetailPage() {
                       onClick={handleBuyNow}
                       className="flex-1 bg-gradient-to-r from-blue-600 via-indigo-600 to-pink-600 hover:from-blue-700 hover:to-pink-700 text-white font-black text-[11px] uppercase tracking-[0.2em] h-14 rounded-2xl shadow-xl shadow-indigo-600/10 active:scale-[0.99] transition-all cursor-pointer"
                     >
-                      Instant Procurement
+                      Buy Now
                     </button>
 
                     <Button

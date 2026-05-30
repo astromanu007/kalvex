@@ -1,17 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, User, GraduationCap, Code, PenTool, Shield, Building2, Fingerprint, Lock, Mail } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.7, ease: [0.16, 1, 0.3, 1] as const } }
-};
 
 const ROLES = [
   { id: "USER",       label: "Client",     icon: User },
@@ -22,6 +17,71 @@ const ROLES = [
   { id: "ADMIN",      label: "Admin",      icon: Shield },
 ];
 
+const ROLE_THEMES: Record<string, {
+  name: string;
+  color: string;
+  activeBtn: string;
+  hoverBtn: string;
+  glowColor: string;
+  focusInput: string;
+  btnSubmit: string;
+}> = {
+  USER: {
+    name: "Client",
+    color: "#3b82f6",
+    activeBtn: "border-blue-600 bg-blue-50/70 text-blue-600 shadow-xl shadow-blue-600/10",
+    hoverBtn: "hover:border-blue-200 hover:text-blue-500 hover:bg-blue-50/20",
+    glowColor: "rgba(59, 130, 246, 0.25)",
+    focusInput: "focus:border-blue-600 focus:ring-blue-600/20",
+    btnSubmit: "bg-blue-600 hover:bg-blue-700 shadow-blue-600/20 text-white",
+  },
+  STUDENT: {
+    name: "Student",
+    color: "#10b981",
+    activeBtn: "border-emerald-600 bg-emerald-50/70 text-emerald-600 shadow-xl shadow-emerald-600/10",
+    hoverBtn: "hover:border-emerald-200 hover:text-emerald-500 hover:bg-emerald-50/20",
+    glowColor: "rgba(16, 185, 129, 0.25)",
+    focusInput: "focus:border-emerald-600 focus:ring-emerald-600/20",
+    btnSubmit: "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-600/20 text-white",
+  },
+  WRITER: {
+    name: "Scholar",
+    color: "#f59e0b",
+    activeBtn: "border-amber-600 bg-amber-50/70 text-amber-600 shadow-xl shadow-amber-600/10",
+    hoverBtn: "hover:border-amber-200 hover:text-amber-500 hover:bg-amber-50/20",
+    glowColor: "rgba(245, 158, 11, 0.25)",
+    focusInput: "focus:border-amber-600 focus:ring-amber-600/20",
+    btnSubmit: "bg-amber-600 hover:bg-amber-700 shadow-amber-600/20 text-white",
+  },
+  DEVELOPER: {
+    name: "Developer",
+    color: "#8b5cf6",
+    activeBtn: "border-purple-600 bg-purple-50/70 text-purple-600 shadow-xl shadow-purple-600/10",
+    hoverBtn: "hover:border-purple-200 hover:text-purple-500 hover:bg-purple-50/20",
+    glowColor: "rgba(139, 92, 246, 0.25)",
+    focusInput: "focus:border-purple-600 focus:ring-purple-600/20",
+    btnSubmit: "bg-purple-600 hover:bg-purple-700 shadow-purple-600/20 text-white",
+  },
+  AFFILIATE: {
+    name: "Partner",
+    color: "#14b8a6",
+    activeBtn: "border-teal-600 bg-teal-50/70 text-teal-600 shadow-xl shadow-teal-600/10",
+    hoverBtn: "hover:border-teal-200 hover:text-teal-500 hover:bg-teal-50/20",
+    glowColor: "rgba(20, 184, 166, 0.25)",
+    focusInput: "focus:border-teal-600 focus:ring-teal-600/20",
+    btnSubmit: "bg-teal-600 hover:bg-teal-700 shadow-teal-600/20 text-white",
+  },
+  ADMIN: {
+    name: "Admin",
+    color: "#f43f5e",
+    activeBtn: "border-rose-600 bg-rose-50/70 text-rose-600 shadow-xl shadow-rose-600/10",
+    hoverBtn: "hover:border-rose-200 hover:text-rose-500 hover:bg-rose-50/20",
+    glowColor: "rgba(244, 63, 94, 0.25)",
+    focusInput: "focus:border-rose-600 focus:ring-rose-600/20",
+    btnSubmit: "bg-rose-600 hover:bg-rose-700 shadow-rose-600/20 text-white",
+  },
+};
+
 export default function LoginPage() {
   const router = useRouter();
   const [role, setRole] = useState<string>("USER");
@@ -29,6 +89,19 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // Spotlight card ref
+  const wrapperRef = useRef<HTMLDivElement>(null);
+
+  // Border Spotlight Coordinate Calculations
+  const handleMouseMove = (e: React.MouseEvent) => {
+    if (!wrapperRef.current) return;
+    const rect = wrapperRef.current.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    wrapperRef.current.style.setProperty("--mouse-x", `${x}px`);
+    wrapperRef.current.style.setProperty("--mouse-y", `${y}px`);
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -48,15 +121,20 @@ export default function LoginPage() {
     }
   };
 
+  const activeTheme = ROLE_THEMES[role] || ROLE_THEMES.USER;
+
   return (
     <div className="min-h-screen bg-[#fafbfc] flex items-center justify-center relative overflow-hidden selection:bg-blue-600/10">
-      {/* Subtle Background */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none opacity-[0.2]">
-        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-blue-100 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-slate-100 rounded-full blur-[120px]" />
+      
+      {/* Decorative Shifting Background Glow Spheres */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-[-10%] right-[-10%] w-[500px] h-[500px] rounded-full bg-blue-400/10 blur-[120px] animate-pulse" style={{ animationDuration: "8s" }} />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[500px] h-[500px] rounded-full bg-purple-400/10 blur-[120px]" />
+        <div className="absolute top-[30%] left-[20%] w-[300px] h-[300px] rounded-full bg-pink-400/5 blur-[100px] animate-pulse" style={{ animationDuration: "12s" }} />
       </div>
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10 pt-24 pb-12 sm:py-16 md:py-24 flex flex-col items-center">
+        
         {/* LOGO SECTION */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -64,8 +142,14 @@ export default function LoginPage() {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
           className="mb-6 sm:mb-10 flex flex-col items-center"
         >
-          <div className="w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl flex items-center justify-center shadow-xl border border-slate-100 mb-3 sm:mb-4 group hover:scale-110 transition-transform duration-500">
-            <Shield className="w-6 h-6 sm:w-7 sm:h-7 text-blue-600" />
+          <div 
+            className="w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl flex items-center justify-center border transition-all duration-500 group hover:scale-110"
+            style={{ 
+              boxShadow: `0 20px 40px -15px ${activeTheme.glowColor}`,
+              borderColor: `${activeTheme.color}25`
+            }}
+          >
+            <Shield className="w-6 h-6 sm:w-7 sm:h-7 transition-colors duration-500" style={{ color: activeTheme.color }} />
           </div>
           <h2 className="text-[9px] sm:text-[10px] font-black text-slate-900 tracking-[0.4em] uppercase">KALVEX Portal</h2>
         </motion.div>
@@ -75,123 +159,158 @@ export default function LoginPage() {
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.8, delay: 0.1 }}
-          className="w-full max-w-lg"
+          className="w-full max-w-lg relative group"
         >
-          <div className="bg-white rounded-[2rem] sm:rounded-[3rem] p-6 sm:p-10 lg:p-12 shadow-[0_64px_128px_-32px_rgba(0,0,0,0.08)] border border-slate-100 relative overflow-hidden">
-            <div className="space-y-6 sm:space-y-10">
-              {/* ANIMATION SECTION */}
-              <div className="flex flex-col items-center -mt-4 sm:-mt-6 -mb-4 sm:-mb-2">
-                <div 
-                  className="w-28 h-28 sm:w-40 sm:h-40 flex items-center justify-center"
-                  dangerouslySetInnerHTML={{
-                    __html: `<dotlottie-wc src="https://lottie.host/f0cc4b98-7cab-4943-be0b-7c810c148178/JLPlsDBnQm.lottie" style="width: 100%; height: 100%" autoplay loop></dotlottie-wc>`
-                  }}
-                />
-              </div>
+          {/* Dynamic Rainbow Spotlight Border Wrapper */}
+          <div
+            ref={wrapperRef}
+            onMouseMove={handleMouseMove}
+            className="relative p-[2px] rounded-[3rem] overflow-hidden bg-slate-200/40 hover:bg-transparent shadow-[0_64px_128px_-32px_rgba(0,0,0,0.08)] transition-all duration-700 w-full"
+            style={{
+              // @ts-ignore
+              "--spotlight-color": activeTheme.color
+            }}
+          >
+            {/* Dynamic Shifting Border Gradient */}
+            <div 
+              className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none z-0"
+              style={{
+                background: `radial-gradient(300px circle at var(--mouse-x) var(--mouse-y), var(--spotlight-color) 0%, #6366f1 35%, #a855f7 65%, #ec4899 100%, transparent 100%)`,
+              }}
+            />
 
-              {/* Header */}
-              <div className="text-center space-y-2 sm:space-y-3">
-                <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tighter">Sign In</h1>
-                <p className="text-slate-600 font-bold text-xs sm:text-sm">Welcome back. Log in to your account.</p>
-              </div>
+            {/* Core Form Card */}
+            <div className="relative z-10 bg-white/95 backdrop-blur-3xl rounded-[2.9rem] p-6 sm:p-10 lg:p-12 transition-colors duration-500">
+              <div className="space-y-6 sm:space-y-10">
+                
+                {/* ANIMATION SECTION */}
+                <div className="flex flex-col items-center -mt-4 sm:-mt-6 -mb-4 sm:-mb-2">
+                  <div 
+                    className="w-28 h-28 sm:w-40 sm:h-40 flex items-center justify-center"
+                    dangerouslySetInnerHTML={{
+                      __html: `<dotlottie-wc src="https://lottie.host/f0cc4b98-7cab-4943-be0b-7c810c148178/JLPlsDBnQm.lottie" style="width: 100%; height: 100%" autoplay loop></dotlottie-wc>`
+                    }}
+                  />
+                </div>
 
-              {/* Role Selectors */}
-              <div className="grid grid-cols-3 gap-2 sm:gap-3">
-                {ROLES.map((r) => (
-                  <button
-                    key={r.id}
-                    onClick={() => setRole(r.id)}
-                    className={`flex flex-col items-center justify-center p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border-2 transition-all duration-500 ${
-                      role === r.id
-                        ? "border-blue-600 bg-blue-50 text-blue-600 shadow-xl shadow-blue-600/5"
-                        : "border-slate-50 bg-slate-50 text-slate-400 hover:border-slate-200 hover:text-slate-500"
-                    }`}
+                {/* Header */}
+                <div className="text-center space-y-2 sm:space-y-3">
+                  <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tighter">Sign In</h1>
+                  <p className="text-slate-600 font-bold text-xs sm:text-sm">Welcome back. Log in to your account.</p>
+                </div>
+
+                {/* Role Selectors */}
+                <div className="grid grid-cols-3 gap-2 sm:gap-3">
+                  {ROLES.map((r) => {
+                    const isSelected = role === r.id;
+                    const theme = ROLE_THEMES[r.id];
+                    return (
+                      <button
+                        key={r.id}
+                        onClick={() => setRole(r.id)}
+                        className={`flex flex-col items-center justify-center p-2.5 sm:p-4 rounded-xl sm:rounded-2xl border-2 transition-all duration-500 ${
+                          isSelected
+                            ? theme.activeBtn
+                            : `border-slate-50 bg-slate-50 text-slate-400 ${theme.hoverBtn}`
+                        }`}
+                      >
+                        <r.icon 
+                          className={`w-4 h-4 sm:w-5 sm:h-5 mb-1.5 sm:mb-2 transition-transform duration-500 ${isSelected ? "scale-110" : ""}`}
+                          style={{ color: isSelected ? theme.color : undefined }}
+                        />
+                        <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-center leading-none">{r.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Login Form */}
+                <form onSubmit={handleLogin} className="space-y-4 sm:space-y-6">
+                  <div className="space-y-3 sm:space-y-4">
+                    
+                    {/* Email Field */}
+                    <div className="relative group">
+                      <div className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-10">
+                        <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-slate-300 transition-colors duration-500" style={{ color: email ? activeTheme.color : undefined }} />
+                      </div>
+                      <input
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                        placeholder="Email Address"
+                        className={`w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-4 sm:py-5 pl-12 sm:pl-16 pr-4 sm:pr-6 text-slate-900 font-black text-xs focus:outline-none focus:bg-white focus:ring-4 transition-all placeholder:text-slate-300 shadow-sm ${activeTheme.focusInput}`}
+                      />
+                    </div>
+
+                    {/* Password Field */}
+                    <div className="relative group">
+                      <div className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2 z-10">
+                        <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-slate-300 transition-colors duration-500" style={{ color: password ? activeTheme.color : undefined }} />
+                      </div>
+                      <input
+                        type="password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                        placeholder="Password"
+                        className={`w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-4 sm:py-5 pl-12 sm:pl-16 pr-20 text-slate-900 font-black text-xs focus:outline-none focus:bg-white focus:ring-4 transition-all placeholder:text-slate-300 shadow-sm ${activeTheme.focusInput}`}
+                      />
+                      <Link 
+                        href="/forgot-password" 
+                        className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 text-[8px] sm:text-[9px] font-black uppercase tracking-widest hover:opacity-80 transition-opacity"
+                        style={{ color: activeTheme.color }}
+                      >
+                        Reset
+                      </Link>
+                    </div>
+                  </div>
+
+                  <AnimatePresence>
+                    {error && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.95 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="bg-red-50 border border-red-100 text-red-600 p-3 sm:p-4 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-center"
+                      >
+                        ⚠ {error}
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  <Button
+                    type="submit"
+                    disabled={loading}
+                    className={`w-full h-14 sm:h-16 rounded-2xl font-black uppercase tracking-[0.3em] text-[9px] sm:text-[10px] shadow-2xl transition-all duration-500 hover:scale-[1.02] active:scale-[0.98] ${activeTheme.btnSubmit}`}
+                    style={{
+                      boxShadow: `0 20px 40px -10px ${activeTheme.glowColor}`
+                    }}
                   >
-                    <r.icon className={`w-4 h-4 sm:w-5 sm:h-5 mb-1.5 sm:mb-2 transition-transform ${role === r.id ? "scale-110" : ""}`} />
-                    <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-center leading-none">{r.label}</span>
+                    {loading ? "Signing in..." : "Sign In"}
+                  </Button>
+                </form>
+
+                {/* Alternative Auth */}
+                <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-6 border-t border-slate-50">
+                  <div className="flex items-center gap-4 sm:gap-6 px-2 sm:px-4">
+                    <div className="flex-1 h-px bg-slate-100" />
+                    <span className="text-[8px] sm:text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] whitespace-nowrap">Or sign in with</span>
+                    <div className="flex-1 h-px bg-slate-100" />
+                  </div>
+
+                  <button
+                    onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
+                    className="w-full h-12 sm:h-14 rounded-2xl border-2 border-slate-100 flex items-center justify-center gap-3 sm:gap-4 text-[8px] sm:text-[9px] font-black text-slate-500 uppercase tracking-widest hover:bg-slate-50 hover:border-slate-200 transition-all group"
+                  >
+                    <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
+                      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
+                      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
+                      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
+                      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
+                    </svg>
+                    Sign in with Google
                   </button>
-                ))}
-              </div>
-
-              {/* Login Form */}
-              <form onSubmit={handleLogin} className="space-y-4 sm:space-y-6">
-                <div className="space-y-3 sm:space-y-4">
-                  <div className="relative group">
-                    <div className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2">
-                      <Mail className="w-4 h-4 sm:w-5 sm:h-5 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
-                    </div>
-                    <input
-                      type="email"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      placeholder="Email Address"
-                      className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-4 sm:py-5 pl-12 sm:pl-16 pr-4 sm:pr-6 text-slate-900 font-black text-xs focus:outline-none focus:border-blue-600 focus:bg-white transition-all placeholder:text-slate-300 shadow-sm"
-                    />
-                  </div>
-
-                  <div className="relative group">
-                    <div className="absolute left-4 sm:left-6 top-1/2 -translate-y-1/2">
-                      <Lock className="w-4 h-4 sm:w-5 sm:h-5 text-slate-300 group-focus-within:text-blue-600 transition-colors" />
-                    </div>
-                    <input
-                      type="password"
-                      value={password}
-                      onChange={(e) => setPassword(e.target.value)}
-                      required
-                      placeholder="Password"
-                      className="w-full bg-slate-50 border-2 border-slate-50 rounded-2xl py-4 sm:py-5 pl-12 sm:pl-16 pr-20 text-slate-900 font-black text-xs focus:outline-none focus:border-blue-600 focus:bg-white transition-all placeholder:text-slate-300 shadow-sm"
-                    />
-                    <Link 
-                      href="/forgot-password" 
-                      className="absolute right-4 sm:right-6 top-1/2 -translate-y-1/2 text-[8px] sm:text-[9px] font-black text-blue-600 uppercase tracking-widest hover:text-blue-500"
-                    >
-                      Reset
-                    </Link>
-                  </div>
                 </div>
-
-                <AnimatePresence>
-                  {error && (
-                    <motion.div
-                      initial={{ opacity: 0, scale: 0.95 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="bg-red-50 border border-red-100 text-red-600 p-3 sm:p-4 rounded-xl sm:rounded-2xl text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-center"
-                    >
-                      ⚠ {error}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-
-                <Button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full h-14 sm:h-16 bg-slate-900 hover:bg-blue-600 text-white rounded-2xl font-black uppercase tracking-[0.3em] text-[9px] sm:text-[10px] shadow-2xl shadow-slate-900/20 transition-all duration-500 hover:scale-[1.02] active:scale-[0.98]"
-                >
-                  {loading ? "Signing in..." : "Sign In"}
-                </Button>
-              </form>
-
-              {/* Alternative Auth */}
-              <div className="space-y-4 sm:space-y-6 pt-4 sm:pt-6 border-t border-slate-50">
-                <div className="flex items-center gap-4 sm:gap-6 px-2 sm:px-4">
-                  <div className="flex-1 h-px bg-slate-100" />
-                  <span className="text-[8px] sm:text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] whitespace-nowrap">Or sign in with</span>
-                  <div className="flex-1 h-px bg-slate-100" />
-                </div>
-
-                <button
-                  onClick={() => signIn("google", { callbackUrl: "/dashboard" })}
-                  className="w-full h-12 sm:h-14 rounded-2xl border-2 border-slate-100 flex items-center justify-center gap-3 sm:gap-4 text-[8px] sm:text-[9px] font-black text-slate-500 uppercase tracking-widest hover:bg-slate-50 hover:border-slate-200 transition-all group"
-                >
-                  <svg className="w-3.5 h-3.5 sm:w-4 sm:h-4 group-hover:scale-110 transition-transform" viewBox="0 0 24 24">
-                    <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
-                    <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-                    <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-                    <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-                  </svg>
-                  Sign in with Google
-                </button>
               </div>
             </div>
           </div>

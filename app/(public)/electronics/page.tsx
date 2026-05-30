@@ -302,7 +302,7 @@ export default function ElectronicsStore() {
       // MNC Style premium toast feedback
       const toast = document.createElement("div");
       toast.className = "fixed bottom-8 right-8 z-[500] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider";
-      toast.innerHTML = `<span class="text-emerald-500">✓</span> ${product.name} added to your procurement inventory`;
+      toast.innerHTML = `<span class="text-emerald-500">✓</span> ${product.name} added to your cart`;
       document.body.appendChild(toast);
       setTimeout(() => {
         toast.className += " animate-out fade-out duration-300";
@@ -736,7 +736,7 @@ export default function ElectronicsStore() {
 
               <h2 className="text-2xl font-black text-slate-900 mb-2">Bulk CSV Upload</h2>
               <p className="text-sm font-medium text-slate-500 mb-8 leading-relaxed">
-                Save time by uploading your lab's procurement list directly. 
+                Save time by uploading your lab's shopping list directly. 
                 Upload a standard <code>.csv</code> file formatted with <strong className="text-slate-800">SKU, Quantity</strong> per row.
               </p>
 

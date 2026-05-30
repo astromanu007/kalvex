@@ -294,7 +294,7 @@ export default function ProjectShopPage() {
       // MNC Style premium toast feedback
       const toast = document.createElement("div");
       toast.className = "fixed bottom-8 right-8 z-[500] bg-slate-900 text-white px-6 py-4 rounded-2xl shadow-2xl border border-white/10 flex items-center gap-3 animate-in slide-in-from-bottom duration-300 font-sans text-xs font-bold uppercase tracking-wider";
-      toast.innerHTML = `<span class="text-emerald-500">✓</span> ${project.title} added to your procurement inventory`;
+      toast.innerHTML = `<span class="text-emerald-500">✓</span> ${project.title} added to your cart`;
       document.body.appendChild(toast);
       setTimeout(() => {
         toast.className += " animate-out fade-out duration-300";

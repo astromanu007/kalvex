@@ -173,7 +173,7 @@ Shipping Partner: ${shippingMode.toUpperCase()}`;
         });
 
         if (createRes.error || !createRes.orderId) {
-          alert(createRes.error || "Failed to register your procurement request.");
+          alert(createRes.error || "Failed to register your order.");
           setProcessing(false);
           return;
         }
@@ -310,7 +310,7 @@ Shipping Partner: ${shippingMode.toUpperCase()}`;
           </div>
           <h1 className="font-black text-3xl text-slate-900 tracking-tighter mb-3">Sign in to <span className="text-blue-600">Checkout</span></h1>
           <p className="text-slate-400 font-medium text-sm max-w-xs mx-auto mb-8">
-            Create an account or sign in to complete your procurement request.
+            Create an account or sign in to complete your order.
           </p>
           <div className="space-y-4">
             <button
