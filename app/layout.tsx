@@ -5,6 +5,7 @@ import { Providers } from "@/components/layout/Providers";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Chatbot } from "@/components/ui/Chatbot";
+import Script from "next/script";
 
 const syne = Syne({
   variable: "--font-syne",
@@ -43,9 +44,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning className="scroll-smooth">
-      <head>
-        <script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.10/dist/dotlottie-wc.js" type="module"></script>
-      </head>
+      <head />
       <body
         className={`${dmSans.variable} ${syne.variable} ${jetbrainsMono.variable} font-sans antialiased bg-slate-50 text-slate-900 min-h-screen flex flex-col selection:bg-blue-600/10 selection:text-blue-600`}
       >
@@ -57,6 +56,7 @@ export default function RootLayout({
           <Footer />
           <Chatbot />
         </Providers>
+        <Script src="https://unpkg.com/@lottiefiles/dotlottie-wc@0.9.10/dist/dotlottie-wc.js" strategy="afterInteractive" type="module" />
       </body>
     </html>
   );

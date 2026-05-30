@@ -33,6 +33,19 @@ export default function ServicesPage() {
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Pricing Calculator States
+  const [selectedService, setSelectedService] = useState("phd-thesis");
+  const [calcPages, setCalcPages] = useState(100);
+  const [calcUrgent, setCalcUrgent] = useState(false);
+  const [calcPlagiarism, setCalcPlagiarism] = useState(false);
+  const [calcConsultation, setCalcConsultation] = useState(false);
+  const [calcPrinting, setCalcPrinting] = useState(false);
+  const [calcComplexity, setCalcComplexity] = useState("Standard");
+  const [calcReferences, setCalcReferences] = useState(35);
+  const [calcRawDeliverables, setCalcRawDeliverables] = useState(false);
+  const [calcPeerReview, setCalcPeerReview] = useState(false);
+  const [calcSupport, setCalcSupport] = useState(false);
+
   useEffect(() => {
     async function load() {
       const res = await getServices();
@@ -83,7 +96,378 @@ export default function ServicesPage() {
             Expert help for students, researchers, and engineers to build and document their ideas.
           </p>
         </motion.div>
+        {/* Interactive Pricing Calculator */}
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+          className="mb-24 bg-gradient-to-br from-white via-blue-50/10 to-indigo-50/10 border border-blue-100/60 rounded-[3.5rem] p-8 md:p-16 shadow-2xl relative overflow-hidden text-slate-800"
+        >
+          <div className="absolute top-0 right-0 w-96 h-96 bg-blue-550/5 rounded-full blur-[100px] pointer-events-none" />
+          <div className="absolute -left-10 -bottom-10 w-96 h-96 bg-indigo-550/5 rounded-full blur-[100px] pointer-events-none" />
 
+          <div className="grid lg:grid-cols-12 gap-12 items-center relative z-10">
+            {/* Controls */}
+            <div className="lg:col-span-7 space-y-8">
+              <div className="space-y-2">
+                <span className="inline-flex items-center gap-2 text-[10px] text-blue-600 bg-blue-50 border border-blue-100 px-4 py-1.5 rounded-full font-black uppercase tracking-widest">
+                  💰 LIVE COST ESTIMATOR
+                </span>
+                <h2 className="font-heading font-black text-3xl md:text-5xl text-slate-900 tracking-tight">
+                  Calculate Your <span className="text-blue-600">Plan</span> Estimate
+                </h2>
+                <p className="text-xs font-bold text-slate-400 uppercase tracking-wide">
+                  Select a service and play with options to see instant price changes
+                </p>
+              </div>
+
+              {/* Service Selection Grid */}
+              <div className="space-y-3">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Select Service Category</label>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {[
+                    { id: "phd-thesis", label: "PhD Thesis", emoji: "🎓" },
+                    { id: "research-paper", label: "Research Paper", emoji: "🔬" },
+                    { id: "final-year-report", label: "Project Report", emoji: "📄" },
+                    { id: "professional-write-ups", label: "Write-ups", emoji: "✍️" },
+                    { id: "utility-patent", label: "Utility Patent", emoji: "🛡️" },
+                    { id: "major-project", label: "Major Project", emoji: "💻" }
+                  ].map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => setSelectedService(s.id)}
+                      className={`p-4 rounded-2xl border-2 transition-all text-left group hover:-translate-y-0.5 hover:shadow-md ${
+                        selectedService === s.id
+                          ? "border-blue-600 bg-blue-50/50 shadow-lg shadow-blue-600/5"
+                          : "border-slate-100 bg-white hover:border-blue-200"
+                      }`}
+                    >
+                      <span className="text-xl block mb-2">{s.emoji}</span>
+                      <span className={`text-[10px] font-black uppercase tracking-widest block ${selectedService === s.id ? "text-slate-900" : "text-slate-500"}`}>{s.label}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Dynamic Sliders for Pages / Scope */}
+              {["phd-thesis", "research-paper", "final-year-report", "professional-write-ups"].includes(selectedService) && (
+                <div className="space-y-4 bg-white/60 border border-slate-100 p-6 rounded-3xl">
+                  <div className="flex justify-between items-center">
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Approximate Page Count</label>
+                    <span className="bg-blue-50 border border-blue-100 text-blue-700 px-4 py-1 rounded-xl text-xs font-black">{calcPages} Pages</span>
+                  </div>
+                  
+                  <div className="relative h-10 flex items-center">
+                    <div className="absolute left-0 right-0 h-2 bg-slate-100 rounded-full" />
+                    <div 
+                      className="absolute left-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full pointer-events-none transition-all duration-75" 
+                      style={{ width: `${(calcPages - 1) / (300 - 1) * 100}%` }}
+                    />
+                    <input 
+                      type="range" 
+                      min="1" 
+                      max="300" 
+                      value={calcPages} 
+                      onChange={(e) => setCalcPages(parseInt(e.target.value))} 
+                      className="absolute left-0 w-full h-8 appearance-none bg-transparent cursor-pointer focus:outline-none z-10"
+                    />
+                  </div>
+                  <div className="flex justify-between text-[8px] text-slate-400 uppercase tracking-widest font-black">
+                    <span>1 Page</span>
+                    <span>150 Pages</span>
+                    <span>300 Pages</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Dynamic Sliders for Complexity and References */}
+              {["phd-thesis", "research-paper", "final-year-report", "major-project", "utility-patent"].includes(selectedService) && (
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-4 bg-white/60 border border-slate-100 p-6 rounded-3xl">
+                    <div className="flex justify-between items-center">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Complexity Tier</label>
+                      <span className="bg-blue-50 border border-blue-100 text-blue-700 px-3 py-1 rounded-xl text-[9px] font-black uppercase tracking-widest">{calcComplexity}</span>
+                    </div>
+                    <div className="relative h-10 flex items-center">
+                      <div className="absolute left-0 right-0 h-2 bg-slate-100 rounded-full" />
+                      <div 
+                        className="absolute left-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full pointer-events-none transition-all duration-75" 
+                        style={{ width: `${calcComplexity === "Standard" ? 0 : calcComplexity === "Advanced" ? 50 : 100}%` }}
+                      />
+                      <input 
+                        type="range" 
+                        min="1" 
+                        max="3" 
+                        value={calcComplexity === "Standard" ? 1 : calcComplexity === "Advanced" ? 2 : 3} 
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value);
+                          setCalcComplexity(val === 1 ? "Standard" : val === 2 ? "Advanced" : "Enterprise PhD");
+                        }} 
+                        className="absolute left-0 w-full h-8 appearance-none bg-transparent cursor-pointer focus:outline-none z-10"
+                      />
+                    </div>
+                    <div className="flex justify-between text-[7px] text-slate-400 uppercase tracking-widest font-black">
+                      <span>Standard</span>
+                      <span>Advanced (+25%)</span>
+                      <span>Enterprise (+50%)</span>
+                    </div>
+                  </div>
+
+                  {["phd-thesis", "research-paper"].includes(selectedService) && (
+                    <div className="space-y-4 bg-white/60 border border-slate-100 p-6 rounded-3xl">
+                      <div className="flex justify-between items-center">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Bibliography References</label>
+                        <span className="bg-blue-50 border border-blue-100 text-blue-700 px-3 py-1 rounded-xl text-[9px] font-black">{calcReferences} Sources</span>
+                      </div>
+                      <div className="relative h-10 flex items-center">
+                        <div className="absolute left-0 right-0 h-2 bg-slate-100 rounded-full" />
+                        <div 
+                          className="absolute left-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full pointer-events-none transition-all duration-75" 
+                          style={{ width: `${(calcReferences - 10) / (150 - 10) * 100}%` }}
+                        />
+                        <input 
+                          type="range" 
+                          min="10" 
+                          max="150" 
+                          value={calcReferences} 
+                          onChange={(e) => setCalcReferences(parseInt(e.target.value))} 
+                          className="absolute left-0 w-full h-8 appearance-none bg-transparent cursor-pointer focus:outline-none z-10"
+                        />
+                      </div>
+                      <div className="flex justify-between text-[7px] text-slate-400 uppercase tracking-widest font-black">
+                        <span>10 Ref</span>
+                        <span>80 Ref</span>
+                        <span>150 Ref</span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Priority & Add-on Toggles */}
+              <div className="grid sm:grid-cols-2 gap-4">
+                <button
+                  type="button"
+                  onClick={() => setCalcUrgent(!calcUrgent)}
+                  className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
+                    calcUrgent
+                      ? "border-blue-600 bg-blue-50/40"
+                      : "border-slate-100 bg-white hover:border-slate-200"
+                  }`}
+                >
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg ${calcUrgent ? "bg-blue-600 text-white" : "bg-slate-50 text-slate-450"}`}>
+                    ⚡
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Urgent fulfillment</span>
+                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">Priority dispatch & fast delivery</span>
+                  </div>
+                </button>
+
+                {["phd-thesis", "research-paper", "final-year-report"].includes(selectedService) && (
+                  <button
+                    type="button"
+                    onClick={() => setCalcPlagiarism(!calcPlagiarism)}
+                    className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
+                      calcPlagiarism ? "border-blue-600 bg-blue-50/40" : "border-slate-100 bg-white hover:border-slate-200"
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcPlagiarism ? "bg-emerald-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>✓</div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Turnitin Plag Report</span>
+                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹1,500 add-on fee</span>
+                    </div>
+                  </button>
+                )}
+
+                {selectedService === "utility-patent" && (
+                  <button
+                    type="button"
+                    onClick={() => setCalcConsultation(!calcConsultation)}
+                    className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
+                      calcConsultation ? "border-blue-600 bg-blue-50/40" : "border-slate-100 bg-white hover:border-slate-200"
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcConsultation ? "bg-emerald-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>✓</div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Legal Consultation</span>
+                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹1,000 professional fee</span>
+                    </div>
+                  </button>
+                )}
+
+                {["phd-thesis", "research-paper", "major-project"].includes(selectedService) && (
+                  <button
+                    type="button"
+                    onClick={() => setCalcRawDeliverables(!calcRawDeliverables)}
+                    className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
+                      calcRawDeliverables ? "border-blue-600 bg-blue-50/40" : "border-slate-100 bg-white hover:border-slate-200"
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcRawDeliverables ? "bg-indigo-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>📁</div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Raw Source Deliverables</span>
+                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹4,000 codebase escrow</span>
+                    </div>
+                  </button>
+                )}
+
+                {["phd-thesis", "research-paper"].includes(selectedService) && (
+                  <button
+                    type="button"
+                    onClick={() => setCalcPeerReview(!calcPeerReview)}
+                    className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
+                      calcPeerReview ? "border-blue-600 bg-blue-50/40" : "border-slate-100 bg-white hover:border-slate-200"
+                    }`}
+                  >
+                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcPeerReview ? "bg-purple-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>🔬</div>
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Peer Review Simulation</span>
+                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹1,800 audit review</span>
+                    </div>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => setCalcSupport(!calcSupport)}
+                  className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
+                    calcSupport ? "border-blue-600 bg-blue-50/40" : "border-slate-100 bg-white hover:border-slate-200"
+                  }`}
+                >
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcSupport ? "bg-rose-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>📞</div>
+                  <div>
+                    <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Priority Support Desk</span>
+                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹2,500 dedicated desk</span>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Price Card */}
+            <div className="lg:col-span-5 bg-slate-900 rounded-[3rem] p-8 md:p-10 border border-slate-800 text-center shadow-2xl relative overflow-hidden">
+              <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] pointer-events-none" />
+              
+              <span className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] block mb-4">Calculated Quote</span>
+              
+              <div className="font-heading font-black text-6xl md:text-7xl text-white mb-6 tracking-tighter flex items-start justify-center gap-1.5 font-sans">
+                <span className="text-2xl mt-2 text-blue-500 font-bold font-sans">₹</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-400 to-blue-600 font-black font-sans">
+                  {(() => {
+                    let total = 0;
+                    if (selectedService === "phd-thesis") {
+                      let base = 25000;
+                      base += calcPages * 100;
+                      if (calcComplexity === "Advanced") base *= 1.25;
+                      else if (calcComplexity === "Enterprise PhD") base *= 1.50;
+                      base += calcReferences * 60;
+                      if (calcUrgent) base += 5000;
+                      if (calcPlagiarism) base += 1500;
+                      total = base;
+                    } else if (selectedService === "research-paper") {
+                      let base = 12500;
+                      base += calcPages * 75;
+                      if (calcComplexity === "Advanced") base *= 1.25;
+                      else if (calcComplexity === "Enterprise PhD") base *= 1.40;
+                      base += calcReferences * 40;
+                      if (calcUrgent) base += 3000;
+                      if (calcPlagiarism) base += 1500;
+                      total = base;
+                    } else if (selectedService === "final-year-report") {
+                      let base = 5000;
+                      base += calcPages * 20;
+                      if (calcComplexity === "Advanced") base *= 1.20;
+                      else if (calcComplexity === "Enterprise PhD") base *= 1.35;
+                      if (calcUrgent) base += 1500;
+                      if (calcPlagiarism) base += 1500;
+                      total = base;
+                    } else if (selectedService === "professional-write-ups") {
+                      let rate = calcUrgent ? 10 : 5;
+                      let base = calcPages * rate;
+                      if (calcComplexity === "Advanced") base *= 1.20;
+                      else if (calcComplexity === "Enterprise PhD") base *= 1.30;
+                      total = base;
+                    } else if (selectedService === "utility-patent") {
+                      let base = 30000;
+                      if (calcComplexity === "Advanced") base *= 1.20;
+                      else if (calcComplexity === "Enterprise PhD") base *= 1.40;
+                      if (calcConsultation) base += 1000;
+                      if (calcUrgent) base += 8000;
+                      total = base;
+                    } else if (selectedService === "design-patent") {
+                      let base = 15000;
+                      if (calcComplexity === "Advanced") base *= 1.20;
+                      else if (calcComplexity === "Enterprise PhD") base *= 1.35;
+                      total = base;
+                    } else if (selectedService === "major-project") {
+                      let base = calcUrgent ? 29000 : 25000;
+                      if (calcComplexity === "Advanced") base *= 1.20;
+                      else if (calcComplexity === "Enterprise PhD") base *= 1.35;
+                      total = base;
+                    } else {
+                      total = 10000;
+                    }
+
+                    // Add global add-ons
+                    if (calcRawDeliverables && ["phd-thesis", "research-paper", "major-project"].includes(selectedService)) total += 4000;
+                    if (calcPeerReview && ["phd-thesis", "research-paper"].includes(selectedService)) total += 1800;
+                    if (calcSupport) total += 2500;
+
+                    return Math.round(total);
+                  })().toLocaleString()}
+                </span>
+              </div>
+
+              {/* Order Checklist Summary */}
+              <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-5 mb-8 text-left space-y-3.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest font-sans">
+                <div className="flex justify-between items-center">
+                  <span>Selected Rate</span>
+                  <span className="text-blue-500 font-black">
+                    {selectedService.replace(/-/g, " ")}
+                  </span>
+                </div>
+                {["phd-thesis", "research-paper", "final-year-report", "professional-write-ups"].includes(selectedService) && (
+                  <div className="flex justify-between items-center">
+                    <span>Scope Volume</span>
+                    <span className="text-white font-black">{calcPages} Pages</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
+                  <span>Complexity Tier</span>
+                  <span className="text-white font-black">{calcComplexity}</span>
+                </div>
+                {["phd-thesis", "research-paper"].includes(selectedService) && (
+                  <div className="flex justify-between items-center">
+                    <span>Bibliography Ref</span>
+                    <span className="text-white font-black">{calcReferences} Sources</span>
+                  </div>
+                )}
+                <div className="flex justify-between items-center">
+                  <span>Urgency Level</span>
+                  <span className={`font-black ${calcUrgent ? "text-amber-500" : "text-slate-450"}`}>
+                    {calcUrgent ? "⚡ Urgent Delivery" : "⏳ Standard Delivery"}
+                  </span>
+                </div>
+                <div className="h-[1px] bg-slate-800" />
+                <div className="flex justify-between items-center text-slate-500 text-[8px]">
+                  <span>Fulfillment Duration</span>
+                  <span className="text-white">
+                    {selectedService === "phd-thesis" ? (calcUrgent ? "15-20 Days" : "30-45 Days") :
+                     selectedService === "research-paper" ? (calcUrgent ? "7-10 Days" : "14-21 Days") :
+                     selectedService === "utility-patent" ? "21-30 Days" : "5-7 Days"}
+                  </span>
+                </div>
+              </div>
+
+              <Link href={`/services/${selectedService}`}>
+                <Button className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-xl shadow-blue-600/10">
+                  Proceed to Booking ⚡
+                </Button>
+              </Link>
+            </div>
+          </div>
+        </motion.div>
         {/* Why Choose Us: 3+1 Balanced Layout */}
         <div className="mb-24 space-y-8">
           <motion.div

@@ -790,10 +790,17 @@ export default function PatentDrafterPage() {
 
     type PkgType = { id: string; title: string; subtitle: string; desc: string; badge: string; icon: string; accentColor: string; accentLight: string; };
     const CardInner = ({ pkg, isSelected }: { pkg: PkgType; isSelected: boolean }) => (
-      <button
+      <div
         onClick={() => { if (!isSelected) setSelectedPackages((prev: any) => ({ ...prev, [pkg.id]: true })); }}
         className="pkg-card relative w-full text-left bg-white p-6 flex flex-col cursor-pointer"
         style={{ borderRadius: '18px' }}
+        role="button"
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            if (!isSelected) setSelectedPackages((prev: any) => ({ ...prev, [pkg.id]: true }));
+          }
+        }}
       >
 
 
@@ -853,7 +860,7 @@ export default function PatentDrafterPage() {
             {isSelected ? 'Added to suite ✓' : 'Click to add'}
           </span>
         </div>
-      </button>
+      </div>
     );
 
     const PACKAGES = [
@@ -1237,12 +1244,20 @@ export default function PatentDrafterPage() {
 
                     <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
                       {PATENT_VIEWS.map(v => (
-                        <label key={v.id} className="cursor-pointer group/view">
-                          <div className={`relative aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-1 transition-all ${views[v.id] ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:border-blue-400 bg-slate-50"}`}>
+                        <div key={v.id} className="cursor-pointer group/view relative">
+                          <div 
+                            onClick={() => {
+                              if (!views[v.id]) {
+                                document.getElementById(`file-input-${v.id}`)?.click();
+                              }
+                            }}
+                            className={`relative aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-1 transition-all ${views[v.id] ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:border-blue-400 bg-slate-50"}`}
+                          >
                             {views[v.id] ? (
                               <>
                                 <img src={views[v.id]!} className="w-full h-full object-contain rounded-xl" alt="v" />
                                 <button
+                                  type="button"
                                   onClick={(e) => { e.preventDefault(); e.stopPropagation(); setViews(p => ({ ...p, [v.id]: null })); }}
                                   className="absolute -top-3 -right-3 bg-white text-red-500 border border-red-100 rounded-full p-1.5 shadow-xl hover:bg-red-50 hover:scale-110 transition-all z-10"
                                 >
@@ -1256,8 +1271,8 @@ export default function PatentDrafterPage() {
                               </div>
                             )}
                           </div>
-                          <input type="file" className="hidden" onClick={e => e.stopPropagation()} onChange={e => handleUpload(v.id, e, 'view')} />
-                        </label>
+                          <input id={`file-input-${v.id}`} type="file" className="hidden" onClick={e => e.stopPropagation()} onChange={e => handleUpload(v.id, e, 'view')} />
+                        </div>
                       ))}
                     </div>
 
@@ -1647,12 +1662,25 @@ export default function PatentDrafterPage() {
                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Design Views (7 required)</label>
                   <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-7 gap-2">
                     {DISCLOSURE_VIEWS.map(v => (
-                      <label key={v.id} className="cursor-pointer group/view">
-                        <div className={`relative aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-1 transition-all ${dViews[v.id] ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:border-blue-400 bg-slate-50"}`}>
+                      <div key={v.id} className="cursor-pointer group/view relative">
+                        <div 
+                          onClick={() => {
+                            if (!dViews[v.id]) {
+                              document.getElementById(`dfile-input-${v.id}`)?.click();
+                            }
+                          }}
+                          className={`relative aspect-square rounded-2xl border-2 border-dashed flex flex-col items-center justify-center p-1 transition-all ${dViews[v.id] ? "border-blue-500 bg-blue-50" : "border-slate-200 hover:border-blue-400 bg-slate-50"}`}
+                        >
                           {dViews[v.id] ? (
                             <>
                               <img src={dViews[v.id]!} className="w-full h-full object-contain rounded-xl" alt="v" />
-                              <button onClick={e => { e.preventDefault(); e.stopPropagation(); setDViews(p => ({ ...p, [v.id]: null })); }} className="absolute -top-3 -right-3 bg-white text-red-500 border border-red-100 rounded-full p-1.5 shadow-xl hover:scale-110 z-10"><Plus className="w-3 h-3 rotate-45" /></button>
+                              <button 
+                                type="button" 
+                                onClick={e => { e.preventDefault(); e.stopPropagation(); setDViews(p => ({ ...p, [v.id]: null })); }} 
+                                className="absolute -top-3 -right-3 bg-white text-red-500 border border-red-100 rounded-full p-1.5 shadow-xl hover:scale-110 z-10"
+                              >
+                                <Plus className="w-3 h-3 rotate-45" />
+                              </button>
                             </>
                           ) : (
                             <div className="text-center">
@@ -1661,8 +1689,8 @@ export default function PatentDrafterPage() {
                             </div>
                           )}
                         </div>
-                        <input type="file" className="hidden" accept="image/*" onChange={e => handleDView(v.id, e)} />
-                      </label>
+                        <input id={`dfile-input-${v.id}`} type="file" className="hidden" accept="image/*" onClick={e => e.stopPropagation()} onChange={e => handleDView(v.id, e)} />
+                      </div>
                     ))}
                   </div>
                 </div>

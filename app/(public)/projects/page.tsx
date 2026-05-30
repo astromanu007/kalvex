@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import {
   Search, Filter, ShoppingBag, Download,
   Cpu, Code, GraduationCap, ChevronRight,
@@ -505,11 +506,13 @@ export default function ProjectShopPage() {
                     className="group relative bg-white border border-slate-100 rounded-[2.5rem] overflow-hidden hover:border-blue-600/20 transition-all duration-500 hover:shadow-xl flex flex-col h-full"
                   >
                     <div className="relative aspect-[5/4] overflow-hidden bg-slate-50">
-                      <img
-                        src={project.image}
-                        alt={project.title}
-                        className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
-                      />
+                      <Link href={`/projects/${project.id}`} className="block w-full h-full">
+                        <img
+                          src={project.image}
+                          alt={project.title}
+                          className="w-full h-full object-cover transition-all duration-1000 group-hover:scale-105"
+                        />
+                      </Link>
                       <div className="absolute top-4 left-4">
                         <span className="bg-white/90 backdrop-blur-md text-slate-900 text-[7px] font-black px-2.5 py-1 rounded-md border border-white/20 uppercase tracking-widest shadow-sm">
                           {project.type.split(' ')[0]}
@@ -528,9 +531,11 @@ export default function ProjectShopPage() {
                     </div>
 
                     <div className="p-6 flex flex-col flex-grow space-y-4">
-                      <h3 className="font-heading font-black text-sm text-slate-900 line-clamp-2 min-h-[2.5rem] leading-tight group-hover:text-blue-600 transition-colors">
-                        {project.title}
-                      </h3>
+                      <Link href={`/projects/${project.id}`}>
+                        <h3 className="font-heading font-black text-sm text-slate-900 line-clamp-2 min-h-[2.5rem] leading-tight group-hover:text-blue-600 transition-colors">
+                          {project.title}
+                        </h3>
+                      </Link>
 
                       <div className="flex flex-wrap gap-1">
                         {project.tech.slice(0, 2).map(t => (

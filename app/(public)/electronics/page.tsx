@@ -597,13 +597,15 @@ export default function ElectronicsStore() {
                           </button>
                         </div>
 
-                        <div className="w-full h-full flex items-center justify-center bg-white">
-                          <img
-                            src={p.image}
-                            alt={p.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                          />
-                        </div>
+                        <Link href={`/electronics/${p.id}`} className="w-full h-full block">
+                          <div className="w-full h-full flex items-center justify-center bg-white">
+                            <img
+                              src={p.image}
+                              alt={p.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                          </div>
+                        </Link>
                       </div>
 
                       {/* Specifications */}
