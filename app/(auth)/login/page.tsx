@@ -135,24 +135,75 @@ export default function LoginPage() {
 
       <div className="container mx-auto px-4 sm:px-6 relative z-10 pt-24 pb-12 sm:py-16 md:py-24 flex flex-col items-center">
         
-        {/* LOGO SECTION */}
+        {/* FUTURISTIC PREMIUM LOGO SECTION */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] as const }}
-          className="mb-6 sm:mb-10 flex flex-col items-center"
+          className="mb-10 sm:mb-12 flex flex-col items-center relative"
         >
-          <div 
-            className="w-12 h-12 sm:w-14 sm:h-14 bg-white rounded-2xl flex items-center justify-center border transition-all duration-500 group hover:scale-110"
-            style={{ 
-              boxShadow: `0 20px 40px -15px ${activeTheme.glowColor}`,
-              borderColor: `${activeTheme.color}25`
-            }}
-          >
-            <Shield className="w-6 h-6 sm:w-7 sm:h-7 transition-colors duration-500" style={{ color: activeTheme.color }} />
+          {/* Orbital Sweeps System */}
+          <div className="absolute w-24 h-24 sm:w-28 sm:h-28 -z-10 flex items-center justify-center pointer-events-none">
+            {/* Inner pulsing orbit */}
+            <motion.div 
+              animate={{ scale: [1, 1.05, 1], rotate: 360 }}
+              transition={{ scale: { repeat: Infinity, duration: 4, ease: "easeInOut" }, rotate: { repeat: Infinity, duration: 15, ease: "linear" } }}
+              className="absolute inset-0 rounded-full border border-dashed opacity-30"
+              style={{ borderColor: activeTheme.color }}
+            />
+            {/* Outer rotating orbit */}
+            <motion.div 
+              animate={{ rotate: -360 }}
+              transition={{ repeat: Infinity, duration: 25, ease: "linear" }}
+              className="absolute w-[125%] h-[125%] rounded-full border border-dotted opacity-20"
+              style={{ borderColor: activeTheme.color }}
+            />
           </div>
-          <h2 className="text-[9px] sm:text-[10px] font-black text-slate-900 tracking-[0.4em] uppercase">KALVEX Portal</h2>
+
+          <div className="relative flex items-center justify-center mb-5">
+            {/* Ambient Backlight Glow */}
+            <div 
+              className="absolute w-16 h-16 sm:w-20 sm:h-20 rounded-full blur-2xl transition-all duration-700 opacity-60"
+              style={{ backgroundColor: activeTheme.color }}
+            />
+
+            <motion.div 
+              whileHover={{ scale: 1.05, rotate: [0, -5, 5, 0] }}
+              transition={{ duration: 0.5 }}
+              className="w-14 h-14 sm:w-16 sm:h-16 bg-white/70 backdrop-blur-xl rounded-[1.3rem] sm:rounded-[1.5rem] flex items-center justify-center border-2 transition-all duration-500 relative overflow-hidden shadow-2xl cursor-pointer"
+              style={{ 
+                borderColor: `${activeTheme.color}35`,
+                boxShadow: `0 20px 40px -10px ${activeTheme.glowColor}`
+              }}
+            >
+              {/* Metallic Sheen Sweep */}
+              <motion.div 
+                initial={{ x: "-150%" }}
+                animate={{ x: "150%" }}
+                transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut", repeatDelay: 1 }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/50 to-transparent skew-x-12 z-0"
+              />
+
+              <Shield className="w-7 h-7 sm:w-8 sm:h-8 transition-colors duration-500 z-10 drop-shadow-md" style={{ color: activeTheme.color }} />
+            </motion.div>
+          </div>
+
+          {/* Typography Header */}
+          <div className="text-center space-y-2.5">
+            <h2 className="text-sm sm:text-base font-black tracking-[0.5em] uppercase bg-gradient-to-r from-slate-950 via-slate-900 to-indigo-950 bg-clip-text text-transparent flex items-center justify-center pl-[0.5em] drop-shadow-sm">
+              KALVEX PORTAL
+            </h2>
+            
+            {/* System Status Pill Badge */}
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white border border-slate-100 shadow-sm">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
+              <span className="text-[7px] font-black uppercase tracking-[0.2em] text-slate-400">
+                System Active // Node Verified
+              </span>
+            </div>
+          </div>
         </motion.div>
+
 
         {/* MAIN AUTH CARD */}
         <motion.div
