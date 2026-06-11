@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
@@ -890,6 +890,7 @@ export default function OrderDetailsPage() {
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     const fetchOrder = async () => {
@@ -907,6 +908,15 @@ export default function OrderDetailsPage() {
     const file = e.target.files?.[0];
     if (!file || !order) return;
 
+    // Validate file type
+    const allowedExtensions = ["pdf", "doc", "docx", "txt"];
+    const fileExtension = file.name.split(".").pop()?.toLowerCase();
+    if (!fileExtension || !allowedExtensions.includes(fileExtension)) {
+      alert("Only PDF, DOC/DOCX, and TXT formats are allowed.");
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+
     setUploading(true);
     const formData = new FormData();
     formData.append("file", file);
@@ -923,6 +933,7 @@ export default function OrderDetailsPage() {
       alert(res.error || "Upload failed. Please ensure the 'kalvex' storage bucket exists in Supabase.");
     }
     setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handleDownloadDeliverables = () => {
@@ -1178,15 +1189,26 @@ export default function OrderDetailsPage() {
                   <FileText className="w-5 h-5 text-accent-primary" /> Requirements & Files
                 </h2>
                 {!isLocked && (
-                  <label className="cursor-pointer">
-                    <input type="file" className="hidden" onChange={handleFileUpload} disabled={uploading} />
-                    <Button variant="outline" size="sm" className="h-8 text-xs border-border rounded-lg gap-2">
-                      <span>
-                        {uploading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Paperclip className="w-3 h-3" />}
-                        Add Attachment
-                      </span>
+                  <div className="flex items-center">
+                    <input 
+                      type="file" 
+                      ref={fileInputRef}
+                      className="hidden" 
+                      accept=".pdf,.doc,.docx,.txt"
+                      onChange={handleFileUpload} 
+                      disabled={uploading} 
+                    />
+                    <Button 
+                      variant="outline" 
+                      size="sm" 
+                      className="h-8 text-xs border-border rounded-lg gap-2"
+                      disabled={uploading}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      {uploading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Paperclip className="w-3.5 h-3.5" />}
+                      Add Attachment
                     </Button>
-                  </label>
+                  </div>
                 )}
               </div>
               
