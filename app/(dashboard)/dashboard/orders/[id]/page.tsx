@@ -500,6 +500,10 @@ const downloadInvoice = (order: any) => {
           }
 
           /* Print Overrides */
+          @page {
+            size: A4;
+            margin: 10mm;
+          }
           @media print {
             body { 
               padding: 0; 
@@ -509,9 +513,18 @@ const downloadInvoice = (order: any) => {
               border: 2px solid #000000 !important;
               box-shadow: none !important;
               margin: 0 !important;
-              padding: 30px !important;
+              padding: 12mm !important;
               max-width: 100% !important;
-              border-radius: 0 !important;
+              border-radius: 6px !important;
+              box-sizing: border-box;
+            }
+            .invoice-header, .invoice-grid, .shipping-panel, .totals-container, .signatory-container, .footer {
+              page-break-inside: avoid;
+              break-inside: avoid;
+            }
+            .items-table tr {
+              page-break-inside: avoid;
+              break-inside: avoid;
             }
             .details-panel {
               border: 1.5px solid #000000 !important;
