@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { getOrders } from "@/app/actions/orders";
 import { uploadFile } from "@/app/actions/storage";
 import { motion } from "framer-motion";
-import { parseRequirements, getServiceTitle } from "@/lib/utils";
+import { parseRequirements, getServiceTitle, isElectronicsOrder } from "@/lib/utils";
 
 const STATUS_MAP: Record<string, { color: string; icon: any, desc: string }> = {
   PENDING_PAYMENT:    { color: "text-amber-600 bg-amber-50", icon: AlertCircle, desc: "Awaiting your payment to begin." },
@@ -105,69 +105,140 @@ const RequirementCard = ({ label, value, index }: { label: string; value: string
   );
 };
 
-// E-commerce tracking step component
-const HardwareTracker = ({ status }: { status: string }) => {
+const getComponentResources = (itemName: string) => {
+  const name = itemName.toLowerCase();
+  if (name.includes("arduino")) {
+    return [
+      { label: "Arduino Datasheet", href: "https://docs.arduino.cc/resources/datasheets/ABX00087-datasheet.pdf" },
+      { label: "Getting Started Guide", href: "https://docs.arduino.cc/hardware/uno-r4-wifi" }
+    ];
+  }
+  if (name.includes("robot")) {
+    return [
+      { label: "Assembly Instructions", href: "#" },
+      { label: "Control Library GitHub", href: "#" }
+    ];
+  }
+  if (name.includes("cable") || name.includes("acquisition")) {
+    return [
+      { label: "Pinout Diagram", href: "#" }
+    ];
+  }
+  return [
+    { label: "User Manual", href: "#" }
+  ];
+};
+
+// E-commerce horizontal tracking step component
+const HorizontalHardwareTracker = ({ status }: { status: string }) => {
   const currentIdx = HW_STEP_ORDER.indexOf(status);
+  
+  // Calculate percentage progress
+  const totalSteps = HW_TRACKING_STEPS.length;
+  const progressPercent = currentIdx === -1 ? 0 : (currentIdx / (totalSteps - 1)) * 100;
 
   return (
-    <div className="bg-bg-card border border-border rounded-2xl p-6">
-      <h3 className="font-heading font-semibold text-base mb-6 flex items-center gap-2">
-        <Truck className="w-4 h-4 text-accent-primary" />
-        Track Your Order
-      </h3>
+    <div className="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden group">
+      {/* Background patterns */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-blue-50/20 rounded-full blur-3xl -z-10" />
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-purple-50/20 rounded-full blur-3xl -z-10" />
 
-      <div className="space-y-0">
-        {HW_TRACKING_STEPS.map((step, i) => {
-          const stepIdx = HW_STEP_ORDER.indexOf(step.key);
-          const isDone = currentIdx >= stepIdx;
-          const isCurrent = currentIdx === stepIdx;
-          const Icon = step.icon;
-
-          return (
-            <div key={step.key} className="relative flex gap-4">
-              {/* Vertical line */}
-              {i < HW_TRACKING_STEPS.length - 1 && (
-                <div
-                  className={`absolute left-[15px] top-8 bottom-0 w-0.5 transition-all duration-500 ${
-                    isDone && currentIdx > stepIdx ? "bg-accent-primary" : "bg-border"
-                  }`}
-                />
-              )}
-
-              {/* Icon dot */}
-              <div className={`relative z-10 w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 border-4 transition-all duration-500 ${
-                isDone
-                  ? "bg-accent-primary border-accent-primary text-white shadow-lg shadow-accent-primary/30"
-                  : isCurrent
-                  ? "bg-blue-50 border-accent-primary text-accent-primary"
-                  : "bg-bg-surface border-border text-text-muted"
-              }`}>
-                <Icon className="w-3.5 h-3.5" />
-              </div>
-
-              {/* Content */}
-              <div className={`pb-6 flex-1 ${i === HW_TRACKING_STEPS.length - 1 ? "pb-0" : ""}`}>
-                <p className={`text-sm font-semibold ${isDone ? "text-text-primary" : "text-text-muted"}`}>
-                  {step.label}
-                </p>
-                <p className={`text-xs mt-0.5 ${isDone ? "text-text-secondary" : "text-text-muted"}`}>
-                  {step.desc}
-                </p>
-                {isCurrent && (
-                  <motion.span
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold text-accent-primary bg-accent-primary/10 px-2 py-0.5 rounded-full"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-accent-primary animate-pulse" />
-                    Current Stage
-                  </motion.span>
-                )}
-              </div>
-            </div>
-          );
-        })}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
+        <div>
+          <h3 className="font-heading font-black text-lg text-slate-900 tracking-tight flex items-center gap-2">
+            <Truck className="w-5 h-5 text-blue-600 animate-bounce" /> Shipment Tracking
+          </h3>
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mt-1">
+            Real-time fulfillment milestone map
+          </p>
+        </div>
+        
+        {/* Estimated Delivery / Status Badge */}
+        <div className="inline-flex items-center gap-3 bg-slate-50 border border-slate-100 px-4 py-2 rounded-2xl">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
+          <span className="text-[10px] font-black uppercase tracking-wider text-slate-500">
+            Fulfillment Status: <span className="text-blue-600 font-extrabold">{HW_STATUS_LABELS[status] ?? status}</span>
+          </span>
+        </div>
       </div>
+
+      {/* Progress Map Container */}
+      <div className="relative px-4 py-8 sm:px-10">
+        
+        {/* Track Line Background */}
+        <div className="absolute left-4 right-4 sm:left-10 sm:right-10 top-[45px] h-2 bg-slate-100 rounded-full -z-10" />
+        
+        {/* Animated Filled Progress Line */}
+        <motion.div 
+          initial={{ width: 0 }}
+          animate={{ width: `${progressPercent}%` }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+          className="absolute left-4 sm:left-10 top-[45px] h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 rounded-full -z-10"
+        />
+
+        {/* Animated Moving Truck */}
+        <div className="absolute left-4 right-4 sm:left-10 sm:right-10 top-[18px] -z-10 pointer-events-none">
+          <motion.div
+            initial={{ left: 0 }}
+            animate={{ left: `${progressPercent}%` }}
+            transition={{ duration: 1.2, ease: "easeInOut" }}
+            className="absolute -translate-x-1/2 w-8 h-8 rounded-full bg-white shadow-lg border border-slate-100 flex items-center justify-center text-blue-600"
+          >
+            <Truck className="w-4 h-4" />
+          </motion.div>
+        </div>
+
+        {/* Milestones */}
+        <div className="flex justify-between items-center relative">
+          {HW_TRACKING_STEPS.map((step, i) => {
+            const stepIdx = HW_STEP_ORDER.indexOf(step.key);
+            const isDone = currentIdx >= stepIdx;
+            const isCurrent = currentIdx === stepIdx;
+            const Icon = step.icon;
+
+            return (
+              <div key={step.key} className="flex flex-col items-center relative z-10 w-8 sm:w-16">
+                
+                {/* Milestone Node */}
+                <motion.div
+                  whileHover={{ scale: 1.15 }}
+                  className={`w-10 h-10 rounded-2xl flex items-center justify-center border-4 transition-all duration-500 cursor-pointer ${
+                    isDone 
+                      ? "bg-gradient-to-br from-blue-600 to-indigo-600 border-white text-white shadow-xl shadow-blue-600/20" 
+                      : "bg-white border-slate-100 text-slate-300"
+                  } ${isCurrent ? "ring-4 ring-blue-600/20" : ""}`}
+                >
+                  {isDone && !isCurrent ? (
+                    <CheckCircle2 className="w-5 h-5 text-white" />
+                  ) : (
+                    <Icon className="w-4 h-4" />
+                  )}
+                </motion.div>
+
+                {/* Pulse Ring for Current Stage */}
+                {isCurrent && (
+                  <span className="absolute -top-1 w-12 h-12 rounded-full border border-blue-600/50 animate-ping opacity-75 -z-10" />
+                )}
+
+                {/* Milestone Labels */}
+                <div className="text-center mt-3 absolute top-10 w-24 sm:w-32 flex flex-col items-center">
+                  <p className={`text-[10px] font-black uppercase tracking-wider transition-colors duration-300 ${
+                    isDone ? "text-slate-900 font-extrabold" : "text-slate-400"
+                  }`}>
+                    {step.label}
+                  </p>
+                  <p className="hidden sm:block text-[8px] font-bold text-slate-400 mt-0.5 max-w-[90px] leading-tight">
+                    {step.desc}
+                  </p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      
+      {/* Spacer for absolute positioned labels */}
+      <div className="h-10 sm:h-12" />
     </div>
   );
 };
@@ -234,7 +305,7 @@ export default function OrderDetailsPage() {
     );
   }
 
-  const isHardware = order.serviceType === "HARDWARE_COMPONENTS";
+  const isHardware = isElectronicsOrder(order);
   const st = STATUS_MAP[order.status] ?? STATUS_MAP["RESEARCH_STARTED"];
   const displayStatus = isHardware && HW_STATUS_LABELS[order.status]
     ? HW_STATUS_LABELS[order.status]
@@ -299,6 +370,12 @@ export default function OrderDetailsPage() {
         )}
       </div>
 
+      {isHardware && (
+        <div className="mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
+          <HorizontalHardwareTracker status={order.status} />
+        </div>
+      )}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           
@@ -312,14 +389,41 @@ export default function OrderDetailsPage() {
               {/* Items list */}
               {itemsList && (
                 <div>
-                  <p className="text-xs font-bold uppercase tracking-wider text-text-muted mb-3">Items Ordered</p>
-                  <div className="space-y-2">
-                    {itemsList.split("\n").filter(Boolean).map((line: string, i: number) => (
-                      <div key={i} className="flex items-start gap-3 p-3 bg-bg-surface border border-border rounded-xl">
-                        <Box className="w-4 h-4 text-accent-primary mt-0.5 shrink-0" />
-                        <p className="text-sm text-text-primary">{line.replace(/^- /, "")}</p>
-                      </div>
-                    ))}
+                  <p className="text-xs font-bold uppercase tracking-wider text-text-muted mb-4">Items Ordered & Learning Resources</p>
+                  <div className="space-y-4">
+                    {itemsList.split("\n").filter(Boolean).map((line: string, i: number) => {
+                      const cleanItem = line.replace(/^- /, "");
+                      const resources = getComponentResources(cleanItem);
+                      
+                      return (
+                        <div key={i} className="flex flex-col p-4 bg-bg-surface border border-border rounded-2xl gap-3 hover:border-blue-600/30 transition-all duration-300">
+                          <div className="flex items-start gap-3">
+                            <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-100 flex items-center justify-center shrink-0">
+                              <Box className="w-4 h-4 text-blue-600" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-sm font-semibold text-text-primary leading-normal">{cleanItem}</p>
+                            </div>
+                          </div>
+                          
+                          {/* Learning/Datasheet Resources Tags */}
+                          <div className="flex flex-wrap gap-2 pt-2 border-t border-dashed border-border/60">
+                            {resources.map((res, idx) => (
+                              <a 
+                                key={idx} 
+                                href={res.href} 
+                                target="_blank" 
+                                rel="noreferrer"
+                                className="inline-flex items-center gap-1.5 px-3 py-1 bg-white hover:bg-blue-50 border border-slate-100 hover:border-blue-200 rounded-lg text-[10px] font-black uppercase tracking-wider text-slate-500 hover:text-blue-600 transition-all duration-300 shadow-sm"
+                              >
+                                <FileText className="w-3 h-3 text-blue-600/70" />
+                                {res.label}
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}
@@ -337,7 +441,7 @@ export default function OrderDetailsPage() {
               )}
 
               {/* Order meta */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-4 border-t border-border">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t border-border">
                 <div>
                   <p className="text-xs text-text-muted mb-1">Order Date</p>
                   <p className="text-sm font-semibold">{new Date(order.createdAt).toLocaleDateString()}</p>
@@ -349,6 +453,17 @@ export default function OrderDetailsPage() {
                 <div>
                   <p className="text-xs text-text-muted mb-1">Status</p>
                   <p className="text-sm font-semibold">{HW_STATUS_LABELS[order.status] ?? order.status}</p>
+                </div>
+                <div>
+                  <p className="text-xs text-text-muted mb-1">Invoice Receipt</p>
+                  <Button 
+                    variant="link" 
+                    size="sm" 
+                    onClick={() => alert(`Simulating Invoice Download for order ${order.orderNumber}...`)}
+                    className="p-0 h-auto text-xs text-blue-600 font-bold hover:underline flex items-center gap-1"
+                  >
+                    <Download className="w-3 h-3" /> Download Invoice
+                  </Button>
                 </div>
               </div>
             </div>
@@ -485,7 +600,28 @@ export default function OrderDetailsPage() {
         <div className="space-y-6">
           {/* E-commerce tracker for hardware orders */}
           {isHardware ? (
-            <HardwareTracker status={order.status} />
+            <div className="bg-bg-card border border-border rounded-2xl p-6">
+              <h3 className="font-heading font-semibold text-base mb-4 flex items-center gap-2">
+                <Truck className="w-4 h-4 text-blue-600" /> Shipping Details
+              </h3>
+              <div className="space-y-3 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Carrier:</span>
+                  <span className="font-bold text-text-primary">Kalvex Logistics</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Tracking ID:</span>
+                  <span className="font-mono font-bold text-xs text-text-primary">KVX-TRK-{order.orderNumber.split("-")[1] || "120938"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-text-secondary">Est. Weight:</span>
+                  <span className="font-semibold text-text-primary">0.45 kg</span>
+                </div>
+                <div className="border-t border-dashed border-border pt-3 mt-2">
+                  <p className="text-xs text-text-muted">Estimated Delivery within 3-5 business days.</p>
+                </div>
+              </div>
+            </div>
           ) : (
             /* Academic order tracker */
             <div className="bg-bg-card border border-border rounded-2xl p-6">
