@@ -133,9 +133,20 @@ const downloadInvoice = (order: any) => {
   const invoiceWindow = window.open("", "_blank");
   if (!invoiceWindow) return;
 
-  const itemsHTML = order.requirements
-    ? order.requirements
-        .split("ITEMS PURCHASED:")[1]
+  const isHardware = isElectronicsOrder(order);
+  const clientName = order.user?.name || "Manish Student";
+  const clientEmail = order.user?.email || "manish@kalvex.com";
+  const clientPhone = order.user?.phone || "";
+  const clientCollege = order.user?.college || "";
+
+  // Dynamic details list for service orders
+  const { parsed: parsedReqs } = parseRequirements(order.requirements);
+  const serviceDetailsList = parsedReqs
+    .map(r => `<span style="font-size: 11px; color: #475569; margin-right: 15px; display: inline-block;">• <strong>${r.label}:</strong> ${r.value}</span>`)
+    .join("");
+
+  const itemsHTML = isHardware
+    ? (order.requirements?.split("ITEMS PURCHASED:")[1]
         ?.split("SHIPPING DESTINATION")[0]
         ?.trim()
         .split("\n")
@@ -147,20 +158,26 @@ const downloadInvoice = (order: any) => {
           const priceStr = parts[1] || ("₹" + order.amount?.toLocaleString());
           return `
             <tr>
-              <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500;">${name}</td>
-              <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 500;">1</td>
-              <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600;">${priceStr}</td>
-              <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600;">${priceStr}</td>
+              <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9;">
+                <div style="font-weight: 600; color: #0F172A; font-size: 13px;">${name}</div>
+                <div style="font-size: 11px; color: #64748B; margin-top: 4px;">Hardware Component Item</div>
+              </td>
+              <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: center; color: #475569; font-size: 13px;">1</td>
+              <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: right; color: #475569; font-size: 13px;">${priceStr}</td>
+              <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0F172A; font-size: 13px;">${priceStr}</td>
             </tr>
           `;
         })
-        .join("")
+        .join("") || "")
     : `
       <tr>
-        <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500;">${order.serviceType?.replace(/_/g, " ") || "Services"}</td>
-        <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 500;">1</td>
-        <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600;">₹${order.amount?.toLocaleString()}</td>
-        <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600;">₹${order.amount?.toLocaleString()}</td>
+        <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9;">
+          <div style="font-weight: 700; color: #0F172A; font-size: 14px; text-transform: capitalize;">${getServiceTitle(order.serviceType, order.requirements).toLowerCase()}</div>
+          ${serviceDetailsList ? `<div style="margin-top: 6px; display: flex; flex-wrap: wrap;">${serviceDetailsList}</div>` : ""}
+        </td>
+        <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: center; color: #475569; font-size: 13px;">1</td>
+        <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: right; color: #475569; font-size: 13px;">₹${order.amount?.toLocaleString()}</td>
+        <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0F172A; font-size: 13px;">₹${order.amount?.toLocaleString()}</td>
       </tr>
     `;
 
@@ -171,98 +188,264 @@ const downloadInvoice = (order: any) => {
       <head>
         <title>Invoice - ${order.orderNumber}</title>
         <style>
-          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #0F172A; margin: 40px; }
-          .invoice-header { display: flex; justify-content: space-between; border-bottom: 2px solid #F1F5F9; padding-bottom: 20px; }
-          .logo { font-size: 26px; font-weight: 900; color: #2563EB; letter-spacing: -0.05em; }
-          .invoice-details { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
-          .details-section h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748B; margin-bottom: 8px; margin-top: 0; }
-          .details-section p { font-size: 14px; font-weight: 600; line-height: 1.5; margin: 0; }
-          table { width: 100%; border-collapse: collapse; margin-top: 40px; }
-          th { border-bottom: 2px solid #E2E8F0; padding: 12px; font-size: 10px; text-transform: uppercase; color: #64748B; text-align: left; }
+          body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+            color: #0F172A; 
+            margin: 0; 
+            padding: 40px; 
+            background: #ffffff;
+            -webkit-print-color-adjust: exact;
+          }
+          .invoice-card {
+            max-width: 850px;
+            margin: 0 auto;
+          }
+          .invoice-header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start;
+            border-bottom: 2px solid #F1F5F9; 
+            padding-bottom: 25px; 
+          }
+          .logo-area {
+            display: flex;
+            flex-direction: column;
+          }
+          .logo { 
+            font-size: 28px; 
+            font-weight: 900; 
+            color: #2563EB; 
+            letter-spacing: -0.05em; 
+            margin: 0;
+            line-height: 1.1;
+          }
+          .tagline {
+            font-size: 10px;
+            font-weight: 800;
+            color: #64748B;
+            margin: 4px 0 0 0;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+          }
+          .company-details {
+            font-size: 12px;
+            color: #64748B;
+            margin-top: 10px;
+            line-height: 1.5;
+            font-weight: 500;
+          }
+          .title-area {
+            text-align: right;
+          }
+          .invoice-title { 
+            font-size: 32px; 
+            font-weight: 950; 
+            margin: 0; 
+            color: #0F172A;
+            letter-spacing: -0.03em; 
+            line-height: 1.1;
+          }
+          .invoice-number { 
+            font-size: 14px; 
+            font-weight: 800; 
+            color: #2563EB; 
+            margin: 6px 0 0 0; 
+            font-family: monospace;
+          }
+          .invoice-grid { 
+            margin-top: 35px; 
+            display: grid; 
+            grid-template-columns: 1.2fr 1fr; 
+            gap: 40px; 
+          }
+          .details-section h3 { 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.08em; 
+            color: #94A3B8; 
+            margin-bottom: 10px; 
+            margin-top: 0; 
+            border-bottom: 1px dashed #E2E8F0;
+            padding-bottom: 6px;
+            font-weight: 800;
+          }
+          .details-section p { 
+            font-size: 13px; 
+            font-weight: 600; 
+            line-height: 1.6; 
+            margin: 0; 
+            color: #334155;
+          }
+          .details-section strong {
+            color: #0F172A;
+            font-weight: 700;
+          }
+          table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 40px; 
+          }
+          th { 
+            border-bottom: 2px solid #0F172A; 
+            padding: 12px 10px; 
+            font-size: 10px; 
+            text-transform: uppercase; 
+            letter-spacing: 0.08em;
+            color: #475569; 
+            text-align: left; 
+            font-weight: 800;
+          }
           .text-right { text-align: right; }
-          .totals { margin-top: 30px; margin-left: auto; width: 300px; }
-          .totals-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
-          .totals-row.grand-total { border-top: 2px solid #E2E8F0; padding-top: 12px; margin-top: 8px; font-size: 18px; font-weight: 900; color: #2563EB; }
-          .footer { margin-top: 80px; border-top: 1px solid #F1F5F9; padding-top: 20px; text-align: center; font-size: 11px; color: #94A3B8; font-weight: 600; }
+          .text-center { text-align: center; }
+          .totals-box { 
+            margin-top: 30px; 
+            margin-left: auto; 
+            width: 320px; 
+            border-top: 1px solid #E2E8F0;
+            padding-top: 15px;
+          }
+          .totals-row { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 6px 0; 
+            font-size: 13px; 
+            color: #475569;
+            font-weight: 600;
+          }
+          .totals-row.grand-total { 
+            border-top: 2px double #E2E8F0; 
+            padding-top: 12px; 
+            margin-top: 8px; 
+            font-size: 18px; 
+            font-weight: 900; 
+            color: #2563EB; 
+          }
+          .footer { 
+            margin-top: 80px; 
+            border-top: 1px solid #F1F5F9; 
+            padding-top: 25px; 
+            text-align: center; 
+            font-size: 11px; 
+            color: #94A3B8; 
+            line-height: 1.6;
+            font-weight: 600; 
+          }
+          .badge-paid {
+            background-color: #ECFDF5;
+            color: #059669;
+            border: 1px solid #A7F3D0;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+          }
+          .badge-unpaid {
+            background-color: #FFFBEB;
+            color: #D97706;
+            border: 1px solid #FDE68A;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 800;
+            display: inline-block;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+          }
         </style>
       </head>
       <body>
-        <div class="invoice-header">
-          <div>
-            <div class="logo">KALVEX</div>
-            <p style="font-size: 12px; color: #64748B; margin: 5px 0 0 0; font-weight: 600;">Kalvex Engineering & Technologies Labs</p>
-          </div>
-          <div class="text-right">
-            <h1 style="font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -0.03em;">INVOICE</h1>
-            <p style="font-size: 14px; font-weight: 700; color: #64748B; margin: 5px 0 0 0;">${order.orderNumber}</p>
-          </div>
-        </div>
-
-        <div class="invoice-details">
-          <div class="details-section">
-            <h3>Billed To</h3>
-            <p style="font-size: 15px; font-weight: 700;">Manish Student</p>
-            <p style="font-weight: 500; color: #64748B;">manish@kalvex.com</p>
-          </div>
-          <div class="details-section">
-            <h3>Invoice Date</h3>
-            <p>${new Date(order.createdAt).toLocaleDateString()}</p>
-            <h3 style="margin-top: 15px;">Payment Status</h3>
-            <p style="color: ${order.status === "PENDING_PAYMENT" ? "#F59E0B" : "#10B981"}; font-weight: 700;">${order.status === "PENDING_PAYMENT" ? "Awaiting Payment" : "Paid & Confirmed"}</p>
-          </div>
-        </div>
-
-        ${
-          order.serviceType === "HARDWARE_COMPONENTS" || order.requirements?.includes("ITEMS PURCHASED:")
-            ? `
-            <div class="invoice-details" style="margin-top: 20px; display: block;">
-              <div class="details-section">
-                <h3>Shipping Address</h3>
-                <p style="white-space: pre-line; font-weight: 500; color: #334155; font-size: 13px;">${shippingDetails}</p>
+        <div class="invoice-card">
+          <div class="invoice-header">
+            <div class="logo-area">
+              <div class="logo">KALVEX</div>
+              <div class="tagline">Engineering & Technologies Labs</div>
+              <div class="company-details">
+                Kalvex HQ, Double Road, Indiranagar<br>
+                Bangalore, Karnataka 560038, India<br>
+                Email: support@kalvex.com | Web: www.kalvex.com
               </div>
             </div>
-            `
-            : ""
-        }
-
-        <table>
-          <thead>
-            <tr>
-              <th style="padding: 12px; text-align: left;">Description</th>
-              <th class="text-right" style="padding: 12px; width: 80px;">Qty</th>
-              <th class="text-right" style="padding: 12px; width: 120px;">Unit Price</th>
-              <th class="text-right" style="padding: 12px; width: 120px;">Amount</th>
-            </tr>
-          </thead>
-          <tbody>
-            ${itemsHTML}
-          </tbody>
-        </table>
-
-        <div class="totals">
-          <div class="totals-row">
-            <span style="color: #64748B; font-weight: 500;">Subtotal</span>
-            <span style="font-weight: 600;">₹${order.amount?.toLocaleString()}</span>
+            <div class="title-area">
+              <h1 class="invoice-title">INVOICE</h1>
+              <div class="invoice-number">${order.orderNumber}</div>
+            </div>
           </div>
-          <div class="totals-row">
-            <span style="color: #64748B; font-weight: 500;">CGST (0%)</span>
-            <span style="font-weight: 600;">₹0</span>
+  
+          <div class="invoice-grid">
+            <div class="details-section">
+              <h3>Billed To</h3>
+              <p style="font-size: 15px; font-weight: 700; color: #0F172A; margin-bottom: 4px;">${clientName}</p>
+              <p style="font-weight: 600; color: #475569;">${clientEmail}</p>
+              ${clientPhone ? `<p style="font-weight: 500; color: #64748B; margin-top: 2px;">Phone: ${clientPhone}</p>` : ""}
+              ${clientCollege ? `<p style="font-weight: 500; color: #64748B; margin-top: 2px;">College: ${clientCollege}</p>` : ""}
+            </div>
+            <div class="details-section">
+              <h3>Invoice Date</h3>
+              <p style="font-size: 14px; font-weight: 700; color: #0F172A; margin-bottom: 12px;">
+                ${new Date(order.createdAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
+              </p>
+              <h3>Payment Status</h3>
+              <div style="margin-top: 4px;">
+                <span class="${order.status === "PENDING_PAYMENT" ? "badge-unpaid" : "badge-paid"}">
+                  ${order.status === "PENDING_PAYMENT" ? "Awaiting Payment" : "Paid & Confirmed"}
+                </span>
+              </div>
+            </div>
           </div>
-          <div class="totals-row">
-            <span style="color: #64748B; font-weight: 500;">SGST (0%)</span>
-            <span style="font-weight: 600;">₹0</span>
+  
+          ${
+            isHardware
+              ? `
+              <div style="margin-top: 25px; padding: 16px; background-color: #F8FAFC; border-radius: 12px; border: 1px solid #F1F5F9;">
+                <h3 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #94A3B8; margin-bottom: 8px; margin-top: 0; font-weight: 800;">Shipping Address</h3>
+                <p style="white-space: pre-line; font-size: 13px; font-weight: 600; color: #334155; margin: 0; line-height: 1.5;">${shippingDetails}</p>
+              </div>
+              `
+              : ""
+          }
+  
+          <table>
+            <thead>
+              <tr>
+                <th style="padding: 12px 10px; text-align: left;">Item Description & Details</th>
+                <th class="text-center" style="padding: 12px 10px; width: 80px;">Qty</th>
+                <th class="text-right" style="padding: 12px 10px; width: 120px;">Unit Price</th>
+                <th class="text-right" style="padding: 12px 10px; width: 120px;">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${itemsHTML}
+            </tbody>
+          </table>
+  
+          <div class="totals-box">
+            <div class="totals-row">
+              <span>Subtotal</span>
+              <span style="font-weight: 700; color: #0F172A;">₹${order.amount?.toLocaleString()}</span>
+            </div>
+            <div class="totals-row">
+              <span>CGST (0%)</span>
+              <span>₹0</span>
+            </div>
+            <div class="totals-row">
+              <span>SGST (0%)</span>
+              <span>₹0</span>
+            </div>
+            <div class="totals-row grand-total">
+              <span>Total Amount</span>
+              <span>₹${order.amount?.toLocaleString()}</span>
+            </div>
           </div>
-          <div class="totals-row grand-total">
-            <span>Total</span>
-            <span>₹${order.amount?.toLocaleString()}</span>
+  
+          <div class="footer">
+            <p style="margin: 0 0 4px 0; color: #475569;">Thank you for doing business with Kalvex Engineering & Technologies Labs.</p>
+            <p style="margin: 0; font-size: 10px;">This is a computer-generated invoice and requires no signature. Subject to Bangalore jurisdiction.</p>
           </div>
         </div>
-
-        <div class="footer">
-          <p>Thank you for doing business with Kalvex Engineering & Technologies Labs.</p>
-          <p>This is a computer-generated invoice and requires no signature.</p>
-        </div>
-
+  
         <script>
           window.onload = function() {
             setTimeout(function() {

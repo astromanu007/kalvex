@@ -20,6 +20,7 @@ export async function getOrders() {
         include: {
           statusHistory: { orderBy: { createdAt: "desc" }, take: 1 },
           orderFiles: true,
+          user: true,
           messages: {
             where: {
               readAt: null,
@@ -45,6 +46,7 @@ export async function getOrders() {
         include: {
           statusHistory: { orderBy: { createdAt: "desc" }, take: 1 },
           orderFiles: true,
+          user: true,
           messages: {
             where: {
               readAt: null,
