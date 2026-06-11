@@ -158,234 +158,437 @@ const downloadInvoice = (order: any) => {
           const priceStr = parts[1] || ("₹" + order.amount?.toLocaleString());
           return `
             <tr>
-              <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9;">
+              <td>
                 <div style="font-weight: 600; color: #0F172A; font-size: 13px;">${name}</div>
                 <div style="font-size: 11px; color: #64748B; margin-top: 4px;">Hardware Component Item</div>
               </td>
-              <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: center; color: #475569; font-size: 13px;">1</td>
-              <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: right; color: #475569; font-size: 13px;">${priceStr}</td>
-              <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0F172A; font-size: 13px;">${priceStr}</td>
+              <td class="text-center">1</td>
+              <td class="text-right">${priceStr}</td>
+              <td class="text-right" style="font-weight: 700; color: #0F172A;">${priceStr}</td>
             </tr>
           `;
         })
         .join("") || "")
     : `
       <tr>
-        <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9;">
+        <td>
           <div style="font-weight: 700; color: #0F172A; font-size: 14px; text-transform: capitalize;">${getServiceTitle(order.serviceType, order.requirements).toLowerCase()}</div>
           ${serviceDetailsList ? `<div style="margin-top: 6px; display: flex; flex-wrap: wrap;">${serviceDetailsList}</div>` : ""}
         </td>
-        <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: center; color: #475569; font-size: 13px;">1</td>
-        <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: right; color: #475569; font-size: 13px;">₹${order.amount?.toLocaleString()}</td>
-        <td style="padding: 16px 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 700; color: #0F172A; font-size: 13px;">₹${order.amount?.toLocaleString()}</td>
+        <td class="text-center">1</td>
+        <td class="text-right">₹${order.amount?.toLocaleString()}</td>
+        <td class="text-right" style="font-weight: 700; color: #0F172A;">₹${order.amount?.toLocaleString()}</td>
       </tr>
     `;
 
   const shippingDetails = order.requirements?.split("SHIPPING DESTINATION DETAILS:")[1]?.trim() || "N/A";
 
   invoiceWindow.document.write(`
-    <html>
+    <!DOCTYPE html>
+    <html lang="en">
       <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Invoice - ${order.orderNumber}</title>
         <style>
+          /* Document Root & Print Reset */
           body { 
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
             color: #0F172A; 
             margin: 0; 
             padding: 40px; 
-            background: #ffffff;
+            background: #F8FAFC;
             -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
           }
+          
+          /* Elegant Card Framing with Professional Borders */
           .invoice-card {
             max-width: 850px;
             margin: 0 auto;
+            background: #ffffff;
+            border: 2px solid #0F172A;
+            border-radius: 12px;
+            padding: 45px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            position: relative;
           }
+
+          /* Header Layout */
           .invoice-header { 
             display: flex; 
             justify-content: space-between; 
             align-items: flex-start;
-            border-bottom: 2px solid #F1F5F9; 
+            border-bottom: 2px solid #0F172A; 
             padding-bottom: 25px; 
+            margin-bottom: 30px;
           }
           .logo-area {
             display: flex;
             flex-direction: column;
           }
           .logo { 
-            font-size: 28px; 
-            font-weight: 900; 
-            color: #2563EB; 
+            font-size: 32px; 
+            font-weight: 950; 
+            color: #1E40AF; 
             letter-spacing: -0.05em; 
             margin: 0;
-            line-height: 1.1;
+            line-height: 1.0;
           }
           .tagline {
             font-size: 10px;
             font-weight: 800;
-            color: #64748B;
-            margin: 4px 0 0 0;
+            color: #475569;
+            margin: 6px 0 0 0;
             text-transform: uppercase;
-            letter-spacing: 0.08em;
+            letter-spacing: 0.12em;
           }
           .company-details {
-            font-size: 12px;
-            color: #64748B;
-            margin-top: 10px;
-            line-height: 1.5;
+            font-size: 11px;
+            color: #475569;
+            margin-top: 12px;
+            line-height: 1.6;
             font-weight: 500;
+          }
+          .company-details strong {
+            color: #0F172A;
           }
           .title-area {
             text-align: right;
           }
           .invoice-title { 
-            font-size: 32px; 
+            font-size: 36px; 
             font-weight: 950; 
             margin: 0; 
             color: #0F172A;
             letter-spacing: -0.03em; 
-            line-height: 1.1;
+            line-height: 1.0;
           }
           .invoice-number { 
-            font-size: 14px; 
+            font-size: 15px; 
             font-weight: 800; 
-            color: #2563EB; 
-            margin: 6px 0 0 0; 
+            color: #1E40AF; 
+            margin: 8px 0 0 0; 
             font-family: monospace;
+            letter-spacing: 0.05em;
           }
+
+          /* Grid and Side-by-Side Bordered Panels */
           .invoice-grid { 
-            margin-top: 35px; 
             display: grid; 
             grid-template-columns: 1.2fr 1fr; 
-            gap: 40px; 
+            gap: 24px; 
+            margin-bottom: 25px;
           }
-          .details-section h3 { 
-            font-size: 10px; 
+          .details-panel {
+            border: 1.5px solid #0F172A;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #F8FAFC;
+          }
+          .details-panel h3 { 
+            font-size: 11px; 
             text-transform: uppercase; 
-            letter-spacing: 0.08em; 
-            color: #94A3B8; 
-            margin-bottom: 10px; 
+            letter-spacing: 0.1em; 
+            color: #475569; 
+            margin-bottom: 12px; 
             margin-top: 0; 
-            border-bottom: 1px dashed #E2E8F0;
+            border-bottom: 1.5px solid #0F172A;
             padding-bottom: 6px;
-            font-weight: 800;
+            font-weight: 900;
           }
-          .details-section p { 
+          .details-panel p { 
             font-size: 13px; 
             font-weight: 600; 
             line-height: 1.6; 
             margin: 0; 
             color: #334155;
           }
-          .details-section strong {
+          .details-panel strong {
             color: #0F172A;
             font-weight: 700;
           }
-          table { 
+
+          /* Shipping Panel with Professional Box-Border Styling */
+          .shipping-panel {
+            border: 1.5px solid #0F172A;
+            border-radius: 8px;
+            padding: 20px;
+            background-color: #F8FAFC;
+            margin-bottom: 30px;
+          }
+          .shipping-panel h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #475569;
+            margin-bottom: 10px;
+            margin-top: 0;
+            border-bottom: 1.5px solid #0F172A;
+            padding-bottom: 6px;
+            font-weight: 900;
+          }
+          .shipping-panel p {
+            white-space: pre-line;
+            font-size: 13px;
+            font-weight: 600;
+            color: #334155;
+            margin: 0;
+            line-height: 1.5;
+          }
+
+          /* Solid Grid-Border Items Table */
+          .items-table { 
             width: 100%; 
             border-collapse: collapse; 
-            margin-top: 40px; 
+            border: 2px solid #0F172A;
+            margin-bottom: 30px;
           }
-          th { 
-            border-bottom: 2px solid #0F172A; 
-            padding: 12px 10px; 
-            font-size: 10px; 
+          .items-table th { 
+            border: 2px solid #0F172A;
+            background-color: #F1F5F9; 
+            padding: 12px 14px; 
+            font-size: 11px; 
             text-transform: uppercase; 
             letter-spacing: 0.08em;
-            color: #475569; 
+            color: #0F172A; 
             text-align: left; 
-            font-weight: 800;
+            font-weight: 900;
+          }
+          .items-table td {
+            border: 1.5px solid #0F172A;
+            padding: 14px;
+            font-size: 13px;
+            color: #334155;
+            vertical-align: top;
+          }
+          .items-table tr:nth-child(even) {
+            background-color: #F8FAFC;
           }
           .text-right { text-align: right; }
           .text-center { text-align: center; }
+
+          /* Totals Box with Grid-Borders */
+          .totals-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-top: 30px;
+          }
+          .terms-info {
+            max-width: 450px;
+            font-size: 11px;
+            color: #64748B;
+            line-height: 1.6;
+            font-weight: 500;
+          }
+          .terms-info h4 {
+            color: #0F172A;
+            font-size: 12px;
+            margin: 0 0 6px 0;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+          }
           .totals-box { 
-            margin-top: 30px; 
-            margin-left: auto; 
             width: 320px; 
-            border-top: 1px solid #E2E8F0;
-            padding-top: 15px;
+            border: 2px solid #0F172A;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #ffffff;
+            margin-left: 20px;
           }
           .totals-row { 
             display: flex; 
             justify-content: space-between; 
-            padding: 6px 0; 
+            padding: 10px 14px; 
             font-size: 13px; 
             color: #475569;
             font-weight: 600;
+            border-bottom: 1.5px solid #0F172A;
+          }
+          .totals-row:last-child {
+            border-bottom: none;
           }
           .totals-row.grand-total { 
-            border-top: 2px double #E2E8F0; 
-            padding-top: 12px; 
-            margin-top: 8px; 
-            font-size: 18px; 
+            background: #F8FAFC;
+            border-top: 1px solid #0F172A;
+            padding: 14px; 
+            font-size: 16px; 
             font-weight: 900; 
-            color: #2563EB; 
+            color: #1E40AF; 
           }
-          .footer { 
-            margin-top: 80px; 
-            border-top: 1px solid #F1F5F9; 
-            padding-top: 25px; 
-            text-align: center; 
-            font-size: 11px; 
-            color: #94A3B8; 
-            line-height: 1.6;
-            font-weight: 600; 
+
+          /* Signature / Stamp Area */
+          .signatory-container {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 50px;
+            padding-right: 10px;
           }
+          .signatory-box {
+            text-align: center;
+            width: 200px;
+          }
+          .signature-line {
+            border-bottom: 1.5px solid #0F172A;
+            height: 50px;
+            margin-bottom: 8px;
+            position: relative;
+          }
+          .signature-label {
+            font-size: 11px;
+            font-weight: 800;
+            color: #475569;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+          }
+          .seal-placeholder {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 2px dashed #CBD5E1;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 7px;
+            color: #94A3B8;
+            font-weight: 900;
+            text-transform: uppercase;
+          }
+
+          /* Status Badges */
           .badge-paid {
             background-color: #ECFDF5;
-            color: #059669;
-            border: 1px solid #A7F3D0;
-            padding: 4px 8px;
+            color: #065F46;
+            border: 1.5px solid #059669;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 12px;
-            font-weight: 800;
+            font-size: 11px;
+            font-weight: 850;
             display: inline-block;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
           }
           .badge-unpaid {
             background-color: #FFFBEB;
-            color: #D97706;
-            border: 1px solid #FDE68A;
-            padding: 4px 8px;
+            color: #92400E;
+            border: 1.5px solid #D97706;
+            padding: 5px 10px;
             border-radius: 6px;
-            font-size: 12px;
-            font-weight: 800;
+            font-size: 11px;
+            font-weight: 850;
             display: inline-block;
             text-transform: uppercase;
-            letter-spacing: 0.04em;
+            letter-spacing: 0.05em;
+          }
+
+          /* Footer styling */
+          .footer { 
+            margin-top: 60px; 
+            border-top: 2px solid #0F172A; 
+            padding-top: 25px; 
+            text-align: center; 
+            font-size: 11px; 
+            color: #475569; 
+            line-height: 1.6;
+            font-weight: 600; 
+          }
+
+          /* Print Overrides */
+          @media print {
+            body { 
+              padding: 0; 
+              background: #ffffff;
+            }
+            .invoice-card {
+              border: 2px solid #000000 !important;
+              box-shadow: none !important;
+              margin: 0 !important;
+              padding: 30px !important;
+              max-width: 100% !important;
+              border-radius: 0 !important;
+            }
+            .details-panel {
+              border: 1.5px solid #000000 !important;
+              background-color: #ffffff !important;
+            }
+            .shipping-panel {
+              border: 1.5px solid #000000 !important;
+              background-color: #ffffff !important;
+            }
+            .items-table {
+              border: 2px solid #000000 !important;
+            }
+            .items-table th {
+              border: 2px solid #000000 !important;
+              background-color: #F1F5F9 !important;
+            }
+            .items-table td {
+              border: 1.5px solid #000000 !important;
+            }
+            .totals-box {
+              border: 2px solid #000000 !important;
+            }
+            .totals-row {
+              border-bottom: 1.5px solid #000000 !important;
+            }
+            .totals-row.grand-total {
+              border-top: 1.5px solid #000000 !important;
+            }
+            .signature-line {
+              border-bottom: 1.5px solid #000000 !important;
+            }
+            .badge-paid {
+              border: 1.5px solid #000000 !important;
+              background-color: #ffffff !important;
+              color: #000000 !important;
+            }
+            .badge-unpaid {
+              border: 1.5px solid #000000 !important;
+              background-color: #ffffff !important;
+              color: #000000 !important;
+            }
           }
         </style>
       </head>
       <body>
         <div class="invoice-card">
+          <!-- Corporate / Organization Header Details -->
           <div class="invoice-header">
             <div class="logo-area">
-              <div class="logo">KALVEX</div>
-              <div class="tagline">Engineering & Technologies Labs</div>
+              <h1 class="logo">KALVEX</h1>
+              <p class="tagline">Engineering & Technologies Labs</p>
               <div class="company-details">
-                Kalvex HQ, Double Road, Indiranagar<br>
-                Bangalore, Karnataka 560038, India<br>
-                Email: support@kalvex.com | Web: www.kalvex.com
+                <strong>Kalvex Engineering Labs Private Limited</strong><br>
+                HQ: Double Road, Indiranagar, Bangalore, KA 560038, India<br>
+                <strong>CIN:</strong> U72900KA2026PTC123456 | <strong>GSTIN:</strong> 29AAFCD1234F1Z5<br>
+                <strong>Support Email:</strong> billing@kalvex.com | <strong>Web:</strong> www.kalvex.com
               </div>
             </div>
             <div class="title-area">
-              <h1 class="invoice-title">INVOICE</h1>
+              <h2 class="invoice-title">INVOICE</h2>
               <div class="invoice-number">${order.orderNumber}</div>
             </div>
           </div>
   
+          <!-- Client & Billing Information Panels -->
           <div class="invoice-grid">
-            <div class="details-section">
+            <div class="details-panel">
               <h3>Billed To</h3>
-              <p style="font-size: 15px; font-weight: 700; color: #0F172A; margin-bottom: 4px;">${clientName}</p>
+              <p style="font-size: 15px; font-weight: 700; color: #0F172A; margin-bottom: 6px;">${clientName}</p>
               <p style="font-weight: 600; color: #475569;">${clientEmail}</p>
-              ${clientPhone ? `<p style="font-weight: 500; color: #64748B; margin-top: 2px;">Phone: ${clientPhone}</p>` : ""}
-              ${clientCollege ? `<p style="font-weight: 500; color: #64748B; margin-top: 2px;">College: ${clientCollege}</p>` : ""}
+              ${clientPhone ? `<p style="font-weight: 500; color: #475569; margin-top: 4px;"><strong>Phone:</strong> ${clientPhone}</p>` : ""}
+              ${clientCollege ? `<p style="font-weight: 500; color: #475569; margin-top: 2px;"><strong>College:</strong> ${clientCollege}</p>` : ""}
             </div>
-            <div class="details-section">
-              <h3>Invoice Date</h3>
+            <div class="details-panel">
+              <h3>Invoice Metadata</h3>
               <p style="font-size: 14px; font-weight: 700; color: #0F172A; margin-bottom: 12px;">
-                ${new Date(order.createdAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
+                <strong>Date:</strong> ${new Date(order.createdAt).toLocaleDateString("en-US", { year: 'numeric', month: 'long', day: 'numeric' })}
               </p>
               <h3>Payment Status</h3>
               <div style="margin-top: 4px;">
@@ -396,24 +599,26 @@ const downloadInvoice = (order: any) => {
             </div>
           </div>
   
+          <!-- Optional Shipping Destination Details -->
           ${
             isHardware
               ? `
-              <div style="margin-top: 25px; padding: 16px; background-color: #F8FAFC; border-radius: 12px; border: 1px solid #F1F5F9;">
-                <h3 style="font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #94A3B8; margin-bottom: 8px; margin-top: 0; font-weight: 800;">Shipping Address</h3>
-                <p style="white-space: pre-line; font-size: 13px; font-weight: 600; color: #334155; margin: 0; line-height: 1.5;">${shippingDetails}</p>
+              <div class="shipping-panel">
+                <h3>Shipping Destination Details</h3>
+                <p>${shippingDetails}</p>
               </div>
               `
               : ""
           }
   
-          <table>
+          <!-- Items & Description Table -->
+          <table class="items-table">
             <thead>
               <tr>
-                <th style="padding: 12px 10px; text-align: left;">Item Description & Details</th>
-                <th class="text-center" style="padding: 12px 10px; width: 80px;">Qty</th>
-                <th class="text-right" style="padding: 12px 10px; width: 120px;">Unit Price</th>
-                <th class="text-right" style="padding: 12px 10px; width: 120px;">Amount</th>
+                <th style="width: 50%;">Item Description & Details</th>
+                <th class="text-center" style="width: 10%;">Qty</th>
+                <th class="text-right" style="width: 20%;">Unit Price</th>
+                <th class="text-right" style="width: 20%;">Amount</th>
               </tr>
             </thead>
             <tbody>
@@ -421,28 +626,50 @@ const downloadInvoice = (order: any) => {
             </tbody>
           </table>
   
-          <div class="totals-box">
-            <div class="totals-row">
-              <span>Subtotal</span>
-              <span style="font-weight: 700; color: #0F172A;">₹${order.amount?.toLocaleString()}</span>
+          <!-- Summary & Totals / Signatory Section -->
+          <div class="totals-container">
+            <div class="terms-info">
+              <h4>Terms & Conditions</h4>
+              <p style="margin: 0 0 6px 0;">1. All service deliverables are subject to the Kalvex Quality and plagiarism-free guarantee.</p>
+              <p style="margin: 0 0 6px 0;">2. Electronics component shipments include a 10-day replacement warranty for manufacturing defects.</p>
+              <p style="margin: 0;">3. This document constitutes a valid proof of transaction. For payment queries, reach out to support.</p>
             </div>
-            <div class="totals-row">
-              <span>CGST (0%)</span>
-              <span>₹0</span>
+            <div>
+              <div class="totals-box">
+                <div class="totals-row">
+                  <span>Subtotal</span>
+                  <span style="font-weight: 700; color: #0F172A;">₹${order.amount?.toLocaleString()}</span>
+                </div>
+                <div class="totals-row">
+                  <span>CGST (0%)</span>
+                  <span>₹0</span>
+                </div>
+                <div class="totals-row">
+                  <span>SGST (0%)</span>
+                  <span>₹0</span>
+                </div>
+                <div class="totals-row grand-total">
+                  <span>Total Amount</span>
+                  <span>₹${order.amount?.toLocaleString()}</span>
+                </div>
+              </div>
             </div>
-            <div class="totals-row">
-              <span>SGST (0%)</span>
-              <span>₹0</span>
-            </div>
-            <div class="totals-row grand-total">
-              <span>Total Amount</span>
-              <span>₹${order.amount?.toLocaleString()}</span>
+          </div>
+
+          <!-- Authorized Signature Area -->
+          <div class="signatory-container">
+            <div class="signatory-box">
+              <div class="signature-line">
+                <div class="seal-placeholder">Seal</div>
+              </div>
+              <div class="signature-label">Authorized Signatory</div>
             </div>
           </div>
   
+          <!-- Professional Document Footer -->
           <div class="footer">
-            <p style="margin: 0 0 4px 0; color: #475569;">Thank you for doing business with Kalvex Engineering & Technologies Labs.</p>
-            <p style="margin: 0; font-size: 10px;">This is a computer-generated invoice and requires no signature. Subject to Bangalore jurisdiction.</p>
+            <p style="margin: 0 0 4px 0; color: #0F172A;">Thank you for doing business with Kalvex Labs.</p>
+            <p style="margin: 0; font-size: 10px; color: #64748B;">This is a computer-generated invoice and requires no physical signature. Subject to Bangalore jurisdiction.</p>
           </div>
         </div>
   
