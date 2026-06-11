@@ -19,10 +19,23 @@ export async function getOrders() {
         orderBy: { createdAt: "desc" },
         include: {
           statusHistory: { orderBy: { createdAt: "desc" }, take: 1 },
-          orderFiles: true
+          orderFiles: true,
+          messages: {
+            where: {
+              readAt: null,
+              senderId: { not: userId }
+            },
+            select: { id: true }
+          }
         }
       });
-      return { orders };
+
+      const ordersWithUnread = orders.map(o => ({
+        ...o,
+        unreadCount: o.messages.length
+      }));
+
+      return { orders: ordersWithUnread };
     }
 
     if (role === "WRITER" || role === "DEVELOPER") {
@@ -31,10 +44,23 @@ export async function getOrders() {
         orderBy: { createdAt: "desc" },
         include: {
           statusHistory: { orderBy: { createdAt: "desc" }, take: 1 },
-          orderFiles: true
+          orderFiles: true,
+          messages: {
+            where: {
+              readAt: null,
+              senderId: { not: userId }
+            },
+            select: { id: true }
+          }
         }
       });
-      return { orders };
+
+      const ordersWithUnread = orders.map(o => ({
+        ...o,
+        unreadCount: o.messages.length
+      }));
+
+      return { orders: ordersWithUnread };
     }
 
     return { error: "Invalid role for fetching orders" };

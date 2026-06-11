@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, ShoppingBag, Briefcase,
   Settings, Users, Layers, Star, Image as ImageIcon,
-  ChevronRight, LogOut, X, CalendarDays, Eye, EyeOff, Shield
+  ChevronRight, LogOut, X, CalendarDays, Eye, EyeOff, Shield, MessageSquare
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { label: "Orders", href: "/admin/orders", icon: Star },
   { label: "Bookings", href: "/admin/bookings", icon: CalendarDays },
+  { label: "Messages Desk", href: "/admin/messages", icon: MessageSquare },
   { label: "Store Items", href: "/admin/store", icon: ShoppingBag },
   { label: "Projects", href: "/admin/projects", icon: Briefcase },
   { label: "Services", href: "/admin/services", icon: Layers },
