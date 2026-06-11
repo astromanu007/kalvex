@@ -201,51 +201,72 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* SECTION 1.5 - TRENDING SERVICES MARQUEE (RESTORED) */}
-      <div className="bg-slate-900 overflow-hidden border-y border-white/5 relative z-20 shadow-2xl">
+      {/* SECTION 1.5 - TRENDING SERVICES MARQUEE (REDESIGNED) */}
+      <div className="relative z-20 bg-slate-950 overflow-hidden border-y border-white/10 shadow-[0_0_40px_rgba(37,99,235,0.15)] group/marquee">
+        {/* Subtle background glow */}
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 via-slate-900/10 to-blue-900/20 pointer-events-none transition-opacity duration-700 opacity-50 group-hover/marquee:opacity-100" />
+        
         <div className="flex flex-col md:flex-row md:items-center">
-          <div className="flex-shrink-0 bg-blue-600 text-white px-6 py-3 md:px-8 md:py-4 z-30 flex items-center justify-center gap-3 shadow-xl w-full md:w-auto">
-             <Zap className="w-4 h-4 fill-current animate-pulse" />
-             <span className="text-[10px] font-black uppercase tracking-[0.3em] whitespace-nowrap">Trending Services</span>
+          <div className="flex-shrink-0 bg-gradient-to-r from-blue-700 to-blue-500 text-white px-6 py-4 md:px-10 md:py-6 z-30 flex items-center justify-center gap-4 shadow-[20px_0_30px_-10px_rgba(0,0,0,0.5)] w-full md:w-auto border-r border-blue-400/30 relative overflow-hidden">
+             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
+             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+             <div className="relative z-10 flex items-center gap-3">
+               <span className="relative flex h-3.5 w-3.5">
+                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                 <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]"></span>
+               </span>
+               <span className="text-[12px] font-black uppercase tracking-[0.3em] whitespace-nowrap text-white drop-shadow-md">Trending Services</span>
+             </div>
           </div>
-          <div className="relative flex overflow-x-hidden group py-4 md:py-6">
-            <div className="animate-marquee whitespace-nowrap flex items-center space-x-16 px-8">
+          
+          <div className="relative flex overflow-x-hidden py-5 md:py-6 w-full bg-slate-950/80 backdrop-blur-md">
+            {/* Fade overlays for smooth scrolling */}
+            <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none" />
+
+            {/* Note: The parent div needs group-hover:pause for pause-on-hover effect if we want it, but let's stick to smooth marquee */}
+            <div className="animate-marquee whitespace-nowrap flex items-center space-x-6 md:space-x-10 px-6 md:px-10">
               {[
-                { name: "PhD Thesis Guidance", link: "/services/phd-thesis" },
-                { name: "Patent Drafting (Utility)", link: "/services/utility-patent" },
-                { name: "Research Publication (IEEE)", link: "/services/research-paper" },
-                { name: "Design Patent IPR", link: "/services/design-patent" },
-                { name: "Custom Project Kits", link: "/projects" },
-                { name: "Arduino & RPi Kits", link: "/electronics" },
-                { name: "Final Year Reports", link: "/services/final-year-report" },
+                { name: "PhD Thesis Help", link: "/services/phd-thesis", icon: "🎓", color: "text-blue-400", borderColor: "hover:border-blue-500/50", glow: "hover:shadow-[0_0_20px_rgba(96,165,250,0.2)]" },
+                { name: "Research Papers", link: "/services/research-paper", icon: "📄", color: "text-purple-400", borderColor: "hover:border-purple-500/50", glow: "hover:shadow-[0_0_20px_rgba(192,132,252,0.2)]" },
+                { name: "Final Year Reports", link: "/services/final-year-report", icon: "💼", color: "text-orange-400", borderColor: "hover:border-orange-500/50", glow: "hover:shadow-[0_0_20px_rgba(251,146,60,0.2)]" },
+                { name: "Design Patents", link: "/services/design-patent", icon: "🛡️", color: "text-emerald-400", borderColor: "hover:border-emerald-500/50", glow: "hover:shadow-[0_0_20px_rgba(52,211,153,0.2)]" },
+                { name: "Utility Patents", link: "/services/utility-patent", icon: "⚙️", color: "text-red-400", borderColor: "hover:border-red-500/50", glow: "hover:shadow-[0_0_20px_rgba(248,113,113,0.2)]" },
+                { name: "Writing & Writeups", link: "/services/writing-writeups", icon: "✍️", color: "text-amber-400", borderColor: "hover:border-amber-500/50", glow: "hover:shadow-[0_0_20px_rgba(251,191,36,0.2)]" },
+                { name: "Electronics Store", link: "/electronics", icon: "🔌", color: "text-teal-400", borderColor: "hover:border-teal-500/50", glow: "hover:shadow-[0_0_20px_rgba(45,212,191,0.2)]" },
               ].map((s, i) => (
                 <Link 
                   key={i} 
                   href={s.link} 
-                  className="text-white/60 hover:text-blue-400 font-black text-[11px] uppercase tracking-[0.2em] transition-all duration-300 hover:scale-110 flex items-center gap-3 group/link"
+                  className={`group/link flex items-center gap-3 px-6 py-3 rounded-full bg-white/[0.03] border border-white/5 transition-all duration-300 hover:scale-110 hover:bg-white/[0.08] ${s.borderColor} ${s.glow} cursor-pointer`}
                 >
-                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full group-hover/link:animate-ping" />
-                  {s.name}
+                  <span className="text-base group-hover/link:scale-125 transition-transform duration-300">{s.icon}</span>
+                  <span className={`font-black text-[12px] uppercase tracking-[0.2em] transition-colors duration-300 text-slate-300 group-hover/link:${s.color}`}>
+                    {s.name}
+                  </span>
                 </Link>
               ))}
             </div>
-            <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-16 px-8">
+
+            <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-6 md:space-x-10 px-6 md:px-10 py-5 md:py-6">
               {[
-                { name: "PhD Thesis Guidance", link: "/services/phd-thesis" },
-                { name: "Patent Drafting (Utility)", link: "/services/utility-patent" },
-                { name: "Research Publication (IEEE)", link: "/services/research-paper" },
-                { name: "Design Patent IPR", link: "/services/design-patent" },
-                { name: "Custom Project Kits", link: "/projects" },
-                { name: "Arduino & RPi Kits", link: "/electronics" },
-                { name: "Final Year Reports", link: "/services/final-year-report" },
+                { name: "PhD Thesis Help", link: "/services/phd-thesis", icon: "🎓", color: "text-blue-400", borderColor: "hover:border-blue-500/50", glow: "hover:shadow-[0_0_20px_rgba(96,165,250,0.2)]" },
+                { name: "Research Papers", link: "/services/research-paper", icon: "📄", color: "text-purple-400", borderColor: "hover:border-purple-500/50", glow: "hover:shadow-[0_0_20px_rgba(192,132,252,0.2)]" },
+                { name: "Final Year Reports", link: "/services/final-year-report", icon: "💼", color: "text-orange-400", borderColor: "hover:border-orange-500/50", glow: "hover:shadow-[0_0_20px_rgba(251,146,60,0.2)]" },
+                { name: "Design Patents", link: "/services/design-patent", icon: "🛡️", color: "text-emerald-400", borderColor: "hover:border-emerald-500/50", glow: "hover:shadow-[0_0_20px_rgba(52,211,153,0.2)]" },
+                { name: "Utility Patents", link: "/services/utility-patent", icon: "⚙️", color: "text-red-400", borderColor: "hover:border-red-500/50", glow: "hover:shadow-[0_0_20px_rgba(248,113,113,0.2)]" },
+                { name: "Writing & Writeups", link: "/services/writing-writeups", icon: "✍️", color: "text-amber-400", borderColor: "hover:border-amber-500/50", glow: "hover:shadow-[0_0_20px_rgba(251,191,36,0.2)]" },
+                { name: "Electronics Store", link: "/electronics", icon: "🔌", color: "text-teal-400", borderColor: "hover:border-teal-500/50", glow: "hover:shadow-[0_0_20px_rgba(45,212,191,0.2)]" },
               ].map((s, i) => (
                 <Link 
                   key={`dup-${i}`} 
                   href={s.link} 
-                  className="text-white/60 hover:text-blue-400 font-black text-[11px] uppercase tracking-[0.2em] transition-all duration-300 hover:scale-110 flex items-center gap-3 group/link"
+                  className={`group/link flex items-center gap-3 px-6 py-3 rounded-full bg-white/[0.03] border border-white/5 transition-all duration-300 hover:scale-110 hover:bg-white/[0.08] ${s.borderColor} ${s.glow} cursor-pointer`}
                 >
-                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full group-hover/link:animate-ping" />
-                  {s.name}
+                  <span className="text-base group-hover/link:scale-125 transition-transform duration-300">{s.icon}</span>
+                  <span className={`font-black text-[12px] uppercase tracking-[0.2em] transition-colors duration-300 text-slate-300 group-hover/link:${s.color}`}>
+                    {s.name}
+                  </span>
                 </Link>
               ))}
             </div>

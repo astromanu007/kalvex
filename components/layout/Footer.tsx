@@ -17,8 +17,15 @@ export function Footer() {
     setMounted(true);
   }, []);
 
-  // Hide footer on login and register pages (Client-side only)
-  if (mounted && (pathname?.startsWith("/login") || pathname?.startsWith("/register"))) {
+  // Hide footer on login, register, and all dashboard/admin routes
+  const isDashboardRoute = pathname?.startsWith("/dashboard") ||
+                           pathname?.startsWith("/admin") ||
+                           pathname?.startsWith("/expert") ||
+                           pathname?.startsWith("/developer") ||
+                           pathname?.startsWith("/writer") ||
+                           pathname?.startsWith("/affiliate");
+
+  if (mounted && (pathname?.startsWith("/login") || pathname?.startsWith("/register") || isDashboardRoute)) {
     return null;
   }
 

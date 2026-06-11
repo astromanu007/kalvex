@@ -152,17 +152,18 @@ model OrderFile {
 }
 
 model Message {
-  id          String    @id @default(cuid())
-  orderId     String
-  senderId    String
-  senderRole  Role
-  content     String
-  isBlocked   Boolean   @default(false)
-  blockReason String?
-  readAt      DateTime?
-  createdAt   DateTime  @default(now())
-  order       Order     @relation(fields: [orderId], references: [id])
-  sender      User      @relation(fields: [senderId], references: [id])
+  id              String    @id @default(cuid())
+  orderId         String
+  senderId        String
+  senderRole      Role
+  content         String
+  isBlocked       Boolean   @default(false)
+  blockReason     String?
+  approvedByAdmin Boolean   @default(false)
+  readAt          DateTime?
+  createdAt       DateTime  @default(now())
+  order           Order     @relation(fields: [orderId], references: [id])
+  sender          User      @relation(fields: [senderId], references: [id])
 }
 
 model Product {

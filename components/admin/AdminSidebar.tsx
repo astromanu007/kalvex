@@ -1,11 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard, ShoppingBag, Briefcase,
   Settings, Users, Layers, Star, Image as ImageIcon,
-  ChevronRight, LogOut, X, CalendarDays
+  ChevronRight, LogOut, X, CalendarDays, Eye, EyeOff, Shield
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
@@ -20,10 +21,29 @@ const NAV_ITEMS = [
   { label: "Services", href: "/admin/services", icon: Layers },
   { label: "Submissions", href: "/admin/submissions", icon: ImageIcon },
   { label: "Users", href: "/admin/users", icon: Users },
+  { label: "Security Logs", href: "/admin/logs", icon: Shield },
 ];
 
 export function AdminSidebar({ onClose }: { onClose?: () => void }) {
   const pathname = usePathname();
+  const [navbarVisible, setNavbarVisible] = useState(false);
+
+  useEffect(() => {
+    setNavbarVisible(localStorage.getItem("kalvex_dashboard_navbar") === "true");
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && e.key.toLowerCase() === "n") {
+        setNavbarVisible((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleToggle = () => {
+    window.dispatchEvent(new Event("toggle-dashboard-navbar"));
+    setNavbarVisible((prev) => !prev);
+  };
 
   return (
     <aside className="w-80 h-full max-h-screen overflow-y-auto sticky top-0 bg-white border-r border-slate-100 p-8 flex flex-col gap-12">
@@ -73,7 +93,26 @@ export function AdminSidebar({ onClose }: { onClose?: () => void }) {
         })}
       </nav>
 
-      <div className="pt-8 border-t border-slate-50">
+      <div className="pt-8 border-t border-slate-50 flex flex-col gap-2">
+        <button 
+          onClick={handleToggle}
+          className="w-full flex items-center justify-between p-4 rounded-2xl text-slate-400 hover:bg-slate-50 hover:text-slate-900 transition-all group"
+        >
+          <div className="flex items-center gap-4">
+            {navbarVisible ? (
+              <EyeOff className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
+            ) : (
+              <Eye className="w-5 h-5 group-hover:text-blue-600 transition-colors" />
+            )}
+            <span className="text-[11px] font-black uppercase tracking-widest">
+              {navbarVisible ? "Hide Main Nav" : "Show Main Nav"}
+            </span>
+          </div>
+          <span className="text-[9px] font-black uppercase tracking-widest text-slate-300 bg-slate-100 px-2 py-0.5 rounded">
+            Alt+N
+          </span>
+        </button>
+
         <button 
           onClick={() => signOut({ callbackUrl: "/" })}
           className="w-full flex items-center gap-4 p-4 rounded-2xl text-slate-400 hover:bg-red-50 hover:text-red-600 transition-all group"

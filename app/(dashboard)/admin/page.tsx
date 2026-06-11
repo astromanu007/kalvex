@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getAdminStats, getAllOrders, forceUpdateOrderStatus } from "@/app/actions/admin";
-import { cn } from "@/lib/utils";
+import { cn, getServiceTitle } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
 
 const fadeInUp = {
@@ -108,23 +108,25 @@ export default function AdminDashboard() {
             key={stat.label}
             variants={fadeInUp}
             whileHover={{ y: -8, scale: 1.02 }}
-            onMouseMove={(e) => {
-              const rect = e.currentTarget.getBoundingClientRect();
-              const x = e.clientX - rect.left;
-              const y = e.clientY - rect.top;
-              e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
-              e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
-            }}
-            className="group relative bg-white/70 backdrop-blur-xl border border-slate-100 rounded-[2.5rem] p-8 transition-all duration-700 hover:shadow-2xl hover:border-blue-600/20 overflow-hidden"
+            className="p-[1px] rounded-[2.5rem] bg-gradient-to-r from-blue-500/15 via-purple-500/15 to-pink-500/15 hover:from-blue-500/35 hover:via-purple-500/35 hover:to-pink-500/35 transition-all duration-500 shadow-md shadow-slate-900/5 overflow-hidden group"
           >
-             {/* Spotlight Effect */}
-             <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"
-              style={{
-                background: `radial-gradient(300px circle at var(--mouse-x) var(--mouse-y), rgba(37,99,235,0.05), transparent 80%)`,
-              }} />
+            <div
+              onMouseMove={(e) => {
+                const rect = e.currentTarget.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                e.currentTarget.style.setProperty("--mouse-x", `${x}px`);
+                e.currentTarget.style.setProperty("--mouse-y", `${y}px`);
+              }}
+              className="relative bg-white/95 rounded-[2.45rem] p-8 transition-all duration-700 overflow-hidden flex flex-col gap-6 h-full"
+            >
+               {/* Spotlight Effect */}
+               <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-0 pointer-events-none"
+                style={{
+                  background: `radial-gradient(300px circle at var(--mouse-x) var(--mouse-y), rgba(37,99,235,0.05), transparent 80%)`,
+                }} />
 
-            <div className="relative z-10 flex flex-col gap-6">
-              <div className="flex justify-between items-start">
+              <div className="relative z-10 flex justify-between items-start">
                 <div className={`w-14 h-14 rounded-2xl ${stat.color} flex items-center justify-center shadow-2xl transition-all duration-700 group-hover:scale-110 group-hover:-rotate-12`}>
                   <stat.icon className="w-6 h-6 text-white" />
                 </div>
@@ -136,7 +138,7 @@ export default function AdminDashboard() {
                   {stat.trend}
                 </div>
               </div>
-              <div>
+              <div className="relative z-10">
                 <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-300 mb-1 group-hover:text-blue-600 transition-colors">{stat.label}</p>
                 <p className="font-heading font-black text-3xl text-slate-900 tracking-tighter">{stat.value}</p>
               </div>
@@ -145,14 +147,17 @@ export default function AdminDashboard() {
         ))}
       </motion.div>
 
-      {/* Orders Command Table */}
+      {/* Orders Command Table with Glowing Border */}
       <motion.div
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
-        className="bg-white/70 backdrop-blur-3xl border border-slate-100 rounded-[3rem] overflow-hidden shadow-2xl shadow-slate-900/5 relative"
+        className="relative group p-[1px] rounded-[3rem] overflow-hidden bg-gradient-to-r from-blue-500/15 via-purple-500/15 to-pink-500/15 hover:from-blue-500/35 hover:via-purple-500/35 hover:to-pink-500/35 transition-all duration-700 shadow-2xl shadow-slate-900/5"
       >
-        <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px] opacity-10 pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 opacity-10 blur-xl group-hover:opacity-25 transition-opacity duration-700 pointer-events-none" />
+
+        <div className="relative bg-white/95 rounded-[2.95rem] overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:20px_20px] opacity-10 pointer-events-none" />
 
         {/* Table Header */}
         <div className="p-6 md:p-10 border-b border-slate-50 flex flex-col md:flex-row justify-between gap-6 md:gap-8 items-start md:items-center relative z-10">
@@ -225,7 +230,7 @@ export default function AdminDashboard() {
                     </td>
                     <td className="px-10 py-8">
                       <span className="text-[10px] font-black text-slate-500 uppercase tracking-[0.15em] bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
-                        {order.serviceType.replace(/_/g, " ")}
+                        {getServiceTitle(order.serviceType, order.requirements)}
                       </span>
                     </td>
                     <td className="px-10 py-8">
@@ -258,8 +263,9 @@ export default function AdminDashboard() {
             </tbody>
           </table>
         </div>
-      </motion.div>
-    </div>
+      </div>
+    </motion.div>
+   </div>
   );
 }
 

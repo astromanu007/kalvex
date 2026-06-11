@@ -144,6 +144,49 @@ export function Navbar() {
     };
   }, [mobileMenuOpen, searchOpen, notificationOpen]);
 
+  const [showNavbarOnDashboard, setShowNavbarOnDashboard] = useState(false);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("kalvex_dashboard_navbar") === "true";
+    setShowNavbarOnDashboard(saved);
+
+    const handleToggle = () => {
+      setShowNavbarOnDashboard((prev) => {
+        const next = !prev;
+        localStorage.setItem("kalvex_dashboard_navbar", String(next));
+        return next;
+      });
+    };
+
+    window.addEventListener("toggle-dashboard-navbar", handleToggle);
+
+    // Add Alt + N shortcut to toggle navbar
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && e.key.toLowerCase() === "n") {
+        e.preventDefault();
+        handleToggle();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("toggle-dashboard-navbar", handleToggle);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
+
+  // Hide Navbar on dashboard and admin panel routes unless toggled visible
+  const isDashboardRoute = pathname?.startsWith("/dashboard") ||
+                           pathname?.startsWith("/admin") ||
+                           pathname?.startsWith("/expert") ||
+                           pathname?.startsWith("/developer") ||
+                           pathname?.startsWith("/writer") ||
+                           pathname?.startsWith("/affiliate");
+
+  if (mounted && isDashboardRoute && !showNavbarOnDashboard) {
+    return null;
+  }
+
   // Minimal Navbar for Auth Pages (Moved down to follow Rules of Hooks)
   if (mounted && (pathname?.startsWith("/login") || pathname?.startsWith("/register") || pathname?.startsWith("/forgot-password"))) {
     return (

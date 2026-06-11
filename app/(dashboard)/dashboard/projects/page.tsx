@@ -6,6 +6,7 @@ import { FileText, Clock, CheckCircle2, Loader2, ArrowUpRight, FolderOpen } from
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getOrders } from "@/app/actions/orders";
+import { getServiceTitle, isElectronicsOrder } from "@/lib/utils";
 
 export default function MyProjectsPage() {
   const { data: session } = useSession();
@@ -18,8 +19,9 @@ export default function MyProjectsPage() {
       if (res.orders) {
         // Filter orders that represent custom developments, project reports, design or utility projects
         const projectOrders = res.orders.filter((o: any) =>
-          ["MINI_PROJECT", "MAJOR_PROJECT", "CUSTOM_PROJECT", "FINAL_YEAR_PROJECT", "FINAL_YEAR_REPORT", "PHD_THESIS", "RESEARCH_PAPER"].includes(o.serviceType)
-        );
+  !isElectronicsOrder(o) &&
+  ["MINI_PROJECT", "MAJOR_PROJECT", "CUSTOM_PROJECT", "FINAL_YEAR_PROJECT", "FINAL_YEAR_REPORT", "PHD_THESIS", "RESEARCH_PAPER"].includes(o.serviceType)
+);
         setProjects(projectOrders);
       }
       setLoading(false);
@@ -86,7 +88,7 @@ export default function MyProjectsPage() {
 
                   <div>
                     <h3 className="font-heading font-black text-xl text-slate-900 tracking-tight leading-tight">
-                      {proj.serviceType.replace(/_/g, " ")}
+                      {getServiceTitle(proj.serviceType, proj.requirements)}
                     </h3>
                     <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">
                       Ordered on {new Date(proj.createdAt).toLocaleDateString()}

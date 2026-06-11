@@ -20,6 +20,7 @@ import { getAllBookings, updateBookingStatus, assignBooking } from "@/app/action
 import { getUsers } from "@/app/actions/admin";
 import { toast } from "sonner";
 import { useSession } from "next-auth/react";
+import { getServiceTitle } from "@/lib/utils";
 
 const STATUS_STYLES: Record<string, string> = {
   PENDING: "bg-amber-50 text-amber-600 border border-amber-200",
@@ -173,7 +174,7 @@ export default function AdminBookingsPage() {
                   <tr key={booking.id} className="hover:bg-indigo-50/10 transition-colors group relative">
                     <td className="px-6 py-5 max-w-[200px]">
                       <div className="font-bold text-slate-900 text-sm truncate uppercase tracking-tight">
-                        {booking.serviceType.replace(/_/g, " ")}
+                        {getServiceTitle(booking.serviceType, booking.requirements)}
                       </div>
                       <div className="text-[10px] font-mono text-slate-400 mt-1 truncate">ID: {booking.id.slice(-8)}</div>
                     </td>

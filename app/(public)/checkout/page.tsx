@@ -164,10 +164,51 @@ Landmark: ${address.landmark || "N/A"}
 Shipping Partner: ${shippingMode.toUpperCase()}`;
 
         const isHardware = cartItems.some(i => i.category?.toLowerCase().includes("electronics") || i.category?.toLowerCase().includes("hardware") || i.category?.toLowerCase().includes("components") || i.sku?.startsWith("EL"));
-        const determineServiceType = isHardware ? "HARDWARE_COMPONENTS" : "CUSTOM_PROJECT";
+        let determineServiceType: any = "CUSTOM_PROJECT";
+        if (isHardware) {
+          determineServiceType = "HARDWARE_COMPONENTS";
+        } else {
+          for (const item of cartItems) {
+            const nameLower = (item.name || "").toLowerCase();
+            if (nameLower.includes("thesis") || nameLower.includes("phd")) {
+              determineServiceType = "PHD_THESIS";
+              break;
+            } else if (nameLower.includes("research paper")) {
+              determineServiceType = "RESEARCH_PAPER";
+              break;
+            } else if (nameLower.includes("writeup") || nameLower.includes("write-up")) {
+              determineServiceType = "PROFESSIONAL_WRITEUP";
+              break;
+            } else if (nameLower.includes("report") || nameLower.includes("printing") || nameLower.includes("black book")) {
+              determineServiceType = "FINAL_YEAR_REPORT";
+              break;
+            } else if (nameLower.includes("design patent")) {
+              determineServiceType = "DESIGN_PATENT_DRAFTING";
+              break;
+            } else if (nameLower.includes("utility patent")) {
+              determineServiceType = "UTILITY_PATENT_DRAFTING";
+              break;
+            } else if (nameLower.includes("copyright")) {
+              determineServiceType = "COPYRIGHT_REGISTRATION";
+              break;
+            } else if (nameLower.includes("trademark")) {
+              determineServiceType = "TRADEMARK_REGISTRATION";
+              break;
+            } else if (nameLower.includes("mini project")) {
+              determineServiceType = "MINI_PROJECT";
+              break;
+            } else if (nameLower.includes("major project")) {
+              determineServiceType = "MAJOR_PROJECT";
+              break;
+            } else if (nameLower.includes("lab manual")) {
+              determineServiceType = "LAB_MANUAL";
+              break;
+            }
+          }
+        }
 
         const createRes = await createOrder({
-          serviceType: determineServiceType,
+          serviceType: determineServiceType as any,
           requirements: requirementsText,
           amount: orderTotal,
         });

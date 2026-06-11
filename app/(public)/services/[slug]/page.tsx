@@ -71,6 +71,8 @@ const mapSlugToServiceType = (slug: string) => {
   if (normalized === "mini-project") return "MINI_PROJECT";
   if (normalized === "major-project") return "MAJOR_PROJECT";
   if (normalized === "lab-manual") return "LAB_MANUAL";
+  if (normalized === "professional-write-ups" || normalized === "professional-writeup" || normalized === "writing-writeups") return "PROFESSIONAL_WRITEUP";
+  if (normalized === "final-year-project") return "FINAL_YEAR_PROJECT";
   
   // Dynamic or Admin added services fallback safely
   return "CUSTOM_PROJECT";

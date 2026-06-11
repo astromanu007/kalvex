@@ -4,10 +4,33 @@ import { useSession } from "next-auth/react";
 import { redirect } from "next/navigation";
 import { AdminSidebar } from "@/components/admin/AdminSidebar";
 import { Loader2, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [navbarVisible, setNavbarVisible] = useState(false);
+
+  useEffect(() => {
+    setNavbarVisible(localStorage.getItem("kalvex_dashboard_navbar") === "true");
+
+    const handleToggle = () => {
+      setNavbarVisible((prev) => !prev);
+    };
+    window.addEventListener("toggle-dashboard-navbar", handleToggle);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && e.key.toLowerCase() === "n") {
+        setNavbarVisible((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    return () => {
+      window.removeEventListener("toggle-dashboard-navbar", handleToggle);
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, []);
 
   if (status === "loading") {
     return (
@@ -23,10 +46,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     redirect("/dashboard");
   }
 
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
-    <div className="min-h-screen bg-slate-50 flex overflow-hidden">
+    <div className={`min-h-screen bg-slate-50 flex overflow-hidden transition-all duration-500 ${navbarVisible ? "pt-24" : "pt-0"}`}>
       {/* Mobile overlay */}
       {mobileMenuOpen && (
         <div 

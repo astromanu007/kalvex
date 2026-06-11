@@ -89,6 +89,7 @@ export async function registerStudent(formData: any) {
         city,
         referralCode: referralCode || "KV-" + Math.floor(100000 + Math.random() * 900000),
         role: "STUDENT",
+        maskedId: "KV-STU-" + Math.floor(1000 + Math.random() * 9000),
       },
     });
 
@@ -130,6 +131,7 @@ export async function registerClient(formData: any) {
         website,
         role: "USER",
         referralCode: "CL-" + Math.floor(100000 + Math.random() * 900000),
+        maskedId: "KV-CLI-" + Math.floor(1000 + Math.random() * 9000),
       },
     });
 

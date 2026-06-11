@@ -54,17 +54,31 @@ export async function verifyPayment(paymentData: any, orderId: string) {
       return { error: "Security validation failed. Signature mismatch." };
     }
 
-    // Order status transitions to PAYMENT_CONFIRMED first, then to RESEARCH_STARTED for expert queue
+    // Check if this is a hardware/electronics order (no expert needed)
+    const orderRecord = await prisma.order.findUnique({
+      where: { id: orderId },
+      select: { serviceType: true }
+    });
+
+    const isHardwareOrder = orderRecord?.serviceType === "HARDWARE_COMPONENTS";
+
+    // Hardware/electronics orders → PAYMENT_CONFIRMED (admin handles shipping)
+    // All other orders → RESEARCH_STARTED (routes to expert assignment queue)
+    const newStatus = isHardwareOrder ? "PAYMENT_CONFIRMED" : "RESEARCH_STARTED";
+    const statusNote = isHardwareOrder
+      ? `Payment verified. Order confirmed for processing & dispatch. Ref: ${paymentData.razorpay_payment_id}`
+      : `Payment successfully verified via Razorpay. Ref: ${paymentData.razorpay_payment_id}`;
+
     await prisma.order.update({
       where: { id: orderId },
-      data: { status: "RESEARCH_STARTED" }
+      data: { status: newStatus }
     });
 
     await prisma.orderStatusHistory.create({
       data: {
         orderId,
-        status: "RESEARCH_STARTED",
-        note: `Payment successfully verified via Razorpay. Ref: ${paymentData.razorpay_payment_id}`,
+        status: newStatus,
+        note: statusNote,
         changedBy: session.user.id
       }
     });

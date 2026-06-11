@@ -2,16 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { getNotifications } from "@/app/actions/notifications";
 import {
   LayoutDashboard, ShoppingBag, FileText, MessageSquare,
   User, Settings, ChevronRight, Bell, Star, Wallet,
-  HelpCircle, LogOut, Share2, Sparkles, Shield, Menu, X
+  HelpCircle, LogOut, Share2, Sparkles, Shield, Menu, X, Eye, EyeOff
 } from "lucide-react";
 import { signOut } from "next-auth/react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useLanguage } from "@/components/context/LanguageContext";
 
 const NAV = [
   { label: "Dashboard",       href: "/dashboard",              icon: LayoutDashboard },
@@ -28,9 +29,57 @@ const NAV = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { data: session } = useSession();
+  const { t } = useLanguage();
   const [unreadCount, setUnreadCount] = useState(0);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [navbarVisible, setNavbarVisible] = useState(false);
+
+  // Role-based routing redirection
+  const role = (session?.user as any)?.role;
+  useEffect(() => {
+    if (!role) return;
+
+    if (role === "ADMIN" && pathname === "/dashboard") {
+      router.replace("/admin");
+    } else if (
+      (role === "WRITER" || role === "DEVELOPER") &&
+      pathname.startsWith("/dashboard") &&
+      !pathname.startsWith("/dashboard/messages") &&
+      !pathname.startsWith("/dashboard/wallet") &&
+      !pathname.startsWith("/dashboard/profile") &&
+      !pathname.startsWith("/dashboard/settings") &&
+      !pathname.startsWith("/dashboard/help") &&
+      !pathname.startsWith("/dashboard/affiliate") &&
+      !pathname.startsWith("/dashboard/orders") &&
+      !pathname.startsWith("/dashboard/projects") &&
+      !pathname.startsWith("/dashboard/reviews")
+    ) {
+      router.replace("/expert");
+    } else if (role === "AFFILIATE" && pathname === "/dashboard") {
+      router.replace("/dashboard/affiliate");
+    } else if ((role === "USER" || role === "STUDENT") && pathname.startsWith("/expert")) {
+      router.replace("/dashboard");
+    }
+  }, [role, pathname, router]);
+
+  useEffect(() => {
+    setNavbarVisible(localStorage.getItem("kalvex_dashboard_navbar") === "true");
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && e.key.toLowerCase() === "n") {
+        setNavbarVisible((prev) => !prev);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  const handleToggle = () => {
+    window.dispatchEvent(new Event("toggle-dashboard-navbar"));
+    setNavbarVisible((prev) => !prev);
+  };
 
   useEffect(() => {
     if (session?.user) {
@@ -41,6 +90,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       });
     }
   }, [session]);
+
+  const isExpert = role === "WRITER" || role === "DEVELOPER";
+  const isAffiliate = role === "AFFILIATE";
+
+  const dynamicNav = NAV.filter(item => {
+    if (isExpert && (item.label === "My Orders" || item.label === "My Projects")) {
+      return false;
+    }
+    return true;
+  }).map(item => {
+    let translatedLabel = item.label;
+    if (item.label === "Dashboard") translatedLabel = t("Dashboard");
+    else if (item.label === "My Orders") translatedLabel = t("My Orders");
+    else if (item.label === "My Projects") translatedLabel = t("My Projects");
+    else if (item.label === "Messages") translatedLabel = t("Messages");
+    else if (item.label === "My Wallet") translatedLabel = t("Wallet");
+    else if (item.label === "My Reviews") translatedLabel = t("Reviews");
+    else if (item.label === "My Profile") translatedLabel = t("Profile");
+    else if (item.label === "Affiliate Program") translatedLabel = t("Affiliate Commission");
+    else if (item.label === "Settings") translatedLabel = t("Settings");
+    else if (item.label === "Help & Support") translatedLabel = t("Help & Support");
+
+    let href = item.href;
+    if (isExpert && item.label === "Dashboard") {
+      href = "/expert";
+    } else if (isAffiliate && item.label === "Dashboard") {
+      href = "/dashboard/affiliate";
+    }
+
+    return { ...item, label: translatedLabel, href };
+  });
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full">
@@ -55,9 +135,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-blue-600 mt-0.5">
               {(session?.user as any)?.maskedId ?? "KV-0000"}
             </p>
-            <div className="flex items-center gap-1.5 mt-1.5">
-              <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
-              <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">Online</span>
+            <div className="flex flex-wrap items-center gap-2 mt-1.5">
+              <span className="bg-blue-50 text-blue-600 text-[8px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider border border-blue-100/50">
+                {role ?? "USER"}
+              </span>
+              <div className="flex items-center gap-1">
+                <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse" />
+                <span className="text-[9px] font-black uppercase tracking-widest text-slate-400">{t("Online")}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -65,7 +150,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
       {/* Nav */}
       <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
-        {NAV.map((item, i) => {
+        {dynamicNav.map((item, i) => {
           const active = pathname === item.href;
           return (
             <motion.div
@@ -77,7 +162,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Link
                 href={item.href}
                 onClick={() => setMobileSidebarOpen(false)}
-                className={`flex items-center gap-4 px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-500 group ${
+                className={`flex items-center gap-4 px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest transition-all duration-550 group ${
                   active
                     ? "bg-slate-900 text-white shadow-2xl shadow-slate-900/20"
                     : "text-slate-400 hover:text-slate-900 hover:bg-slate-50 hover:shadow-xl hover:shadow-slate-900/5"
@@ -101,23 +186,49 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="p-4 border-t border-slate-50 space-y-2">
         <div className="flex items-center gap-4 px-5 py-3 rounded-2xl bg-blue-600/5 border border-blue-600/10">
           <Sparkles className="w-4 h-4 text-blue-600 shrink-0" />
-          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-600">AI Assistant: Active</span>
+          <span className="text-[9px] font-black uppercase tracking-[0.2em] text-blue-600">{t("AI Assistant: Active")}</span>
         </div>
+
+        <button
+          onClick={handleToggle}
+          className="flex items-center justify-between px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-slate-900 hover:bg-slate-50 transition-all duration-550 w-full group"
+        >
+          <div className="flex items-center gap-4">
+            {navbarVisible ? (
+              <EyeOff className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            ) : (
+              <Eye className="w-4 h-4 group-hover:scale-110 transition-transform" />
+            )}
+            <span>{navbarVisible ? t("Hide Main Nav") : t("Show Main Nav")}</span>
+          </div>
+          <span className="text-[8px] font-black uppercase tracking-widest text-slate-300 bg-slate-100/50 px-1.5 py-0.5 rounded">
+            Alt+N
+          </span>
+        </button>
+
         <button
           onClick={() => signOut({ callbackUrl: "/" })}
-          className="flex items-center gap-4 px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all duration-500 w-full group"
+          className="flex items-center gap-4 px-5 py-4 rounded-2xl text-[11px] font-black uppercase tracking-widest text-slate-400 hover:text-red-600 hover:bg-red-50 transition-all duration-550 w-full group"
         >
           <LogOut className="w-4 h-4 group-hover:scale-110 transition-transform" />
-          Sign Out
+          {t("Sign Out")}
         </button>
       </div>
     </div>
   );
 
+  if (pathname.startsWith("/admin")) {
+    return <>{children}</>;
+  }
+
   return (
-    <div className="min-h-screen pt-24 bg-slate-50 flex">
+    <div className={`min-h-screen bg-slate-50 flex transition-all duration-500 ${navbarVisible ? "pt-24" : "pt-0"}`}>
       {/* Desktop Sidebar */}
-      <aside className="hidden lg:flex flex-col w-72 shrink-0 border-r border-slate-100 bg-white h-[calc(100vh-6rem)] sticky top-24 overflow-hidden shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] rounded-r-[2rem]">
+      <aside className={`hidden lg:flex flex-col w-72 shrink-0 border-r border-slate-100 bg-white overflow-hidden shadow-[4px_0_24px_-12px_rgba(0,0,0,0.05)] rounded-r-[2rem] transition-all duration-500 ${
+        navbarVisible 
+          ? "sticky top-24 h-[calc(100vh-6rem)]" 
+          : "sticky top-0 h-screen"
+      }`}>
         <SidebarContent />
       </aside>
 

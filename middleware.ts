@@ -28,23 +28,47 @@ export async function middleware(request: NextRequest) {
     if (role === 'ADMIN') {
       return NextResponse.redirect(new URL('/admin', request.url))
     }
+    
     if (role === 'WRITER' || role === 'DEVELOPER') {
-      return NextResponse.redirect(new URL('/expert', request.url))
-    }
-    if (role === 'AFFILIATE') {
-      return NextResponse.redirect(new URL('/dashboard/affiliate', request.url))
+      const allowedPaths = [
+        '/dashboard/messages',
+        '/dashboard/wallet',
+        '/dashboard/profile',
+        '/dashboard/settings',
+        '/dashboard/help',
+        '/dashboard/affiliate',
+        '/dashboard/orders',
+        '/dashboard/projects',
+        '/dashboard/reviews',
+      ]
+      const isAllowed = allowedPaths.some(p => pathname === p || pathname.startsWith(p + '/'))
+      if (!isAllowed) {
+        return NextResponse.redirect(new URL('/expert', request.url))
+      }
     }
     
-    if (role !== 'USER' && role !== 'STUDENT') {
-      // For other roles, redirect if a specific dashboard exists, otherwise keep at /dashboard
-      // For now, we'll just handle ADMIN specifically as it's a known path
-      return NextResponse.next()
+    if (role === 'AFFILIATE') {
+      const allowedPaths = [
+        '/dashboard/affiliate',
+        '/dashboard/messages',
+        '/dashboard/wallet',
+        '/dashboard/profile',
+        '/dashboard/settings',
+        '/dashboard/help',
+      ]
+      const isAllowed = allowedPaths.some(p => pathname === p || pathname.startsWith(p + '/'))
+      if (!isAllowed) {
+        return NextResponse.redirect(new URL('/dashboard/affiliate', request.url))
+      }
     }
   }
 
   if (pathname.startsWith('/expert')) {
-    if (!session || (session.user.role !== 'WRITER' && session.user.role !== 'DEVELOPER')) {
+    if (!session) {
       return NextResponse.redirect(new URL('/login', request.url))
+    }
+    if (session.user.role !== 'WRITER' && session.user.role !== 'DEVELOPER') {
+      return NextResponse.redirect(new URL('/dashboard', request.url))
     }
   }
 

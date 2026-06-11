@@ -160,6 +160,16 @@ export async function acceptOrder(orderId: string) {
       data: {
         assignedToId: session.user.id,
         maskedAssigneeId: session.user.maskedId,
+        status: "RESEARCH_STARTED",
+      }
+    });
+
+    await prisma.orderStatusHistory.create({
+      data: {
+        orderId,
+        status: "RESEARCH_STARTED",
+        note: `Order assignment accepted by expert ${session.user.maskedId}`,
+        changedBy: session.user.id
       }
     });
 
@@ -170,3 +180,39 @@ export async function acceptOrder(orderId: string) {
     return { error: "Failed to accept order" };
   }
 }
+
+// Reject an order assignment (for experts)
+export async function rejectOrder(orderId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user) return { error: "Unauthorized" };
+    if (session.user.role !== "WRITER" && session.user.role !== "DEVELOPER") {
+      return { error: "Only experts can reject orders" };
+    }
+
+    await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        assignedToId: null,
+        maskedAssigneeId: null,
+        status: "PAYMENT_CONFIRMED",
+      }
+    });
+
+    await prisma.orderStatusHistory.create({
+      data: {
+        orderId,
+        status: "PAYMENT_CONFIRMED",
+        note: `Order assignment rejected by expert ${session.user.maskedId}`,
+        changedBy: session.user.id
+      }
+    });
+
+    revalidatePath("/dashboard/expert");
+    return { success: true };
+  } catch (error) {
+    console.error("Error rejecting order:", error);
+    return { error: "Failed to reject order" };
+  }
+}
+
