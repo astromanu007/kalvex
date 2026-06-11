@@ -190,10 +190,15 @@ const downloadInvoice = (order: any) => {
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Invoice - ${order.orderNumber}</title>
+        <!-- Import Premium Fonts -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@600;800&display=swap" rel="stylesheet">
+        
         <style>
           /* Document Root & Print Reset */
           body { 
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; 
+            font-family: 'Outfit', sans-serif; 
             color: #0F172A; 
             margin: 0; 
             padding: 40px; 
@@ -208,10 +213,11 @@ const downloadInvoice = (order: any) => {
             margin: 0 auto;
             background: #ffffff;
             border: 2px solid #0F172A;
-            border-radius: 12px;
-            padding: 45px;
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            border-radius: 16px;
+            padding: 50px;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
             position: relative;
+            box-sizing: border-box;
           }
 
           /* Header Layout */
@@ -220,33 +226,33 @@ const downloadInvoice = (order: any) => {
             justify-content: space-between; 
             align-items: flex-start;
             border-bottom: 2px solid #0F172A; 
-            padding-bottom: 25px; 
-            margin-bottom: 30px;
+            padding-bottom: 30px; 
+            margin-bottom: 35px;
           }
           .logo-area {
             display: flex;
             flex-direction: column;
           }
           .logo { 
-            font-size: 32px; 
-            font-weight: 950; 
+            font-size: 34px; 
+            font-weight: 900; 
             color: #1E40AF; 
-            letter-spacing: -0.05em; 
+            letter-spacing: -0.04em; 
             margin: 0;
             line-height: 1.0;
           }
           .tagline {
             font-size: 10px;
             font-weight: 800;
-            color: #475569;
+            color: #64748B;
             margin: 6px 0 0 0;
             text-transform: uppercase;
-            letter-spacing: 0.12em;
+            letter-spacing: 0.15em;
           }
           .company-details {
             font-size: 11px;
             color: #475569;
-            margin-top: 12px;
+            margin-top: 14px;
             line-height: 1.6;
             font-weight: 500;
           }
@@ -257,19 +263,19 @@ const downloadInvoice = (order: any) => {
             text-align: right;
           }
           .invoice-title { 
-            font-size: 36px; 
-            font-weight: 950; 
+            font-size: 38px; 
+            font-weight: 900; 
             margin: 0; 
             color: #0F172A;
-            letter-spacing: -0.03em; 
+            letter-spacing: -0.02em; 
             line-height: 1.0;
           }
           .invoice-number { 
-            font-size: 15px; 
+            font-size: 16px; 
             font-weight: 800; 
             color: #1E40AF; 
             margin: 8px 0 0 0; 
-            font-family: monospace;
+            font-family: 'JetBrains Mono', monospace;
             letter-spacing: 0.05em;
           }
 
@@ -277,13 +283,13 @@ const downloadInvoice = (order: any) => {
           .invoice-grid { 
             display: grid; 
             grid-template-columns: 1.2fr 1fr; 
-            gap: 24px; 
-            margin-bottom: 25px;
+            gap: 28px; 
+            margin-bottom: 28px;
           }
           .details-panel {
-            border: 1.5px solid #0F172A;
-            border-radius: 8px;
-            padding: 20px;
+            border: 2px solid #0F172A;
+            border-radius: 10px;
+            padding: 22px;
             background-color: #F8FAFC;
           }
           .details-panel h3 { 
@@ -293,12 +299,12 @@ const downloadInvoice = (order: any) => {
             color: #475569; 
             margin-bottom: 12px; 
             margin-top: 0; 
-            border-bottom: 1.5px solid #0F172A;
+            border-bottom: 2px solid #0F172A;
             padding-bottom: 6px;
-            font-weight: 900;
+            font-weight: 800;
           }
           .details-panel p { 
-            font-size: 13px; 
+            font-size: 13.5px; 
             font-weight: 600; 
             line-height: 1.6; 
             margin: 0; 
@@ -311,11 +317,11 @@ const downloadInvoice = (order: any) => {
 
           /* Shipping Panel with Professional Box-Border Styling */
           .shipping-panel {
-            border: 1.5px solid #0F172A;
-            border-radius: 8px;
-            padding: 20px;
+            border: 2px solid #0F172A;
+            border-radius: 10px;
+            padding: 22px;
             background-color: #F8FAFC;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
           }
           .shipping-panel h3 {
             font-size: 11px;
@@ -324,13 +330,13 @@ const downloadInvoice = (order: any) => {
             color: #475569;
             margin-bottom: 10px;
             margin-top: 0;
-            border-bottom: 1.5px solid #0F172A;
+            border-bottom: 2px solid #0F172A;
             padding-bottom: 6px;
-            font-weight: 900;
+            font-weight: 800;
           }
           .shipping-panel p {
             white-space: pre-line;
-            font-size: 13px;
+            font-size: 13.5px;
             font-weight: 600;
             color: #334155;
             margin: 0;
@@ -342,25 +348,28 @@ const downloadInvoice = (order: any) => {
             width: 100%; 
             border-collapse: collapse; 
             border: 2px solid #0F172A;
-            margin-bottom: 30px;
+            margin-bottom: 35px;
+            border-radius: 8px;
+            overflow: hidden;
           }
           .items-table th { 
             border: 2px solid #0F172A;
-            background-color: #F1F5F9; 
-            padding: 12px 14px; 
+            background-color: #0F172A; 
+            padding: 14px 16px; 
             font-size: 11px; 
             text-transform: uppercase; 
             letter-spacing: 0.08em;
-            color: #0F172A; 
-            text-align: left; 
-            font-weight: 900;
+            color: #ffffff; 
+            text-align: left;
+            font-weight: 800;
           }
           .items-table td {
             border: 1.5px solid #0F172A;
-            padding: 14px;
-            font-size: 13px;
+            padding: 16px;
+            font-size: 13.5px;
             color: #334155;
             vertical-align: top;
+            font-weight: 500;
           }
           .items-table tr:nth-child(even) {
             background-color: #F8FAFC;
@@ -373,11 +382,11 @@ const downloadInvoice = (order: any) => {
             display: flex;
             justify-content: space-between;
             align-items: flex-start;
-            margin-top: 30px;
+            margin-top: 35px;
           }
           .terms-info {
             max-width: 450px;
-            font-size: 11px;
+            font-size: 11.5px;
             color: #64748B;
             line-height: 1.6;
             font-weight: 500;
@@ -385,7 +394,7 @@ const downloadInvoice = (order: any) => {
           .terms-info h4 {
             color: #0F172A;
             font-size: 12px;
-            margin: 0 0 6px 0;
+            margin: 0 0 8px 0;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.05em;
@@ -393,7 +402,7 @@ const downloadInvoice = (order: any) => {
           .totals-box { 
             width: 320px; 
             border: 2px solid #0F172A;
-            border-radius: 8px;
+            border-radius: 10px;
             overflow: hidden;
             background: #ffffff;
             margin-left: 20px;
@@ -401,8 +410,8 @@ const downloadInvoice = (order: any) => {
           .totals-row { 
             display: flex; 
             justify-content: space-between; 
-            padding: 10px 14px; 
-            font-size: 13px; 
+            padding: 12px 16px; 
+            font-size: 13.5px; 
             color: #475569;
             font-weight: 600;
             border-bottom: 1.5px solid #0F172A;
@@ -413,8 +422,8 @@ const downloadInvoice = (order: any) => {
           .totals-row.grand-total { 
             background: #F8FAFC;
             border-top: 1px solid #0F172A;
-            padding: 14px; 
-            font-size: 16px; 
+            padding: 16px; 
+            font-size: 17px; 
             font-weight: 900; 
             color: #1E40AF; 
           }
@@ -423,73 +432,56 @@ const downloadInvoice = (order: any) => {
           .signatory-container {
             display: flex;
             justify-content: flex-end;
-            margin-top: 50px;
-            padding-right: 10px;
+            margin-top: 60px;
+            padding-right: 15px;
           }
           .signatory-box {
             text-align: center;
-            width: 200px;
+            width: 220px;
           }
           .signature-line {
-            border-bottom: 1.5px solid #0F172A;
-            height: 50px;
+            border-bottom: 2px solid #0F172A;
+            height: 60px;
             margin-bottom: 8px;
             position: relative;
           }
           .signature-label {
             font-size: 11px;
             font-weight: 800;
-            color: #475569;
+            color: #64748B;
             text-transform: uppercase;
             letter-spacing: 0.05em;
-          }
-          .seal-placeholder {
-            position: absolute;
-            top: 5px;
-            left: 50%;
-            transform: translateX(-50%);
-            border: 2px dashed #CBD5E1;
-            border-radius: 50%;
-            width: 45px;
-            height: 45px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 7px;
-            color: #94A3B8;
-            font-weight: 900;
-            text-transform: uppercase;
           }
 
           /* Status Badges */
           .badge-paid {
             background-color: #ECFDF5;
             color: #065F46;
-            border: 1.5px solid #059669;
-            padding: 5px 10px;
-            border-radius: 6px;
+            border: 2px solid #059669;
+            padding: 5px 12px;
+            border-radius: 8px;
             font-size: 11px;
-            font-weight: 850;
+            font-weight: 800;
             display: inline-block;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
           }
           .badge-unpaid {
             background-color: #FFFBEB;
             color: #92400E;
-            border: 1.5px solid #D97706;
-            padding: 5px 10px;
-            border-radius: 6px;
+            border: 2px solid #D97706;
+            padding: 5px 12px;
+            border-radius: 8px;
             font-size: 11px;
-            font-weight: 850;
+            font-weight: 800;
             display: inline-block;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.06em;
           }
 
           /* Footer styling */
           .footer { 
-            margin-top: 60px; 
+            margin-top: 70px; 
             border-top: 2px solid #0F172A; 
             padding-top: 25px; 
             text-align: center; 
@@ -527,11 +519,11 @@ const downloadInvoice = (order: any) => {
               break-inside: avoid;
             }
             .details-panel {
-              border: 1.5px solid #000000 !important;
+              border: 2px solid #000000 !important;
               background-color: #ffffff !important;
             }
             .shipping-panel {
-              border: 1.5px solid #000000 !important;
+              border: 2px solid #000000 !important;
               background-color: #ffffff !important;
             }
             .items-table {
@@ -540,6 +532,7 @@ const downloadInvoice = (order: any) => {
             .items-table th {
               border: 2px solid #000000 !important;
               background-color: #F1F5F9 !important;
+              color: #000000 !important;
             }
             .items-table td {
               border: 1.5px solid #000000 !important;
@@ -557,12 +550,12 @@ const downloadInvoice = (order: any) => {
               border-bottom: 1.5px solid #000000 !important;
             }
             .badge-paid {
-              border: 1.5px solid #000000 !important;
+              border: 2px solid #000000 !important;
               background-color: #ffffff !important;
               color: #000000 !important;
             }
             .badge-unpaid {
-              border: 1.5px solid #000000 !important;
+              border: 2px solid #000000 !important;
               background-color: #ffffff !important;
               color: #000000 !important;
             }
