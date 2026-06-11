@@ -470,6 +470,57 @@ export default function OrderDetailsPage() {
     setUploading(false);
   };
 
+  const handleDownloadDeliverables = () => {
+    if (!order) return;
+
+    const filesToDownload: { url: string; name: string }[] = [];
+
+    // 1. Check order.deliveryFile
+    if (order.deliveryFile) {
+      filesToDownload.push({
+        url: order.deliveryFile,
+        name: order.deliveryFile.split("/").pop() || "deliverable"
+      });
+    }
+
+    // 2. Check files uploaded by expert/admin (anyone other than the client)
+    const deliverables = order.orderFiles?.filter((f: any) => f.uploadedBy !== order.userId) || [];
+    deliverables.forEach((f: any) => {
+      if (!filesToDownload.some(existing => existing.url === f.fileUrl)) {
+        filesToDownload.push({
+          url: f.fileUrl,
+          name: f.fileName
+        });
+      }
+    });
+
+    // 3. Fallback: if no expert files, use all order files
+    if (filesToDownload.length === 0 && order.orderFiles?.length > 0) {
+      order.orderFiles.forEach((f: any) => {
+        filesToDownload.push({
+          url: f.fileUrl,
+          name: f.fileName
+        });
+      });
+    }
+
+    if (filesToDownload.length === 0) {
+      alert("No deliverable files found for this order yet. If you believe this is an error, please message the expert or support.");
+      return;
+    }
+
+    // 4. Download all files
+    filesToDownload.forEach((file) => {
+      const link = document.createElement("a");
+      link.href = file.url;
+      link.download = file.name;
+      link.target = "_blank";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  };
+
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-[500px]">
@@ -548,7 +599,10 @@ export default function OrderDetailsPage() {
         )}
 
         {(order.status === "DELIVERED" || order.status === "COMPLETED") && !isHardware && (
-          <Button className="bg-accent-success text-white hover:bg-accent-success/90 shadow-glow h-11 px-6 rounded-xl text-sm">
+          <Button 
+            onClick={handleDownloadDeliverables}
+            className="bg-accent-success text-white hover:bg-accent-success/90 shadow-glow h-11 px-6 rounded-xl text-sm"
+          >
             <Download className="w-4 h-4 mr-2" /> Download Deliverables
           </Button>
         )}
