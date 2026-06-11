@@ -36,7 +36,6 @@ export async function middleware(request: NextRequest) {
         '/dashboard/profile',
         '/dashboard/settings',
         '/dashboard/help',
-        '/dashboard/affiliate',
         '/dashboard/orders',
         '/dashboard/projects',
         '/dashboard/reviews',
@@ -47,20 +46,7 @@ export async function middleware(request: NextRequest) {
       }
     }
     
-    if (role === 'AFFILIATE') {
-      const allowedPaths = [
-        '/dashboard/affiliate',
-        '/dashboard/messages',
-        '/dashboard/wallet',
-        '/dashboard/profile',
-        '/dashboard/settings',
-        '/dashboard/help',
-      ]
-      const isAllowed = allowedPaths.some(p => pathname === p || pathname.startsWith(p + '/'))
-      if (!isAllowed) {
-        return NextResponse.redirect(new URL('/dashboard/affiliate', request.url))
-      }
-    }
+
   }
 
   if (pathname.startsWith('/expert')) {
@@ -92,9 +78,7 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  if (pathname.startsWith('/affiliate')) {
-    return NextResponse.redirect(new URL('/dashboard/affiliate', request.url))
-  }
+
 
   // Contact Scanner - Block messages or requests containing contact info
   // Since it's a bit tricky to read body in middleware without consuming the stream,

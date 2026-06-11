@@ -11,8 +11,7 @@ export const authConfig = {
       const isDashboard = nextUrl.pathname.startsWith("/dashboard") || 
                           nextUrl.pathname.startsWith("/admin") || 
                           nextUrl.pathname.startsWith("/writer") || 
-                          nextUrl.pathname.startsWith("/developer") || 
-                          nextUrl.pathname.startsWith("/affiliate");
+                          nextUrl.pathname.startsWith("/developer");
       
       if (isDashboard) {
         if (isLoggedIn) return true;

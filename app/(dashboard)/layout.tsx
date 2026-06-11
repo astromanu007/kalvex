@@ -22,7 +22,6 @@ const NAV = [
   { label: "My Wallet",       href: "/dashboard/wallet",       icon: Wallet },
   { label: "My Reviews",      href: "/dashboard/reviews",      icon: Star },
   { label: "My Profile",      href: "/dashboard/profile",      icon: User },
-  { label: "Affiliate Program",href: "/dashboard/affiliate",    icon: Share2 },
   { label: "Settings",        href: "/dashboard/settings",     icon: Settings },
   { label: "Help & Support",  href: "/dashboard/help",         icon: HelpCircle },
 ];
@@ -51,14 +50,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       !pathname.startsWith("/dashboard/profile") &&
       !pathname.startsWith("/dashboard/settings") &&
       !pathname.startsWith("/dashboard/help") &&
-      !pathname.startsWith("/dashboard/affiliate") &&
       !pathname.startsWith("/dashboard/orders") &&
       !pathname.startsWith("/dashboard/projects") &&
       !pathname.startsWith("/dashboard/reviews")
     ) {
       router.replace("/expert");
-    } else if (role === "AFFILIATE" && pathname === "/dashboard") {
-      router.replace("/dashboard/affiliate");
     } else if ((role === "USER" || role === "STUDENT") && pathname.startsWith("/expert")) {
       router.replace("/dashboard");
     }
@@ -92,7 +88,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   }, [session]);
 
   const isExpert = role === "WRITER" || role === "DEVELOPER";
-  const isAffiliate = role === "AFFILIATE";
+
 
   const dynamicNav = NAV.filter(item => {
     if (isExpert && (item.label === "My Orders" || item.label === "My Projects")) {
@@ -108,15 +104,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
     else if (item.label === "My Wallet") translatedLabel = t("Wallet");
     else if (item.label === "My Reviews") translatedLabel = t("Reviews");
     else if (item.label === "My Profile") translatedLabel = t("Profile");
-    else if (item.label === "Affiliate Program") translatedLabel = t("Affiliate Commission");
     else if (item.label === "Settings") translatedLabel = t("Settings");
     else if (item.label === "Help & Support") translatedLabel = t("Help & Support");
 
     let href = item.href;
     if (isExpert && item.label === "Dashboard") {
       href = "/expert";
-    } else if (isAffiliate && item.label === "Dashboard") {
-      href = "/dashboard/affiliate";
     }
 
     return { ...item, label: translatedLabel, href };

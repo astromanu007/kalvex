@@ -42,13 +42,6 @@ const ROLES = [
     desc: "Apply as a KALVEX Developer. Build proprietary systems and prototypes.",
     accent: "blue"
   },
-  {
-    id: "affiliate",
-    label: "Partner",
-    icon: Building2,
-    desc: "Promote KALVEX and earn commissions on every referral.",
-    accent: "blue"
-  },
 ];
 
 export default function RegisterHubPage() {

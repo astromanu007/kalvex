@@ -13,7 +13,6 @@ const ROLES = [
   { id: "STUDENT",    label: "Student",    icon: GraduationCap },
   { id: "WRITER",     label: "Scholar",    icon: PenTool },
   { id: "DEVELOPER",  label: "Developer",   icon: Code },
-  { id: "AFFILIATE",  label: "Partner",    icon: Building2 },
   { id: "ADMIN",      label: "Admin",      icon: Shield },
 ];
 
@@ -62,15 +61,7 @@ const ROLE_THEMES: Record<string, {
     focusInput: "focus:border-purple-600 focus:ring-purple-600/20",
     btnSubmit: "bg-purple-600 hover:bg-purple-700 shadow-purple-600/20 text-white",
   },
-  AFFILIATE: {
-    name: "Partner",
-    color: "#f97316",
-    activeBtn: "border-orange-500 bg-orange-50/70 text-orange-600 shadow-xl shadow-orange-500/10",
-    hoverBtn: "hover:border-orange-200 hover:text-orange-500 hover:bg-orange-50/20",
-    glowColor: "rgba(249, 115, 22, 0.25)",
-    focusInput: "focus:border-orange-500 focus:ring-orange-500/20",
-    btnSubmit: "bg-orange-500 hover:bg-orange-600 shadow-orange-500/20 text-white",
-  },
+
   ADMIN: {
     name: "Admin",
     color: "#f43f5e",
