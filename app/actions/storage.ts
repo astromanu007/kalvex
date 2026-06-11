@@ -66,3 +66,51 @@ export async function getFiles(path: string) {
     return { error: "Failed to fetch files" };
   }
 }
+
+export async function deleteFile(fileId: string, orderId: string) {
+  try {
+    const session = await auth();
+    if (!session?.user) return { error: "Unauthorized" };
+
+    const fileRecord = await prisma.orderFile.findUnique({
+      where: { id: fileId }
+    });
+
+    if (!fileRecord) return { error: "File not found" };
+
+    const order = await prisma.order.findUnique({
+      where: { id: orderId }
+    });
+
+    const isUploader = fileRecord.uploadedBy === session.user.id;
+    const isOrderOwner = order?.userId === session.user.id;
+    const isAdmin = session.user.role === "ADMIN";
+
+    if (!isUploader && !isOrderOwner && !isAdmin) {
+      return { error: "Unauthorized to delete this file" };
+    }
+
+    const urlParts = fileRecord.fileUrl.split("/public/kalvex/");
+    if (urlParts.length > 1) {
+      const storagePath = urlParts[1];
+      const { error: storageError } = await supabase.storage
+        .from("kalvex")
+        .remove([storagePath]);
+
+      if (storageError) {
+        console.error("Supabase Storage Delete Error:", storageError);
+      }
+    }
+
+    await prisma.orderFile.delete({
+      where: { id: fileId }
+    });
+
+    revalidatePath(`/dashboard/orders/${orderId}`);
+    return { success: true };
+  } catch (error) {
+    console.error("Delete File Error:", error);
+    return { error: "Failed to delete file" };
+  }
+}
+

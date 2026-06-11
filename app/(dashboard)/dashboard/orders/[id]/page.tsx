@@ -9,11 +9,12 @@ import {
   MessageSquare, Download, CreditCard, Loader2, Paperclip, ShieldCheck,
   Sparkles, Palette, Layers, Calendar, CheckCircle2,
   Bookmark, Clipboard, BookOpen, PenTool, Printer, Award,
-  Package, Truck, PackageCheck, MapPin, Cpu, Box
+  Package, Truck, PackageCheck, MapPin, Cpu, Box,
+  Eye, Trash2
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getOrders } from "@/app/actions/orders";
-import { uploadFile } from "@/app/actions/storage";
+import { uploadFile, deleteFile } from "@/app/actions/storage";
 import { motion } from "framer-motion";
 import { parseRequirements, getServiceTitle, isElectronicsOrder } from "@/lib/utils";
 
@@ -69,6 +70,21 @@ const getIconForLabel = (label: string) => {
   if (lbl.includes("instruction") || lbl.includes("guideline")) return Clipboard;
   if (lbl.includes("name") || lbl.includes("client") || lbl.includes("details")) return ShieldCheck;
   return Sparkles;
+};
+
+const getFileDetails = (fileName: string) => {
+  const ext = fileName.split(".").pop()?.toLowerCase();
+  switch (ext) {
+    case "pdf":
+      return { label: "PDF", color: "bg-red-50 text-red-600 border-red-100/50", iconColor: "text-red-500" };
+    case "doc":
+    case "docx":
+      return { label: "DOCX", color: "bg-blue-50 text-blue-600 border-blue-100/50", iconColor: "text-blue-500" };
+    case "txt":
+      return { label: "TXT", color: "bg-emerald-50 text-emerald-600 border-emerald-100/50", iconColor: "text-emerald-500" };
+    default:
+      return { label: "FILE", color: "bg-slate-50 text-slate-600 border-slate-100", iconColor: "text-slate-500" };
+  }
 };
 
 const RequirementCard = ({ label, value, index }: { label: string; value: string; index: number }) => {
@@ -890,6 +906,7 @@ export default function OrderDetailsPage() {
   const [order, setOrder] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -934,6 +951,23 @@ export default function OrderDetailsPage() {
     }
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleDeleteFile = async (fileId: string) => {
+    if (!confirm("Are you sure you want to remove this attachment?")) return;
+    setDeletingId(fileId);
+    const res = await deleteFile(fileId, order.id);
+    if (res.success) {
+      const ordersRes = await getOrders();
+      if (ordersRes.orders) {
+        const found = ordersRes.orders.find((o: any) => o.id === order.id);
+        setOrder(found);
+      }
+      alert("Attachment removed successfully!");
+    } else {
+      alert(res.error || "Failed to delete file.");
+    }
+    setDeletingId(null);
   };
 
   const handleDownloadDeliverables = () => {
@@ -1229,22 +1263,59 @@ export default function OrderDetailsPage() {
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-4 border-t border-border">
                   {order.orderFiles?.length > 0 ? (
-                    order.orderFiles.map((f: any) => (
-                      <div key={f.id} className="flex items-center gap-3 p-3 bg-bg-surface border border-border rounded-xl">
-                        <div className="w-10 h-10 rounded-lg bg-accent-primary/10 flex items-center justify-center">
-                          <FileText className="w-5 h-5 text-accent-primary" />
+                    order.orderFiles.map((f: any) => {
+                      const fileDetails = getFileDetails(f.fileName);
+                      return (
+                        <div key={f.id} className="flex items-center gap-3 p-3 bg-bg-surface border border-border rounded-xl hover:border-blue-650/30 transition-all duration-300">
+                          <div className="w-10 h-10 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center shrink-0">
+                            <FileText className={`w-5 h-5 ${fileDetails.iconColor}`} />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-semibold text-text-primary truncate" title={f.fileName}>{f.fileName}</p>
+                            <div className="flex items-center gap-1.5 mt-1">
+                              <span className={`px-1.5 py-0.5 rounded border text-[8px] font-black uppercase tracking-wider ${fileDetails.color}`}>
+                                {fileDetails.label}
+                              </span>
+                              <span className="text-[9px] text-text-muted">{new Date(f.createdAt).toLocaleDateString()}</span>
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-0.5 shrink-0">
+                            <Button 
+                              variant="ghost" 
+                              size="icon" 
+                              className="h-8 w-8 text-text-muted hover:text-blue-600 hover:bg-blue-50/50 rounded-lg"
+                              onClick={() => window.open(f.fileUrl, "_blank")}
+                              title="Preview Attachment"
+                            >
+                              <Eye className="w-4 h-4" />
+                            </Button>
+                            
+                            <a href={f.fileUrl} download={f.fileName} target="_blank" rel="noreferrer" title="Download Attachment">
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-text-muted hover:text-emerald-600 hover:bg-emerald-50/50 rounded-lg">
+                                <Download className="w-4 h-4" />
+                              </Button>
+                            </a>
+
+                            {(session?.user?.id === f.uploadedBy || session?.user?.role === "ADMIN" || session?.user?.id === order.userId) && (
+                              <Button 
+                                variant="ghost" 
+                                size="icon" 
+                                className="h-8 w-8 text-text-muted hover:text-rose-600 hover:bg-rose-50/50 rounded-lg"
+                                onClick={() => handleDeleteFile(f.id)}
+                                disabled={deletingId === f.id}
+                                title="Delete Attachment"
+                              >
+                                {deletingId === f.id ? (
+                                  <Loader2 className="w-4 h-4 animate-spin text-rose-500" />
+                                ) : (
+                                  <Trash2 className="w-4 h-4" />
+                                )}
+                              </Button>
+                            )}
+                          </div>
                         </div>
-                        <div className="flex-1 min-w-0">
-                          <p className="text-xs font-medium text-text-primary truncate">{f.fileName}</p>
-                          <p className="text-[10px] text-text-muted">{new Date(f.createdAt).toLocaleDateString()}</p>
-                        </div>
-                        <a href={f.fileUrl} target="_blank" rel="noreferrer">
-                          <Button variant="ghost" size="icon" className="h-8 w-8 text-text-muted">
-                            <Download className="w-4 h-4" />
-                          </Button>
-                        </a>
-                      </div>
-                    ))
+                      );
+                    })
                   ) : (
                     <div className="col-span-full py-4 text-center text-[10px] text-text-muted italic border border-dashed border-border rounded-xl">
                       No files uploaded yet.
