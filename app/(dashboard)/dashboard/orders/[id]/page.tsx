@@ -129,13 +129,192 @@ const getComponentResources = (itemName: string) => {
   ];
 };
 
+const downloadInvoice = (order: any) => {
+  const invoiceWindow = window.open("", "_blank");
+  if (!invoiceWindow) return;
+
+  const itemsHTML = order.requirements
+    ? order.requirements
+        .split("ITEMS PURCHASED:")[1]
+        ?.split("SHIPPING DESTINATION")[0]
+        ?.trim()
+        .split("\n")
+        .filter(Boolean)
+        .map((line: string) => {
+          const cleanLine = line.replace(/^- /, "");
+          const parts = cleanLine.split(" — ");
+          const name = parts[0] || "Component Item";
+          const priceStr = parts[1] || ("₹" + order.amount?.toLocaleString());
+          return `
+            <tr>
+              <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500;">${name}</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 500;">1</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600;">${priceStr}</td>
+              <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600;">${priceStr}</td>
+            </tr>
+          `;
+        })
+        .join("")
+    : `
+      <tr>
+        <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; font-weight: 500;">${order.serviceType?.replace(/_/g, " ") || "Services"}</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 500;">1</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600;">₹${order.amount?.toLocaleString()}</td>
+        <td style="padding: 12px; border-bottom: 1px solid #f1f5f9; text-align: right; font-weight: 600;">₹${order.amount?.toLocaleString()}</td>
+      </tr>
+    `;
+
+  const shippingDetails = order.requirements?.split("SHIPPING DESTINATION DETAILS:")[1]?.trim() || "N/A";
+
+  invoiceWindow.document.write(`
+    <html>
+      <head>
+        <title>Invoice - ${order.orderNumber}</title>
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #0F172A; margin: 40px; }
+          .invoice-header { display: flex; justify-content: space-between; border-bottom: 2px solid #F1F5F9; padding-bottom: 20px; }
+          .logo { font-size: 26px; font-weight: 900; color: #2563EB; letter-spacing: -0.05em; }
+          .invoice-details { margin-top: 30px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+          .details-section h3 { font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: #64748B; margin-bottom: 8px; margin-top: 0; }
+          .details-section p { font-size: 14px; font-weight: 600; line-height: 1.5; margin: 0; }
+          table { width: 100%; border-collapse: collapse; margin-top: 40px; }
+          th { border-bottom: 2px solid #E2E8F0; padding: 12px; font-size: 10px; text-transform: uppercase; color: #64748B; text-align: left; }
+          .text-right { text-align: right; }
+          .totals { margin-top: 30px; margin-left: auto; width: 300px; }
+          .totals-row { display: flex; justify-content: space-between; padding: 8px 0; font-size: 14px; }
+          .totals-row.grand-total { border-top: 2px solid #E2E8F0; padding-top: 12px; margin-top: 8px; font-size: 18px; font-weight: 900; color: #2563EB; }
+          .footer { margin-top: 80px; border-top: 1px solid #F1F5F9; padding-top: 20px; text-align: center; font-size: 11px; color: #94A3B8; font-weight: 600; }
+        </style>
+      </head>
+      <body>
+        <div class="invoice-header">
+          <div>
+            <div class="logo">KALVEX</div>
+            <p style="font-size: 12px; color: #64748B; margin: 5px 0 0 0; font-weight: 600;">Kalvex Engineering & Technologies Labs</p>
+          </div>
+          <div class="text-right">
+            <h1 style="font-size: 28px; font-weight: 900; margin: 0; letter-spacing: -0.03em;">INVOICE</h1>
+            <p style="font-size: 14px; font-weight: 700; color: #64748B; margin: 5px 0 0 0;">${order.orderNumber}</p>
+          </div>
+        </div>
+
+        <div class="invoice-details">
+          <div class="details-section">
+            <h3>Billed To</h3>
+            <p style="font-size: 15px; font-weight: 700;">Manish Student</p>
+            <p style="font-weight: 500; color: #64748B;">manish@kalvex.com</p>
+          </div>
+          <div class="details-section">
+            <h3>Invoice Date</h3>
+            <p>${new Date(order.createdAt).toLocaleDateString()}</p>
+            <h3 style="margin-top: 15px;">Payment Status</h3>
+            <p style="color: ${order.status === "PENDING_PAYMENT" ? "#F59E0B" : "#10B981"}; font-weight: 700;">${order.status === "PENDING_PAYMENT" ? "Awaiting Payment" : "Paid & Confirmed"}</p>
+          </div>
+        </div>
+
+        ${
+          order.serviceType === "HARDWARE_COMPONENTS" || order.requirements?.includes("ITEMS PURCHASED:")
+            ? `
+            <div class="invoice-details" style="margin-top: 20px; display: block;">
+              <div class="details-section">
+                <h3>Shipping Address</h3>
+                <p style="white-space: pre-line; font-weight: 500; color: #334155; font-size: 13px;">${shippingDetails}</p>
+              </div>
+            </div>
+            `
+            : ""
+        }
+
+        <table>
+          <thead>
+            <tr>
+              <th style="padding: 12px; text-align: left;">Description</th>
+              <th class="text-right" style="padding: 12px; width: 80px;">Qty</th>
+              <th class="text-right" style="padding: 12px; width: 120px;">Unit Price</th>
+              <th class="text-right" style="padding: 12px; width: 120px;">Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${itemsHTML}
+          </tbody>
+        </table>
+
+        <div class="totals">
+          <div class="totals-row">
+            <span style="color: #64748B; font-weight: 500;">Subtotal</span>
+            <span style="font-weight: 600;">₹${order.amount?.toLocaleString()}</span>
+          </div>
+          <div class="totals-row">
+            <span style="color: #64748B; font-weight: 500;">CGST (0%)</span>
+            <span style="font-weight: 600;">₹0</span>
+          </div>
+          <div class="totals-row">
+            <span style="color: #64748B; font-weight: 500;">SGST (0%)</span>
+            <span style="font-weight: 600;">₹0</span>
+          </div>
+          <div class="totals-row grand-total">
+            <span>Total</span>
+            <span>₹${order.amount?.toLocaleString()}</span>
+          </div>
+        </div>
+
+        <div class="footer">
+          <p>Thank you for doing business with Kalvex Engineering & Technologies Labs.</p>
+          <p>This is a computer-generated invoice and requires no signature.</p>
+        </div>
+
+        <script>
+          window.onload = function() {
+            setTimeout(function() {
+              window.print();
+            }, 500);
+          }
+        </script>
+      </body>
+    </html>
+  `);
+  invoiceWindow.document.close();
+};
+
+// Infinitely scrolling shipping alerts marquee
+const ShippingMarquee = () => {
+  return (
+    <div className="w-full overflow-hidden bg-slate-50 border border-slate-100 rounded-2xl py-2 relative flex items-center">
+      {/* Gradient fade on left/right edges */}
+      <div className="absolute left-0 top-0 bottom-0 w-12 bg-gradient-to-r from-slate-50 to-transparent z-10 pointer-events-none" />
+      <div className="absolute right-0 top-0 bottom-0 w-12 bg-gradient-to-l from-slate-50 to-transparent z-10 pointer-events-none" />
+      
+      {/* Banner Badge */}
+      <div className="bg-blue-600 text-white text-[8px] font-black uppercase tracking-widest px-2.5 py-1 rounded-lg ml-4 shrink-0 shadow-sm z-20 flex items-center gap-1">
+        <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping shrink-0" />
+        Fulfillment Updates
+      </div>
+
+      <div className="flex gap-10 whitespace-nowrap text-[9px] font-black uppercase tracking-widest text-slate-500 z-0 select-none overflow-hidden ml-4">
+        <div className="flex gap-10 animate-[marquee_35s_linear_infinite] shrink-0">
+          <span>⚡ Fast shipping active for your region</span>
+          <span>📦 100% Quality-tested & certified electronics components</span>
+          <span>🚚 Safe & secure transit with real-time tracking</span>
+          <span>🛡️ Kalvex secure purchase guarantee included</span>
+        </div>
+        <div className="flex gap-10 animate-[marquee_35s_linear_infinite] shrink-0" aria-hidden="true">
+          <span>⚡ Fast shipping active for your region</span>
+          <span>📦 100% Quality-tested & certified electronics components</span>
+          <span>🚚 Safe & secure transit with real-time tracking</span>
+          <span>🛡️ Kalvex secure purchase guarantee included</span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // E-commerce horizontal tracking step component
 const HorizontalHardwareTracker = ({ status }: { status: string }) => {
   const currentIdx = HW_STEP_ORDER.indexOf(status);
   
-  // Calculate percentage progress
+  // Calculate percentage progress (cap at 100% for COMPLETED)
   const totalSteps = HW_TRACKING_STEPS.length;
-  const progressPercent = currentIdx === -1 ? 0 : (currentIdx / (totalSteps - 1)) * 100;
+  const progressPercent = currentIdx === -1 ? 0 : (Math.min(currentIdx, totalSteps - 1) / (totalSteps - 1)) * 100;
 
   return (
     <div className="bg-white border border-slate-100 rounded-3xl p-6 sm:p-8 shadow-sm relative overflow-hidden group">
@@ -163,33 +342,38 @@ const HorizontalHardwareTracker = ({ status }: { status: string }) => {
       </div>
 
       {/* Progress Map Container */}
-      <div className="relative px-4 py-8 sm:px-10">
+      <div className="relative px-4 py-8 sm:px-10 h-32">
         
-        {/* Track Line Background */}
-        <div className="absolute left-4 right-4 sm:left-10 sm:right-10 top-[45px] h-2 bg-slate-100 rounded-full -z-10" />
+        {/* Track Line Background (Positive z-index) */}
+        <div className="absolute left-8 right-8 sm:left-16 sm:right-16 top-[48px] h-2 bg-slate-100 rounded-full z-0" />
         
-        {/* Animated Filled Progress Line */}
+        {/* Animated Filled Progress Line (Positive z-index) */}
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: `${progressPercent}%` }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
-          className="absolute left-4 sm:left-10 top-[45px] h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 rounded-full -z-10"
+          transition={{ duration: 1.5, ease: "easeInOut" }}
+          className="absolute left-8 sm:left-16 top-[48px] h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-emerald-500 rounded-full z-10"
         />
 
-        {/* Animated Moving Truck */}
-        <div className="absolute left-4 right-4 sm:left-10 sm:right-10 top-[18px] -z-10 pointer-events-none">
+        {/* Animated Moving Car/Truck (Bouncing Animation) */}
+        <div className="absolute left-8 right-8 sm:left-16 sm:right-16 top-[36px] z-20 pointer-events-none">
           <motion.div
             initial={{ left: 0 }}
             animate={{ left: `${progressPercent}%` }}
-            transition={{ duration: 1.2, ease: "easeInOut" }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
             className="absolute -translate-x-1/2 w-8 h-8 rounded-full bg-white shadow-lg border border-slate-100 flex items-center justify-center text-blue-600"
           >
-            <Truck className="w-4 h-4" />
+            <motion.div
+              animate={{ y: [0, -2, 0] }}
+              transition={{ repeat: Infinity, duration: 0.6, ease: "easeInOut" }}
+            >
+              <Truck className="w-4 h-4" />
+            </motion.div>
           </motion.div>
         </div>
 
-        {/* Milestones */}
-        <div className="flex justify-between items-center relative">
+        {/* Milestones Container (Elevated z-index) */}
+        <div className="flex justify-between items-center relative z-30">
           {HW_TRACKING_STEPS.map((step, i) => {
             const stepIdx = HW_STEP_ORDER.indexOf(step.key);
             const isDone = currentIdx >= stepIdx;
@@ -197,7 +381,7 @@ const HorizontalHardwareTracker = ({ status }: { status: string }) => {
             const Icon = step.icon;
 
             return (
-              <div key={step.key} className="flex flex-col items-center relative z-10 w-8 sm:w-16">
+              <div key={step.key} className="flex flex-col items-center relative w-10 sm:w-16">
                 
                 {/* Milestone Node */}
                 <motion.div
@@ -217,7 +401,7 @@ const HorizontalHardwareTracker = ({ status }: { status: string }) => {
 
                 {/* Pulse Ring for Current Stage */}
                 {isCurrent && (
-                  <span className="absolute -top-1 w-12 h-12 rounded-full border border-blue-600/50 animate-ping opacity-75 -z-10" />
+                  <span className="absolute -top-1 w-12 h-12 rounded-full border border-blue-600/50 animate-ping opacity-75 z-0" />
                 )}
 
                 {/* Milestone Labels */}
@@ -368,10 +552,20 @@ export default function OrderDetailsPage() {
             <Download className="w-4 h-4 mr-2" /> Download Deliverables
           </Button>
         )}
+
+        {order.status !== "PENDING_PAYMENT" && (
+          <Button 
+            onClick={() => downloadInvoice(order)} 
+            className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 shadow-sm h-11 px-6 rounded-xl text-sm gap-2"
+          >
+            <Download className="w-4 h-4 text-blue-600" /> Download Invoice
+          </Button>
+        )}
       </div>
 
       {isHardware && (
-        <div className="mb-6 animate-in fade-in slide-in-from-top-4 duration-500">
+        <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-500 mb-6">
+          <ShippingMarquee />
           <HorizontalHardwareTracker status={order.status} />
         </div>
       )}
@@ -459,7 +653,7 @@ export default function OrderDetailsPage() {
                   <Button 
                     variant="link" 
                     size="sm" 
-                    onClick={() => alert(`Simulating Invoice Download for order ${order.orderNumber}...`)}
+                    onClick={() => downloadInvoice(order)}
                     className="p-0 h-auto text-xs text-blue-600 font-bold hover:underline flex items-center gap-1"
                   >
                     <Download className="w-3 h-3" /> Download Invoice
