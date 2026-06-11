@@ -631,7 +631,7 @@ const downloadInvoice = (order: any) => {
             <div class="terms-info">
               <h4>Terms & Conditions</h4>
               <p style="margin: 0 0 6px 0;">1. All service deliverables are subject to the Kalvex Quality and plagiarism-free guarantee.</p>
-              <p style="margin: 0 0 6px 0;">2. Electronics component shipments include a 10-day replacement warranty for manufacturing defects.</p>
+              <p style="margin: 0 0 6px 0;">2. Strict No-Return and No-Replacement policy applies to all hardware and electronics store components once dispatched.</p>
               <p style="margin: 0;">3. This document constitutes a valid proof of transaction. For payment queries, reach out to support.</p>
             </div>
             <div>
@@ -658,10 +658,37 @@ const downloadInvoice = (order: any) => {
 
           <!-- Authorized Signature Area -->
           <div class="signatory-container">
-            <div class="signatory-box">
-              <div class="signature-line">
-                <div class="seal-placeholder">Seal</div>
+            <div class="signatory-box" style="position: relative;">
+              <!-- Premium Blue Ink Corporate Seal Stamp -->
+              <div style="position: absolute; top: -55px; left: 50%; transform: translateX(-50%) rotate(-12deg); opacity: 0.85; pointer-events: none; z-index: 10;">
+                <svg viewBox="0 0 120 120" width="120" height="120">
+                  <!-- Outer Double Ring -->
+                  <circle cx="60" cy="60" r="56" fill="none" stroke="#1E40AF" stroke-width="2.5" />
+                  <circle cx="60" cy="60" r="50" fill="none" stroke="#1E40AF" stroke-width="0.75" stroke-dasharray="3,1.5" />
+                  
+                  <!-- Inner Core Ring -->
+                  <circle cx="60" cy="60" r="34" fill="none" stroke="#1E40AF" stroke-width="1.5" />
+                  
+                  <!-- Circular Text Path (Clockwise Circle Path) -->
+                  <path id="sealTextPath" d="M 60,8 A 52,52 0 1,1 59.9,8" fill="none" />
+                  
+                  <text fill="#1E40AF" font-family="-apple-system, sans-serif" font-size="6.5" font-weight="950" letter-spacing="1">
+                    <textPath href="#sealTextPath" startOffset="0%">
+                      * KALVEX ENGINEERING LABS * SECURED & CERTIFIED * ORIGINAL
+                    </textPath>
+                  </text>
+                  
+                  <!-- Center verification shield/stamp elements -->
+                  <g transform="translate(60,60)">
+                    <!-- Inner Star -->
+                    <polygon points="0,-8 2,-2 8,-2 3.5,1 5.5,7 0,3 -5.5,7 -3.5,1 -8,-2 -2,-2" fill="#1E40AF" />
+                    <!-- Verification labels -->
+                    <text y="14" text-anchor="middle" fill="#1E40AF" font-family="-apple-system, sans-serif" font-size="6" font-weight="900" letter-spacing="1">PASSED</text>
+                    <text y="22" text-anchor="middle" fill="#1E40AF" font-family="-apple-system, sans-serif" font-size="5" font-weight="800">ESTD 2026</text>
+                  </g>
+                </svg>
               </div>
+              <div class="signature-line"></div>
               <div class="signature-label">Authorized Signatory</div>
             </div>
           </div>
