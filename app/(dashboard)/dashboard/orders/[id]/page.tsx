@@ -659,32 +659,44 @@ const downloadInvoice = (order: any) => {
           <!-- Authorized Signature Area -->
           <div class="signatory-container">
             <div class="signatory-box" style="position: relative;">
-              <!-- Premium Blue Ink Corporate Seal Stamp -->
-              <div style="position: absolute; top: -55px; left: 50%; transform: translateX(-50%) rotate(-12deg); opacity: 0.85; pointer-events: none; z-index: 10;">
+              <!-- Premium Symmetrical Blue Ink Corporate Seal Stamp -->
+              <div style="position: absolute; top: -55px; left: 50%; transform: translateX(-50%) rotate(-8deg); opacity: 0.85; pointer-events: none; z-index: 10;">
                 <svg viewBox="0 0 120 120" width="120" height="120">
-                  <!-- Outer Double Ring -->
+                  <defs>
+                    <!-- Top Semi-Circle Path (Clockwise) -->
+                    <path id="topTextPath" d="M 15,60 A 45,45 0 0,1 105,60" fill="none" />
+                    <!-- Bottom Semi-Circle Path (Counter-Clockwise) -->
+                    <path id="bottomTextPath" d="M 15,60 A 45,45 0 0,0 105,60" fill="none" />
+                  </defs>
+
+                  <!-- Outer Borders -->
                   <circle cx="60" cy="60" r="56" fill="none" stroke="#1E40AF" stroke-width="2.5" />
-                  <circle cx="60" cy="60" r="50" fill="none" stroke="#1E40AF" stroke-width="0.75" stroke-dasharray="3,1.5" />
-                  
-                  <!-- Inner Core Ring -->
+                  <circle cx="60" cy="60" r="51" fill="none" stroke="#1E40AF" stroke-width="0.75" stroke-dasharray="3,1.5" />
+
+                  <!-- Inner Core Border -->
                   <circle cx="60" cy="60" r="34" fill="none" stroke="#1E40AF" stroke-width="1.5" />
-                  
-                  <!-- Circular Text Path (Clockwise Circle Path) -->
-                  <path id="sealTextPath" d="M 60,8 A 52,52 0 1,1 59.9,8" fill="none" />
-                  
-                  <text fill="#1E40AF" font-family="-apple-system, sans-serif" font-size="6.5" font-weight="950" letter-spacing="1">
-                    <textPath href="#sealTextPath" startOffset="0%">
-                      * KALVEX ENGINEERING LABS * SECURED & CERTIFIED * ORIGINAL
+                  <circle cx="60" cy="60" r="31.5" fill="none" stroke="#1E40AF" stroke-width="0.5" stroke-dasharray="1.5,1" />
+
+                  <!-- Top Text (Clockwise) -->
+                  <text fill="#1E40AF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="6.5" font-weight="950" letter-spacing="1.2">
+                    <textPath href="#topTextPath" startOffset="50%" text-anchor="middle">
+                      KALVEX ENGINEERING LABS
                     </textPath>
                   </text>
-                  
-                  <!-- Center verification shield/stamp elements -->
+
+                  <!-- Bottom Text (Counter-Clockwise) -->
+                  <text fill="#1E40AF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="6.5" font-weight="950" letter-spacing="1.2">
+                    <textPath href="#bottomTextPath" startOffset="50%" text-anchor="middle">
+                      ★ SECURED & ORIGINAL ★
+                    </textPath>
+                  </text>
+
+                  <!-- Central Seal Content -->
                   <g transform="translate(60,60)">
-                    <!-- Inner Star -->
-                    <polygon points="0,-8 2,-2 8,-2 3.5,1 5.5,7 0,3 -5.5,7 -3.5,1 -8,-2 -2,-2" fill="#1E40AF" />
-                    <!-- Verification labels -->
-                    <text y="14" text-anchor="middle" fill="#1E40AF" font-family="-apple-system, sans-serif" font-size="6" font-weight="900" letter-spacing="1">PASSED</text>
-                    <text y="22" text-anchor="middle" fill="#1E40AF" font-family="-apple-system, sans-serif" font-size="5" font-weight="800">ESTD 2026</text>
+                    <!-- Symmetrical star -->
+                    <polygon points="0,-8 2.5,-2.5 8.5,-2.5 4,1 5.5,7 0,3.5 -5.5,7 -4,1 -8.5,-2.5 -2.5,-2.5" fill="#1E40AF" />
+                    <text y="14" text-anchor="middle" fill="#1E40AF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="6" font-weight="950" letter-spacing="0.5">PASSED</text>
+                    <text y="21" text-anchor="middle" fill="#1E40AF" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="4.5" font-weight="800">ESTD 2026</text>
                   </g>
                 </svg>
               </div>
