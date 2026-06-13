@@ -589,7 +589,7 @@ const downloadInvoice = (order: any) => {
                 <strong>Kalvex Engineering Labs Private Limited</strong><br>
                 HQ: Double Road, Indiranagar, Bangalore, KA 560038, India<br>
                 <strong>CIN:</strong> U72900KA2026PTC123456 | <strong>GSTIN:</strong> 29AAFCD1234F1Z5<br>
-                <strong>Support Email:</strong> billing@kalvex.com | <strong>Web:</strong> www.kalvex.com
+                <strong>Support Email:</strong> kalvextechnologies@gmail.com | <strong>Web:</strong> www.kalvex.com
               </div>
             </div>
             <div class="title-area">

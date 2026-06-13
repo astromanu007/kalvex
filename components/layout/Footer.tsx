@@ -337,7 +337,7 @@ export function Footer() {
                 </li>
                 <li className="flex items-center gap-4">
                   <Mail className="w-4 h-4 text-slate-400 shrink-0" />
-                  <a href="mailto:contact@kalvex.in" className="text-slate-900 text-[14px] font-bold hover:text-blue-600 transition-colors">contact@kalvex.in</a>
+                  <a href="mailto:kalvextechnologies@gmail.com" className="text-slate-900 text-[14px] font-bold hover:text-blue-600 transition-colors">kalvextechnologies@gmail.com</a>
                 </li>
               </ul>
               <div className="pt-4">

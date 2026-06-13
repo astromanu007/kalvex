@@ -364,7 +364,7 @@ export default function ProfilePage() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                     {[
                       { label: "Full Name", name: "name", defaultValue: profileData.name, type: "text", placeholder: "e.g. Manish Student" },
-                      { label: "Email Address", name: "email", defaultValue: profileData.email, type: "email", disabled: true, placeholder: "e.g. support@kalvex.com" },
+                      { label: "Email Address", name: "email", defaultValue: profileData.email, type: "email", disabled: true, placeholder: "e.g. kalvextechnologies@gmail.com" },
                       { label: "Phone Number", name: "phone", defaultValue: profileData.phone, type: "tel", placeholder: "e.g. +91 98765 43210" },
                       { label: "Location / City", name: "city", defaultValue: profileData.city, type: "text", placeholder: "e.g. Mumbai" },
                     ].map(({ label, name, defaultValue, type, disabled, placeholder }) => (

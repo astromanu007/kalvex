@@ -814,7 +814,7 @@ export default function HelpIntelPage() {
 
             <div className="pt-2">
               <a
-                href="mailto:support@kalvex.com"
+                href="mailto:kalvextechnologies@gmail.com"
                 className="w-full inline-flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white font-black text-[9px] uppercase tracking-widest py-3.5 rounded-xl transition-all duration-300 shadow-lg shadow-indigo-600/10 hover:-translate-y-0.5"
               >
                 <Send className="w-3.5 h-3.5" /> Email Official Support

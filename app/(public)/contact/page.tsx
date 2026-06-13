@@ -100,7 +100,7 @@ export default function ContactPage() {
 
             <motion.div variants={fadeInUp} className="grid grid-cols-1 gap-6">
               {[
-                { icon: Mail, label: "Email Us", value: "hello@kalvex.com", color: "text-blue-600", bg: "bg-blue-50" },
+                { icon: Mail, label: "Email Us", value: "kalvextechnologies@gmail.com", color: "text-blue-600", bg: "bg-blue-50" },
                 { icon: Phone, label: "Call Us", value: "+91 98765 43210", color: "text-emerald-600", bg: "bg-emerald-50" },
                 { icon: MapPin, label: "Visit Us", value: "IIT Bombay Campus, Mumbai", color: "text-purple-600", bg: "bg-purple-50" }
               ].map((item, i) => (

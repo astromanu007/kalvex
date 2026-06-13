@@ -6,7 +6,7 @@ export async function askChatbot(message: string, history: { role: string; conte
   const openRouterKey = process.env.OPENROUTER_API_KEY;
   if (!openRouterKey || openRouterKey === "your_openrouter_api_key_here") {
     return { 
-      answer: "I'm currently in offline mode. Please contact support@kalvex.com for assistance or set your OpenRouter API key." 
+      answer: "I'm currently in offline mode. Please contact kalvextechnologies@gmail.com for assistance or set your OpenRouter API key." 
     };
   }
 

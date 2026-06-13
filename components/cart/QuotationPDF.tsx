@@ -161,7 +161,7 @@ export const QuotationPDF = ({ items, subtotal, discount, total }: QuotationPDFP
           <View style={styles.companyInfo}>
             <Text style={styles.companyName}>KALVEX LABS</Text>
             <Text style={styles.companyDetails}>Institutional Equipment & Services</Text>
-            <Text style={styles.companyDetails}>support@kalvex.in</Text>
+            <Text style={styles.companyDetails}>kalvextechnologies@gmail.com</Text>
             <Text style={styles.companyDetails}>www.kalvex.in</Text>
           </View>
           <View style={styles.quoteInfo}>
