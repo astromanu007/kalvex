@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,16 +37,25 @@ export default function ServicesPage() {
   // Pricing Calculator States
   const [selectedService, setSelectedService] = useState("phd-thesis");
   const [calcPages, setCalcPages] = useState(100);
-  const [calcUrgent, setCalcUrgent] = useState(false);
-  const [calcPlagiarism, setCalcPlagiarism] = useState(false);
-  const [calcConsultation, setCalcConsultation] = useState(false);
-  const [calcPrinting, setCalcPrinting] = useState(false);
+  const [deliverySpeed, setDeliverySpeed] = useState<"standard" | "express" | "super-urgent">("standard");
+  const [plagiarismSuite, setPlagiarismSuite] = useState<"none" | "turnitin" | "ithenticate" | "all-in-one">("none");
   const [calcComplexity, setCalcComplexity] = useState("Foundation");
   const [calcReferences, setCalcReferences] = useState(35);
-  const [calcRawDeliverables, setCalcRawDeliverables] = useState(false);
-  const [calcSupport, setCalcSupport] = useState(false);
   const [calcDiagrams, setCalcDiagrams] = useState(5);
   const [reportType, setReportType] = useState<"simple" | "black-book">("simple");
+  const [calcSupport, setCalcSupport] = useState(false);
+
+  // Custom Deliverables Toggles
+  const [includeSourceCode, setIncludeSourceCode] = useState(false);
+  const [includePresentation, setIncludePresentation] = useState(false);
+  const [includeLatex, setIncludeLatex] = useState(false);
+  const [includeConsultation, setIncludeConsultation] = useState(false);
+
+  // Promo Code States
+  const [promoInput, setPromoInput] = useState("");
+  const [activeDiscount, setActiveDiscount] = useState(0); // percentage, e.g. 10 for 10%
+  const [promoError, setPromoError] = useState("");
+  const [promoSuccess, setPromoSuccess] = useState("");
 
   useEffect(() => {
     async function load() {
@@ -72,6 +81,105 @@ export default function ServicesPage() {
     }
     load();
   }, []);
+
+  // Pricing calculation logic
+  const pricingResult = useMemo(() => {
+    let basePrice = 0;
+    let isCustomQuote = false;
+    const plagCost = calcPages <= 20 ? 160 : calcPages <= 40 ? 220 : 260;
+
+    if (selectedService === "phd-thesis") {
+      basePrice = SERVICES_DATA["phd-thesis"]?.price || 20000;
+      basePrice += (calcPages - 1) * 150;
+      basePrice += calcReferences * 5;
+    } else if (selectedService === "research-paper") {
+      if (calcPages >= 1 && calcPages <= 5) basePrice = 2700;
+      else if (calcPages >= 6 && calcPages <= 9) basePrice = 3300;
+      else if (calcPages >= 10 && calcPages <= 15) basePrice = 4500;
+      else if (calcPages >= 16 && calcPages <= 30) basePrice = 6000;
+      else if (calcPages >= 31 && calcPages <= 45) basePrice = 7500;
+      else {
+        isCustomQuote = true;
+      }
+    } else if (selectedService === "final-year-report") {
+      // Base Price (Tiered by Page Count): <50 pages is ₹1,000, 50 to 110 pages is ₹2,000, >110 pages is ₹3,000
+      basePrice = calcPages < 50 ? 1000 : calcPages <= 110 ? 2000 : 3000;
+      if (reportType === "black-book") {
+        basePrice += 265;
+      }
+    } else if (selectedService === "professional-write-ups") {
+      if (deliverySpeed === "standard") {
+        basePrice = (calcPages * 5) + (calcDiagrams * 4);
+      } else if (deliverySpeed === "express") {
+        basePrice = (calcPages * 8) + (calcDiagrams * 5);
+      } else {
+        basePrice = (calcPages * 10) + (calcDiagrams * 6);
+      }
+    } else if (selectedService === "utility-patent") {
+      basePrice = SERVICES_DATA["utility-patent"]?.price || 35000;
+    } else if (selectedService === "design-patent") {
+      basePrice = SERVICES_DATA["design-patent"]?.price || 1800;
+    } else if (selectedService === "major-project") {
+      basePrice = SERVICES_DATA["major-project"]?.price || 8000;
+    } else {
+      basePrice = SERVICES_DATA[selectedService]?.price || 2100;
+    }
+
+    if (calcComplexity === "Academic") basePrice *= 1.15;
+    else if (calcComplexity === "Research-Grade") basePrice *= 1.20;
+
+    let speedSurcharge = 0;
+    if (selectedService !== "professional-write-ups" && selectedService !== "major-project") {
+      if (deliverySpeed === "express") speedSurcharge = basePrice * 0.20;
+      else if (deliverySpeed === "super-urgent") speedSurcharge = basePrice * 0.40;
+    } else if (selectedService === "major-project") {
+      if (deliverySpeed !== "standard") speedSurcharge = 3000;
+    }
+
+    let plagiarismFee = 0;
+    if (["phd-thesis", "research-paper", "final-year-report"].includes(selectedService)) {
+      if (plagiarismSuite === "turnitin") plagiarismFee = plagCost;
+      else if (plagiarismSuite === "ithenticate") plagiarismFee = 350;
+      else if (plagiarismSuite === "all-in-one") plagiarismFee = 450;
+    }
+
+    let deliverablesFee = 0;
+    if (includeSourceCode) deliverablesFee += 2000;
+    if (includePresentation) deliverablesFee += 500;
+    if (includeLatex) deliverablesFee += 1000;
+    if (includeConsultation) deliverablesFee += 1500;
+    if (calcSupport) deliverablesFee += 500;
+
+    const subtotal = basePrice + speedSurcharge + plagiarismFee + deliverablesFee;
+    const discountAmount = subtotal * (activeDiscount / 100);
+    const total = subtotal - discountAmount;
+
+    return {
+      basePrice: Math.round(basePrice),
+      speedSurcharge: Math.round(speedSurcharge),
+      plagiarismFee: Math.round(plagiarismFee),
+      deliverablesFee: Math.round(deliverablesFee),
+      subtotal: Math.round(subtotal),
+      discountAmount: Math.round(discountAmount),
+      total: Math.round(total),
+      isCustomQuote
+    };
+  }, [
+    selectedService, calcPages, calcComplexity, calcReferences, calcDiagrams, 
+    deliverySpeed, plagiarismSuite, includeSourceCode, includePresentation, 
+    includeLatex, includeConsultation, calcSupport, reportType, activeDiscount
+  ]);
+
+  const {
+    basePrice,
+    speedSurcharge,
+    plagiarismFee,
+    deliverablesFee,
+    subtotal,
+    discountAmount,
+    total,
+    isCustomQuote
+  } = pricingResult;
 
   return (
     <div
@@ -332,79 +440,107 @@ export default function ServicesPage() {
                         <span>80 Ref</span>
                         <span>150 Ref</span>
                       </div>
-                    </div>
-                  )}
+                      </div>
+                    )}
+                  </div>
+                )}
+                {/* Delivery Speed Track Options */}
+              <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Delivery Speed Track</label>
+                <div className="grid grid-cols-3 gap-3">
+                  {[
+                    { id: "standard", label: "Standard Track", desc: "Regular fulfillment timeline", surcharge: "+0%", icon: "⏳" },
+                    { id: "express", label: "Express Track", desc: "Priority queue processing", surcharge: "+20%", icon: "⚡" },
+                    { id: "super-urgent", label: "Super Urgent", desc: "Immediate rush dispatch", surcharge: "+40%", icon: "🚀" }
+                  ].map((speed) => (
+                    <button
+                      key={speed.id}
+                      type="button"
+                      onClick={() => setDeliverySpeed(speed.id as any)}
+                      className={`p-4 rounded-2xl border-2 transition-all text-left flex flex-col justify-between hover:shadow-md ${
+                        deliverySpeed === speed.id
+                          ? "border-blue-600 bg-blue-50/50 shadow-lg shadow-blue-600/5"
+                          : "border-slate-100 bg-white hover:border-blue-200"
+                      }`}
+                    >
+                      <div>
+                        <span className="text-lg block mb-1">{speed.icon}</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900 leading-tight">{speed.label}</span>
+                        <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block mt-0.5">{speed.desc}</span>
+                      </div>
+                      <span className="text-[9px] font-black text-blue-655 uppercase tracking-widest mt-2">{speed.surcharge}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Plagiarism Tool Suite Selection */}
+              {["phd-thesis", "research-paper", "final-year-report"].includes(selectedService) && (
+                <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Plagiarism Checking Suite</label>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    {[
+                      { id: "none", label: "No Report", price: "Free", icon: "❌" },
+                      { id: "turnitin", label: "Turnitin Check", price: "From ₹160", icon: "📝" },
+                      { id: "ithenticate", label: "iThenticate Elite", price: "₹350 Flat", icon: "🔬" },
+                      { id: "all-in-one", label: "All-in-One Suite", price: "₹450 Flat", icon: "🛡️" }
+                    ].map((tool) => (
+                      <button
+                        key={tool.id}
+                        type="button"
+                        onClick={() => setPlagiarismSuite(tool.id as any)}
+                        className={`p-4 rounded-2xl border-2 transition-all text-left flex flex-col justify-between hover:shadow-md ${
+                          plagiarismSuite === tool.id
+                            ? "border-blue-600 bg-blue-50/50 shadow-lg shadow-blue-600/5"
+                            : "border-slate-100 bg-white hover:border-blue-200"
+                        }`}
+                      >
+                        <div>
+                          <span className="text-lg block mb-1">{tool.icon}</span>
+                          <span className="text-[9px] font-black uppercase tracking-widest block text-slate-900 leading-tight">{tool.label}</span>
+                        </div>
+                        <span className="text-[9px] font-black text-blue-650 uppercase tracking-widest mt-2">{tool.price}</span>
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
-              {/* Priority & Add-on Toggles */}
+              {/* Selected Project Deliverables */}
+              <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Select Project Deliverables</label>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {[
+                    { id: "sourceCode", label: "Source Code & Circuits", desc: "+₹2,000 codebase package", active: includeSourceCode, setter: setIncludeSourceCode, icon: "💻" },
+                    { id: "presentation", label: "Research PPT Slides", desc: "+₹500 premium slides deck", active: includePresentation, setter: setIncludePresentation, icon: "📊" },
+                    { id: "latex", label: "LaTeX Source Files", desc: "+₹1,000 professional journal formatting", active: includeLatex, setter: setIncludeLatex, icon: "📄" },
+                    { id: "consultation", label: "Expert Guide Consultation", desc: "+₹1,500 1-on-1 video call", active: includeConsultation, setter: setIncludeConsultation, icon: "📞" }
+                  ].map((del) => (
+                    <button
+                      key={del.id}
+                      type="button"
+                      onClick={() => del.setter(!del.active)}
+                      className={`p-4 rounded-2xl border-2 transition-all text-left flex items-center gap-4 hover:shadow-md ${
+                        del.active
+                          ? "border-blue-600 bg-blue-50/50"
+                          : "border-slate-100 bg-white hover:border-blue-200"
+                      }`}
+                    >
+                      <span className="text-xl shrink-0">{del.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900 truncate">{del.label}</span>
+                        <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block truncate mt-0.5">{del.desc}</span>
+                      </div>
+                      <div className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 text-xs font-black ${
+                        del.active ? "bg-blue-600 border-blue-600 text-white" : "border-slate-200 bg-slate-50 text-transparent"
+                      }`}>✓</div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Priority Support Toggle */}
               <div className="grid sm:grid-cols-2 gap-4">
-                <button
-                  type="button"
-                  onClick={() => setCalcUrgent(!calcUrgent)}
-                  className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
-                    calcUrgent
-                      ? "border-blue-600 bg-blue-50/40"
-                      : "border-slate-100 bg-white hover:border-slate-200"
-                  }`}
-                >
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-lg ${calcUrgent ? "bg-blue-600 text-white" : "bg-slate-50 text-slate-450"}`}>
-                    ⚡
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Urgent fulfillment</span>
-                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">Priority dispatch & fast delivery</span>
-                  </div>
-                </button>
-
-                {["phd-thesis", "research-paper", "final-year-report"].includes(selectedService) && (
-                  <button
-                    type="button"
-                    onClick={() => setCalcPlagiarism(!calcPlagiarism)}
-                    className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
-                      calcPlagiarism ? "border-blue-600 bg-blue-50/40" : "border-slate-100 bg-white hover:border-slate-200"
-                    }`}
-                  >
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcPlagiarism ? "bg-emerald-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>✓</div>
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Turnitin + AI Plag Check</span>
-                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">₹160 (≤20p) · ₹220 (≤40p) · ₹260 (≤60p)</span>
-                    </div>
-                  </button>
-                )}
-
-                {selectedService === "utility-patent" && (
-                  <button
-                    type="button"
-                    onClick={() => setCalcConsultation(!calcConsultation)}
-                    className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
-                      calcConsultation ? "border-blue-600 bg-blue-50/40" : "border-slate-100 bg-white hover:border-slate-200"
-                    }`}
-                  >
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcConsultation ? "bg-emerald-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>✓</div>
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Expert Consultation</span>
-                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹500 professional fee</span>
-                    </div>
-                  </button>
-                )}
-
-                {["phd-thesis", "research-paper", "major-project"].includes(selectedService) && (
-                  <button
-                    type="button"
-                    onClick={() => setCalcRawDeliverables(!calcRawDeliverables)}
-                    className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
-                      calcRawDeliverables ? "border-blue-600 bg-blue-50/40" : "border-slate-100 bg-white hover:border-slate-200"
-                    }`}
-                  >
-                    <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcRawDeliverables ? "bg-indigo-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>📁</div>
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Raw Source Deliverables</span>
-                      <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹2,000 codebase package</span>
-                    </div>
-                  </button>
-                )}
-
                 <button
                   type="button"
                   onClick={() => setCalcSupport(!calcSupport)}
@@ -419,156 +555,216 @@ export default function ServicesPage() {
                   </div>
                 </button>
               </div>
+
+              {/* Apply Coupon Code */}
+              <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl">
+                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Apply Coupon Code</label>
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    placeholder="Enter coupon (e.g. DIWALI10, STUDENT15)..."
+                    value={promoInput}
+                    onChange={(e) => {
+                      setPromoInput(e.target.value);
+                      setPromoError("");
+                      setPromoSuccess("");
+                    }}
+                    className="bg-white border border-slate-200 rounded-xl px-4 py-3.5 outline-none text-slate-950 font-bold text-xs flex-grow placeholder:text-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all uppercase tracking-[0.15em] shadow-sm"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const code = promoInput.toUpperCase().trim();
+                      if (code === "DIWALI10") {
+                        setActiveDiscount(10);
+                        setPromoSuccess("Coupon Applied! 10% Discount Active");
+                        setPromoError("");
+                      } else if (code === "STUDENT15") {
+                        setActiveDiscount(15);
+                        setPromoSuccess("Student Discount Applied! 15% Off");
+                        setPromoError("");
+                      } else if (code === "KALVEXLABS") {
+                        setActiveDiscount(5);
+                        setPromoSuccess("Partner Coupon Applied! 5% Off");
+                        setPromoError("");
+                      } else if (code === "") {
+                        setPromoError("Please enter a coupon code.");
+                        setPromoSuccess("");
+                      } else {
+                        setPromoError("Invalid coupon code.");
+                        setPromoSuccess("");
+                        setActiveDiscount(0);
+                      }
+                    }}
+                    className="bg-slate-900 text-white font-black text-xs uppercase tracking-widest px-6 rounded-xl hover:bg-blue-650 transition-colors shadow-lg active:scale-98"
+                  >
+                    Apply
+                  </button>
+                </div>
+                {promoSuccess && <p className="text-[9px] font-black uppercase tracking-widest text-emerald-600 mt-2">✓ {promoSuccess}</p>}
+                {promoError && <p className="text-[9px] font-black uppercase tracking-widest text-red-500 mt-2">× {promoError}</p>}
+              </div>
             </div>
 
             {/* Price Card */}
-            <div className="lg:col-span-5 bg-slate-900 rounded-[3rem] p-8 md:p-10 border border-slate-800 text-center shadow-2xl relative overflow-hidden">
+            <div className="lg:col-span-5 bg-slate-900 rounded-[3rem] p-8 md:p-10 border border-slate-800 text-center shadow-2xl relative overflow-hidden flex flex-col justify-between h-full min-h-[500px]">
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] pointer-events-none" />
               
-              <span className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] block mb-4">Calculated Quote</span>
-              
-              <div className="font-heading font-black text-6xl md:text-7xl text-white mb-6 tracking-tighter flex items-start justify-center gap-1.5 font-sans">
-                <span className="text-2xl mt-2 text-blue-500 font-bold font-sans">₹</span>
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-400 to-blue-600 font-black font-sans">
-                  {(() => {
-                    let total = 0;
-                    // Plagiarism cost helper (tiered by page count)
-                    const plagCost = calcPages <= 20 ? 160 : calcPages <= 40 ? 220 : 260;
-
-                    if (selectedService === "phd-thesis") {
-                      let base = SERVICES_DATA[selectedService]?.price || 20000;
-                      base += (calcPages - 1) * 150;       // ₹150/page (humanities baseline) starts from ₹20,000 for 1 page
-                      if (calcComplexity === "Academic") base *= 1.15;
-                      else if (calcComplexity === "Research-Grade") base *= 1.20;
-                      base += calcReferences * 5;    // ₹5/source
-                      if (calcUrgent) base += 10000;
-                      if (calcPlagiarism) base += plagCost;
-                      total = base;
-                    } else if (selectedService === "research-paper") {
-                      let base = SERVICES_DATA[selectedService]?.price || 2700;
-                      base += (calcPages - 1) * 500;       // ₹500/page starts from ₹2,700 for 1 page
-                      if (calcComplexity === "Academic") base *= 1.15;
-                      else if (calcComplexity === "Research-Grade") base *= 1.20;
-                      // references are FREE for research paper
-                      if (calcUrgent) base += 3000;
-                      if (calcPlagiarism) base += plagCost;
-                      total = base;
-                    } else if (selectedService === "final-year-report") {
-                      // Tiered fixed price by page count
-                      let base = calcPages < 50 ? (SERVICES_DATA[selectedService]?.price || 1000) : calcPages <= 110 ? 2000 : 3000;
-                      if (calcComplexity === "Academic") base *= 1.15;
-                      else if (calcComplexity === "Research-Grade") base *= 1.20;
-                      if (calcUrgent) base += 300;
-                      if (calcPlagiarism) base += plagCost;
-                      if (reportType === "black-book") base += 265; // Add black book printing cost if selected
-                      total = base;
-                    } else if (selectedService === "professional-write-ups") {
-                      // Standard: ₹5 per page + ₹4 per diagram
-                      // Urgent: ₹10 per page + ₹6 per diagram
-                      let base = calcUrgent 
-                        ? (calcPages * 10) + (calcDiagrams * 6)
-                        : (calcPages * 5) + (calcDiagrams * 4);
-                      if (calcComplexity === "Academic") base *= 1.15;
-                      else if (calcComplexity === "Research-Grade") base *= 1.20;
-                      total = base;
-                    } else if (selectedService === "utility-patent") {
-                      let base = SERVICES_DATA[selectedService]?.price || 35000;
-                      if (calcComplexity === "Academic") base *= 1.15;
-                      else if (calcComplexity === "Research-Grade") base *= 1.20;
-                      if (calcConsultation) base += 500;
-                      if (calcUrgent) base += 5000;
-                      total = base;
-                    } else if (selectedService === "design-patent") {
-                      let base = SERVICES_DATA[selectedService]?.price || 1800;
-                      if (calcComplexity === "Academic") base *= 1.15;
-                      else if (calcComplexity === "Research-Grade") base *= 1.20;
-                      total = base;
-                    } else if (selectedService === "major-project") {
-                      let base = calcUrgent ? 11000 : (SERVICES_DATA[selectedService]?.price || 8000);
-                      if (calcComplexity === "Academic") base *= 1.15;
-                      else if (calcComplexity === "Research-Grade") base *= 1.20;
-                      total = base;
-                    } else {
-                      total = SERVICES_DATA[selectedService]?.price || 2100;
-                    }
-
-                    // Global add-ons
-                    if (calcRawDeliverables && ["phd-thesis", "research-paper", "major-project"].includes(selectedService)) total += 2000;
-                    if (calcSupport) total += 500;
-
-                    return Math.round(total);
-                  })().toLocaleString()}
-                </span>
-              </div>
-
-              {/* Order Checklist Summary */}
-              <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-5 mb-8 text-left space-y-3.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest font-sans">
-                <div className="flex justify-between items-center">
-                  <span>Selected Rate</span>
-                  <span className="text-blue-500 font-black">
-                    {selectedService.replace(/-/g, " ")}
-                  </span>
-                </div>
-                {["phd-thesis", "research-paper", "final-year-report", "professional-write-ups"].includes(selectedService) && (
-                  <div className="flex justify-between items-center">
-                    <span>Scope Volume</span>
-                    <span className="text-white font-black">{calcPages} Pages</span>
+              <div>
+                <span className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] block mb-4">Calculated Quote</span>
+                
+                {isCustomQuote ? (
+                  <div className="font-heading font-black text-4xl text-amber-500 mb-6 tracking-tight flex flex-col items-center justify-center gap-2">
+                    <span className="text-4xl">📞</span>
+                    <span>Custom Quote</span>
+                    <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mt-1">Scope exceeds 45 pages</span>
                   </div>
-                )}
-                {selectedService === "professional-write-ups" && (
-                  <div className="flex justify-between items-center">
-                    <span>Diagrams Count</span>
-                    <span className="text-white font-black">{calcDiagrams} Diagrams</span>
-                  </div>
-                )}
-                {selectedService === "final-year-report" && (
-                  <div className="flex justify-between items-center">
-                    <span>Report Format</span>
-                    <span className="text-white font-black">
-                      {reportType === "simple" ? "Simple Report (Soft Copy)" : "Black Book (Hard Bound)"}
+                ) : (
+                  <div className="font-heading font-black text-5xl md:text-6xl text-white mb-6 tracking-tighter flex items-start justify-center gap-1.5 font-sans">
+                    <span className="text-xl mt-1.5 text-blue-500 font-bold font-sans">₹</span>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-500 via-indigo-400 to-blue-600 font-black font-sans">
+                      {total.toLocaleString()}
                     </span>
                   </div>
                 )}
-                <div className="flex justify-between items-center">
-                   <span>Academic Standard</span>
-                   <span className="text-white font-black">{calcComplexity}</span>
-                 </div>
-                {["phd-thesis", "research-paper"].includes(selectedService) && (
-                  <div className="flex justify-between items-center">
-                    <span>Bibliography Ref</span>
-                    <span className="text-white font-black">{calcReferences} Sources</span>
+
+                {/* Detailed Cost Breakdown Drawer */}
+                {!isCustomQuote && (
+                  <div className="bg-slate-950/40 border border-slate-800/80 rounded-2xl p-4 mb-6 text-left space-y-2 text-[8px] font-bold text-slate-400 uppercase tracking-wider">
+                    <div className="flex justify-between">
+                      <span>Base Service Fee:</span>
+                      <span className="text-white">₹{basePrice.toLocaleString()}</span>
+                    </div>
+                    {speedSurcharge > 0 && (
+                      <div className="flex justify-between text-amber-500">
+                        <span>Speed Surcharge:</span>
+                        <span>+₹{speedSurcharge.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {plagiarismFee > 0 && (
+                      <div className="flex justify-between">
+                        <span>Plagiarism checking:</span>
+                        <span className="text-white">+₹{plagiarismFee.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {deliverablesFee > 0 && (
+                      <div className="flex justify-between">
+                        <span>Add-ons / Deliverables:</span>
+                        <span className="text-white">+₹{deliverablesFee.toLocaleString()}</span>
+                      </div>
+                    )}
+                    {discountAmount > 0 && (
+                      <div className="flex justify-between text-emerald-500 border-t border-slate-800/80 pt-2">
+                        <span>Promo Discount ({activeDiscount}%):</span>
+                        <span>-₹{discountAmount.toLocaleString()}</span>
+                      </div>
+                    )}
                   </div>
                 )}
-                <div className="flex justify-between items-center">
-                  <span>Urgency Level</span>
-                  <span className={`font-black ${calcUrgent ? "text-amber-500" : "text-slate-450"}`}>
-                    {calcUrgent ? "⚡ Urgent Delivery" : "⏳ Standard Delivery"}
-                  </span>
-                </div>
-                <div className="h-[1px] bg-slate-800" />
-                <div className="flex justify-between items-center text-slate-500 text-[8px]">
-                  <span>Fulfillment Duration</span>
-                  <span className="text-white">
-                    {selectedService === "phd-thesis" ? (calcUrgent ? "15–20 Days" : "30–45 Days") :
-                     selectedService === "research-paper" ? (calcUrgent ? "2–5 Days" : "12–20 Days") :
-                     selectedService === "final-year-report" ? (calcUrgent ? "1–3 Days" : "5–7 Days") :
-                     selectedService === "major-project" ? (calcUrgent ? "10–15 Days" : "21–30 Days") :
-                     selectedService === "design-patent" ? (calcUrgent ? "1–2 Days" : "5–12 Days") :
-                     selectedService === "utility-patent" ? (calcUrgent ? "12–20 Days" : "21–30 Days") :
-                     selectedService === "copyright" ? "Govt. filing in 2 Days" :
-                     selectedService === "trademark" ? "Filing in 3 Days" :
-                     selectedService === "mini-project" ? (calcUrgent ? "1–3 Days" : "7–10 Days") :
-                     selectedService === "professional-write-ups" ? (calcUrgent ? "1–2 Days" : "7–12 Days") :
-                     "1–2 Days"}
-                  </span>
+
+                {/* Order Checklist Summary */}
+                <div className="bg-slate-950/80 border border-slate-800 rounded-2xl p-5 mb-8 text-left space-y-3.5 text-[9px] font-bold text-slate-400 uppercase tracking-widest font-sans">
+                  <div className="flex justify-between items-center">
+                    <span>Selected Rate</span>
+                    <span className="text-blue-500 font-black">
+                      {selectedService.replace(/-/g, " ")}
+                    </span>
+                  </div>
+                  {["phd-thesis", "research-paper", "final-year-report", "professional-write-ups"].includes(selectedService) && (
+                    <div className="flex justify-between items-center">
+                      <span>Scope Volume</span>
+                      <span className="text-white font-black">{calcPages} Pages</span>
+                    </div>
+                  )}
+                  {selectedService === "professional-write-ups" && (
+                    <div className="flex justify-between items-center">
+                      <span>Diagrams Count</span>
+                      <span className="text-white font-black">{calcDiagrams} Diagrams</span>
+                    </div>
+                  )}
+                  {selectedService === "final-year-report" && (
+                    <div className="flex justify-between items-center">
+                      <span>Report Format</span>
+                      <span className="text-white font-black">
+                        {reportType === "simple" ? "Simple Report (Soft Copy)" : "Black Book (Hard Bound)"}
+                      </span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center">
+                     <span>Academic Standard</span>
+                     <span className="text-white font-black">{calcComplexity}</span>
+                  </div>
+                  {["phd-thesis", "research-paper"].includes(selectedService) && (
+                    <div className="flex justify-between items-center">
+                      <span>Bibliography Ref</span>
+                      <span className="text-white font-black">{calcReferences} Sources</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between items-center">
+                    <span>Urgency Level</span>
+                    <span className={`font-black ${deliverySpeed !== "standard" ? "text-amber-500" : "text-slate-455"}`}>
+                      {deliverySpeed === "standard" ? "⏳ Standard Track" : deliverySpeed === "express" ? "⚡ Express Track" : "🚀 Super Urgent"}
+                    </span>
+                  </div>
+                  <div className="h-[1px] bg-slate-800" />
+                  <div className="flex justify-between items-center text-slate-500 text-[8px]">
+                    <span>Fulfillment Duration</span>
+                    <span className="text-white">
+                      {selectedService === "phd-thesis" ? (deliverySpeed === "standard" ? "30–45 Days" : deliverySpeed === "express" ? "20–25 Days" : "15–20 Days") :
+                       selectedService === "research-paper" ? (deliverySpeed === "standard" ? "12–20 Days" : deliverySpeed === "express" ? "5–10 Days" : "2–5 Days") :
+                       selectedService === "final-year-report" ? (deliverySpeed === "standard" ? "5–7 Days" : deliverySpeed === "express" ? "3–4 Days" : "1–3 Days") :
+                       selectedService === "major-project" ? (deliverySpeed === "standard" ? "21–30 Days" : deliverySpeed === "express" ? "15–20 Days" : "10–15 Days") :
+                       selectedService === "design-patent" ? (deliverySpeed === "standard" ? "5–12 Days" : deliverySpeed === "express" ? "3–4 Days" : "1–2 Days") :
+                       selectedService === "utility-patent" ? (deliverySpeed === "standard" ? "21–30 Days" : deliverySpeed === "express" ? "15–20 Days" : "12–20 Days") :
+                       selectedService === "copyright" ? "Govt. filing in 2 Days" :
+                       selectedService === "trademark" ? "Filing in 3 Days" :
+                       selectedService === "mini-project" ? (deliverySpeed === "standard" ? "7–10 Days" : deliverySpeed === "express" ? "4–6 Days" : "1–3 Days") :
+                       selectedService === "professional-write-ups" ? (deliverySpeed === "standard" ? "7–12 Days" : deliverySpeed === "express" ? "3–5 Days" : "1–2 Days") :
+                       "1–2 Days"}
+                    </span>
+                  </div>
                 </div>
               </div>
 
-              <Link href={`/services/${selectedService}`}>
-                <Button className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-xl shadow-blue-600/10">
-                  Proceed to Booking ⚡
+              <div>
+                {isCustomQuote ? (
+                  <Link href="/contact" className="block w-full">
+                    <Button className="w-full h-16 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black uppercase tracking-[0.2em] text-[10px] shadow-xl shadow-amber-500/10">
+                      Contact for Custom Quote ✉️
+                    </Button>
+                  </Link>
+                ) : (
+                  <Link href={`/services/${selectedService}`} className="block w-full">
+                    <Button className="w-full h-16 bg-blue-600 hover:bg-blue-500 text-white rounded-2xl font-black uppercase tracking-[0.2em] text-[10px] shadow-xl shadow-blue-600/10">
+                      Proceed to Booking ⚡
+                    </Button>
+                  </Link>
+                )}
+
+                {/* Export Quote Details */}
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    const summaryText = `Kalvex Labs Quote Summary\n` +
+                      `----------------------------\n` +
+                      `Service: ${selectedService.replace(/-/g, " ").toUpperCase()}\n` +
+                      `Scope Volume: ${calcPages} Pages\n` +
+                      `Standard Level: ${calcComplexity}\n` +
+                      `Delivery speed: ${deliverySpeed.toUpperCase()}\n` +
+                      `Plagiarism check: ${plagiarismSuite.toUpperCase()}\n` +
+                      `Surcharges/Add-ons: ₹${speedSurcharge + plagiarismFee + deliverablesFee}\n` +
+                      `Discount applied: ${activeDiscount}%\n` +
+                      `----------------------------\n` +
+                      `Final estimate: ${isCustomQuote ? "CUSTOM QUOTE" : "₹" + Math.round(total)}\n` +
+                      `Generated on: ${new Date().toLocaleDateString()}`;
+                    navigator.clipboard.writeText(summaryText);
+                    alert("Quote summary copied to clipboard! You can share it now.");
+                  }}
+                  className="w-full mt-3 border-slate-700 text-slate-350 hover:bg-slate-800 hover:text-white rounded-2xl h-12 font-black uppercase tracking-[0.2em] text-[8px] bg-slate-900/50"
+                >
+                  Copy Quote Details 📋
                 </Button>
-              </Link>
+              </div>
             </div>
           </div>
         </motion.div>
