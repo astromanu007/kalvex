@@ -62,6 +62,7 @@ export default function ServicesPage() {
   const [loading, setLoading] = useState(true);
 
   // Pricing Calculator States
+  const [isEstimatorOpen, setIsEstimatorOpen] = useState(false);
   const [selectedService, setSelectedService] = useState("phd-thesis");
   const [calcPages, setCalcPages] = useState(100);
   const [deliverySpeed, setDeliverySpeed] = useState<"standard" | "express" | "super-urgent">("standard");
@@ -234,13 +235,74 @@ export default function ServicesPage() {
             Expert help for students, researchers, and engineers to build and document their ideas.
           </p>
         </motion.div>
-        {/* Interactive Pricing Calculator */}
+
+        {/* Cost Estimator Toggle Section */}
         <motion.div
           initial="hidden"
           animate="visible"
           variants={fadeInUp}
-          className="mb-24 bg-gradient-to-br from-white via-blue-50/10 to-indigo-50/10 border border-blue-100/60 rounded-[3.5rem] p-8 md:p-16 shadow-2xl relative overflow-hidden text-slate-800"
+          className="flex flex-col items-center justify-center mb-16 space-y-4"
         >
+          <motion.button
+            onClick={() => setIsEstimatorOpen(!isEstimatorOpen)}
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.98 }}
+            className={`relative group px-8 py-5 rounded-3xl font-black uppercase tracking-[0.2em] text-[10px] transition-all duration-500 shadow-2xl flex items-center gap-3 border ${
+              isEstimatorOpen 
+                ? "bg-slate-900 text-white border-slate-800 shadow-slate-950/20" 
+                : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-blue-500/25 hover:shadow-indigo-500/35"
+            }`}
+          >
+            {isEstimatorOpen ? "Hide Price Calculator ❌" : "Estimate Your Project Cost 💰"}
+            <motion.span
+              animate={{ rotate: isEstimatorOpen ? 180 : 0 }}
+              transition={{ duration: 0.3 }}
+              className="inline-block text-[10px]"
+            >
+              ▼
+            </motion.span>
+            
+            {/* Ambient glow under the button */}
+            {!isEstimatorOpen && (
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-3xl blur-md opacity-30 group-hover:opacity-60 transition-opacity -z-10 animate-pulse" />
+            )}
+          </motion.button>
+          
+          {!isEstimatorOpen && (
+            <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-relaxed text-center max-w-md">
+              Click to open interactive price calculator & check instant rates
+            </p>
+          )}
+        </motion.div>
+
+        {/* Interactive Pricing Calculator */}
+        <AnimatePresence>
+          {isEstimatorOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0, marginBottom: 0 }}
+              animate={{ 
+                opacity: 1, 
+                height: "auto", 
+                marginBottom: 96,
+                transition: { 
+                  height: { duration: 0.6, ease: [0.16, 1, 0.3, 1] },
+                  opacity: { duration: 0.4, delay: 0.1 },
+                  marginBottom: { duration: 0.6 }
+                }
+              }}
+              exit={{ 
+                opacity: 0, 
+                height: 0, 
+                marginBottom: 0,
+                transition: { 
+                  height: { duration: 0.5, ease: [0.16, 1, 0.3, 1] },
+                  opacity: { duration: 0.2 },
+                  marginBottom: { duration: 0.5 }
+                }
+              }}
+              className="overflow-hidden relative"
+            >
+              <div className="bg-gradient-to-br from-white via-blue-50/10 to-indigo-50/10 border border-blue-100/60 rounded-[3.5rem] p-8 md:p-16 shadow-2xl relative overflow-hidden text-slate-800">
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-550/5 rounded-full blur-[100px] pointer-events-none" />
           <div className="absolute -left-10 -bottom-10 w-96 h-96 bg-indigo-550/5 rounded-full blur-[100px] pointer-events-none" />
 
@@ -800,10 +862,13 @@ export default function ServicesPage() {
                 >
                   Copy Quote Details 📋
                 </Button>
+                </div>
               </div>
             </div>
           </div>
         </motion.div>
+      )}
+    </AnimatePresence>
         {/* Why Choose Us: 3+1 Balanced Layout */}
         <div className="mb-24 space-y-8">
           <motion.div
