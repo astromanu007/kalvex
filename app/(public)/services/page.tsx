@@ -45,6 +45,7 @@ export default function ServicesPage() {
   const [calcReferences, setCalcReferences] = useState(35);
   const [calcRawDeliverables, setCalcRawDeliverables] = useState(false);
   const [calcSupport, setCalcSupport] = useState(false);
+  const [calcDiagrams, setCalcDiagrams] = useState(5);
 
   useEffect(() => {
     async function load() {
@@ -152,32 +153,64 @@ export default function ServicesPage() {
 
               {/* Dynamic Sliders for Pages / Scope */}
               {["phd-thesis", "research-paper", "final-year-report", "professional-write-ups"].includes(selectedService) && (
-                <div className="space-y-4 bg-white/60 border border-slate-100 p-6 rounded-3xl">
-                  <div className="flex justify-between items-center">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Approximate Page Count</label>
-                    <span className="bg-blue-50 border border-blue-100 text-blue-700 px-4 py-1 rounded-xl text-xs font-black">{calcPages} Pages</span>
+                <div className="space-y-6 bg-white/60 border border-slate-100 p-6 rounded-3xl">
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Approximate Page Count</label>
+                      <span className="bg-blue-50 border border-blue-100 text-blue-700 px-4 py-1 rounded-xl text-xs font-black">{calcPages} Pages</span>
+                    </div>
+                    
+                    <div className="relative h-10 flex items-center">
+                      <div className="absolute left-0 right-0 h-2 bg-slate-100 rounded-full" />
+                      <div 
+                        className="absolute left-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full pointer-events-none transition-all duration-75" 
+                        style={{ width: `${(calcPages - 1) / (300 - 1) * 100}%` }}
+                      />
+                      <input 
+                        type="range" 
+                        min="1" 
+                        max="300" 
+                        value={calcPages} 
+                        onChange={(e) => setCalcPages(parseInt(e.target.value))} 
+                        className="absolute left-0 w-full h-8 appearance-none bg-transparent cursor-pointer focus:outline-none z-10"
+                      />
+                    </div>
+                    <div className="flex justify-between text-[8px] text-slate-400 uppercase tracking-widest font-black">
+                      <span>1 Page</span>
+                      <span>150 Pages</span>
+                      <span>300 Pages</span>
+                    </div>
                   </div>
-                  
-                  <div className="relative h-10 flex items-center">
-                    <div className="absolute left-0 right-0 h-2 bg-slate-100 rounded-full" />
-                    <div 
-                      className="absolute left-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full pointer-events-none transition-all duration-75" 
-                      style={{ width: `${(calcPages - 1) / (300 - 1) * 100}%` }}
-                    />
-                    <input 
-                      type="range" 
-                      min="1" 
-                      max="300" 
-                      value={calcPages} 
-                      onChange={(e) => setCalcPages(parseInt(e.target.value))} 
-                      className="absolute left-0 w-full h-8 appearance-none bg-transparent cursor-pointer focus:outline-none z-10"
-                    />
-                  </div>
-                  <div className="flex justify-between text-[8px] text-slate-400 uppercase tracking-widest font-black">
-                    <span>1 Page</span>
-                    <span>150 Pages</span>
-                    <span>300 Pages</span>
-                  </div>
+
+                  {selectedService === "professional-write-ups" && (
+                    <div className="space-y-4 pt-4 border-t border-slate-100">
+                      <div className="flex justify-between items-center">
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Number of Diagrams</label>
+                        <span className="bg-blue-50 border border-blue-100 text-blue-700 px-4 py-1 rounded-xl text-xs font-black">{calcDiagrams} Diagrams</span>
+                      </div>
+                      
+                      <div className="relative h-10 flex items-center">
+                        <div className="absolute left-0 right-0 h-2 bg-slate-100 rounded-full" />
+                        <div 
+                          className="absolute left-0 h-2 bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full pointer-events-none transition-all duration-75" 
+                          style={{ width: `${(calcDiagrams - 0) / (50 - 0) * 100}%` }}
+                        />
+                        <input 
+                          type="range" 
+                          min="0" 
+                          max="50" 
+                          value={calcDiagrams} 
+                          onChange={(e) => setCalcDiagrams(parseInt(e.target.value))} 
+                          className="absolute left-0 w-full h-8 appearance-none bg-transparent cursor-pointer focus:outline-none z-10"
+                        />
+                      </div>
+                      <div className="flex justify-between text-[8px] text-slate-400 uppercase tracking-widest font-black">
+                        <span>0 Diagrams</span>
+                        <span>25 Diagrams</span>
+                        <span>50 Diagrams</span>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
 
@@ -367,9 +400,11 @@ export default function ServicesPage() {
                       if (calcPlagiarism) base += plagCost;
                       total = base;
                     } else if (selectedService === "professional-write-ups") {
-                      // ₹5 text + ₹4 diagram = ₹9/page standard; ₹10 + ₹6 = ₹16/page urgent
-                      let rate = calcUrgent ? 16 : 9;
-                      let base = calcPages * rate;
+                      // Standard: ₹5 per page + ₹4 per diagram
+                      // Urgent: ₹10 per page + ₹6 per diagram
+                      let base = calcUrgent 
+                        ? (calcPages * 10) + (calcDiagrams * 6)
+                        : (calcPages * 5) + (calcDiagrams * 4);
                       if (calcComplexity === "Academic") base *= 1.15;
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
                       total = base;
@@ -415,6 +450,12 @@ export default function ServicesPage() {
                   <div className="flex justify-between items-center">
                     <span>Scope Volume</span>
                     <span className="text-white font-black">{calcPages} Pages</span>
+                  </div>
+                )}
+                {selectedService === "professional-write-ups" && (
+                  <div className="flex justify-between items-center">
+                    <span>Diagrams Count</span>
+                    <span className="text-white font-black">{calcDiagrams} Diagrams</span>
                   </div>
                 )}
                 <div className="flex justify-between items-center">
