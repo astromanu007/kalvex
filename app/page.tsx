@@ -25,7 +25,36 @@ const staggerContainer = {
   }
 };
 
+// Permanent layout styling matching Option 23 (Monochrome White Glow)
+const topStyle: React.CSSProperties = {
+  height: "3.5px",
+  width: "100%",
+  backgroundColor: "#ffffff",
+  boxShadow: "0 0 8px rgba(255, 255, 255, 0.95), 0 0 18px rgba(226, 232, 240, 0.8)"
+};
+
+const bottomStyle: React.CSSProperties = {
+  height: "3.5px",
+  width: "100%",
+  backgroundColor: "#ffffff",
+  boxShadow: "0 0 8px rgba(255, 255, 255, 0.95), 0 0 18px rgba(226, 232, 240, 0.8)"
+};
+
+const containerStyle: React.CSSProperties = {
+  boxShadow: "0 -12px 32px rgba(226, 232, 240, 0.8), 0 12px 32px rgba(226, 232, 240, 0.8)"
+};
+
 export default function Home() {
+  const marqueeItems = [
+    { name: "PhD Thesis Help", link: "/services/phd-thesis", icon: "🎓" },
+    { name: "Research Papers", link: "/services/research-paper", icon: "📄" },
+    { name: "Final Year Reports", link: "/services/final-year-report", icon: "💼" },
+    { name: "Design Patents", link: "/services/design-patent", icon: "🛡️" },
+    { name: "Utility Patents", link: "/services/utility-patent", icon: "⚙️" },
+    { name: "Writing & Writeups", link: "/services/writing-writeups", icon: "✍️" },
+    { name: "Electronics Store", link: "/electronics", icon: "🔌" },
+  ];
+
   return (
     <div className="flex flex-col min-h-screen pt-20 bg-slate-50 transition-colors duration-500">
       {/* SECTION 1 - HERO: INSTITUTIONAL PRECISION */}
@@ -128,16 +157,20 @@ export default function Home() {
           <div className="grid lg:grid-cols-12 gap-10 lg:gap-20 items-center">
             <div className="lg:col-span-7 space-y-12">
               <motion.div variants={fadeInUp} className="space-y-6">
+                {/* Academic & Engineering Partner Badge */}
                 <div className="inline-flex items-center gap-3 bg-blue-600 text-white px-6 py-2 rounded-xl text-[10px] font-black uppercase tracking-[0.3em] shadow-2xl shadow-blue-600/20">
                   <Sparkles className="w-4 h-4" /> Your Academic & Engineering Partner
                 </div>
+
                 <h1 className="font-heading font-black text-4xl sm:text-6xl md:text-8xl leading-[0.9] text-slate-900 tracking-tighter">
-                  Build. Publish.<br />
-                  <span className="text-blue-600">Patent.</span> <br />
+                  Build. Innovate.<br />
+                  <span className="text-blue-600">Research.</span> <br />
                   Succeed.
                 </h1>
+
+                {/* Single merged subtitle — seamless and powerful */}
                 <p className="text-lg sm:text-2xl text-slate-400 max-w-2xl leading-relaxed font-bold">
-                  The ultimate platform for engineering students and researchers. Get help with your thesis, buy high-quality electronics, and register your patents effortlessly.
+                  The ultimate platform for engineering students and researchers — powering India&apos;s next generation of Engineers, Researchers &amp; Innovators through thesis writing, patent filing, and high-quality electronics.
                 </p>
               </motion.div>
 
@@ -201,76 +234,59 @@ export default function Home() {
         </div>
       </motion.section>
 
-      {/* SECTION 1.5 - TRENDING SERVICES MARQUEE (REDESIGNED) */}
-      <div className="relative z-20 bg-slate-950 overflow-hidden border-y border-white/10 shadow-[0_0_40px_rgba(37,99,235,0.15)] group/marquee">
-        {/* Subtle background glow */}
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/20 via-slate-900/10 to-blue-900/20 pointer-events-none transition-opacity duration-700 opacity-50 group-hover/marquee:opacity-100" />
-        
+      {/* SECTION 1.5 - TRENDING SERVICES MARQUEE */}
+      <div 
+        className="relative z-20 bg-white overflow-visible transition-all duration-500"
+        style={containerStyle}
+      >
+        {/* Dynamic Top Bar */}
+        <div className="relative w-full overflow-visible z-30">
+          <div style={topStyle} />
+        </div>
+
         <div className="flex flex-col md:flex-row md:items-center">
-          <div className="flex-shrink-0 bg-gradient-to-r from-blue-700 to-blue-500 text-white px-6 py-4 md:px-10 md:py-6 z-30 flex items-center justify-center gap-4 shadow-[20px_0_30px_-10px_rgba(0,0,0,0.5)] w-full md:w-auto border-r border-blue-400/30 relative overflow-hidden">
-             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-             <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
-             <div className="relative z-10 flex items-center gap-3">
-               <span className="relative flex h-3.5 w-3.5">
-                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
-                 <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-white shadow-[0_0_10px_rgba(255,255,255,0.8)]"></span>
-               </span>
-               <span className="text-[12px] font-black uppercase tracking-[0.3em] whitespace-nowrap text-white drop-shadow-md">Trending Services</span>
-             </div>
+          {/* Trending Services Badge — Blue vs Black dynamic */}
+          <div className="flex-shrink-0 text-white px-6 py-4 md:px-10 md:py-6 z-30 flex items-center justify-center gap-4 w-full md:w-auto border-r relative overflow-hidden transition-colors duration-500 bg-blue-600 border-blue-700">
+            <div className="relative z-10 flex items-center gap-3">
+              <span className="relative flex h-3.5 w-3.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75" />
+                <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-white" />
+              </span>
+              <span className="text-[12px] font-black uppercase tracking-[0.3em] whitespace-nowrap text-white">Trending Services</span>
+            </div>
           </div>
-          
-          <div className="relative flex overflow-x-hidden py-5 md:py-6 w-full bg-slate-950/80 backdrop-blur-md">
-            {/* Fade overlays for smooth scrolling */}
-            <div className="absolute left-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-r from-slate-950 to-transparent z-10 pointer-events-none" />
-            <div className="absolute right-0 top-0 bottom-0 w-16 md:w-32 bg-gradient-to-l from-slate-950 to-transparent z-10 pointer-events-none" />
 
-            {/* Note: The parent div needs group-hover:pause for pause-on-hover effect if we want it, but let's stick to smooth marquee */}
-            <div className="animate-marquee whitespace-nowrap flex items-center space-x-6 md:space-x-10 px-6 md:px-10">
-              {[
-                { name: "PhD Thesis Help", link: "/services/phd-thesis", icon: "🎓", color: "text-blue-400", borderColor: "hover:border-blue-500/50", glow: "hover:shadow-[0_0_20px_rgba(96,165,250,0.2)]" },
-                { name: "Research Papers", link: "/services/research-paper", icon: "📄", color: "text-purple-400", borderColor: "hover:border-purple-500/50", glow: "hover:shadow-[0_0_20px_rgba(192,132,252,0.2)]" },
-                { name: "Final Year Reports", link: "/services/final-year-report", icon: "💼", color: "text-orange-400", borderColor: "hover:border-orange-500/50", glow: "hover:shadow-[0_0_20px_rgba(251,146,60,0.2)]" },
-                { name: "Design Patents", link: "/services/design-patent", icon: "🛡️", color: "text-emerald-400", borderColor: "hover:border-emerald-500/50", glow: "hover:shadow-[0_0_20px_rgba(52,211,153,0.2)]" },
-                { name: "Utility Patents", link: "/services/utility-patent", icon: "⚙️", color: "text-red-400", borderColor: "hover:border-red-500/50", glow: "hover:shadow-[0_0_20px_rgba(248,113,113,0.2)]" },
-                { name: "Writing & Writeups", link: "/services/writing-writeups", icon: "✍️", color: "text-amber-400", borderColor: "hover:border-amber-500/50", glow: "hover:shadow-[0_0_20px_rgba(251,191,36,0.2)]" },
-                { name: "Electronics Store", link: "/electronics", icon: "🔌", color: "text-teal-400", borderColor: "hover:border-teal-500/50", glow: "hover:shadow-[0_0_20px_rgba(45,212,191,0.2)]" },
-              ].map((s, i) => (
-                <Link 
-                  key={i} 
-                  href={s.link} 
-                  className={`group/link flex items-center gap-3 px-6 py-3 rounded-full bg-white/[0.03] border border-white/5 transition-all duration-300 hover:scale-110 hover:bg-white/[0.08] ${s.borderColor} ${s.glow} cursor-pointer`}
+          <div className="relative flex overflow-x-hidden py-4 md:py-5 w-full">
+            <div className="absolute left-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-16 md:w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none" />
+
+            <div className="animate-marquee whitespace-nowrap flex items-center space-x-4 md:space-x-6 px-6 md:px-10">
+              {marqueeItems.map((s, i) => (
+                <Link key={i} href={s.link}
+                  className="group/link flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white border border-slate-200 border-l-4 pl-4 hover:scale-105 transition-all duration-300 shadow-sm cursor-pointer border-l-blue-600 hover:border-blue-500"
                 >
                   <span className="text-base group-hover/link:scale-125 transition-transform duration-300">{s.icon}</span>
-                  <span className={`font-black text-[12px] uppercase tracking-[0.2em] transition-colors duration-300 text-slate-300 group-hover/link:${s.color}`}>
-                    {s.name}
-                  </span>
+                  <span className="font-black text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 text-slate-700 hover:text-blue-600">{s.name}</span>
                 </Link>
               ))}
             </div>
 
-            <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-6 md:space-x-10 px-6 md:px-10 py-5 md:py-6">
-              {[
-                { name: "PhD Thesis Help", link: "/services/phd-thesis", icon: "🎓", color: "text-blue-400", borderColor: "hover:border-blue-500/50", glow: "hover:shadow-[0_0_20px_rgba(96,165,250,0.2)]" },
-                { name: "Research Papers", link: "/services/research-paper", icon: "📄", color: "text-purple-400", borderColor: "hover:border-purple-500/50", glow: "hover:shadow-[0_0_20px_rgba(192,132,252,0.2)]" },
-                { name: "Final Year Reports", link: "/services/final-year-report", icon: "💼", color: "text-orange-400", borderColor: "hover:border-orange-500/50", glow: "hover:shadow-[0_0_20px_rgba(251,146,60,0.2)]" },
-                { name: "Design Patents", link: "/services/design-patent", icon: "🛡️", color: "text-emerald-400", borderColor: "hover:border-emerald-500/50", glow: "hover:shadow-[0_0_20px_rgba(52,211,153,0.2)]" },
-                { name: "Utility Patents", link: "/services/utility-patent", icon: "⚙️", color: "text-red-400", borderColor: "hover:border-red-500/50", glow: "hover:shadow-[0_0_20px_rgba(248,113,113,0.2)]" },
-                { name: "Writing & Writeups", link: "/services/writing-writeups", icon: "✍️", color: "text-amber-400", borderColor: "hover:border-amber-500/50", glow: "hover:shadow-[0_0_20px_rgba(251,191,36,0.2)]" },
-                { name: "Electronics Store", link: "/electronics", icon: "🔌", color: "text-teal-400", borderColor: "hover:border-teal-500/50", glow: "hover:shadow-[0_0_20px_rgba(45,212,191,0.2)]" },
-              ].map((s, i) => (
-                <Link 
-                  key={`dup-${i}`} 
-                  href={s.link} 
-                  className={`group/link flex items-center gap-3 px-6 py-3 rounded-full bg-white/[0.03] border border-white/5 transition-all duration-300 hover:scale-110 hover:bg-white/[0.08] ${s.borderColor} ${s.glow} cursor-pointer`}
+            <div className="absolute top-0 animate-marquee2 whitespace-nowrap flex items-center space-x-4 md:space-x-6 px-6 md:px-10 py-4 md:py-5">
+              {marqueeItems.map((s, i) => (
+                <Link key={`dup-${i}`} href={s.link}
+                  className="group/link flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-white border border-slate-200 border-l-4 pl-4 hover:scale-105 transition-all duration-300 shadow-sm cursor-pointer border-l-blue-600 hover:border-blue-500"
                 >
                   <span className="text-base group-hover/link:scale-125 transition-transform duration-300">{s.icon}</span>
-                  <span className={`font-black text-[12px] uppercase tracking-[0.2em] transition-colors duration-300 text-slate-300 group-hover/link:${s.color}`}>
-                    {s.name}
-                  </span>
+                  <span className="font-black text-[11px] uppercase tracking-[0.2em] transition-colors duration-300 text-slate-700 hover:text-blue-600">{s.name}</span>
                 </Link>
               ))}
             </div>
           </div>
+        </div>
+
+        {/* Dynamic Bottom Bar */}
+        <div className="relative w-full overflow-visible z-30">
+          <div style={bottomStyle} />
         </div>
       </div>
 
@@ -668,32 +684,32 @@ export default function Home() {
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeInUp}
-        className="py-16 sm:py-40 bg-white"
+        className="py-12 sm:py-24 bg-white"
       >
         <div className="container mx-auto px-4 max-w-6xl">
-          <div className="bg-slate-900 rounded-[2.5rem] sm:rounded-[4rem] lg:rounded-[6rem] p-8 py-16 sm:p-24 lg:p-32 text-center text-white shadow-[0_64px_128px_-24px_rgba(15,23,42,0.4)] relative overflow-hidden group">
+          <div className="bg-slate-900 rounded-[2.5rem] sm:rounded-[4rem] lg:rounded-[5rem] p-8 py-12 sm:p-16 lg:p-24 text-center text-white shadow-[0_64px_128px_-24px_rgba(15,23,42,0.4)] relative overflow-hidden group">
             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.8)_2px,transparent_2px)] bg-[length:48px_48px] group-hover:scale-125 transition-transform duration-[2000ms]" />
             <div className="absolute top-0 right-0 w-[40rem] h-[40rem] bg-blue-600/20 rounded-full blur-[160px] -translate-y-1/2 translate-x-1/2" />
 
-            <div className="relative z-10 space-y-8 sm:space-y-16">
-              <div className="inline-flex items-center gap-3 bg-white/10 text-blue-400 px-6 py-2.5 sm:px-8 sm:py-3 rounded-xl sm:rounded-2xl backdrop-blur-xl border border-white/10">
+            <div className="relative z-10 space-y-6 sm:space-y-10">
+              <div className="inline-flex items-center gap-3 bg-white/10 text-blue-400 px-5 py-2 sm:px-6 sm:py-2.5 rounded-xl backdrop-blur-xl border border-white/10">
                 <Fingerprint className="w-4.5 h-4.5 sm:w-5 sm:h-5" />
                 <span className="text-[10px] sm:text-[11px] font-black tracking-[0.4em] uppercase">Join Us Today</span>
               </div>
-              <h2 className="font-heading font-black text-3xl sm:text-6xl md:text-8xl leading-[0.85] tracking-tighter">
+              <h2 className="font-heading font-black text-3xl sm:text-5xl md:text-7xl leading-[0.9] tracking-tighter">
                 Ready to Build <br /><span className="text-blue-500">Something Amazing?</span>
               </h2>
-              <p className="text-slate-400 text-lg sm:text-2xl max-w-3xl mx-auto font-bold leading-relaxed">
+              <p className="text-slate-400 text-base sm:text-xl max-w-2xl mx-auto font-bold leading-relaxed">
                 Join thousands of top students who trust Kalvex for their projects, publications, and patents.
               </p>
-              <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-8 pt-4 sm:pt-8">
+              <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 pt-2 sm:pt-4">
                 <Link href="/register" className="w-full sm:w-auto">
-                  <Button className="bg-blue-600 hover:bg-blue-500 text-white h-16 sm:h-24 px-8 sm:px-16 text-base sm:text-xl rounded-xl sm:rounded-[2.5rem] w-full font-black shadow-2xl shadow-blue-600/30 transition-all duration-500 hover:scale-105 uppercase tracking-widest">
+                  <Button className="bg-blue-600 hover:bg-blue-500 text-white h-14 sm:h-18 px-8 sm:px-12 text-sm sm:text-base rounded-xl sm:rounded-2xl w-full font-black shadow-2xl shadow-blue-600/30 transition-all duration-500 hover:scale-105 uppercase tracking-widest">
                     Create Free Account
                   </Button>
                 </Link>
                 <Link href="/contact" className="w-full sm:w-auto">
-                  <Button variant="outline" className="border-white/10 text-white hover:bg-white/5 h-16 sm:h-24 px-8 sm:px-16 text-base sm:text-xl rounded-xl sm:rounded-[2.5rem] w-full bg-white/5 backdrop-blur-md font-black uppercase tracking-widest transition-all">
+                  <Button variant="outline" className="border-white/10 text-white hover:bg-white/5 h-14 sm:h-18 px-8 sm:px-12 text-sm sm:text-base rounded-xl sm:rounded-2xl w-full bg-white/5 backdrop-blur-md font-black uppercase tracking-widest transition-all">
                     Contact Us
                   </Button>
                 </Link>

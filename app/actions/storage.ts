@@ -1,6 +1,6 @@
 "use server";
 
-import { supabase } from "@/lib/supabase";
+import { supabase, supabaseAdmin } from "@/lib/supabase";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@/lib/auth";
 import { revalidatePath } from "next/cache";
@@ -18,7 +18,7 @@ export async function uploadFile(formData: FormData, orderId: string, folder: st
 
     const fileName = `${folder}/${Date.now()}-${file.name.replace(/\s+/g, "_")}`;
     
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabaseAdmin.storage
       .from("kalvex")
       .upload(fileName, buffer, {
         contentType: file.type,
@@ -30,7 +30,7 @@ export async function uploadFile(formData: FormData, orderId: string, folder: st
       return { error: error.message };
     }
 
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseAdmin.storage
       .from("kalvex")
       .getPublicUrl(fileName);
 
@@ -55,7 +55,7 @@ export async function uploadFile(formData: FormData, orderId: string, folder: st
 
 export async function getFiles(path: string) {
   try {
-    const { data, error } = await supabase.storage
+    const { data, error } = await supabaseAdmin.storage
       .from("kalvex")
       .list(path);
 
@@ -93,7 +93,7 @@ export async function deleteFile(fileId: string, orderId: string) {
     const urlParts = fileRecord.fileUrl.split("/public/kalvex/");
     if (urlParts.length > 1) {
       const storagePath = urlParts[1];
-      const { error: storageError } = await supabase.storage
+      const { error: storageError } = await supabaseAdmin.storage
         .from("kalvex")
         .remove([storagePath]);
 

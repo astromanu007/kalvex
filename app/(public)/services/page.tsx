@@ -12,6 +12,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ThreeScene } from "@/components/ui/ThreeScene";
 import { getServices } from "@/app/actions/entities";
 import { ICON_MAP } from "@/lib/icons";
+import { SERVICES_DATA } from "@/lib/services-data";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -340,7 +341,7 @@ export default function ServicesPage() {
                     const plagCost = calcPages <= 20 ? 160 : calcPages <= 40 ? 220 : 260;
 
                     if (selectedService === "phd-thesis") {
-                      let base = 20000;
+                      let base = SERVICES_DATA[selectedService]?.price || 20000;
                       base += calcPages * 150;       // ₹150/page (humanities baseline)
                       if (calcComplexity === "Academic") base *= 1.15;
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
@@ -349,7 +350,7 @@ export default function ServicesPage() {
                       if (calcPlagiarism) base += plagCost;
                       total = base;
                     } else if (selectedService === "research-paper") {
-                      let base = 3000;
+                      let base = SERVICES_DATA[selectedService]?.price || 3000;
                       base += calcPages * 500;       // ₹500/page
                       if (calcComplexity === "Academic") base *= 1.15;
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
@@ -359,7 +360,7 @@ export default function ServicesPage() {
                       total = base;
                     } else if (selectedService === "final-year-report") {
                       // Tiered fixed price by page count
-                      let base = calcPages < 50 ? 1000 : calcPages <= 110 ? 2000 : 3000;
+                      let base = calcPages < 50 ? (SERVICES_DATA[selectedService]?.price || 1000) : calcPages <= 110 ? 2000 : 3000;
                       if (calcComplexity === "Academic") base *= 1.15;
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
                       if (calcUrgent) base += 300;
@@ -373,24 +374,24 @@ export default function ServicesPage() {
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
                       total = base;
                     } else if (selectedService === "utility-patent") {
-                      let base = 35000;
+                      let base = SERVICES_DATA[selectedService]?.price || 35000;
                       if (calcComplexity === "Academic") base *= 1.15;
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
                       if (calcConsultation) base += 500;
                       if (calcUrgent) base += 5000;
                       total = base;
                     } else if (selectedService === "design-patent") {
-                      let base = 1800;
+                      let base = SERVICES_DATA[selectedService]?.price || 1800;
                       if (calcComplexity === "Academic") base *= 1.15;
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
                       total = base;
                     } else if (selectedService === "major-project") {
-                      let base = calcUrgent ? 11000 : 8000;
+                      let base = calcUrgent ? 11000 : (SERVICES_DATA[selectedService]?.price || 8000);
                       if (calcComplexity === "Academic") base *= 1.15;
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
                       total = base;
                     } else {
-                      total = 2100;
+                      total = SERVICES_DATA[selectedService]?.price || 2100;
                     }
 
                     // Global add-ons

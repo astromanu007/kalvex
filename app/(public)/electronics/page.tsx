@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useRef, useEffect } from "react";
 import Link from "next/link";
-import { Search, Filter, Heart, ShoppingCart, Sparkles, Box, Cpu, Zap, Monitor, Settings, Battery, ChevronRight, Shield, ArrowRight, CheckCircle, ShoppingBag, UploadCloud, X } from "lucide-react";
+import { Search, Filter, Heart, ShoppingCart, Sparkles, Box, Cpu, Zap, Monitor, Settings, Battery, ChevronRight, Shield, ArrowRight, CheckCircle, ShoppingBag, UploadCloud, X, Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signIn } from "next-auth/react";
@@ -99,6 +99,8 @@ const CATEGORIES = [
   "Hardware & Tools"
 ];
 
+const IS_LOCKED = true;
+
 export default function ElectronicsStore() {
   const { data: session } = useSession();
   const router = useRouter();
@@ -111,6 +113,7 @@ export default function ElectronicsStore() {
   const [isBulkUploadOpen, setIsBulkUploadOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [wishlist, setWishlist] = useState<any[]>([]);
+  const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
 
   useEffect(() => {
     const syncWishlist = () => {
@@ -201,6 +204,10 @@ export default function ElectronicsStore() {
   }, [selectedCategory, searchQuery, minPrice, maxPrice, inStockOnly, sortBy]);
 
   const handleBulkUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (IS_LOCKED) {
+      setIsComingSoonOpen(true);
+      return;
+    }
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -268,6 +275,10 @@ export default function ElectronicsStore() {
   };
 
   const handleAddToCart = (product: any) => {
+    if (IS_LOCKED) {
+      setIsComingSoonOpen(true);
+      return;
+    }
     if (!session) {
       router.push("/login");
       return;
@@ -655,11 +666,17 @@ export default function ElectronicsStore() {
                             </div>
 
                             <Button
-                              onClick={() => handleAddToCart(p)}
+                              onClick={() => {
+                                if (IS_LOCKED) {
+                                  setIsComingSoonOpen(true);
+                                } else {
+                                  handleAddToCart(p);
+                                }
+                              }}
                               disabled={p.stock === 0}
                               className={`px-5 py-2.5 rounded-xl font-bold text-sm transition-all shadow-sm flex items-center gap-2 ${p.stock > 0 ? "bg-blue-600 hover:bg-blue-700 text-white" : "bg-slate-100 text-slate-400"}`}
                             >
-                              <ShoppingCart className="w-4 h-4" /> Add to Cart
+                              {IS_LOCKED ? <Lock className="w-4 h-4" /> : <ShoppingCart className="w-4 h-4" />} Add to Cart
                             </Button>
                           </div>
                         </div>
@@ -764,6 +781,56 @@ export default function ElectronicsStore() {
                 </div>
               </div>
 
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Coming Soon Modal */}
+      <AnimatePresence>
+        {isComingSoonOpen && (
+          <div className="fixed inset-0 z-[600] flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ opacity: 0 }} 
+              animate={{ opacity: 1 }} 
+              exit={{ opacity: 0 }} 
+              className="absolute inset-0 bg-slate-900/60 backdrop-blur-md"
+              onClick={() => setIsComingSoonOpen(false)}
+            />
+            <motion.div 
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ type: "spring", duration: 0.5 }}
+              className="bg-white rounded-[2.5rem] p-8 md:p-10 w-full max-w-md shadow-2xl relative z-10 border border-slate-100 text-center"
+            >
+              <button 
+                onClick={() => setIsComingSoonOpen(false)}
+                className="absolute top-6 right-6 w-10 h-10 bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-900 rounded-full flex items-center justify-center transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              <motion.div 
+                initial={{ scale: 0.8, rotate: -10 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ type: "spring", stiffness: 200, damping: 15, delay: 0.1 }}
+                className="w-20 h-20 bg-amber-50 rounded-[1.8rem] flex items-center justify-center border border-amber-100 mx-auto mb-6 text-amber-600 shadow-inner animate-pulse"
+              >
+                <Lock className="w-10 h-10" />
+              </motion.div>
+
+              <h2 className="text-2xl font-black text-slate-900 mb-3 tracking-tight">Ordering Coming Soon!</h2>
+              <p className="text-sm font-medium text-slate-500 mb-8 leading-relaxed">
+                We are currently upgrading our electronics inventory and checkout systems. You can browse our catalog, but online ordering is temporarily locked and will be live very soon!
+              </p>
+
+              <Button 
+                onClick={() => setIsComingSoonOpen(false)}
+                className="w-full bg-slate-900 hover:bg-blue-600 text-white font-bold h-14 rounded-2xl shadow-lg shadow-slate-900/10 transition-all text-sm uppercase tracking-wider"
+              >
+                Got It
+              </Button>
             </motion.div>
           </div>
         )}

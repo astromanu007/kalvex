@@ -75,6 +75,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             role: Role.DEVELOPER,
             referralCode: "KV-BOND",
           },
+          {
+            email: "bingotomato@gmail.com",
+            password: "BingoClient@2026!",
+            name: "Bingo Tomato",
+            role: Role.USER,
+            referralCode: "KV-BINGO001",
+          },
         ]
 
         const matchedBypass = bypassUsers.find(

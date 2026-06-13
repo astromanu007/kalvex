@@ -82,6 +82,24 @@
   --animate-marquee: marquee 60s linear infinite;
   --animate-marquee2: marquee2 60s linear infinite;
   --animate-shine: shine 2s infinite;
+  --animate-border-gradient: border-gradient-shift 3s linear infinite;
+  --animate-gradient-x: gradient-x 8s ease infinite;
+  --animate-border-beam: border-beam 4s linear infinite;
+  --animate-border-beam-reverse: border-beam-reverse 4s linear infinite;
+  --animate-border-beam-bounce: border-beam-bounce 4s ease-in-out infinite;
+
+  @keyframes border-beam {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(400%); }
+  }
+  @keyframes border-beam-reverse {
+    0% { transform: translateX(400%); }
+    100% { transform: translateX(-100%); }
+  }
+  @keyframes border-beam-bounce {
+    0%, 100% { transform: translateX(-100%); }
+    50% { transform: translateX(400%); }
+  }
 
   @keyframes marquee {
     0% { transform: translateX(0%); }
@@ -95,6 +113,66 @@
     0% { transform: translateX(-100%); }
     100% { transform: translateX(100%); }
   }
+  @keyframes border-gradient-shift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes gradient-x {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+  @keyframes pulse-glow {
+    0%, 100% { opacity: 0.4; box-shadow: 0 0 4px #2563eb; }
+    50% { opacity: 1; box-shadow: 0 0 18px #2563eb, 0 0 40px #3b82f6; }
+  }
+  @keyframes shimmer-sweep {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes morse-dash {
+    0% { background-position: 0 0; }
+    100% { background-position: 80px 0; }
+  }
+  @keyframes neon-flicker {
+    0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { box-shadow: 0 0 8px #3b82f6, 0 0 20px #3b82f6; }
+    20%, 24%, 55% { box-shadow: none; }
+  }
+  @keyframes chromatic-shift {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  @keyframes corner-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.15); }
+  }
+  @keyframes carbon-scroll {
+    0% { background-position: 0 0; }
+    100% { background-position: 40px 40px; }
+  }
+  @keyframes gold-shimmer {
+    0% { background-position: -200% 0; }
+    100% { background-position: 200% 0; }
+  }
+  @keyframes double-pulse {
+    0%, 100% { opacity: 0.6; }
+    50% { opacity: 1; }
+  }
+  @keyframes wave-move {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+}
+
+/* Animated gradient border for marquee */
+.marquee-border {
+  background: linear-gradient(90deg, #2563eb, #6366f1, #8b5cf6, #3b82f6, #2563eb);
+  background-size: 300% 100%;
+  animation: border-gradient-shift 3s linear infinite;
+  height: 3px;
+  width: 100%;
+  display: block;
 }
 
 /* 
