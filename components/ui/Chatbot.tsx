@@ -11,6 +11,23 @@ import { motion, AnimatePresence } from "framer-motion";
 import ReactMarkdown from "react-markdown";
 import Link from "next/link";
 
+// Auto-link relative routing paths that the LLM occasionally returns in raw text format
+const autoLinkPaths = (text: string) => {
+  const routes = [
+    "/terms-of-service", "/privacy-policy", "/patent-drafter", 
+    "/electronics", "/documentation", "/services", "/projects", 
+    "/dashboard", "/contact", "/support", "/about", "/blog", "/ipr"
+  ];
+  
+  let processed = text;
+  for (const route of routes) {
+    const escapedRoute = route.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const regex = new RegExp(`([^\\w\\(\\[]|^)(${escapedRoute})([^\\w\\)\\]]|$)`, 'g');
+    processed = processed.replace(regex, `$1[$2]($2)$3`);
+  }
+  return processed;
+};
+
 // 1. Custom Code Block Component with Copy Action
 interface CodeBlockProps {
   children: string;
@@ -406,7 +423,7 @@ export function Chatbot() {
                                     }
                                   }}
                                 >
-                                  {m.content}
+                                  {autoLinkPaths(m.content)}
                                 </ReactMarkdown>
                               </div>
                             ) : (
