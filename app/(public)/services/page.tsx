@@ -30,6 +30,33 @@ const staggerContainer = {
   }
 };
 
+const DELIVERABLES_CONFIG: Record<string, Array<{ id: string; label: string; desc: string; price: number; icon: string }>> = {
+  "phd-thesis": [
+    { id: "presentation", label: "Research PPT Slides", desc: "+₹500 premium slides deck", price: 500, icon: "📊" },
+    { id: "consultation", label: "Expert Guide Consultation", desc: "+₹200 1-on-1 video call", price: 200, icon: "📞" }
+  ],
+  "research-paper": [
+    { id: "latex", label: "LaTeX Source Files", desc: "+₹1,000 professional journal formatting", price: 1000, icon: "📄" },
+    { id: "presentation", label: "Research PPT Slides", desc: "+₹500 premium slides deck", price: 500, icon: "📊" },
+    { id: "consultation", label: "Expert Guide Consultation", desc: "+₹200 1-on-1 video call", price: 200, icon: "📞" }
+  ],
+  "final-year-report": [
+    { id: "sourceCode", label: "Source Code & Circuit Diagrams", desc: "+₹2,000 codebase package", price: 2000, icon: "💻" },
+    { id: "presentation", label: "Research PPT Slides", desc: "+₹500 premium slides deck", price: 500, icon: "📊" },
+    { id: "consultation", label: "Expert Guide Consultation", desc: "+₹200 1-on-1 video call", price: 200, icon: "📞" }
+  ],
+  "utility-patent": [
+    { id: "priorArt", label: "Prior Art Search Report", desc: "+₹3,000 comprehensive search", price: 3000, icon: "🔍" },
+    { id: "claimsRevision", label: "Patent Claims Revision", desc: "+₹5,000 drafting claims package", price: 5000, icon: "📜" },
+    { id: "patentConsult", label: "Expert Patent Consultation", desc: "+₹2,000 attorney consultation", price: 2000, icon: "📞" }
+  ],
+  "major-project": [
+    { id: "hardwareKit", label: "Hardware Components Kit", desc: "+₹4,000 project hardware setup", price: 4000, icon: "🔌" },
+    { id: "videoDemo", label: "Video Demo & Code Walkthrough", desc: "+₹1,000 detailed explanation", price: 1000, icon: "🎥" },
+    { id: "consultation", label: "Expert Guide Consultation", desc: "+₹1,500 1-on-1 video call", price: 1500, icon: "📞" }
+  ]
+};
+
 export default function ServicesPage() {
   const [services, setServices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -46,16 +73,17 @@ export default function ServicesPage() {
   const [calcSupport, setCalcSupport] = useState(false);
 
   // Custom Deliverables Toggles
-  const [includeSourceCode, setIncludeSourceCode] = useState(false);
-  const [includePresentation, setIncludePresentation] = useState(false);
-  const [includeLatex, setIncludeLatex] = useState(false);
-  const [includeConsultation, setIncludeConsultation] = useState(false);
+  const [selectedDeliverables, setSelectedDeliverables] = useState<string[]>([]);
 
   // Promo Code States
   const [promoInput, setPromoInput] = useState("");
   const [activeDiscount, setActiveDiscount] = useState(0); // percentage, e.g. 10 for 10%
   const [promoError, setPromoError] = useState("");
   const [promoSuccess, setPromoSuccess] = useState("");
+
+  useEffect(() => {
+    setSelectedDeliverables([]);
+  }, [selectedService]);
 
   useEffect(() => {
     async function load() {
@@ -136,16 +164,20 @@ export default function ServicesPage() {
     let plagiarismFee = 0;
     if (["phd-thesis", "research-paper", "final-year-report"].includes(selectedService)) {
       if (plagiarismSuite === "turnitin") plagiarismFee = plagCost;
-      else if (plagiarismSuite === "ithenticate") plagiarismFee = 350;
       else if (plagiarismSuite === "all-in-one") plagiarismFee = 450;
     }
 
     let deliverablesFee = 0;
-    if (includeSourceCode) deliverablesFee += 2000;
-    if (includePresentation) deliverablesFee += 500;
-    if (includeLatex) deliverablesFee += 1000;
-    if (includeConsultation) deliverablesFee += 1500;
-    if (calcSupport) deliverablesFee += 500;
+    const activeConfigs = DELIVERABLES_CONFIG[selectedService] || [];
+    activeConfigs.forEach((config) => {
+      if (selectedDeliverables.includes(config.id)) {
+        deliverablesFee += config.price;
+      }
+    });
+    if (calcSupport) {
+      const supportCost = ["phd-thesis", "research-paper", "final-year-report", "professional-write-ups"].includes(selectedService) ? 100 : 500;
+      deliverablesFee += supportCost;
+    }
 
     const subtotal = basePrice + speedSurcharge + plagiarismFee + deliverablesFee;
     const discountAmount = subtotal * (activeDiscount / 100);
@@ -163,8 +195,7 @@ export default function ServicesPage() {
     };
   }, [
     selectedService, calcPages, calcComplexity, calcReferences, calcDiagrams, 
-    deliverySpeed, plagiarismSuite, includeSourceCode, includePresentation, 
-    includeLatex, includeConsultation, calcSupport, reportType, activeDiscount
+    deliverySpeed, plagiarismSuite, selectedDeliverables, calcSupport, reportType, activeDiscount
   ]);
 
   const {
@@ -475,11 +506,10 @@ export default function ServicesPage() {
               {["phd-thesis", "research-paper", "final-year-report"].includes(selectedService) && (
                 <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Plagiarism Checking Suite</label>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                  <div className="grid grid-cols-3 gap-3">
                     {[
                       { id: "none", label: "No Report", price: "Free", icon: "❌" },
                       { id: "turnitin", label: "Turnitin Check", price: "From ₹160", icon: "📝" },
-                      { id: "ithenticate", label: "iThenticate Elite", price: "₹350 Flat", icon: "🔬" },
                       { id: "all-in-one", label: "All-in-One Suite", price: "₹450 Flat", icon: "🛡️" }
                     ].map((tool) => (
                       <button
@@ -496,7 +526,7 @@ export default function ServicesPage() {
                           <span className="text-lg block mb-1">{tool.icon}</span>
                           <span className="text-[9px] font-black uppercase tracking-widest block text-slate-900 leading-tight">{tool.label}</span>
                         </div>
-                        <span className="text-[9px] font-black text-blue-650 uppercase tracking-widest mt-2">{tool.price}</span>
+                        <span className="text-[9px] font-black text-blue-655 uppercase tracking-widest mt-2">{tool.price}</span>
                       </button>
                     ))}
                   </div>
@@ -504,37 +534,43 @@ export default function ServicesPage() {
               )}
 
               {/* Selected Project Deliverables */}
-              <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Select Project Deliverables</label>
-                <div className="grid sm:grid-cols-2 gap-3">
-                  {[
-                    { id: "sourceCode", label: "Source Code & Circuits", desc: "+₹2,000 codebase package", active: includeSourceCode, setter: setIncludeSourceCode, icon: "💻" },
-                    { id: "presentation", label: "Research PPT Slides", desc: "+₹500 premium slides deck", active: includePresentation, setter: setIncludePresentation, icon: "📊" },
-                    { id: "latex", label: "LaTeX Source Files", desc: "+₹1,000 professional journal formatting", active: includeLatex, setter: setIncludeLatex, icon: "📄" },
-                    { id: "consultation", label: "Expert Guide Consultation", desc: "+₹1,500 1-on-1 video call", active: includeConsultation, setter: setIncludeConsultation, icon: "📞" }
-                  ].map((del) => (
-                    <button
-                      key={del.id}
-                      type="button"
-                      onClick={() => del.setter(!del.active)}
-                      className={`p-4 rounded-2xl border-2 transition-all text-left flex items-center gap-4 hover:shadow-md ${
-                        del.active
-                          ? "border-blue-600 bg-blue-50/50"
-                          : "border-slate-100 bg-white hover:border-blue-200"
-                      }`}
-                    >
-                      <span className="text-xl shrink-0">{del.icon}</span>
-                      <div className="flex-1 min-w-0">
-                        <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900 truncate">{del.label}</span>
-                        <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block truncate mt-0.5">{del.desc}</span>
-                      </div>
-                      <div className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 text-xs font-black ${
-                        del.active ? "bg-blue-600 border-blue-600 text-white" : "border-slate-200 bg-slate-50 text-transparent"
-                      }`}>✓</div>
-                    </button>
-                  ))}
+              {DELIVERABLES_CONFIG[selectedService] && DELIVERABLES_CONFIG[selectedService].length > 0 && (
+                <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Select Project Deliverables</label>
+                  <div className="grid sm:grid-cols-2 gap-3">
+                    {DELIVERABLES_CONFIG[selectedService].map((del) => {
+                      const isActive = selectedDeliverables.includes(del.id);
+                      return (
+                        <button
+                          key={del.id}
+                          type="button"
+                          onClick={() => {
+                            if (isActive) {
+                              setSelectedDeliverables(selectedDeliverables.filter((id) => id !== del.id));
+                            } else {
+                              setSelectedDeliverables([...selectedDeliverables, del.id]);
+                            }
+                          }}
+                          className={`p-4 rounded-2xl border-2 transition-all text-left flex items-center gap-4 hover:shadow-md ${
+                            isActive
+                              ? "border-blue-600 bg-blue-50/50"
+                              : "border-slate-100 bg-white hover:border-blue-200"
+                          }`}
+                        >
+                          <span className="text-xl shrink-0">{del.icon}</span>
+                          <div className="flex-1 min-w-0">
+                            <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900 truncate">{del.label}</span>
+                            <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block truncate mt-0.5">{del.desc}</span>
+                          </div>
+                          <div className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 text-xs font-black ${
+                            isActive ? "bg-blue-600 border-blue-600 text-white" : "border-slate-200 bg-slate-50 text-transparent"
+                          }`}>✓</div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
-              </div>
+              )}
 
               {/* Priority Support & Coupon Code */}
               <div className="grid md:grid-cols-2 gap-6 items-stretch">
@@ -549,7 +585,9 @@ export default function ServicesPage() {
                   <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${calcSupport ? "bg-rose-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>📞</div>
                   <div>
                     <span className="text-xs font-black uppercase tracking-widest block text-slate-900">Priority Support Desk</span>
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-1">+₹500 dedicated desk</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-1">
+                      +₹{["phd-thesis", "research-paper", "final-year-report", "professional-write-ups"].includes(selectedService) ? 100 : 500} dedicated desk
+                    </span>
                   </div>
                 </button>
 
