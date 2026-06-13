@@ -46,6 +46,7 @@ export default function ServicesPage() {
   const [calcRawDeliverables, setCalcRawDeliverables] = useState(false);
   const [calcSupport, setCalcSupport] = useState(false);
   const [calcDiagrams, setCalcDiagrams] = useState(5);
+  const [reportType, setReportType] = useState<"simple" | "black-book">("simple");
 
   useEffect(() => {
     async function load() {
@@ -209,6 +210,67 @@ export default function ServicesPage() {
                         <span>25 Diagrams</span>
                         <span>50 Diagrams</span>
                       </div>
+                    </div>
+                  )}
+
+                  {selectedService === "final-year-report" && (
+                    <div className="space-y-4 pt-4 border-t border-slate-100">
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block mb-2">Report Format</label>
+                      <div className="grid grid-cols-2 gap-4">
+                        <button
+                          type="button"
+                          onClick={() => setReportType("simple")}
+                          className={`p-4 rounded-2xl border-2 transition-all text-left flex flex-col justify-between ${
+                            reportType === "simple"
+                              ? "border-blue-600 bg-blue-50/30"
+                              : "border-slate-100 bg-white hover:border-slate-200"
+                          }`}
+                        >
+                          <span className="text-xs font-black uppercase tracking-wider text-slate-900">Simple Project Report</span>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Soft copy delivered</span>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setReportType("black-book")}
+                          className={`p-4 rounded-2xl border-2 transition-all text-left flex flex-col justify-between ${
+                            reportType === "black-book"
+                              ? "border-blue-600 bg-blue-50/30"
+                              : "border-slate-100 bg-white hover:border-slate-200"
+                          }`}
+                        >
+                          <span className="text-xs font-black uppercase tracking-wider text-slate-900">Final Year Black Book</span>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Hard Bound + Embossed (+₹265)</span>
+                        </button>
+                      </div>
+
+                      {/* Advertisement for Black Book Printing */}
+                      {reportType === "simple" && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          className="mt-4 p-4 rounded-2xl bg-gradient-to-r from-violet-600/10 via-fuchsia-600/10 to-violet-600/5 border border-violet-100 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 relative overflow-hidden group/ad"
+                        >
+                          <div className="space-y-1 z-10">
+                            <span className="inline-block bg-violet-600 text-white text-[8px] font-black uppercase px-2 py-0.5 rounded-md tracking-wider">
+                              Recommended Upgrade
+                            </span>
+                            <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider">Premium Black Book Printing</h4>
+                            <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-relaxed">
+                              Get your final year project hardbound with gold embossing for just +₹265. 1-2 Days Fast Delivery across Maharashtra!
+                            </p>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => setReportType("black-book")}
+                            className="shrink-0 bg-violet-600 hover:bg-violet-700 text-white font-black text-[9px] uppercase tracking-wider py-2.5 px-4 rounded-xl transition-all shadow-md active:scale-98 z-10"
+                          >
+                            Upgrade Now
+                          </button>
+                          <div className="absolute right-2 bottom-0 text-3xl opacity-10 select-none pointer-events-none group-hover/ad:scale-110 transition-transform">
+                            📘
+                          </div>
+                        </motion.div>
+                      )}
                     </div>
                   )}
                 </div>
@@ -375,7 +437,7 @@ export default function ServicesPage() {
 
                     if (selectedService === "phd-thesis") {
                       let base = SERVICES_DATA[selectedService]?.price || 20000;
-                      base += calcPages * 150;       // ₹150/page (humanities baseline)
+                      base += (calcPages - 1) * 150;       // ₹150/page (humanities baseline) starts from ₹20,000 for 1 page
                       if (calcComplexity === "Academic") base *= 1.15;
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
                       base += calcReferences * 5;    // ₹5/source
@@ -383,8 +445,8 @@ export default function ServicesPage() {
                       if (calcPlagiarism) base += plagCost;
                       total = base;
                     } else if (selectedService === "research-paper") {
-                      let base = SERVICES_DATA[selectedService]?.price || 3000;
-                      base += calcPages * 500;       // ₹500/page
+                      let base = SERVICES_DATA[selectedService]?.price || 2700;
+                      base += (calcPages - 1) * 500;       // ₹500/page starts from ₹2,700 for 1 page
                       if (calcComplexity === "Academic") base *= 1.15;
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
                       // references are FREE for research paper
@@ -398,6 +460,7 @@ export default function ServicesPage() {
                       else if (calcComplexity === "Research-Grade") base *= 1.20;
                       if (calcUrgent) base += 300;
                       if (calcPlagiarism) base += plagCost;
+                      if (reportType === "black-book") base += 265; // Add black book printing cost if selected
                       total = base;
                     } else if (selectedService === "professional-write-ups") {
                       // Standard: ₹5 per page + ₹4 per diagram
@@ -456,6 +519,14 @@ export default function ServicesPage() {
                   <div className="flex justify-between items-center">
                     <span>Diagrams Count</span>
                     <span className="text-white font-black">{calcDiagrams} Diagrams</span>
+                  </div>
+                )}
+                {selectedService === "final-year-report" && (
+                  <div className="flex justify-between items-center">
+                    <span>Report Format</span>
+                    <span className="text-white font-black">
+                      {reportType === "simple" ? "Simple Report (Soft Copy)" : "Black Book (Hard Bound)"}
+                    </span>
                   </div>
                 )}
                 <div className="flex justify-between items-center">
