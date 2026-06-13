@@ -104,9 +104,6 @@ export default function ServicesPage() {
     } else if (selectedService === "final-year-report") {
       // Base Price (Tiered by Page Count): <50 pages is ₹1,000, 50 to 110 pages is ₹2,000, >110 pages is ₹3,000
       basePrice = calcPages < 50 ? 1000 : calcPages <= 110 ? 2000 : 3000;
-      if (reportType === "black-book") {
-        basePrice += 265;
-      }
     } else if (selectedService === "professional-write-ups") {
       if (deliverySpeed === "standard") {
         basePrice = (calcPages * 5) + (calcDiagrams * 4);
@@ -216,9 +213,9 @@ export default function ServicesPage() {
           <div className="absolute top-0 right-0 w-96 h-96 bg-blue-550/5 rounded-full blur-[100px] pointer-events-none" />
           <div className="absolute -left-10 -bottom-10 w-96 h-96 bg-indigo-550/5 rounded-full blur-[100px] pointer-events-none" />
 
-          <div className="grid lg:grid-cols-12 gap-12 items-center relative z-10">
+          <div className="grid lg:grid-cols-12 gap-8 items-start relative z-10">
             {/* Controls */}
-            <div className="lg:col-span-7 space-y-8">
+            <div className="lg:col-span-8 space-y-8">
               <div className="space-y-2">
                 <span className="inline-flex items-center gap-2 text-[10px] text-blue-600 bg-blue-50 border border-blue-100 px-4 py-1.5 rounded-full font-black uppercase tracking-widest">
                   💰 LIVE COST ESTIMATOR
@@ -260,7 +257,10 @@ export default function ServicesPage() {
                 </div>
               </div>
 
-              {/* Dynamic Sliders for Pages / Scope */}
+              <div className="grid md:grid-cols-2 gap-6">
+                {/* Column 1: Specifications */}
+                <div className="space-y-6">
+                  {/* Dynamic Sliders for Pages / Scope */}
               {["phd-thesis", "research-paper", "final-year-report", "professional-write-ups"].includes(selectedService) && (
                 <div className="space-y-6 bg-white/60 border border-slate-100 p-6 rounded-3xl">
                   <div className="space-y-4">
@@ -347,7 +347,7 @@ export default function ServicesPage() {
                           }`}
                         >
                           <span className="text-xs font-black uppercase tracking-wider text-slate-900">Final Year Black Book</span>
-                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Hard Bound + Embossed (+₹265)</span>
+                          <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Hard Bound + Embossed (Included)</span>
                         </button>
                       </div>
 
@@ -364,7 +364,7 @@ export default function ServicesPage() {
                             </span>
                             <h4 className="text-xs font-black text-slate-900 uppercase tracking-wider">Premium Black Book Printing</h4>
                             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-relaxed">
-                              Get your final year project hardbound with gold embossing for just +₹265. 1-2 Days Fast Delivery across Maharashtra!
+                              Upgrade your final year project to hardbound with gold embossing for the same base rate! 1-2 Days Fast Delivery.
                             </p>
                           </div>
                           <button
@@ -372,7 +372,7 @@ export default function ServicesPage() {
                             onClick={() => setReportType("black-book")}
                             className="shrink-0 bg-violet-600 hover:bg-violet-700 text-white font-black text-[9px] uppercase tracking-wider py-2.5 px-4 rounded-xl transition-all shadow-md active:scale-98 z-10"
                           >
-                            Upgrade Now
+                            Upgrade Now (Free)
                           </button>
                           <div className="absolute right-2 bottom-0 text-3xl opacity-10 select-none pointer-events-none group-hover/ad:scale-110 transition-transform">
                             📘
@@ -473,8 +473,11 @@ export default function ServicesPage() {
                   ))}
                 </div>
               </div>
+                </div>
 
-              {/* Plagiarism Tool Suite Selection */}
+                {/* Column 2: Enhancements & Booking */}
+                <div className="space-y-6">
+                  {/* Plagiarism Tool Suite Selection */}
               {["phd-thesis", "research-paper", "final-year-report"].includes(selectedService) && (
                 <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Plagiarism Checking Suite</label>
@@ -605,9 +608,11 @@ export default function ServicesPage() {
                 {promoError && <p className="text-[9px] font-black uppercase tracking-widest text-red-500 mt-2">× {promoError}</p>}
               </div>
             </div>
+          </div>
+        </div>
 
             {/* Price Card */}
-            <div className="lg:col-span-5 bg-slate-900 rounded-[3rem] p-8 md:p-10 border border-slate-800 text-center shadow-2xl relative overflow-hidden flex flex-col justify-between h-full min-h-[500px]">
+            <div className="lg:col-span-4 lg:sticky lg:top-32 bg-slate-900 rounded-[3rem] p-6 md:p-8 border border-slate-800 text-center shadow-2xl relative overflow-hidden flex flex-col justify-between self-start">
               <div className="absolute top-0 right-0 w-64 h-64 bg-blue-600/10 rounded-full blur-[80px] pointer-events-none" />
               
               <div>
