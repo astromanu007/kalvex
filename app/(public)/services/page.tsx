@@ -257,9 +257,6 @@ export default function ServicesPage() {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-6">
-                {/* Column 1: Specifications */}
-                <div className="space-y-6">
                   {/* Dynamic Sliders for Pages / Scope */}
               {["phd-thesis", "research-paper", "final-year-report", "professional-write-ups"].includes(selectedService) && (
                 <div className="space-y-6 bg-white/60 border border-slate-100 p-6 rounded-3xl">
@@ -473,11 +470,8 @@ export default function ServicesPage() {
                   ))}
                 </div>
               </div>
-                </div>
 
-                {/* Column 2: Enhancements & Booking */}
-                <div className="space-y-6">
-                  {/* Plagiarism Tool Suite Selection */}
+              {/* Plagiarism Tool Suite Selection */}
               {["phd-thesis", "research-paper", "final-year-report"].includes(selectedService) && (
                 <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl">
                   <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Plagiarism Checking Suite</label>
@@ -542,74 +536,73 @@ export default function ServicesPage() {
                 </div>
               </div>
 
-              {/* Priority Support Toggle */}
-              <div className="grid sm:grid-cols-2 gap-4">
+              {/* Priority Support & Coupon Code */}
+              <div className="grid md:grid-cols-2 gap-6 items-stretch">
+                {/* Priority Support Toggle */}
                 <button
                   type="button"
                   onClick={() => setCalcSupport(!calcSupport)}
-                  className={`p-5 rounded-2xl border-2 transition-all text-left flex items-center gap-4 ${
+                  className={`p-5 rounded-[2rem] border-2 transition-all text-left flex items-center gap-4 ${
                     calcSupport ? "border-blue-600 bg-blue-50/40" : "border-slate-100 bg-white hover:border-slate-200"
                   }`}
                 >
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-sm ${calcSupport ? "bg-rose-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>📞</div>
+                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg ${calcSupport ? "bg-rose-500 text-white font-bold" : "bg-slate-50 text-slate-450"}`}>📞</div>
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-widest block text-slate-900">Priority Support Desk</span>
-                    <span className="text-[8px] font-bold text-slate-400 uppercase tracking-wider block">+₹500 dedicated desk</span>
+                    <span className="text-xs font-black uppercase tracking-widest block text-slate-900">Priority Support Desk</span>
+                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mt-1">+₹500 dedicated desk</span>
                   </div>
                 </button>
-              </div>
 
-              {/* Apply Coupon Code */}
-              <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl">
-                <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Apply Coupon Code</label>
-                <div className="flex gap-3">
-                  <input
-                    type="text"
-                    placeholder="Enter coupon (e.g. DIWALI10, STUDENT15)..."
-                    value={promoInput}
-                    onChange={(e) => {
-                      setPromoInput(e.target.value);
-                      setPromoError("");
-                      setPromoSuccess("");
-                    }}
-                    className="bg-white border border-slate-200 rounded-xl px-4 py-3.5 outline-none text-slate-950 font-bold text-xs flex-grow placeholder:text-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all uppercase tracking-[0.15em] shadow-sm"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const code = promoInput.toUpperCase().trim();
-                      if (code === "DIWALI10") {
-                        setActiveDiscount(10);
-                        setPromoSuccess("Coupon Applied! 10% Discount Active");
+                {/* Apply Coupon Code */}
+                <div className="space-y-3 bg-white/60 border border-slate-100 p-6 rounded-3xl flex flex-col justify-center">
+                  <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">Apply Coupon Code</label>
+                  <div className="flex gap-3">
+                    <input
+                      type="text"
+                      placeholder="Enter coupon (e.g. DIWALI10, STUDENT15)..."
+                      value={promoInput}
+                      onChange={(e) => {
+                        setPromoInput(e.target.value);
                         setPromoError("");
-                      } else if (code === "STUDENT15") {
-                        setActiveDiscount(15);
-                        setPromoSuccess("Student Discount Applied! 15% Off");
-                        setPromoError("");
-                      } else if (code === "KALVEXLABS") {
-                        setActiveDiscount(5);
-                        setPromoSuccess("Partner Coupon Applied! 5% Off");
-                        setPromoError("");
-                      } else if (code === "") {
-                        setPromoError("Please enter a coupon code.");
                         setPromoSuccess("");
-                      } else {
-                        setPromoError("Invalid coupon code.");
-                        setPromoSuccess("");
-                        setActiveDiscount(0);
-                      }
-                    }}
-                    className="bg-slate-900 text-white font-black text-xs uppercase tracking-widest px-6 rounded-xl hover:bg-blue-650 transition-colors shadow-lg active:scale-98"
-                  >
-                    Apply
-                  </button>
+                      }}
+                      className="bg-white border border-slate-200 rounded-xl px-4 py-3.5 outline-none text-slate-950 font-bold text-xs flex-grow placeholder:text-slate-350 focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition-all uppercase tracking-[0.15em] shadow-sm"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const code = promoInput.toUpperCase().trim();
+                        if (code === "DIWALI10") {
+                          setActiveDiscount(10);
+                          setPromoSuccess("Coupon Applied! 10% Discount Active");
+                          setPromoError("");
+                        } else if (code === "STUDENT15") {
+                          setActiveDiscount(15);
+                          setPromoSuccess("Student Discount Applied! 15% Off");
+                          setPromoError("");
+                        } else if (code === "KALVEXLABS") {
+                          setActiveDiscount(5);
+                          setPromoSuccess("Partner Coupon Applied! 5% Off");
+                          setPromoError("");
+                        } else if (code === "") {
+                          setPromoError("Please enter a coupon code.");
+                          setPromoSuccess("");
+                        } else {
+                          setPromoError("Invalid coupon code.");
+                          setPromoSuccess("");
+                          setActiveDiscount(0);
+                        }
+                      }}
+                      className="bg-slate-900 text-white font-black text-xs uppercase tracking-widest px-6 rounded-xl hover:bg-blue-650 transition-colors shadow-lg active:scale-98"
+                    >
+                      Apply
+                    </button>
+                  </div>
+                  {promoSuccess && <p className="text-[9px] font-black uppercase tracking-widest text-emerald-600 mt-2">✓ {promoSuccess}</p>}
+                  {promoError && <p className="text-[9px] font-black uppercase tracking-widest text-red-500 mt-2">× {promoError}</p>}
                 </div>
-                {promoSuccess && <p className="text-[9px] font-black uppercase tracking-widest text-emerald-600 mt-2">✓ {promoSuccess}</p>}
-                {promoError && <p className="text-[9px] font-black uppercase tracking-widest text-red-500 mt-2">× {promoError}</p>}
               </div>
             </div>
-          </div>
-        </div>
 
             {/* Price Card */}
             <div className="lg:col-span-4 lg:sticky lg:top-32 bg-slate-900 rounded-[3rem] p-6 md:p-8 border border-slate-800 text-center shadow-2xl relative overflow-hidden flex flex-col justify-between self-start">
