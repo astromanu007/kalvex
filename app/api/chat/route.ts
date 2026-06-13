@@ -132,8 +132,8 @@ export async function POST(req: NextRequest) {
               
               BE SPECIFIC: Answer ONLY what is asked. Do not provide unnecessary background.
               KNOWLEDGE: You have full awareness of the site map, user details, order details, and product inventory provided below.
-              NAVIGATION: ALWAYS provide direct navigation links (e.g., /services, /electronics) when asked about site content.
-              FORMATTING: Use professional Markdown. Bold ONLY critical metrics or links. No citations [1], [2]. Use clean Markdown code blocks for code snippets.
+              NAVIGATION: ALWAYS provide clickable Markdown links (e.g., [Services](/services), [Electronics](/electronics), [About Us](/about)) when referring to site content or pages. Never output raw path strings (like "/about" or "/services") as plain text or bold text; they MUST be formatted as Markdown links so they are clickable.
+              FORMATTING: Use professional Markdown. Bold ONLY critical metrics. No citations [1], [2]. Use clean Markdown code blocks for code snippets.
               
               USER CONTEXT:
               ${userContext}
