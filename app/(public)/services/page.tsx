@@ -1067,21 +1067,63 @@ export default function ServicesPage() {
           variants={fadeInUp}
           className="mt-32 relative group"
         >
-          <div className="absolute inset-0 bg-blue-600/5 rounded-[4rem] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
-          <div className="bg-slate-900 rounded-[4rem] p-16 md:p-24 text-center border border-slate-800 shadow-[0_64px_128px_-24px_rgba(15,23,42,0.3)] relative z-10 overflow-hidden">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2" />
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-600/10 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2" />
+          <div className="absolute inset-0 bg-blue-600/10 rounded-[3.5rem] blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+          <div className="bg-gradient-to-br from-slate-900 via-slate-950 to-slate-900 rounded-[3.5rem] py-20 px-8 md:px-16 text-center border border-slate-800 shadow-[0_64px_128px_-24px_rgba(15,23,42,0.3)] relative z-10 overflow-hidden">
+            {/* Ambient spotlights inside */}
+            <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/10 rounded-full blur-[80px] -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+            <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/10 rounded-full blur-[80px] translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)] opacity-[0.05] pointer-events-none" />
 
-            <div className="max-w-3xl mx-auto space-y-10">
-              <h2 className="font-heading font-black text-4xl md:text-6xl text-white tracking-tighter leading-tight">
-                Need Something <span className="text-blue-600">Else?</span>
+            {/* Cosmic floating stars */}
+            {[...Array(45)].map((_, i) => {
+              const size = Math.random() * 3 + 1.2;
+              const initialX = Math.random() * 100;
+              const initialY = Math.random() * 100;
+              const duration = Math.random() * 25 + 15;
+              const delay = Math.random() * -30;
+              const starColor = i % 3 === 0 ? "bg-blue-300" : i % 3 === 1 ? "bg-indigo-300" : "bg-white";
+              const glowColor = i % 3 === 0 ? "rgba(147,197,253,0.5)" : i % 3 === 1 ? "rgba(196,181,253,0.5)" : "rgba(255,255,255,0.4)";
+              return (
+                <motion.div
+                  key={i}
+                  className={`absolute rounded-full ${starColor} opacity-40`}
+                  style={{
+                    width: size,
+                    height: size,
+                    left: `${initialX}%`,
+                    top: `${initialY}%`,
+                    boxShadow: `0 0 8px 1.5px ${glowColor}`,
+                    pointerEvents: "none"
+                  }}
+                  animate={{
+                    x: [0, Math.random() * 140 - 70, Math.random() * 140 - 70, 0],
+                    y: [0, Math.random() * 140 - 70, Math.random() * 140 - 70, 0],
+                    opacity: [0.15, 0.8, 0.2, 0.6, 0.15],
+                    scale: [1, 1.4, 0.8, 1.3, 1]
+                  }}
+                  transition={{
+                    duration: duration,
+                    repeat: Infinity,
+                    ease: "easeInOut",
+                    delay: delay
+                  }}
+                />
+              );
+            })}
+
+            <div className="max-w-2xl mx-auto space-y-8 relative z-20">
+              <span className="inline-flex items-center gap-2 text-[10px] text-blue-400 bg-blue-950/40 border border-blue-800/40 px-4 py-1.5 rounded-full font-black uppercase tracking-widest">
+                ✉️ CUSTOM REQUIREMENTS
+              </span>
+              <h2 className="font-heading font-black text-4xl md:text-5xl text-white tracking-tight leading-tight">
+                Need Something <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-400">Else?</span>
               </h2>
-              <p className="text-xl text-slate-400 font-bold max-w-xl mx-auto leading-relaxed">
+              <p className="text-sm md:text-base text-slate-400 font-bold max-w-lg mx-auto leading-relaxed">
                 Tell us about your unique project requirements and we will build a custom solution for you.
               </p>
-              <Link href="/contact" className="inline-block">
-                <Button className="bg-blue-600 hover:bg-blue-500 text-white shadow-[0_24px_48px_-12px_rgba(37,99,235,0.4)] h-20 px-16 rounded-[2rem] font-black uppercase tracking-[0.3em] text-xs transition-all duration-500 hover:scale-105 hover:-translate-y-2 group/btn2">
-                  Contact Us <ArrowRight className="ml-4 w-5 h-5 group-hover/btn2:translate-x-2 transition-transform" />
+              <Link href="/contact" className="inline-block pt-2">
+                <Button className="bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-500/20 h-14 px-10 rounded-2xl font-black uppercase tracking-[0.25em] text-[10px] transition-all duration-300 hover:scale-[1.03] hover:-translate-y-0.5 group/btn2">
+                  Contact Us <ArrowRight className="ml-3 w-4 h-4 group-hover/btn2:translate-x-1.5 transition-transform duration-300" />
                 </Button>
               </Link>
             </div>
