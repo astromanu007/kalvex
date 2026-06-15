@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import {
@@ -131,6 +131,10 @@ export default function CartPage() {
   const discount = couponApplied ? Math.round(subtotal * 0.1) : 0;
   const shipping = 0; // Logistics removed
   const total = subtotal - discount + shipping;
+
+  const quotationDocument = useMemo(() => (
+    <QuotationPDF items={cart} subtotal={subtotal} discount={discount} total={total} />
+  ), [cart, subtotal, discount, total]);
 
   const getCategoryGroup = (category?: string) => {
     const cat = (category || "").toLowerCase();
@@ -563,7 +567,7 @@ export default function CartPage() {
 
                 <div className="mt-3">
                   <PDFDownloadLink
-                    document={<QuotationPDF items={cart} subtotal={subtotal} discount={discount} total={total} />}
+                    document={quotationDocument}
                     fileName={`Kalvex_Quotation_${new Date().toISOString().split("T")[0]}.pdf`}
                     className="w-full bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 h-14 rounded-2xl font-black text-[10px] uppercase tracking-widest flex items-center justify-center gap-3 transition-all group"
                   >

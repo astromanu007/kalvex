@@ -1,270 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Trash2, Cpu, Zap, Download, Layers, Sparkles, FileText, CheckCircle } from "lucide-react";
+import { Plus, Trash2, Zap, Download, Layers, Info } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Document, Page, Text, View, StyleSheet, PDFDownloadLink, Svg, Circle, Polygon, G } from "@react-pdf/renderer";
-
-// Define PDF styles
-const pdfStyles = StyleSheet.create({
-  page: {
-    padding: 30,
-    fontFamily: "Helvetica",
-    backgroundColor: "#ffffff",
-    fontSize: 9,
-    lineHeight: 1.5,
-  },
-  borderWrapper: {
-    border: "2pt double #1e293b",
-    padding: 24,
-    height: "100%",
-    position: "relative",
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    borderBottomWidth: 1.5,
-    borderBottomColor: "#1e293b",
-    paddingBottom: 14,
-    marginBottom: 24,
-  },
-  companyInfo: {
-    flexDirection: "column",
-  },
-  companyName: {
-    fontSize: 22,
-    fontWeight: "bold",
-    color: "#2563eb",
-    letterSpacing: 1,
-  },
-  companySub: {
-    fontSize: 8,
-    color: "#64748b",
-    marginTop: 2,
-    fontWeight: "bold",
-    textTransform: "uppercase",
-  },
-  docTitleBlock: {
-    alignItems: "flex-end",
-  },
-  docTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#0f172a",
-    letterSpacing: 0.5,
-    textTransform: "uppercase",
-  },
-  metaText: {
-    fontSize: 8,
-    color: "#64748b",
-    marginTop: 2,
-  },
-  table: {
-    width: "100%",
-    marginTop: 10,
-    borderWidth: 1,
-    borderColor: "#cbd5e1",
-    borderRadius: 6,
-    overflow: "hidden",
-  },
-  tableHeader: {
-    flexDirection: "row",
-    backgroundColor: "#f8fafc",
-    borderBottomWidth: 1,
-    borderBottomColor: "#cbd5e1",
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-  },
-  tableHeaderCell: {
-    fontSize: 8,
-    fontWeight: "bold",
-    color: "#334155",
-    textTransform: "uppercase",
-  },
-  tableRow: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "#f1f5f9",
-    paddingVertical: 8,
-    paddingHorizontal: 8,
-  },
-  tableCell: {
-    fontSize: 8.5,
-    color: "#334155",
-  },
-  colSku: { width: "25%" },
-  colDesc: { width: "45%" },
-  colQty: { width: "10%", textAlign: "center" },
-  colPrice: { width: "10%", textAlign: "right" },
-  colTotal: { width: "10%", textAlign: "right" },
-  
-  totalBlock: {
-    flexDirection: "row",
-    justifyContent: "flex-end",
-    marginTop: 16,
-  },
-  totalRow: {
-    width: "40%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 6,
-    borderBottomWidth: 1.5,
-    borderBottomColor: "#1e293b",
-  },
-  totalLabel: {
-    fontSize: 9,
-    fontWeight: "bold",
-    color: "#0f172a",
-  },
-  totalVal: {
-    fontSize: 10,
-    fontWeight: "bold",
-    color: "#2563eb",
-  },
-  
-  authBlock: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    marginTop: 40,
-    paddingHorizontal: 10,
-  },
-  signatureLine: {
-    width: 150,
-    borderTopWidth: 1.5,
-    borderTopColor: "#0f172a",
-    paddingTop: 6,
-  },
-  signatureTitle: {
-    fontSize: 8.5,
-    fontWeight: "bold",
-    color: "#0f172a",
-    textTransform: "uppercase",
-    letterSpacing: 0.5,
-  },
-  signatureSub: {
-    fontSize: 7,
-    color: "#64748b",
-    marginTop: 1,
-  },
-  stampContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  
-  footer: {
-    position: "absolute",
-    bottom: 20,
-    left: 24,
-    right: 24,
-    textAlign: "center",
-    fontSize: 7.5,
-    color: "#94a3b8",
-    borderTopWidth: 1,
-    borderTopColor: "#f1f5f9",
-    paddingTop: 8,
-  }
-});
-
-// PDF Document component
-const BOMDocumentPDF = ({ items = [], total = 0 }: { items: BomItem[]; total: number }) => {
-  const dateStr = new Date().toLocaleDateString("en-IN", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-  });
-  const refCode = `KVX-BOM-${Math.floor(100000 + Math.random() * 900000)}`;
-
-  return (
-    <Document>
-      <Page size="A4" style={pdfStyles.page}>
-        <View style={pdfStyles.borderWrapper}>
-          
-          {/* Header block */}
-          <View style={pdfStyles.header}>
-            <View style={pdfStyles.companyInfo}>
-              <Text style={pdfStyles.companyName}>KALVEX LABS</Text>
-              <Text style={pdfStyles.companySub}>Engineering & Technologies Labs</Text>
-              <Text style={pdfStyles.metaText}>CIN: U72900KA2026PTC123456 | GSTIN: 29AAFCD1234F1Z5</Text>
-              <Text style={pdfStyles.metaText}>Email: kalvextechnologies@gmail.com | www.kalvex.com</Text>
-            </View>
-            <View style={pdfStyles.docTitleBlock}>
-              <Text style={pdfStyles.docTitle}>BILL OF MATERIALS</Text>
-              <Text style={pdfStyles.metaText}>Date: {dateStr}</Text>
-              <Text style={pdfStyles.metaText}>Ref: {refCode}</Text>
-            </View>
-          </View>
-
-          {/* Table */}
-          <View style={pdfStyles.table}>
-            <View style={pdfStyles.tableHeader}>
-              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colSku]}>SKU / Part Code</Text>
-              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colDesc]}>Description & Details</Text>
-              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colQty]}>Qty</Text>
-              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colPrice]}>Unit Price</Text>
-              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colTotal]}>Amount</Text>
-            </View>
-
-            {items.map((item, idx) => (
-              <View key={item.id || idx} style={pdfStyles.tableRow}>
-                <Text style={[pdfStyles.tableCell, pdfStyles.colSku]}>{item.sku}</Text>
-                <Text style={[pdfStyles.tableCell, pdfStyles.colDesc]}>{item.name}</Text>
-                <Text style={[pdfStyles.tableCell, pdfStyles.colQty]}>{item.qty}</Text>
-                <Text style={[pdfStyles.tableCell, pdfStyles.colPrice]}>INR {item.price.toLocaleString()}</Text>
-                <Text style={[pdfStyles.tableCell, pdfStyles.colTotal]}>INR {(item.price * item.qty).toLocaleString()}</Text>
-              </View>
-            ))}
-          </View>
-
-          {/* Total */}
-          <View style={pdfStyles.totalBlock}>
-            <View style={pdfStyles.totalRow}>
-              <Text style={pdfStyles.totalLabel}>TOTAL AMOUNT:</Text>
-              <Text style={pdfStyles.totalVal}>INR {total.toLocaleString()}</Text>
-            </View>
-          </View>
-
-          {/* Signatures & Stamp */}
-          <View style={pdfStyles.authBlock}>
-            {/* Signature Line on Left */}
-            <View style={pdfStyles.signatureLine}>
-              <Text style={pdfStyles.signatureTitle}>Authorized Signatory</Text>
-              <Text style={pdfStyles.signatureSub}>Kalvex Engineering Labs</Text>
-            </View>
-
-            {/* Official Blue Corporate Seal Stamp on Right */}
-            <View style={pdfStyles.stampContainer}>
-              <Svg viewBox="0 0 120 120" style={{ width: 90, height: 90 }}>
-                {/* Outer Borders */}
-                <Circle cx="60" cy="60" r="56" fill="none" stroke="#1E40AF" strokeWidth="2" />
-                <Circle cx="60" cy="60" r="51" fill="none" stroke="#1E40AF" strokeWidth="0.75" strokeDasharray="3,1.5" />
-
-                {/* Inner Core Border */}
-                <Circle cx="60" cy="60" r="34" fill="none" stroke="#1E40AF" strokeWidth="1.5" />
-                <Circle cx="60" cy="60" r="31.5" fill="none" stroke="#1E40AF" strokeWidth="0.5" strokeDasharray="1.5,1" />
-
-                {/* Central Seal Content */}
-                <G transform="translate(60,60)">
-                  <Polygon points="0,-8 2.5,-2.5 8.5,-2.5 4,1 5.5,7 0,3.5 -5.5,7 -4,1 -8.5,-2.5 -2.5,-2.5" fill="#1E40AF" />
-                  <Text y="14" textAnchor="middle" fill="#1E40AF" fontSize="6.5" fontWeight="bold">PASSED</Text>
-                  <Text y="21" textAnchor="middle" fill="#1E40AF" fontSize="4.5" fontWeight="bold">ESTD 2026</Text>
-                </G>
-              </Svg>
-            </View>
-          </View>
-
-          {/* Footer disclaimer */}
-          <View style={pdfStyles.footer}>
-            <Text style={{ marginBottom: 2, color: "#475569" }}>Thank you for using Kalvex Labs services.</Text>
-            <Text>This is a computer-generated document and requires no physical signature. Subject to Bangalore jurisdiction.</Text>
-          </View>
-
-        </View>
-      </Page>
-    </Document>
-  );
-};
 
 interface BomItem {
   id: string;
@@ -281,10 +19,6 @@ interface ElectronicsAddonsProps {
 export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsProps) {
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   // --- STATE FOR BOM MANAGER ---
   const [bom, setBom] = useState<BomItem[]>([
     { id: "1", name: "Raspberry Pi 5 8GB RAM", sku: "KVX-SBC-005", price: 8500, qty: 2 },
@@ -299,6 +33,10 @@ export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsPr
   // Auto-suggestions states
   const [suggestions, setSuggestions] = useState<any[]>([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Filter suggestions based on name
   useEffect(() => {
@@ -365,201 +103,39 @@ export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsPr
     document.body.removeChild(link);
   };
 
-  // --- STATE FOR LOGIC GATE BUILDER ---
-  const [inputA, setInputA] = useState(0);
-  const [inputB, setInputB] = useState(0);
-  const [gateType, setGateType] = useState<"AND" | "OR" | "XOR" | "NAND" | "NOR">("AND");
-
-  const getGateOutput = () => {
-    switch (gateType) {
-      case "AND": return inputA && inputB ? 1 : 0;
-      case "OR": return inputA || inputB ? 1 : 0;
-      case "XOR": return inputA !== inputB ? 1 : 0;
-      case "NAND": return !(inputA && inputB) ? 1 : 0;
-      case "NOR": return !(inputA || inputB) ? 1 : 0;
-      default: return 0;
-    }
-  };
-
-  const outputVal = getGateOutput();
-
   return (
-    <div className="space-y-12 animate-in fade-in duration-500 w-full">
-      <style jsx global>{`
-        @keyframes flow-line {
-          0% { stroke-dashoffset: 100; }
-          100% { stroke-dashoffset: 0; }
-        }
-        .anim-wire-high {
-          stroke: #10b981;
-          stroke-dasharray: 6 4;
-          animation: flow-line 2s linear infinite;
-        }
-        .anim-wire-low {
-          stroke: #94a3b8;
-        }
-        .glowing-glow {
-          box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
-        }
-        .rainbow-border-card {
-          position: relative;
-          border-radius: 24px;
-          padding: 1.5px;
-          background: linear-gradient(135deg, #3b82f6, #ec4899, #10b981, #f59e0b);
-        }
-        .rainbow-inner {
-          background: white;
-          border-radius: 23px;
-        }
-      `}</style>
-      
-      {/* 1. LOGIC GATE SIMULATOR PLAYGROUND */}
-      <div className="rainbow-border-card shadow-xl shadow-slate-900/5">
-        <div className="rainbow-inner p-8">
-          <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-100">
-            <div>
-              <h3 className="font-heading font-black text-[15px] uppercase tracking-wider text-slate-800 flex items-center gap-2">
-                <Zap className="w-5 h-5 text-amber-500 fill-amber-500 animate-bounce" /> 
-                Next-Gen Circuit Simulator
-              </h3>
-              <p className="text-xs text-slate-400 mt-1">Simulate live logic flows with real-time signal calculations and active path tracking.</p>
-            </div>
-            <span className="bg-emerald-50 border border-emerald-100 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider animate-pulse">
-              Simulator Ready
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-center bg-slate-950 text-white p-8 rounded-2xl relative overflow-hidden border border-slate-800 shadow-2xl">
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.08),transparent)] pointer-events-none" />
-            
-            {/* Input Switches block */}
-            <div className="flex flex-col gap-6 justify-center">
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Inputs (Toggle Switches)</span>
-              
-              <button
-                type="button"
-                onClick={() => setInputA(inputA === 1 ? 0 : 1)}
-                className={`py-4 px-6 rounded-2xl border-2 text-left font-black text-xs transition-all duration-300 relative group flex justify-between items-center cursor-pointer ${
-                  inputA === 1 
-                    ? "bg-emerald-950/40 border-emerald-500 text-emerald-450 shadow-[0_0_15px_rgba(16,185,129,0.2)] scale-[1.02]" 
-                    : "bg-slate-900 border-slate-800 text-slate-400"
-                }`}
-              >
-                <span>INPUT A: {inputA}</span>
-                <span className={`w-3.5 h-3.5 rounded-full border-2 transition-all ${inputA === 1 ? "bg-emerald-500 border-emerald-400 shadow-[0_0_8px_#10b981]" : "border-slate-600"}`} />
-              </button>
-
-              <button
-                type="button"
-                onClick={() => setInputB(inputB === 1 ? 0 : 1)}
-                className={`py-4 px-6 rounded-2xl border-2 text-left font-black text-xs transition-all duration-300 relative group flex justify-between items-center cursor-pointer ${
-                  inputB === 1 
-                    ? "bg-emerald-950/40 border-emerald-500 text-emerald-450 shadow-[0_0_15px_rgba(16,185,129,0.2)] scale-[1.02]" 
-                    : "bg-slate-900 border-slate-800 text-slate-400"
-                }`}
-              >
-                <span>INPUT B: {inputB}</span>
-                <span className={`w-3.5 h-3.5 rounded-full border-2 transition-all ${inputB === 1 ? "bg-emerald-500 border-emerald-400 shadow-[0_0_8px_#10b981]" : "border-slate-600"}`} />
-              </button>
-            </div>
-
-            {/* SVG Wire Path visualization */}
-            <div className="lg:col-span-2 flex flex-col items-center justify-center relative py-8">
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4">Logic Flow Wireframe</span>
-              
-              <svg width="240" height="120" viewBox="0 0 240 120" className="overflow-visible">
-                {/* Wires */}
-                <path d="M 10 30 L 100 30" fill="none" strokeWidth="3.5" className={inputA === 1 ? "anim-wire-high" : "anim-wire-low"} />
-                <path d="M 10 90 L 100 90" fill="none" strokeWidth="3.5" className={inputB === 1 ? "anim-wire-high" : "anim-wire-low"} />
-                
-                <path d="M 150 60 L 230 60" fill="none" strokeWidth="3.5" className={outputVal === 1 ? "anim-wire-high" : "anim-wire-low"} />
-
-                {/* Gate Silhouette */}
-                <g transform="translate(90, 25)">
-                  <rect x="0" y="0" width="60" height="70" rx="15" fill="#1e293b" stroke="#334155" strokeWidth="2.5" />
-                  <text x="30" y="40" fill="#f8fafc" fontSize="12" fontWeight="900" textAnchor="middle" letterSpacing="1">{gateType}</text>
-                  <text x="30" y="55" fill="#64748b" fontSize="7" fontWeight="900" textAnchor="middle">GATE</text>
-                </g>
-              </svg>
-
-              <div className="mt-6">
-                <select
-                  value={gateType}
-                  onChange={e => setGateType(e.target.value as any)}
-                  className="bg-slate-900 border-2 border-slate-800 text-white hover:border-indigo-500 text-xs font-black uppercase tracking-widest px-6 py-3.5 rounded-xl outline-none cursor-pointer transition-all"
-                >
-                  <option value="AND">AND GATE</option>
-                  <option value="OR">OR GATE</option>
-                  <option value="XOR">XOR GATE</option>
-                  <option value="NAND">NAND GATE</option>
-                  <option value="NOR">NOR GATE</option>
-                </select>
-              </div>
-            </div>
-
-            {/* Output Panel block */}
-            <div className="flex flex-col items-center justify-center text-center">
-              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4">Signal Output</span>
-              
-              <motion.div 
-                animate={outputVal === 1 ? { scale: [1, 1.08, 1] } : {}}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className={`w-24 h-24 rounded-[2rem] flex flex-col items-center justify-center border-4 transition-all duration-500 ${
-                  outputVal === 1 
-                    ? "bg-emerald-500/10 border-emerald-500 text-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.3)]" 
-                    : "bg-slate-900 border-slate-800 text-slate-500"
-                }`}
-              >
-                <span className="text-3xl font-black">{outputVal}</span>
-                <span className="text-[7.5px] font-black uppercase tracking-wider mt-1">
-                  {outputVal === 1 ? "HIGH" : "LOW"}
-                </span>
-              </motion.div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      {/* 2. DYNAMIC BILL OF MATERIALS (BOM) GRID WITH AUTO-SUGGESTIONS */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-visible">
-        <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-100">
+    <div className="space-y-12 animate-in fade-in duration-500 w-full text-slate-800">
+      {/* DYNAMIC BILL OF MATERIALS (BOM) GRID WITH AUTO-SUGGESTIONS */}
+      <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-xl relative overflow-visible">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 pb-4 border-b border-slate-100 gap-4">
           <div>
-            <h3 className="font-heading font-black text-[15px] uppercase tracking-wider text-slate-800 flex items-center gap-2">
+            <h3 className="font-heading font-black text-lg uppercase tracking-wider text-slate-800 flex items-center gap-2">
               <Layers className="w-5 h-5 text-indigo-600" /> Lab Bill of Materials (BOM)
             </h3>
             <p className="text-xs text-slate-400 mt-1">Auto-suggest catalog items while typing to estimate complete costings.</p>
           </div>
-          <div className="flex gap-2.5 items-center">
-            {mounted && (
-              <PDFDownloadLink 
-                document={<BOMDocumentPDF items={bom} total={getBomTotal()} />} 
-                fileName={`kalvex_bom_${new Date().toISOString().slice(0, 10)}.pdf`}
-                className="flex items-center gap-1.5 bg-indigo-650 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-md hover:shadow-indigo-500/20"
-              >
-                {({ loading }) => (
-                  <>
-                    <FileText className="w-3.5 h-3.5" />
-                    <span>{loading ? "Generating PDF..." : "Download PDF"}</span>
-                  </>
-                )}
-              </PDFDownloadLink>
-            )}
+          <div className="flex gap-2.5 items-center w-full sm:w-auto">
             <button 
               type="button"
               onClick={exportBomCsv}
-              className="flex items-center gap-1.5 bg-slate-150/70 hover:bg-slate-200 border border-slate-200 text-slate-650 font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm"
+              className="flex items-center justify-center gap-1.5 bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-600 font-black text-xs uppercase tracking-wider px-5 py-3 rounded-xl transition-all cursor-pointer w-full sm:w-auto"
             >
-              <Download className="w-3.5 h-3.5" /> Export CSV
+              <Download className="w-4 h-4" /> Export CSV
             </button>
           </div>
         </div>
 
+        {/* Info Tip */}
+        <div className="mb-6 flex gap-2.5 items-center bg-blue-50 border border-blue-100 rounded-xl p-3.5 text-xs text-blue-700">
+          <Info className="w-4 h-4 shrink-0" />
+          <span>Search parts by entering part name or SKU. Select suggestions to auto-fill SKU and price.</span>
+        </div>
+
         {/* Add item form with suggestions dropdown */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end bg-slate-50/50 p-6 rounded-2xl border border-slate-150/70 mb-8 relative">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end bg-slate-50 p-6 rounded-2xl border border-slate-150 mb-8 relative">
           
           <div className="space-y-1 relative">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Part Name (Searches Store)</label>
+            <label className="text-[10px] font-black text-slate-450 uppercase tracking-widest">Part Name (Searches Store)</label>
             <input 
               value={partName}
               onChange={e => {
@@ -603,22 +179,22 @@ export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsPr
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Part SKU</label>
+            <label className="text-[10px] font-black text-slate-450 uppercase tracking-widest">Part SKU</label>
             <input 
               value={partSku}
               onChange={e => setPartSku(e.target.value)}
               placeholder="e.g. KVX-SBC-005"
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold outline-none" 
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:border-indigo-500 transition-colors" 
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Unit Price (INR)</label>
+            <label className="text-[10px] font-black text-slate-450 uppercase tracking-widest">Unit Price (INR)</label>
             <input 
               type="number"
               value={partPrice}
               onChange={e => setPartPrice(Number(e.target.value))}
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold outline-none" 
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:border-indigo-500 transition-colors" 
             />
           </div>
 
@@ -686,7 +262,7 @@ export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsPr
         </div>
 
         {/* BOM Total Footer */}
-        <div className="flex flex-col sm:flex-row justify-between items-center border-t border-slate-150/60 mt-8 pt-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center border-t border-slate-150/60 mt-8 pt-8 gap-4">
           <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Prices include local taxes (Diwali Offer code applicable at checkout)</p>
           <div className="text-right mt-4 sm:mt-0">
             <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest block">Estimated BOM Total</span>

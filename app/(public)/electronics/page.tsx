@@ -477,7 +477,7 @@ export default function ElectronicsStore() {
                 : "text-slate-400 hover:text-slate-600"
             }`}
           >
-            ⚡ Lab & Simulator
+            📋 Lab Bill of Materials
           </button>
         </div>
 

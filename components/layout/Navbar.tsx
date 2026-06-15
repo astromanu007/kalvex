@@ -97,7 +97,7 @@ export function Navbar() {
   // Load and sync cart items dynamically from localStorage — only when signed in
   useEffect(() => {
     if (!session?.user) {
-      setCartCount(0);
+      setTimeout(() => setCartCount(0), 0);
       return;
     }
 
@@ -108,14 +108,14 @@ export function Navbar() {
           const items = JSON.parse(stored);
           if (Array.isArray(items)) {
             const count = items.reduce((acc, item: any) => acc + (item.qty || 1), 0);
-            setCartCount(count);
+            setTimeout(() => setCartCount(count), 0);
             return;
           }
         }
-        setCartCount(0);
+        setTimeout(() => setCartCount(0), 0);
       } catch (err) {
         console.error("Cart sync error:", err);
-        setCartCount(0);
+        setTimeout(() => setCartCount(0), 0);
       }
     };
 
