@@ -3,36 +3,37 @@
 import { useState, useEffect } from "react";
 import { Plus, Trash2, Cpu, Zap, Download, Layers, Sparkles, FileText, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Document, Page, Text, View, StyleSheet, PDFDownloadLink } from "@react-pdf/renderer";
+import { Document, Page, Text, View, StyleSheet, PDFDownloadLink, Svg, Circle, Polygon, G } from "@react-pdf/renderer";
 
 // Define PDF styles
 const pdfStyles = StyleSheet.create({
   page: {
-    padding: 40,
+    padding: 30,
     fontFamily: "Helvetica",
     backgroundColor: "#ffffff",
     fontSize: 9,
     lineHeight: 1.5,
   },
   borderWrapper: {
-    border: "2.5pt double #1e293b",
+    border: "2pt double #1e293b",
     padding: 24,
     height: "100%",
+    position: "relative",
   },
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "flex-start",
     borderBottomWidth: 1.5,
-    borderBottomColor: "#cbd5e1",
-    paddingBottom: 16,
+    borderBottomColor: "#1e293b",
+    paddingBottom: 14,
     marginBottom: 24,
   },
   companyInfo: {
     flexDirection: "column",
   },
   companyName: {
-    fontSize: 20,
+    fontSize: 22,
     fontWeight: "bold",
     color: "#2563eb",
     letterSpacing: 1,
@@ -42,6 +43,7 @@ const pdfStyles = StyleSheet.create({
     color: "#64748b",
     marginTop: 2,
     fontWeight: "bold",
+    textTransform: "uppercase",
   },
   docTitleBlock: {
     alignItems: "flex-end",
@@ -51,6 +53,7 @@ const pdfStyles = StyleSheet.create({
     fontWeight: "bold",
     color: "#0f172a",
     letterSpacing: 0.5,
+    textTransform: "uppercase",
   },
   metaText: {
     fontSize: 8,
@@ -59,7 +62,11 @@ const pdfStyles = StyleSheet.create({
   },
   table: {
     width: "100%",
-    marginTop: 16,
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: "#cbd5e1",
+    borderRadius: 6,
+    overflow: "hidden",
   },
   tableHeader: {
     flexDirection: "row",
@@ -67,50 +74,51 @@ const pdfStyles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#cbd5e1",
     paddingVertical: 8,
-    paddingHorizontal: 6,
+    paddingHorizontal: 8,
   },
   tableHeaderCell: {
     fontSize: 8,
     fontWeight: "bold",
     color: "#334155",
+    textTransform: "uppercase",
   },
   tableRow: {
     flexDirection: "row",
     borderBottomWidth: 1,
     borderBottomColor: "#f1f5f9",
     paddingVertical: 8,
-    paddingHorizontal: 6,
+    paddingHorizontal: 8,
   },
   tableCell: {
     fontSize: 8.5,
     color: "#334155",
   },
-  colSku: { width: "22%" },
-  colDesc: { width: "42%" },
+  colSku: { width: "25%" },
+  colDesc: { width: "45%" },
   colQty: { width: "10%", textAlign: "center" },
-  colPrice: { width: "13%", textAlign: "right" },
-  colTotal: { width: "13%", textAlign: "right" },
+  colPrice: { width: "10%", textAlign: "right" },
+  colTotal: { width: "10%", textAlign: "right" },
   
   totalBlock: {
     flexDirection: "row",
     justifyContent: "flex-end",
-    marginTop: 20,
-    paddingTop: 10,
-    borderTopWidth: 1,
-    borderTopColor: "#e2e8f0",
+    marginTop: 16,
   },
   totalRow: {
-    width: "35%",
+    width: "40%",
     flexDirection: "row",
     justifyContent: "space-between",
+    paddingVertical: 6,
+    borderBottomWidth: 1.5,
+    borderBottomColor: "#1e293b",
   },
   totalLabel: {
-    fontSize: 10,
+    fontSize: 9,
     fontWeight: "bold",
     color: "#0f172a",
   },
   totalVal: {
-    fontSize: 11,
+    fontSize: 10,
     fontWeight: "bold",
     color: "#2563eb",
   },
@@ -118,60 +126,40 @@ const pdfStyles = StyleSheet.create({
   authBlock: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 50,
-  },
-  stamp: {
-    borderWidth: 2,
-    borderColor: "#10b981",
-    borderRadius: 8,
-    padding: 8,
-    width: 90,
-    height: 90,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  stampTitle: {
-    fontSize: 8,
-    fontWeight: "bold",
-    color: "#10b981",
-  },
-  stampSub: {
-    fontSize: 6,
-    color: "#10b981",
-    marginTop: 2,
-    fontWeight: "bold",
-  },
-  stampFooter: {
-    fontSize: 5,
-    color: "#94a3b8",
-    marginTop: 4,
+    alignItems: "flex-end",
+    marginTop: 40,
+    paddingHorizontal: 10,
   },
   signatureLine: {
-    width: 140,
-    borderTopWidth: 1,
+    width: 150,
+    borderTopWidth: 1.5,
     borderTopColor: "#0f172a",
     paddingTop: 6,
-    alignItems: "center",
   },
   signatureTitle: {
-    fontSize: 8,
+    fontSize: 8.5,
     fontWeight: "bold",
     color: "#0f172a",
+    textTransform: "uppercase",
+    letterSpacing: 0.5,
   },
   signatureSub: {
     fontSize: 7,
     color: "#64748b",
-    marginTop: 2,
+    marginTop: 1,
+  },
+  stampContainer: {
+    alignItems: "center",
+    justifyContent: "center",
   },
   
   footer: {
     position: "absolute",
-    bottom: 24,
+    bottom: 20,
     left: 24,
     right: 24,
     textAlign: "center",
-    fontSize: 7,
+    fontSize: 7.5,
     color: "#94a3b8",
     borderTopWidth: 1,
     borderTopColor: "#f1f5f9",
@@ -197,8 +185,9 @@ const BOMDocumentPDF = ({ items = [], total = 0 }: { items: BomItem[]; total: nu
           <View style={pdfStyles.header}>
             <View style={pdfStyles.companyInfo}>
               <Text style={pdfStyles.companyName}>KALVEX LABS</Text>
-              <Text style={pdfStyles.companySub}>Electronics Engineering & Simulation Suite</Text>
-              <Text style={pdfStyles.metaText}>Email: info@kalvex.in | Web: www.kalvex.in</Text>
+              <Text style={pdfStyles.companySub}>Engineering & Technologies Labs</Text>
+              <Text style={pdfStyles.metaText}>CIN: U72900KA2026PTC123456 | GSTIN: 29AAFCD1234F1Z5</Text>
+              <Text style={pdfStyles.metaText}>Email: kalvextechnologies@gmail.com | www.kalvex.com</Text>
             </View>
             <View style={pdfStyles.docTitleBlock}>
               <Text style={pdfStyles.docTitle}>BILL OF MATERIALS</Text>
@@ -210,11 +199,11 @@ const BOMDocumentPDF = ({ items = [], total = 0 }: { items: BomItem[]; total: nu
           {/* Table */}
           <View style={pdfStyles.table}>
             <View style={pdfStyles.tableHeader}>
-              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colSku]}>SKU / PART CODE</Text>
-              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colDesc]}>DESCRIPTION</Text>
-              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colQty]}>QTY</Text>
-              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colPrice]}>UNIT PRICE</Text>
-              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colTotal]}>TOTAL</Text>
+              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colSku]}>SKU / Part Code</Text>
+              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colDesc]}>Description & Details</Text>
+              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colQty]}>Qty</Text>
+              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colPrice]}>Unit Price</Text>
+              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colTotal]}>Amount</Text>
             </View>
 
             {items.map((item, idx) => (
@@ -231,28 +220,45 @@ const BOMDocumentPDF = ({ items = [], total = 0 }: { items: BomItem[]; total: nu
           {/* Total */}
           <View style={pdfStyles.totalBlock}>
             <View style={pdfStyles.totalRow}>
-              <Text style={pdfStyles.totalLabel}>ESTIMATED LIABILITY:</Text>
+              <Text style={pdfStyles.totalLabel}>TOTAL AMOUNT:</Text>
               <Text style={pdfStyles.totalVal}>INR {total.toLocaleString()}</Text>
             </View>
           </View>
 
           {/* Signatures & Stamp */}
           <View style={pdfStyles.authBlock}>
-            <View style={pdfStyles.stamp}>
-              <Text style={pdfStyles.stampTitle}>KALVEX LABS</Text>
-              <Text style={pdfStyles.stampSub}>★ APPROVED ★</Text>
-              <Text style={pdfStyles.stampFooter}>OFFICIAL STAMP</Text>
-            </View>
+            {/* Signature Line on Left */}
             <View style={pdfStyles.signatureLine}>
-              <Text style={pdfStyles.signatureTitle}>Dr. Clara Croft</Text>
-              <Text style={pdfStyles.signatureSub}>Authorized Signatory</Text>
+              <Text style={pdfStyles.signatureTitle}>Authorized Signatory</Text>
+              <Text style={pdfStyles.signatureSub}>Kalvex Engineering Labs</Text>
+            </View>
+
+            {/* Official Blue Corporate Seal Stamp on Right */}
+            <View style={pdfStyles.stampContainer}>
+              <Svg viewBox="0 0 120 120" style={{ width: 90, height: 90 }}>
+                {/* Outer Borders */}
+                <Circle cx="60" cy="60" r="56" fill="none" stroke="#1E40AF" strokeWidth="2" />
+                <Circle cx="60" cy="60" r="51" fill="none" stroke="#1E40AF" strokeWidth="0.75" strokeDasharray="3,1.5" />
+
+                {/* Inner Core Border */}
+                <Circle cx="60" cy="60" r="34" fill="none" stroke="#1E40AF" strokeWidth="1.5" />
+                <Circle cx="60" cy="60" r="31.5" fill="none" stroke="#1E40AF" strokeWidth="0.5" strokeDasharray="1.5,1" />
+
+                {/* Central Seal Content */}
+                <G transform="translate(60,60)">
+                  <Polygon points="0,-8 2.5,-2.5 8.5,-2.5 4,1 5.5,7 0,3.5 -5.5,7 -4,1 -8.5,-2.5 -2.5,-2.5" fill="#1E40AF" />
+                  <Text y="14" textAnchor="middle" fill="#1E40AF" fontSize="6.5" fontWeight="bold">PASSED</Text>
+                  <Text y="21" textAnchor="middle" fill="#1E40AF" fontSize="4.5" fontWeight="bold">ESTD 2026</Text>
+                </G>
+              </Svg>
             </View>
           </View>
 
           {/* Footer disclaimer */}
-          <Text style={pdfStyles.footer}>
-            This is an official document generated by the Kalvex High-Performance Simulation Engine. Protected by SSL & AES-256 protocols.
-          </Text>
+          <View style={pdfStyles.footer}>
+            <Text style={{ marginBottom: 2, color: "#475569" }}>Thank you for using Kalvex Labs services.</Text>
+            <Text>This is a computer-generated document and requires no physical signature. Subject to Bangalore jurisdiction.</Text>
+          </View>
 
         </View>
       </Page>
@@ -529,7 +535,7 @@ export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsPr
               <PDFDownloadLink 
                 document={<BOMDocumentPDF items={bom} total={getBomTotal()} />} 
                 fileName={`kalvex_bom_${new Date().toISOString().slice(0, 10)}.pdf`}
-                className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-md hover:shadow-indigo-500/20"
+                className="flex items-center gap-1.5 bg-indigo-650 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-md hover:shadow-indigo-500/20"
               >
                 {({ loading }) => (
                   <>
@@ -542,7 +548,7 @@ export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsPr
             <button 
               type="button"
               onClick={exportBomCsv}
-              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-650 font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 bg-slate-150/70 hover:bg-slate-200 border border-slate-200 text-slate-650 font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm"
             >
               <Download className="w-3.5 h-3.5" /> Export CSV
             </button>
