@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Plus, Trash2, Cpu, Zap, Download, RefreshCw, Layers } from "lucide-react";
+import { useState, useMemo, useEffect } from "react";
+import { Plus, Trash2, Cpu, Zap, Download, Layers, Sparkles, HelpCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface BomItem {
   id: string;
@@ -11,7 +12,11 @@ interface BomItem {
   qty: number;
 }
 
-export default function ElectronicsAddons() {
+interface ElectronicsAddonsProps {
+  products?: any[];
+}
+
+export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsProps) {
   // --- STATE FOR BOM MANAGER ---
   const [bom, setBom] = useState<BomItem[]>([
     { id: "1", name: "Raspberry Pi 5 8GB RAM", sku: "KVX-SBC-005", price: 8500, qty: 2 },
@@ -22,6 +27,30 @@ export default function ElectronicsAddons() {
   const [partSku, setPartSku] = useState("");
   const [partPrice, setPartPrice] = useState(150);
   const [partQty, setPartQty] = useState(1);
+  
+  // Auto-suggestions states
+  const [suggestions, setSuggestions] = useState<any[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+  // Filter suggestions based on name
+  useEffect(() => {
+    if (!partName.trim() || !products.length) {
+      setSuggestions([]);
+      return;
+    }
+    const matched = products.filter(p => 
+      p.name.toLowerCase().includes(partName.toLowerCase()) ||
+      p.sku.toLowerCase().includes(partName.toLowerCase())
+    ).slice(0, 5);
+    setSuggestions(matched);
+  }, [partName, products]);
+
+  const selectSuggestion = (prod: any) => {
+    setPartName(prod.name);
+    setPartSku(prod.sku);
+    setPartPrice(prod.price);
+    setShowSuggestions(false);
+  };
 
   const addBomItem = () => {
     if (!partName.trim() || !partSku.trim()) return;
@@ -39,6 +68,7 @@ export default function ElectronicsAddons() {
     setPartSku("");
     setPartPrice(150);
     setPartQty(1);
+    setShowSuggestions(false);
   };
 
   const removeBomItem = (id: string) => {
@@ -83,169 +113,263 @@ export default function ElectronicsAddons() {
     }
   };
 
+  const outputVal = getGateOutput();
+
   return (
     <div className="space-y-12 animate-in fade-in duration-500 w-full">
+      <style jsx global>{`
+        @keyframes flow-line {
+          0% { stroke-dashoffset: 100; }
+          100% { stroke-dashoffset: 0; }
+        }
+        .anim-wire-high {
+          stroke: #10b981;
+          stroke-dasharray: 6 4;
+          animation: flow-line 2s linear infinite;
+        }
+        .anim-wire-low {
+          stroke: #94a3b8;
+        }
+        .glowing-glow {
+          box-shadow: 0 0 15px rgba(59, 130, 246, 0.4);
+        }
+        .rainbow-border-card {
+          position: relative;
+          border-radius: 24px;
+          padding: 1.5px;
+          background: linear-gradient(135deg, #3b82f6, #ec4899, #10b981, #f59e0b);
+        }
+        .rainbow-inner {
+          background: white;
+          border-radius: 23px;
+        }
+      `}</style>
       
       {/* 1. LOGIC GATE SIMULATOR PLAYGROUND */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
-        <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-100">
-          <div>
-            <h3 className="font-bold text-sm uppercase tracking-wider text-slate-800 flex items-center gap-2">
-              <Zap className="w-5 h-5 text-amber-500" /> Interactive Logic Gate Builder
-            </h3>
-            <p className="text-xs text-slate-400 mt-1">Simulate real-time circuit logic and trace outputs instantly.</p>
-          </div>
-          <span className="bg-amber-50 text-amber-700 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider">
-            Gate Active
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center bg-slate-50/50 p-8 rounded-2xl border border-slate-100">
-          
-          {/* Inputs Section */}
-          <div className="flex flex-col gap-4">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Inputs (Binary)</span>
-            
-            <button
-              onClick={() => setInputA(inputA === 1 ? 0 : 1)}
-              className={`p-4 rounded-xl border text-center font-bold text-xs transition-all cursor-pointer ${
-                inputA === 1 
-                  ? "bg-blue-600 border-blue-650 text-white shadow-md shadow-blue-500/20" 
-                  : "bg-white border-slate-200 text-slate-600"
-              }`}
-            >
-              Input A: {inputA}
-            </button>
-
-            <button
-              onClick={() => setInputB(inputB === 1 ? 0 : 1)}
-              className={`p-4 rounded-xl border text-center font-bold text-xs transition-all cursor-pointer ${
-                inputB === 1 
-                  ? "bg-blue-600 border-blue-650 text-white shadow-md shadow-blue-500/20" 
-                  : "bg-white border-slate-200 text-slate-600"
-              }`}
-            >
-              Input B: {inputB}
-            </button>
-          </div>
-
-          {/* Gate Selection Section */}
-          <div className="flex flex-col items-center justify-center gap-4">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-1">Gate Function</span>
-            <select
-              value={gateType}
-              onChange={e => setGateType(e.target.value as any)}
-              className="w-full max-w-[160px] text-center bg-white border border-slate-200 rounded-xl px-4 py-3 text-sm font-bold text-slate-700 outline-none cursor-pointer"
-            >
-              <option value="AND">AND GATE</option>
-              <option value="OR">OR GATE</option>
-              <option value="XOR">XOR GATE</option>
-              <option value="NAND">NAND GATE</option>
-              <option value="NOR">NOR GATE</option>
-            </select>
-
-            {/* Custom SVG Drawing of logic gate */}
-            <svg width="100" height="60" viewBox="0 0 100 60" className="opacity-90">
-              <path d="M10,10 L50,10 A20,20 0 0,1 50,50 L10,50 Z" fill="none" stroke="#64748b" strokeWidth="2" />
-              <line x1="50" y1="30" x2="90" y2="30" stroke="#64748b" strokeWidth="2" />
-              <circle cx="90" cy="30" r="3" fill="#64748b" />
-            </svg>
-          </div>
-
-          {/* Outputs Section */}
-          <div className="flex flex-col items-center justify-center">
-            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block mb-4">Signal Output</span>
-            <div className={`w-20 h-20 rounded-full flex items-center justify-center text-xl font-black transition-all border-4 ${
-              getGateOutput() === 1 
-                ? "bg-emerald-500 border-emerald-300 text-white shadow-xl shadow-emerald-500/30 scale-105" 
-                : "bg-slate-200 border-slate-300 text-slate-400"
-            }`}>
-              {getGateOutput()}
+      <div className="rainbow-border-card shadow-xl shadow-slate-900/5">
+        <div className="rainbow-inner p-8">
+          <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-100">
+            <div>
+              <h3 className="font-heading font-black text-[15px] uppercase tracking-wider text-slate-800 flex items-center gap-2">
+                <Zap className="w-5 h-5 text-amber-500 fill-amber-500 animate-bounce" /> 
+                Next-Gen Circuit Simulator
+              </h3>
+              <p className="text-xs text-slate-400 mt-1">Simulate live logic flows with real-time signal calculations and active path tracking.</p>
             </div>
-            <span className="text-[9px] font-black uppercase tracking-wider text-slate-400 mt-3">
-              {getGateOutput() === 1 ? "Logic High (True)" : "Logic Low (False)"}
+            <span className="bg-emerald-50 border border-emerald-100 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider animate-pulse">
+              Simulator Ready
             </span>
           </div>
 
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8 items-center bg-slate-950 text-white p-8 rounded-2xl relative overflow-hidden border border-slate-800 shadow-2xl">
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(59,130,246,0.08),transparent)] pointer-events-none" />
+            
+            {/* Input Switches block */}
+            <div className="flex flex-col gap-6 justify-center">
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-1">Inputs (Toggle Switches)</span>
+              
+              <button
+                type="button"
+                onClick={() => setInputA(inputA === 1 ? 0 : 1)}
+                className={`py-4 px-6 rounded-2xl border-2 text-left font-black text-xs transition-all duration-300 relative group flex justify-between items-center cursor-pointer ${
+                  inputA === 1 
+                    ? "bg-emerald-950/40 border-emerald-500 text-emerald-450 shadow-[0_0_15px_rgba(16,185,129,0.2)] scale-[1.02]" 
+                    : "bg-slate-900 border-slate-800 text-slate-400"
+                }`}
+              >
+                <span>INPUT A: {inputA}</span>
+                <span className={`w-3.5 h-3.5 rounded-full border-2 transition-all ${inputA === 1 ? "bg-emerald-500 border-emerald-400 shadow-[0_0_8px_#10b981]" : "border-slate-600"}`} />
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setInputB(inputB === 1 ? 0 : 1)}
+                className={`py-4 px-6 rounded-2xl border-2 text-left font-black text-xs transition-all duration-300 relative group flex justify-between items-center cursor-pointer ${
+                  inputB === 1 
+                    ? "bg-emerald-950/40 border-emerald-500 text-emerald-450 shadow-[0_0_15px_rgba(16,185,129,0.2)] scale-[1.02]" 
+                    : "bg-slate-900 border-slate-800 text-slate-400"
+                }`}
+              >
+                <span>INPUT B: {inputB}</span>
+                <span className={`w-3.5 h-3.5 rounded-full border-2 transition-all ${inputB === 1 ? "bg-emerald-500 border-emerald-400 shadow-[0_0_8px_#10b981]" : "border-slate-600"}`} />
+              </button>
+            </div>
+
+            {/* SVG Wire Path visualization */}
+            <div className="lg:col-span-2 flex flex-col items-center justify-center relative py-8">
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4">Logic Flow Wireframe</span>
+              
+              <svg width="240" height="120" viewBox="0 0 240 120" className="overflow-visible">
+                {/* Wires */}
+                <path d="M 10 30 L 100 30" fill="none" strokeWidth="3.5" className={inputA === 1 ? "anim-wire-high" : "anim-wire-low"} />
+                <path d="M 10 90 L 100 90" fill="none" strokeWidth="3.5" className={inputB === 1 ? "anim-wire-high" : "anim-wire-low"} />
+                
+                <path d="M 150 60 L 230 60" fill="none" strokeWidth="3.5" className={outputVal === 1 ? "anim-wire-high" : "anim-wire-low"} />
+
+                {/* Gate Silhouette */}
+                <g transform="translate(90, 25)">
+                  <rect x="0" y="0" width="60" height="70" rx="15" fill="#1e293b" stroke="#334155" strokeWidth="2.5" />
+                  <text x="30" y="40" fill="#f8fafc" fontSize="12" fontWeight="900" textAnchor="middle" letterSpacing="1">{gateType}</text>
+                  <text x="30" y="55" fill="#64748b" fontSize="7" fontWeight="900" textAnchor="middle">GATE</text>
+                </g>
+              </svg>
+
+              <div className="mt-6">
+                <select
+                  value={gateType}
+                  onChange={e => setGateType(e.target.value as any)}
+                  className="bg-slate-900 border-2 border-slate-800 text-white hover:border-indigo-500 text-xs font-black uppercase tracking-widest px-6 py-3.5 rounded-xl outline-none cursor-pointer transition-all"
+                >
+                  <option value="AND">AND GATE</option>
+                  <option value="OR">OR GATE</option>
+                  <option value="XOR">XOR GATE</option>
+                  <option value="NAND">NAND GATE</option>
+                  <option value="NOR">NOR GATE</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Output Panel block */}
+            <div className="flex flex-col items-center justify-center text-center">
+              <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest block mb-4">Signal Output</span>
+              
+              <motion.div 
+                animate={outputVal === 1 ? { scale: [1, 1.08, 1] } : {}}
+                transition={{ repeat: Infinity, duration: 2 }}
+                className={`w-24 h-24 rounded-[2rem] flex flex-col items-center justify-center border-4 transition-all duration-500 ${
+                  outputVal === 1 
+                    ? "bg-emerald-500/10 border-emerald-500 text-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.3)]" 
+                    : "bg-slate-900 border-slate-800 text-slate-500"
+                }`}
+              >
+                <span className="text-3xl font-black">{outputVal}</span>
+                <span className="text-[7.5px] font-black uppercase tracking-wider mt-1">
+                  {outputVal === 1 ? "HIGH" : "LOW"}
+                </span>
+              </motion.div>
+            </div>
+
+          </div>
         </div>
       </div>
 
-      {/* 2. DYNAMIC BILL OF MATERIALS (BOM) GRID */}
-      <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+      {/* 2. DYNAMIC BILL OF MATERIALS (BOM) GRID WITH AUTO-SUGGESTIONS */}
+      <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm relative overflow-visible">
         <div className="flex justify-between items-center mb-8 pb-4 border-b border-slate-100">
           <div>
-            <h3 className="font-bold text-sm uppercase tracking-wider text-slate-800 flex items-center gap-2">
-              <Layers className="w-5 h-5 text-blue-600" /> Lab Bill of Materials (BOM)
+            <h3 className="font-heading font-black text-[15px] uppercase tracking-wider text-slate-800 flex items-center gap-2">
+              <Layers className="w-5 h-5 text-indigo-600" /> Lab Bill of Materials (BOM)
             </h3>
-            <p className="text-xs text-slate-400 mt-1">Compile your component shopping list and estimate project costings.</p>
+            <p className="text-xs text-slate-400 mt-1">Auto-suggest catalog items while typing to estimate complete costings.</p>
           </div>
           <button 
+            type="button"
             onClick={exportBomCsv}
-            className="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-600 font-bold text-xs uppercase tracking-wider px-4 py-2 rounded-xl transition-all cursor-pointer"
+            className="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-600 font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm"
           >
             <Download className="w-3.5 h-3.5" /> Export CSV
           </button>
         </div>
 
-        {/* Add item form */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end bg-slate-50/50 p-5 rounded-2xl border border-slate-100 mb-6">
-          <div className="space-y-1">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Part Name</label>
+        {/* Add item form with suggestions dropdown */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end bg-slate-50/50 p-6 rounded-2xl border border-slate-150/70 mb-8 relative">
+          
+          <div className="space-y-1 relative">
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Part Name (Searches Store)</label>
             <input 
               value={partName}
-              onChange={e => setPartName(e.target.value)}
-              placeholder="e.g. ESP32 Dev Board"
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none" 
+              onChange={e => {
+                setPartName(e.target.value);
+                setShowSuggestions(true);
+              }}
+              onFocus={() => setShowSuggestions(true)}
+              placeholder="e.g. Raspberry"
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold outline-none focus:border-indigo-500 transition-colors" 
             />
+
+            {/* Suggestions drop-panel */}
+            <AnimatePresence>
+              {showSuggestions && suggestions.length > 0 && (
+                <>
+                  <div className="fixed inset-0 z-40" onClick={() => setShowSuggestions(false)} />
+                  <motion.div 
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: 5 }}
+                    className="absolute left-0 right-0 top-full mt-2 bg-white border border-slate-200 rounded-2xl shadow-xl overflow-hidden z-50 divide-y divide-slate-100 max-h-60 overflow-y-auto"
+                  >
+                    {suggestions.map((s) => (
+                      <button
+                        key={s.id}
+                        type="button"
+                        onClick={() => selectSuggestion(s)}
+                        className="w-full text-left px-4 py-3 hover:bg-indigo-50/50 transition-colors flex justify-between items-center cursor-pointer"
+                      >
+                        <div className="flex flex-col gap-0.5">
+                          <span className="text-xs font-black text-slate-800 truncate max-w-[180px]">{s.name}</span>
+                          <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{s.sku}</span>
+                        </div>
+                        <span className="text-xs font-mono font-black text-indigo-600 shrink-0">₹{s.price}</span>
+                      </button>
+                    ))}
+                  </motion.div>
+                </>
+              )}
+            </AnimatePresence>
           </div>
+
           <div className="space-y-1">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Part SKU</label>
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Part SKU</label>
             <input 
               value={partSku}
               onChange={e => setPartSku(e.target.value)}
-              placeholder="e.g. KVX-SBC-032"
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none" 
+              placeholder="e.g. KVX-SBC-005"
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold outline-none" 
             />
           </div>
+
           <div className="space-y-1">
-            <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Price (INR)</label>
+            <label className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Unit Price (INR)</label>
             <input 
               type="number"
               value={partPrice}
               onChange={e => setPartPrice(Number(e.target.value))}
-              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-2.5 text-xs font-bold outline-none" 
+              className="w-full bg-white border border-slate-200 rounded-xl px-4 py-3 text-xs font-bold outline-none" 
             />
           </div>
+
           <button
+            type="button"
             onClick={addBomItem}
-            className="bg-slate-900 hover:bg-blue-600 text-white font-black text-xs uppercase tracking-wider py-3 px-4 rounded-xl transition-all cursor-pointer"
+            className="bg-slate-900 hover:bg-indigo-600 text-white font-black text-xs uppercase tracking-wider py-3.5 px-6 rounded-xl transition-all cursor-pointer flex justify-center items-center gap-1.5 shadow-md"
           >
-            Add Component
+            <Plus className="w-4 h-4" /> Add Item
           </button>
         </div>
 
         {/* BOM Table Grid */}
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto border border-slate-100 rounded-2xl shadow-inner bg-slate-50/20">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400">
-                <th className="pb-3 pl-3">Component Info</th>
-                <th className="pb-3">SKU</th>
-                <th className="pb-3">Unit Price</th>
-                <th className="pb-3">Quantity</th>
-                <th className="pb-3">Subtotal</th>
-                <th className="pb-3 pr-3 text-right">Action</th>
+              <tr className="border-b border-slate-100 text-[10px] font-black uppercase tracking-wider text-slate-400 bg-slate-50/50">
+                <th className="py-4 pl-4">Component Details</th>
+                <th className="py-4">SKU</th>
+                <th className="py-4">Unit Cost</th>
+                <th className="py-4">Qty</th>
+                <th className="py-4">Total Cost</th>
+                <th className="py-4 pr-4 text-right">Delete</th>
               </tr>
             </thead>
             <tbody>
               {bom.map(item => (
-                <tr key={item.id} className="border-b border-slate-100 text-xs font-semibold text-slate-700 hover:bg-slate-50/50">
-                  <td className="py-4 pl-3">{item.name}</td>
+                <tr key={item.id} className="border-b border-slate-100 text-xs font-semibold text-slate-700 hover:bg-white transition-colors">
+                  <td className="py-4 pl-4">{item.name}</td>
                   <td>{item.sku}</td>
                   <td>₹{item.price.toLocaleString()}</td>
                   <td>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1.5">
                       <button 
+                        type="button"
                         onClick={() => updateBomQty(item.id, item.qty - 1)}
                         className="w-6 h-6 border rounded bg-white hover:bg-slate-100 cursor-pointer flex items-center justify-center font-bold"
                       >
@@ -253,6 +377,7 @@ export default function ElectronicsAddons() {
                       </button>
                       <span className="font-bold text-slate-900 w-6 text-center">{item.qty}</span>
                       <button 
+                        type="button"
                         onClick={() => updateBomQty(item.id, item.qty + 1)}
                         className="w-6 h-6 border rounded bg-white hover:bg-slate-100 cursor-pointer flex items-center justify-center font-bold"
                       >
@@ -261,10 +386,11 @@ export default function ElectronicsAddons() {
                     </div>
                   </td>
                   <td className="font-bold">₹{(item.price * item.qty).toLocaleString()}</td>
-                  <td className="text-right pr-3">
+                  <td className="text-right pr-4">
                     <button 
+                      type="button"
                       onClick={() => removeBomItem(item.id)}
-                      className="text-slate-350 hover:text-red-500 transition-colors cursor-pointer"
+                      className="text-slate-300 hover:text-red-500 transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-4.5 h-4.5" />
                     </button>
@@ -276,11 +402,11 @@ export default function ElectronicsAddons() {
         </div>
 
         {/* BOM Total Footer */}
-        <div className="flex flex-col sm:flex-row justify-between items-center border-t border-slate-100 mt-8 pt-8">
+        <div className="flex flex-col sm:flex-row justify-between items-center border-t border-slate-150/60 mt-8 pt-8">
           <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Prices include local taxes (Diwali Offer code applicable at checkout)</p>
           <div className="text-right mt-4 sm:mt-0">
             <span className="text-[10px] text-slate-400 font-black uppercase tracking-widest block">Estimated BOM Total</span>
-            <span className="text-3xl font-black text-slate-900">₹{getBomTotal().toLocaleString()}</span>
+            <span className="text-3xl font-black text-slate-950">₹{getBomTotal().toLocaleString()}</span>
           </div>
         </div>
 

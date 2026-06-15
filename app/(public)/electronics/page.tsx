@@ -749,7 +749,7 @@ export default function ElectronicsStore() {
           </main>
         </div>
         ) : (
-          <ElectronicsAddons />
+          <ElectronicsAddons products={PRODUCTS} />
         )}
       </div>
 
