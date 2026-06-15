@@ -3,6 +3,7 @@
 import prisma from "@/lib/prisma";
 import { ServiceType, BookingStatus } from "@prisma/client";
 import { revalidatePath } from "next/cache";
+import { auth } from "@/lib/auth";
 
 /**
  * Create a new booking record.
@@ -23,6 +24,14 @@ export async function createBooking({
   requirements: string;
 }) {
   try {
+    const session = await auth();
+    if (!session?.user) return { success: false, error: "Unauthorized" };
+
+    // Enforce that a user can only create bookings for themselves unless they are admin
+    if (session.user.id !== userId && session.user.role !== "ADMIN") {
+      return { success: false, error: "Access denied" };
+    }
+
     const booking = await prisma.booking.create({
       data: {
         userId,
@@ -49,6 +58,11 @@ export async function assignBooking({
   assignedToId: string;
 }) {
   try {
+    const session = await auth();
+    if (!session?.user || session.user.role !== "ADMIN") {
+      return { success: false, error: "Unauthorized. Admin access required." };
+    }
+
     const booking = await prisma.booking.update({
       where: { id: bookingId },
       data: { assignedToId },
@@ -69,6 +83,23 @@ export async function updateBookingStatus({
   status: BookingStatus;
 }) {
   try {
+    const session = await auth();
+    if (!session?.user) return { success: false, error: "Unauthorized" };
+
+    const bookingRecord = await prisma.booking.findUnique({
+      where: { id: bookingId }
+    });
+
+    if (!bookingRecord) return { success: false, error: "Booking not found" };
+
+    const isAdmin = session.user.role === "ADMIN";
+    const isAssignedDeveloper = bookingRecord.assignedToId === session.user.id;
+    const isOwner = bookingRecord.userId === session.user.id;
+
+    if (!isAdmin && !isAssignedDeveloper && !isOwner) {
+      return { success: false, error: "Access denied" };
+    }
+
     const booking = await prisma.booking.update({
       where: { id: bookingId },
       data: { status },
@@ -83,6 +114,11 @@ export async function updateBookingStatus({
 /** Get all bookings for admin dashboard */
 export async function getAllBookings() {
   try {
+    const session = await auth();
+    if (!session?.user || (session.user.role !== "ADMIN" && session.user.role !== "DEVELOPER" && session.user.role !== "WRITER")) {
+      return { success: false, error: "Unauthorized. Staff access required." };
+    }
+
     const bookings = await prisma.booking.findMany({
       include: {
         user: { select: { id: true, name: true, email: true } },

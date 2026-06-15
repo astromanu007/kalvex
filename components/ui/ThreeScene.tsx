@@ -1,13 +1,42 @@
 "use client";
 
-import React, { useRef, useMemo, useState } from "react";
+import React, { useRef, useMemo, useState, Component, ErrorInfo, ReactNode, useEffect } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import { Float, MeshDistortMaterial, Sphere } from "@react-three/drei";
 
+interface Props {
+  children: ReactNode;
+  fallback: ReactNode;
+}
+
+interface State {
+  hasError: boolean;
+}
+
+class WebGLErrorBoundary extends Component<Props, State> {
+  public state: State = {
+    hasError: false
+  };
+
+  public static getDerivedStateFromError(_: Error): State {
+    return { hasError: true };
+  }
+
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("WebGL Render Error caught by boundary:", error, errorInfo);
+  }
+
+  public render() {
+    if (this.state.hasError) {
+      return this.props.fallback;
+    }
+    return this.props.children;
+  }
+}
+
 function TechnicalSphere() {
   const meshRef = useRef<THREE.Mesh>(null);
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
 
   useFrame((state) => {
     if (meshRef.current) {
@@ -52,10 +81,6 @@ function TechnicalSphere() {
 }
 
 function Grid() {
-  useFrame((state) => {
-    // Subtle grid tilt based on mouse
-  });
-
   return (
     <group rotation={[-Math.PI / 2.5, 0, 0]} position={[0, -2, -5]}>
       <gridHelper {...({ args: [20, 20, "#2563eb", "#e2e8f0"], opacity: 0.2, transparent: true } as any)} />
@@ -64,18 +89,37 @@ function Grid() {
 }
 
 export function ThreeScene() {
+  const [webglSupported, setWebglSupported] = useState(true);
+
+  useEffect(() => {
+    try {
+      const canvas = document.createElement("canvas");
+      const support = !!(window.WebGLRenderingContext && 
+        (canvas.getContext("webgl") || canvas.getContext("experimental-webgl")));
+      setWebglSupported(support);
+    } catch (e) {
+      setWebglSupported(false);
+    }
+  }, []);
+
+  if (!webglSupported) {
+    return <div className="absolute inset-0 -z-10 bg-slate-50/50" />;
+  }
+
   return (
     <div className="absolute inset-0 -z-10 pointer-events-none opacity-40">
-      <Canvas camera={{ position: [0, 0, 5], fov: 45 }} dpr={[1, 2]}>
-        <ambientLight intensity={0.5} />
-        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-        <pointLight position={[-10, -10, -10]} color="#2563eb" />
-        
-        <TechnicalSphere />
-        <Grid />
-        
-        <fog attach="fog" args={["#f8fafc", 5, 15]} />
-      </Canvas>
+      <WebGLErrorBoundary fallback={<div className="absolute inset-0 bg-slate-50/50" />}>
+        <Canvas camera={{ position: [0, 0, 5], fov: 45 }} dpr={[1, 2]}>
+          <ambientLight intensity={0.5} />
+          <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+          <pointLight position={[-10, -10, -10]} color="#2563eb" />
+          
+          <TechnicalSphere />
+          <Grid />
+          
+          <fog attach="fog" args={["#f8fafc", 5, 15]} />
+        </Canvas>
+      </WebGLErrorBoundary>
     </div>
   );
 }

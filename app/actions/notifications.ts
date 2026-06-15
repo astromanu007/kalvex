@@ -20,6 +20,11 @@ export async function createNotification({
   link?: string;
 }) {
   try {
+    const session = await auth();
+    if (!session?.user) return { error: "Unauthorized" };
+    if (session.user.role !== "ADMIN" && session.user.id !== userId) {
+      return { error: "Access denied" };
+    }
     const notification = await prisma.notification.create({
       data: {
         userId,
@@ -72,6 +77,13 @@ export async function markAsRead(notificationId: string) {
   try {
     const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
+
+    const notification = await prisma.notification.findUnique({
+      where: { id: notificationId }
+    });
+
+    if (!notification) return { error: "Notification not found" };
+    if (notification.userId !== session.user.id) return { error: "Unauthorized access" };
 
     await prisma.notification.update({
       where: { id: notificationId },

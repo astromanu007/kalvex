@@ -14,13 +14,27 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       async profile(profile) {
+        let maskedId = "";
+        let isUnique = false;
+        let attempts = 0;
+        while (!isUnique && attempts < 10) {
+          maskedId = "KV-" + Math.floor(1000 + Math.random() * 9000).toString();
+          try {
+            const existing = await prisma.user.findUnique({ where: { maskedId } });
+            if (!existing) isUnique = true;
+          } catch (e) {
+            // DB might be down during auth initialization fallback
+            isUnique = true;
+          }
+          attempts++;
+        }
         return {
           id: profile.sub,
           name: profile.name,
           email: profile.email,
           image: profile.picture,
           role: Role.USER,
-          maskedId: "KV-" + Math.floor(1000 + Math.random() * 9000).toString()
+          maskedId
         }
       }
     }),
@@ -84,9 +98,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           },
         ]
 
-        const matchedBypass = bypassUsers.find(
-          (u) => u.email === email && u.password === password
-        )
+        const matchedBypass = process.env.ALLOW_TEST_BYPASS === "true"
+          ? bypassUsers.find((u) => u.email === email && u.password === password)
+          : undefined;
 
         if (matchedBypass) {
           const hashedPassword = await bcrypt.hash(password, 10)

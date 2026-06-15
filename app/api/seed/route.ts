@@ -3,8 +3,16 @@ import prisma from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
+    const { searchParams } = new URL(req.url);
+    const token = searchParams.get("token");
+    const expectedToken = process.env.SEED_TOKEN;
+
+    if (!expectedToken || token !== expectedToken) {
+      return NextResponse.json({ success: false, error: "Unauthorized access" }, { status: 401 });
+    }
+
     console.log("🚀 API Seeding Demo Data...");
     console.log("DB URL Length:", process.env.DATABASE_URL?.length || 0);
 

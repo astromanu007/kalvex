@@ -88,7 +88,17 @@ export async function createOrder({
     const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
-    const orderNumber = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+    let orderNumber = "";
+    let isUnique = false;
+    let attempts = 0;
+    while (!isUnique && attempts < 10) {
+      orderNumber = `ORD-${Math.floor(100000 + Math.random() * 900000)}`;
+      const existing = await prisma.order.findUnique({ where: { orderNumber } });
+      if (!existing) isUnique = true;
+      attempts++;
+    }
+
+    if (!isUnique) return { error: "Failed to generate a unique order number. Please try again." };
 
     const user = await prisma.user.findUnique({ where: { id: session.user.id } });
     if (!user) return { error: "User not found in DB" };
@@ -128,7 +138,7 @@ export async function createOrder({
 export async function updateOrderStatus(orderId: string, status: OrderStatus, note?: string) {
   try {
     const session = await auth();
-    if (!session?.user) return { error: "Unauthorized" };
+    if (!session?.user || session.user.role !== "ADMIN") return { error: "Access denied. Administrator privileges required." };
 
     const order = await prisma.order.update({
       where: { id: orderId },

@@ -13,13 +13,25 @@ export async function POST(req: Request) {
       }, { status: 400 });
     }
 
+    // Secure Email regex validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json({ error: 'Please enter a valid email address.' }, { status: 400 });
+    }
+
+    // Basic escaping to block XSS injections
+    const escapeHTML = (str: string) => str.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+    const cleanName = escapeHTML(fullName);
+    const cleanMessage = escapeHTML(message);
+    const cleanInquiryType = escapeHTML(inquiryType || 'General Inquiry');
+
     // Create the submission record in the database
     const submission = await prisma.contactSubmission.create({
       data: {
-        fullName,
+        fullName: cleanName,
         email,
-        inquiryType: inquiryType || 'General Inquiry',
-        message,
+        inquiryType: cleanInquiryType,
+        message: cleanMessage,
         status: 'UNREAD'
       },
     });

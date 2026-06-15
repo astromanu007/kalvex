@@ -9,8 +9,17 @@ export async function createPaymentOrder(amount: number, orderId: string) {
     const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
+    const order = await prisma.order.findUnique({
+      where: { id: orderId }
+    });
+
+    if (!order) return { error: "Order not found" };
+    if (order.userId !== session.user.id) return { error: "Unauthorized access to this order" };
+
+    const secureAmount = order.amount;
+
     const options = {
-      amount: Math.round(amount * 100), // Razorpay expects amount in paise
+      amount: Math.round(secureAmount * 100), // Razorpay expects amount in paise
       currency: "INR",
       receipt: `receipt_${orderId}`,
     };
@@ -57,10 +66,13 @@ export async function verifyPayment(paymentData: any, orderId: string) {
     // Check if this is a hardware/electronics order (no expert needed)
     const orderRecord = await prisma.order.findUnique({
       where: { id: orderId },
-      select: { serviceType: true }
+      select: { userId: true, serviceType: true }
     });
 
-    const isHardwareOrder = orderRecord?.serviceType === "HARDWARE_COMPONENTS";
+    if (!orderRecord) return { error: "Order not found" };
+    if (orderRecord.userId !== session.user.id) return { error: "Unauthorized access to this order" };
+
+    const isHardwareOrder = orderRecord.serviceType === "HARDWARE_COMPONENTS";
 
     // Hardware/electronics orders → PAYMENT_CONFIRMED (admin handles shipping)
     // All other orders → RESEARCH_STARTED (routes to expert assignment queue)

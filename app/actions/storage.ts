@@ -10,8 +10,33 @@ export async function uploadFile(formData: FormData, orderId: string, folder: st
     const session = await auth();
     if (!session?.user) return { error: "Unauthorized" };
 
+    const order = await prisma.order.findUnique({
+      where: { id: orderId }
+    });
+
+    if (!order) return { error: "Order not found" };
+
+    const isClient = order.userId === session.user.id;
+    const isExpert = order.assignedToId === session.user.id;
+    const isAdmin = session.user.role === "ADMIN";
+
+    if (!isClient && !isExpert && !isAdmin) {
+      return { error: "Access denied: Unauthorized to upload files to this order" };
+    }
+
     const file = formData.get("file") as File;
     if (!file) return { error: "No file provided" };
+
+    // File validation checks
+    const allowedExtensions = [".pdf", ".docx", ".zip", ".png", ".jpg", ".jpeg", ".txt", ".stl", ".step", ".cad"];
+    const fileExtension = file.name.substring(file.name.lastIndexOf(".")).toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)) {
+      return { error: "File type not allowed. Supported formats: PDF, DOCX, ZIP, PNG, JPG, STL, STEP, CAD, TXT." };
+    }
+
+    if (file.size > 15 * 1024 * 1024) { // 15MB limit
+      return { error: "File size exceeds the 15MB limit." };
+    }
 
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);

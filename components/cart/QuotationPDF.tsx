@@ -1,6 +1,9 @@
+import React, { useMemo } from "react";
 import { Document, Page, Text, View, StyleSheet, Font, Image } from "@react-pdf/renderer";
 
 // Define professional styles for the quotation
+// ... (rest of styles remain unchanged)
+
 const styles = StyleSheet.create({
   page: {
     padding: 40,
@@ -136,9 +139,10 @@ interface QuotationPDFProps {
   subtotal: number;
   discount: number;
   total: number;
+  quotationId?: string;
 }
 
-export const QuotationPDF = ({ items, subtotal, discount, total }: QuotationPDFProps) => {
+export const QuotationPDF = ({ items, subtotal, discount, total, quotationId }: QuotationPDFProps) => {
   const date = new Date().toLocaleDateString("en-IN", {
     day: "numeric",
     month: "long",
@@ -151,6 +155,10 @@ export const QuotationPDF = ({ items, subtotal, discount, total }: QuotationPDFP
     month: "long",
     year: "numeric",
   });
+
+  const quoteRef = useMemo(() => {
+    return quotationId ? `KVX-QT-${quotationId}` : `KVX-QT-${Math.floor(100000 + Math.random() * 900000)}`;
+  }, [quotationId]);
 
   return (
     <Document>
@@ -168,7 +176,7 @@ export const QuotationPDF = ({ items, subtotal, discount, total }: QuotationPDFP
             <Text style={styles.quoteTitle}>OFFICIAL QUOTATION</Text>
             <Text style={styles.quoteDetails}>Date: {date}</Text>
             <Text style={styles.quoteDetails}>Valid Until: {validUntil}</Text>
-            <Text style={styles.quoteDetails}>Ref: KVX-QT-{Math.floor(100000 + Math.random() * 900000)}</Text>
+            <Text style={styles.quoteDetails}>Ref: {quoteRef}</Text>
           </View>
         </View>
 
