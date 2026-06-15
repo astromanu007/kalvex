@@ -1,8 +1,264 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
-import { Plus, Trash2, Cpu, Zap, Download, Layers, Sparkles, HelpCircle } from "lucide-react";
+import { useState, useEffect } from "react";
+import { Plus, Trash2, Cpu, Zap, Download, Layers, Sparkles, FileText, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Document, Page, Text, View, StyleSheet, PDFDownloadLink } from "@react-pdf/renderer";
+
+// Define PDF styles
+const pdfStyles = StyleSheet.create({
+  page: {
+    padding: 40,
+    fontFamily: "Helvetica",
+    backgroundColor: "#ffffff",
+    fontSize: 9,
+    lineHeight: 1.5,
+  },
+  borderWrapper: {
+    border: "2.5pt double #1e293b",
+    padding: 24,
+    height: "100%",
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "flex-start",
+    borderBottomWidth: 1.5,
+    borderBottomColor: "#cbd5e1",
+    paddingBottom: 16,
+    marginBottom: 24,
+  },
+  companyInfo: {
+    flexDirection: "column",
+  },
+  companyName: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "#2563eb",
+    letterSpacing: 1,
+  },
+  companySub: {
+    fontSize: 8,
+    color: "#64748b",
+    marginTop: 2,
+    fontWeight: "bold",
+  },
+  docTitleBlock: {
+    alignItems: "flex-end",
+  },
+  docTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#0f172a",
+    letterSpacing: 0.5,
+  },
+  metaText: {
+    fontSize: 8,
+    color: "#64748b",
+    marginTop: 2,
+  },
+  table: {
+    width: "100%",
+    marginTop: 16,
+  },
+  tableHeader: {
+    flexDirection: "row",
+    backgroundColor: "#f8fafc",
+    borderBottomWidth: 1,
+    borderBottomColor: "#cbd5e1",
+    paddingVertical: 8,
+    paddingHorizontal: 6,
+  },
+  tableHeaderCell: {
+    fontSize: 8,
+    fontWeight: "bold",
+    color: "#334155",
+  },
+  tableRow: {
+    flexDirection: "row",
+    borderBottomWidth: 1,
+    borderBottomColor: "#f1f5f9",
+    paddingVertical: 8,
+    paddingHorizontal: 6,
+  },
+  tableCell: {
+    fontSize: 8.5,
+    color: "#334155",
+  },
+  colSku: { width: "22%" },
+  colDesc: { width: "42%" },
+  colQty: { width: "10%", textAlign: "center" },
+  colPrice: { width: "13%", textAlign: "right" },
+  colTotal: { width: "13%", textAlign: "right" },
+  
+  totalBlock: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    marginTop: 20,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: "#e2e8f0",
+  },
+  totalRow: {
+    width: "35%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+  totalLabel: {
+    fontSize: 10,
+    fontWeight: "bold",
+    color: "#0f172a",
+  },
+  totalVal: {
+    fontSize: 11,
+    fontWeight: "bold",
+    color: "#2563eb",
+  },
+  
+  authBlock: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 50,
+  },
+  stamp: {
+    borderWidth: 2,
+    borderColor: "#10b981",
+    borderRadius: 8,
+    padding: 8,
+    width: 90,
+    height: 90,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  stampTitle: {
+    fontSize: 8,
+    fontWeight: "bold",
+    color: "#10b981",
+  },
+  stampSub: {
+    fontSize: 6,
+    color: "#10b981",
+    marginTop: 2,
+    fontWeight: "bold",
+  },
+  stampFooter: {
+    fontSize: 5,
+    color: "#94a3b8",
+    marginTop: 4,
+  },
+  signatureLine: {
+    width: 140,
+    borderTopWidth: 1,
+    borderTopColor: "#0f172a",
+    paddingTop: 6,
+    alignItems: "center",
+  },
+  signatureTitle: {
+    fontSize: 8,
+    fontWeight: "bold",
+    color: "#0f172a",
+  },
+  signatureSub: {
+    fontSize: 7,
+    color: "#64748b",
+    marginTop: 2,
+  },
+  
+  footer: {
+    position: "absolute",
+    bottom: 24,
+    left: 24,
+    right: 24,
+    textAlign: "center",
+    fontSize: 7,
+    color: "#94a3b8",
+    borderTopWidth: 1,
+    borderTopColor: "#f1f5f9",
+    paddingTop: 8,
+  }
+});
+
+// PDF Document component
+const BOMDocumentPDF = ({ items = [], total = 0 }: { items: BomItem[]; total: number }) => {
+  const dateStr = new Date().toLocaleDateString("en-IN", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+  const refCode = `KVX-BOM-${Math.floor(100000 + Math.random() * 900000)}`;
+
+  return (
+    <Document>
+      <Page size="A4" style={pdfStyles.page}>
+        <View style={pdfStyles.borderWrapper}>
+          
+          {/* Header block */}
+          <View style={pdfStyles.header}>
+            <View style={pdfStyles.companyInfo}>
+              <Text style={pdfStyles.companyName}>KALVEX LABS</Text>
+              <Text style={pdfStyles.companySub}>Electronics Engineering & Simulation Suite</Text>
+              <Text style={pdfStyles.metaText}>Email: info@kalvex.in | Web: www.kalvex.in</Text>
+            </View>
+            <View style={pdfStyles.docTitleBlock}>
+              <Text style={pdfStyles.docTitle}>BILL OF MATERIALS</Text>
+              <Text style={pdfStyles.metaText}>Date: {dateStr}</Text>
+              <Text style={pdfStyles.metaText}>Ref: {refCode}</Text>
+            </View>
+          </View>
+
+          {/* Table */}
+          <View style={pdfStyles.table}>
+            <View style={pdfStyles.tableHeader}>
+              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colSku]}>SKU / PART CODE</Text>
+              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colDesc]}>DESCRIPTION</Text>
+              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colQty]}>QTY</Text>
+              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colPrice]}>UNIT PRICE</Text>
+              <Text style={[pdfStyles.tableHeaderCell, pdfStyles.colTotal]}>TOTAL</Text>
+            </View>
+
+            {items.map((item, idx) => (
+              <View key={item.id || idx} style={pdfStyles.tableRow}>
+                <Text style={[pdfStyles.tableCell, pdfStyles.colSku]}>{item.sku}</Text>
+                <Text style={[pdfStyles.tableCell, pdfStyles.colDesc]}>{item.name}</Text>
+                <Text style={[pdfStyles.tableCell, pdfStyles.colQty]}>{item.qty}</Text>
+                <Text style={[pdfStyles.tableCell, pdfStyles.colPrice]}>INR {item.price.toLocaleString()}</Text>
+                <Text style={[pdfStyles.tableCell, pdfStyles.colTotal]}>INR {(item.price * item.qty).toLocaleString()}</Text>
+              </View>
+            ))}
+          </View>
+
+          {/* Total */}
+          <View style={pdfStyles.totalBlock}>
+            <View style={pdfStyles.totalRow}>
+              <Text style={pdfStyles.totalLabel}>ESTIMATED LIABILITY:</Text>
+              <Text style={pdfStyles.totalVal}>INR {total.toLocaleString()}</Text>
+            </View>
+          </View>
+
+          {/* Signatures & Stamp */}
+          <View style={pdfStyles.authBlock}>
+            <View style={pdfStyles.stamp}>
+              <Text style={pdfStyles.stampTitle}>KALVEX LABS</Text>
+              <Text style={pdfStyles.stampSub}>★ APPROVED ★</Text>
+              <Text style={pdfStyles.stampFooter}>OFFICIAL STAMP</Text>
+            </View>
+            <View style={pdfStyles.signatureLine}>
+              <Text style={pdfStyles.signatureTitle}>Dr. Clara Croft</Text>
+              <Text style={pdfStyles.signatureSub}>Authorized Signatory</Text>
+            </View>
+          </View>
+
+          {/* Footer disclaimer */}
+          <Text style={pdfStyles.footer}>
+            This is an official document generated by the Kalvex High-Performance Simulation Engine. Protected by SSL & AES-256 protocols.
+          </Text>
+
+        </View>
+      </Page>
+    </Document>
+  );
+};
 
 interface BomItem {
   id: string;
@@ -17,6 +273,12 @@ interface ElectronicsAddonsProps {
 }
 
 export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsProps) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // --- STATE FOR BOM MANAGER ---
   const [bom, setBom] = useState<BomItem[]>([
     { id: "1", name: "Raspberry Pi 5 8GB RAM", sku: "KVX-SBC-005", price: 8500, qty: 2 },
@@ -262,13 +524,29 @@ export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsPr
             </h3>
             <p className="text-xs text-slate-400 mt-1">Auto-suggest catalog items while typing to estimate complete costings.</p>
           </div>
-          <button 
-            type="button"
-            onClick={exportBomCsv}
-            className="flex items-center gap-1.5 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-600 font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm"
-          >
-            <Download className="w-3.5 h-3.5" /> Export CSV
-          </button>
+          <div className="flex gap-2.5 items-center">
+            {mounted && (
+              <PDFDownloadLink 
+                document={<BOMDocumentPDF items={bom} total={getBomTotal()} />} 
+                fileName={`kalvex_bom_${new Date().toISOString().slice(0, 10)}.pdf`}
+                className="flex items-center gap-1.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-md hover:shadow-indigo-500/20"
+              >
+                {({ loading }) => (
+                  <>
+                    <FileText className="w-3.5 h-3.5" />
+                    <span>{loading ? "Generating PDF..." : "Download PDF"}</span>
+                  </>
+                )}
+              </PDFDownloadLink>
+            )}
+            <button 
+              type="button"
+              onClick={exportBomCsv}
+              className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-650 font-bold text-xs uppercase tracking-wider px-4 py-2.5 rounded-xl transition-all cursor-pointer shadow-sm"
+            >
+              <Download className="w-3.5 h-3.5" /> Export CSV
+            </button>
+          </div>
         </div>
 
         {/* Add item form with suggestions dropdown */}
@@ -390,7 +668,7 @@ export default function ElectronicsAddons({ products = [] }: ElectronicsAddonsPr
                     <button 
                       type="button"
                       onClick={() => removeBomItem(item.id)}
-                      className="text-slate-300 hover:text-red-500 transition-colors cursor-pointer"
+                      className="text-slate-350 hover:text-red-500 transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-4.5 h-4.5" />
                     </button>
