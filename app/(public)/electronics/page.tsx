@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSession, signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import ElectronicsAddons from "@/components/electronics/ElectronicsAddons";
 
 const fadeInUp = {
   hidden: { opacity: 0, y: 40 },
@@ -114,6 +115,7 @@ export default function ElectronicsStore() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [wishlist, setWishlist] = useState<any[]>([]);
   const [isComingSoonOpen, setIsComingSoonOpen] = useState(false);
+  const [activeView, setActiveView] = useState<"store" | "addons">("store");
 
   useEffect(() => {
     const syncWishlist = () => {
@@ -455,7 +457,32 @@ export default function ElectronicsStore() {
           </Button>
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-16 items-start">
+        {/* View Switcher Tabs */}
+        <div className="flex gap-4 mb-12 bg-white border border-slate-200 rounded-2xl p-2 max-w-md shadow-sm relative z-30">
+          <button
+            onClick={() => setActiveView("store")}
+            className={`flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              activeView === "store" 
+                ? "bg-slate-900 text-white shadow-md" 
+                : "text-slate-400 hover:text-slate-600"
+            }`}
+          >
+            🔌 Component Store
+          </button>
+          <button
+            onClick={() => setActiveView("addons")}
+            className={`flex-1 py-3 px-4 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer ${
+              activeView === "addons" 
+                ? "bg-slate-900 text-white shadow-md" 
+                : "text-slate-400 hover:text-slate-600"
+            }`}
+          >
+            ⚡ Lab & Simulator
+          </button>
+        </div>
+
+        {activeView === "store" ? (
+          <div className="flex flex-col lg:flex-row gap-16 items-start">
 
           {/* Sidebar Filters */}
           <motion.aside
@@ -721,6 +748,9 @@ export default function ElectronicsStore() {
             )}
           </main>
         </div>
+        ) : (
+          <ElectronicsAddons />
+        )}
       </div>
 
       {/* Bulk Upload Modal */}

@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { getOrders } from "@/app/actions/orders";
 import { getServiceTitle, isElectronicsOrder } from "@/lib/utils";
+import GanttTimeline from "@/components/dashboard/GanttTimeline";
 
 export default function MyProjectsPage() {
   const { data: session } = useSession();
@@ -42,6 +43,8 @@ export default function MyProjectsPage() {
           </Button>
         </Link>
       </div>
+
+      <GanttTimeline />
 
       {loading ? (
         <div className="bg-white border border-slate-100 rounded-3xl p-20 flex justify-center text-indigo-600 shadow-sm">

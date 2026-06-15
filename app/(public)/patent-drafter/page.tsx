@@ -18,6 +18,7 @@ import { useRouter } from "next/navigation";
 import { LOCARNO_CLASSES } from "@/lib/locarno";
 import { analyzePatent } from "@/lib/ai-engine";
 import { createPatentDraft, createPatentPaymentOrder, verifyPatentPayment } from "@/app/actions/patent";
+import PatentDrafterAddons from "@/components/patent/PatentDrafterAddons";
 
 // Define views for the patent
 const PATENT_VIEWS = [
@@ -301,7 +302,7 @@ export default function PatentDrafterPage() {
   const [authors, setAuthors] = useState([{ id: "1", name: "", signature: null as any }]);
   const [ferAuthors, setFerAuthors] = useState([{ id: "1", name: "", signature: null as any }]);
   const [currentSheet, setCurrentSheet] = useState(1);
-  const [activeTab, setActiveTab] = useState<"general" | "ai">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "ai" | "addons">("general");
   const [docType, setDocType] = useState<"representation" | "disclosure" | "fer">("representation");
 
   // Onboarding & Payment Tunnel State
@@ -1206,15 +1207,21 @@ export default function PatentDrafterPage() {
                 <div className="flex gap-2 mb-8 bg-slate-50/50 p-2 rounded-2xl border border-slate-100">
                   <button
                     onClick={() => setActiveTab("general")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === "general" ? "bg-white text-blue-600 shadow-xl shadow-slate-200" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${activeTab === "general" ? "bg-white text-blue-600 shadow-xl shadow-slate-250" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"}`}
                   >
                     <Layout className="w-4 h-4" /> General Info
                   </button>
                   <button
                     onClick={() => setActiveTab("ai")}
-                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${activeTab === "ai" ? "bg-white text-blue-600 shadow-xl shadow-slate-200" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"}`}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${activeTab === "ai" ? "bg-white text-blue-600 shadow-xl shadow-slate-250" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"}`}
                   >
                     <BrainCircuit className="w-4 h-4" /> AI Insights
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("addons")}
+                    className={`flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-[10px] sm:text-xs font-black uppercase tracking-widest transition-all ${activeTab === "addons" ? "bg-white text-blue-600 shadow-xl shadow-slate-250" : "text-slate-400 hover:text-slate-600 hover:bg-white/50"}`}
+                  >
+                    <Sparkles className="w-4 h-4" /> Cost & Claims
                   </button>
                 </div>
 
@@ -1310,7 +1317,7 @@ export default function PatentDrafterPage() {
                       </Reorder.Group>
                     </div>
                   </div>
-                ) : (
+                ) : activeTab === "ai" ? (
                   <div className="space-y-8 animate-in fade-in slide-in-from-bottom-2 duration-500">
                     <div className="space-y-4">
                       <div className="flex items-center gap-3">
@@ -1411,6 +1418,8 @@ export default function PatentDrafterPage() {
                       </p>
                     </div>
                   </div>
+                ) : (
+                  <PatentDrafterAddons />
                 )}
               </div>
             </div>

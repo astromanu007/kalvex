@@ -4,7 +4,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState, useRef, useEffect, useMemo } from "react";
 import { 
   MessageSquare, X, Send, Sparkles, Minus, Maximize2, Minimize2, 
-  Trash2, Check, Copy, AlertCircle, RefreshCw, Circle
+  Trash2, Check, Copy, AlertCircle, RefreshCw, Circle,
+  Download, Mic, MicOff, Volume2, VolumeX
 } from "lucide-react";
 import { Button } from "./button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -89,7 +90,70 @@ export function Chatbot() {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState<{ role: "user" | "assistant"; content: string }[]>([]);
   
+  const [isTtsEnabled, setIsTtsEnabled] = useState(false);
+  const [isListening, setIsListening] = useState(false);
+  
   const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  // Speech helper
+  const speakText = (text: string) => {
+    if (typeof window === "undefined" || !('speechSynthesis' in window)) return;
+    window.speechSynthesis.cancel();
+    const cleanText = text.replace(/[*#_`\[\]()\-]/g, '');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    window.speechSynthesis.speak(utterance);
+  };
+
+  // Voice Input helper
+  const startListening = () => {
+    if (typeof window === "undefined") return;
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      alert("Speech recognition is not supported in this browser.");
+      return;
+    }
+    const recognition = new SpeechRecognition();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+    recognition.lang = "en-US";
+    
+    recognition.onstart = () => {
+      setIsListening(true);
+    };
+    
+    recognition.onresult = (event: any) => {
+      const transcript = event.results[0][0].transcript;
+      setInput(transcript);
+    };
+    
+    recognition.onerror = (event: any) => {
+      console.error("Speech recognition error", event);
+      setIsListening(false);
+    };
+    
+    recognition.onend = () => {
+      setIsListening(false);
+    };
+    
+    recognition.start();
+  };
+
+  // Export Chat helper
+  const handleExportChat = () => {
+    const textContent = messages
+      .map(m => `### ${m.role === 'user' ? 'User' : 'KALVEX AI'}\n\n${m.content}\n\n---`)
+      .join('\n\n');
+    
+    const blob = new Blob([textContent], { type: "text/markdown;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", `kalvex_chat_session_${new Date().toISOString().slice(0,10)}.md`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   // 2. Load History from localStorage on mount
   useEffect(() => {
@@ -126,11 +190,14 @@ export function Chatbot() {
   }, [messages, isOpen, isMinimized]);
 
   // 4. Client Side Streaming Action Handler
-  const handleSend = async () => {
-    if (!input.trim() || loading) return;
+  const handleSend = async (customMsg?: string) => {
+    const rawMsg = customMsg !== undefined ? customMsg : input;
+    if (!rawMsg.trim() || loading) return;
 
-    const userMsg = input.trim();
-    setInput("");
+    const userMsg = rawMsg.trim();
+    if (customMsg === undefined) {
+      setInput("");
+    }
     
     // Add user message to state
     setMessages(prev => [...prev, { role: "user", content: userMsg }]);
@@ -183,6 +250,12 @@ export function Chatbot() {
           return next;
         });
       }
+
+      // Read aloud if Text to Speech is active
+      if (isTtsEnabled) {
+        speakText(assistantContent);
+      }
+
     } catch (err: any) {
       console.error("Chat Stream Error:", err);
       setMessages(prev => [
@@ -307,6 +380,16 @@ export function Chatbot() {
 
               {/* Window Controls */}
               <div className="flex items-center gap-1.5 relative z-10">
+                {/* Export Chat */}
+                {!isMinimized && (
+                  <button 
+                    onClick={handleExportChat}
+                    title="Export Conversation (Markdown)"
+                    className="p-1.5 text-slate-400 hover:text-emerald-400 transition-colors hover:bg-white/5 rounded-lg cursor-pointer"
+                  >
+                    <Download className="w-4 h-4" />
+                  </button>
+                )}
                 {/* Reset History */}
                 {!isMinimized && (
                   <button 
@@ -455,6 +538,27 @@ export function Chatbot() {
                     <div ref={messagesEndRef} />
                   </div>
 
+                  {/* Suggested Prompt Chips */}
+                  {!isMinimized && (
+                    <div className="flex gap-2 overflow-x-auto px-4 py-2.5 bg-slate-50/80 border-t border-slate-100/80 scrollbar-none shrink-0 select-none">
+                      {[
+                        "Draft a patent for a drone",
+                        "Check my active projects",
+                        "How does Kalvex Escrow work?",
+                        "Explain IPR guidelines"
+                      ].map((chip, idx) => (
+                        <button
+                          key={idx}
+                          type="button"
+                          onClick={() => handleSend(chip)}
+                          className="whitespace-nowrap px-3.5 py-1.5 rounded-full bg-white border border-slate-200/80 hover:border-blue-500 hover:text-blue-600 text-[10px] sm:text-xs font-bold text-slate-600 transition-all cursor-pointer shadow-sm hover:scale-[1.02] active:scale-[0.98]"
+                        >
+                          {chip}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
                   {/* Input Form Footer */}
                   <div className="p-4 sm:p-5 bg-white border-t border-slate-100 shrink-0">
                     <form
@@ -462,8 +566,36 @@ export function Chatbot() {
                         e.preventDefault();
                         handleSend();
                       }}
-                      className="flex gap-3 items-center"
+                      className="flex gap-2 sm:gap-3 items-center"
                     >
+                      {/* Audio Read-aloud Toggle */}
+                      <button
+                        type="button"
+                        onClick={() => setIsTtsEnabled(!isTtsEnabled)}
+                        title={isTtsEnabled ? "Disable Read Aloud" : "Enable Read Aloud"}
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all cursor-pointer border shrink-0 ${
+                          isTtsEnabled 
+                            ? "bg-emerald-50 border-emerald-250 text-emerald-600 shadow-sm" 
+                            : "bg-slate-50 border-slate-200 text-slate-450 hover:bg-slate-100"
+                        }`}
+                      >
+                        {isTtsEnabled ? <Volume2 className="w-4.5 h-4.5" /> : <VolumeX className="w-4.5 h-4.5" />}
+                      </button>
+
+                      {/* Voice input Mic Button */}
+                      <button
+                        type="button"
+                        onClick={startListening}
+                        title={isListening ? "Listening..." : "Speak Message"}
+                        className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all cursor-pointer border shrink-0 ${
+                          isListening 
+                            ? "bg-red-50 border-red-200 text-red-500 animate-pulse" 
+                            : "bg-slate-50 border-slate-200 text-slate-450 hover:bg-slate-100"
+                        }`}
+                      >
+                        {isListening ? <MicOff className="w-4.5 h-4.5" /> : <Mic className="w-4.5 h-4.5" />}
+                      </button>
+
                       <input
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
